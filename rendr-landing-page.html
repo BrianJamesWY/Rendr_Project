@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendr - Blockchain Verified Video Authentication</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #5B7FE8 0%, #4A67D5 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: white;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+
+        .tagline {
+            font-size: 14px;
+            color: #7f8c8d;
+            font-weight: 400;
+        }
+
+        nav a {
+            margin-left: 30px;
+            text-decoration: none;
+            color: #5B7FE8;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #4A67D5;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 100px 0;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero .subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 18px 40px;
+            background: white;
+            color: #5B7FE8;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 18px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 60px;
+            color: #2c3e50;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+
+        .feature-card {
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .feature-card p {
+            color: #7f8c8d;
+            line-height: 1.8;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .step {
+            text-align: center;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0 auto 20px;
+        }
+
+        .step h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* Use Cases */
+        .use-cases {
+            padding: 80px 0;
+            background: white;
+        }
+
+        .use-cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .use-case {
+            padding: 30px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .use-case:hover {
+            border-color: #5B7FE8;
+        }
+
+        .use-case h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #5B7FE8;
+        }
+
+        /* Technology */
+        .technology {
+            padding: 80px 0;
+            background: #f8f9fa;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .tech-item {
+            padding: 20px 30px;
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #5B7FE8;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            background: #2c3e50;
+            color: white;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 36px;
+            }
+
+            .hero .subtitle {
+                font-size: 18px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav {
+                display: flex;
+                gap: 20px;
+            }
+
+            nav a {
+                margin-left: 0;
+            }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">⭐</div>
+                    <div>
+                        <div class="brand-name">RENDR</div>
+                        <div class="tagline">Blockchain Video Verification</div>
+                    </div>
+                </div>
+                <nav>
+                    <a href="#features">Features</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#use-cases">Use Cases</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="status-badge">🚀 Currently in Development</div>
+            <h1>Prove Your Videos<br>Are Real</h1>
+            <p class="subtitle">Blockchain-verified video authentication for the age of AI and deepfakes</p>
+            <a href="#how-it-works" class="cta-button">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">Why Rendr?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Blockchain Verified</h3>
+                    <p>Every video gets an immutable signature stored on the Polygon blockchain, creating permanent proof of authenticity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Mobile Bodycam</h3>
+                    <p>Record important moments with our iPhone app that captures video, GPS, and sensor data for hardware-verified authenticity.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Creator Studio</h3>
+                    <p>Content creators can add verification watermarks to their edited videos, protecting their work and building trust.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">✓</div>
+                    <h3>Instant Verification</h3>
+                    <p>Anyone can verify a video by entering its unique code or uploading the file to check for edits.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>Creator Showcase</h3>
+                    <p>Every creator gets a public gallery page displaying all their verified work in one place.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Analytics Dashboard</h3>
+                    <p>Track performance across YouTube, Instagram, TikTok, and see verification metrics in one unified dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Record or Upload</h3>
+                    <p>Use our mobile app to record live events or upload edited videos through Rendr Studio</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Automatic Signature</h3>
+                    <p>We create a unique fingerprint of your video and store it on the blockchain</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Get Your Code</h3>
+                    <p>Receive a verification code (like R3ND-4K2P) to share with your video</p>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Anyone Can Verify</h3>
+                    <p>Viewers enter your code at RendrTruth.com to confirm authenticity</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases -->
+    <section class="use-cases" id="use-cases">
+        <div class="container">
+            <h2 class="section-title">Who Needs Rendr?</h2>
+            <div class="use-cases-grid">
+                <div class="use-case">
+                    <h3>📰 Citizen Journalists</h3>
+                    <p>Record important events and prove your footage is authentic and unedited.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🎥 Content Creators</h3>
+                    <p>Protect your original work and build trust with your audience across all platforms.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🛍️ Mystery Shoppers</h3>
+                    <p>Provide verifiable evidence of your shopping experiences for businesses.</p>
+                </div>
+                <div class="use-case">
+                    <h3>⚖️ Legal Professionals</h3>
+                    <p>Court-admissible video evidence with full chain of custody documentation.</p>
+                </div>
+                <div class="use-case">
+                    <h3>🏢 Insurance Companies</h3>
+                    <p>Verify accident footage and damage claims with confidence.</p>
+                </div>
+                <div class="use-case">
+                    <h3>👤 Anyone Recording Truth</h3>
+                    <p>In an age of deepfakes and AI-generated content, prove your video is real.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology -->
+    <section class="technology">
+        <div class="container">
+            <h2 class="section-title">Built on Cutting-Edge Technology</h2>
+            <div class="tech-stack">
+                <div class="tech-item">⛓️ Polygon Blockchain</div>
+                <div class="tech-item">🔍 Perceptual Hashing</div>
+                <div class="tech-item">📱 React Native (Expo)</div>
+                <div class="tech-item">🚀 FastAPI Backend</div>
+                <div class="tech-item">🗄️ MongoDB</div>
+                <div class="tech-item">📡 Sensor Data Capture</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>The Future of Video Truth</h2>
+            <p>Join us in building infrastructure for authenticity in the age of AI</p>
+            <a href="mailto:hello@rendrtruth.com" class="cta-button">Get Early Access</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Rendr. Building the future of video verification.</p>
+            <p style="margin-top: 10px; font-size: 14px;">
+                <a href="https://rendrtruth.com/platform" style="color: #5B7FE8; text-decoration: none;">Platform</a> • 
+                <a href="https://rendrtruth.com/mobile-app" style="color: #5B7FE8; text-decoration: none;">Mobile App</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
