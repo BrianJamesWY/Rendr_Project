@@ -1,0 +1,27 @@
+# RENDR CHECKSTAR LOGO
+
+Logo Description:
+- Blue star with white checkmark inside
+- Clean, modern design
+- Professional appearance
+- Conveys verification/trust
+
+Logo File Location:
+- Original: https://rendrtruth.com/platform
+- Saved image: https://customer-assets.emergentagent.com/job_secure-bodycam/artifacts/ivwejbut_image.png
+
+Usage:
+- Mobile app watermark (top corner)
+- Website branding
+- Verification badges
+- Marketing materials
+
+Color Scheme (based on logo):
+- Primary Blue: #5B7FE8 (star blue)
+- White: #FFFFFF (checkmark)
+- Accent colors to be determined from existing site
+
+Notes:
+- Logo represents trust, verification, authenticity
+- Simple, recognizable design
+- Works well at small sizes (for watermark)
