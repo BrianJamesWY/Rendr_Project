@@ -312,11 +312,11 @@ function Verify() {
                       </span>
                     </div>
                   )}
-                  {result.metadata.duration_seconds !== undefined && (
+                  {result.metadata.duration_seconds !== undefined && result.metadata.duration_seconds !== null && (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#6b7280' }}>Duration:</span>
                       <span style={{ fontWeight: '500', color: '#111827' }}>
-                        {result.metadata.duration_seconds.toFixed(1)}s
+                        {typeof result.metadata.duration_seconds === 'number' ? result.metadata.duration_seconds.toFixed(1) : result.metadata.duration_seconds}s
                       </span>
                     </div>
                   )}
