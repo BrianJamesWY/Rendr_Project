@@ -292,7 +292,7 @@ function Verify() {
               </div>
             )}
 
-            {result.metadata && (
+            {result.metadata && Object.keys(result.metadata).length > 0 && (
               <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
                 <h3 style={{ fontWeight: '600', marginBottom: '1rem', color: '#374151' }}>Video Metadata</h3>
                 <div style={{ display: 'grid', gap: '0.75rem' }}>
@@ -312,7 +312,7 @@ function Verify() {
                       </span>
                     </div>
                   )}
-                  {result.metadata.duration_seconds && (
+                  {result.metadata.duration_seconds !== undefined && (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ color: '#6b7280' }}>Duration:</span>
                       <span style={{ fontWeight: '500', color: '#111827' }}>
