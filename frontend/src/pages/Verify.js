@@ -269,10 +269,10 @@ function Verify() {
               </h2>
             </div>
 
-            {result.similarity_score !== undefined && (
+            {result.similarity_score !== undefined && result.similarity_score !== null && (
               <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
                 <div style={{ fontSize: '3rem', fontWeight: 'bold', color: '#2563eb' }}>
-                  {result.similarity_score.toFixed(1)}%
+                  {typeof result.similarity_score === 'number' ? result.similarity_score.toFixed(1) : result.similarity_score}%
                 </div>
                 <div style={{ color: '#6b7280', fontSize: '0.875rem' }}>
                   Similarity Score
