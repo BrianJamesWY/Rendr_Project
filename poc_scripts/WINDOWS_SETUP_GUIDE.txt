@@ -1,0 +1,131 @@
+============================================================
+RENDR WEEK 1 POC - WINDOWS SETUP GUIDE
+============================================================
+
+You've completed the first part! Here's what to do next:
+
+STEP 1: CREATE POC FOLDER ON YOUR COMPUTER
+-----------------------------------------------------------
+1. Open File Explorer
+2. Go to your Desktop
+3. Right-click → New → Folder
+4. Name it: rendr-poc
+
+
+STEP 2: COPY THESE SCRIPTS TO YOUR COMPUTER
+-----------------------------------------------------------
+The scripts are ready in this platform at: /app/poc_scripts/
+
+You need to copy these 3 files to your Desktop\rendr-poc folder:
+- test_phash.py
+- test_blockchain.py
+- README.md
+
+HOW TO COPY:
+Option A: Download from this platform (if download feature available)
+Option B: Copy-paste the code:
+  1. Open each file here
+  2. Select all text (Ctrl+A)
+  3. Copy (Ctrl+C)
+  4. Create new file on your computer
+  5. Paste (Ctrl+V)
+  6. Save with the correct name
+
+
+STEP 3: OPEN COMMAND PROMPT IN YOUR FOLDER
+-----------------------------------------------------------
+1. Open File Explorer
+2. Navigate to Desktop\rendr-poc
+3. Click in the address bar (where it shows the path)
+4. Type: cmd
+5. Press Enter
+   → A Command Prompt window opens in that folder
+
+
+STEP 4: INSTALL PYTHON LIBRARIES
+-----------------------------------------------------------
+In the Command Prompt, run these commands ONE AT A TIME:
+
+python -m pip install opencv-python
+python -m pip install pillow
+python -m pip install imagehash
+python -m pip install numpy
+python -m pip install web3
+
+Wait for each to say "Successfully installed..."
+
+
+STEP 5: GET A TEST VIDEO
+-----------------------------------------------------------
+1. On your iPhone, record a 15-30 second video
+   - Something simple (your desk, room, anything)
+   - Make sure there's some movement
+   
+2. Transfer to your Windows computer:
+   - Connect iPhone with USB cable
+   - Open File Explorer → "Apple iPhone"
+   - Navigate to Internal Storage → DCIM
+   - Find your video
+   - Copy it to Desktop\rendr-poc folder
+   
+3. RENAME the video file to: test_video_original.mp4
+   - Right-click → Rename
+   - Must be exactly: test_video_original.mp4
+
+
+STEP 6: RUN YOUR FIRST TEST!
+-----------------------------------------------------------
+In Command Prompt (in your rendr-poc folder):
+
+python test_phash.py
+
+You should see:
+- "Extracting frames from: test_video_original.mp4"
+- Frame hashes being calculated
+- "✅ POC TEST COMPLETE"
+- A new file: original_hash.json
+
+
+STEP 7: NEXT STEPS (AFTER STEP 6 WORKS)
+-----------------------------------------------------------
+Come back to this chat and let me know:
+- ✅ Did it work?
+- What similarity scores did you get?
+- Any errors?
+
+Then we'll move to:
+- Testing with Instagram/YouTube re-encoding
+- Blockchain testing with MetaMask
+- Editing detection
+
+
+============================================================
+TROUBLESHOOTING
+============================================================
+
+Problem: "python: command not found"
+Solution: Try using 'py' instead of 'python'
+          py -m pip install opencv-python
+
+Problem: "Could not open video file"
+Solution: - Make sure video is named exactly: test_video_original.mp4
+          - Make sure you're in the correct folder
+          - Try a shorter video
+
+Problem: Can't transfer video from iPhone
+Solution: - Email video to yourself
+          - Download on Windows
+          - Save as test_video_original.mp4 in rendr-poc
+
+
+============================================================
+FILES IN /app/poc_scripts/ (on this platform)
+============================================================
+✅ test_phash.py          - Perceptual hash testing script
+✅ test_blockchain.py     - Blockchain testing script  
+✅ README.md              - Detailed instructions
+✅ WINDOWS_SETUP_GUIDE.txt - This file
+
+
+Need help? Come back to the chat anytime!
+============================================================
