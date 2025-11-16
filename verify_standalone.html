@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Video - Rendr</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9fafb; }
+        .container { max-width: 800px; margin: 0 auto; padding: 3rem 1rem; }
+        h1 { font-size: 2.5rem; text-align: center; color: #111827; margin-bottom: 0.5rem; }
+        .subtitle { text-align: center; color: #6b7280; font-size: 1.125rem; margin-bottom: 3rem; }
+        .tabs { display: flex; justify-content: center; margin-bottom: 2rem; }
+        .tabs > div { display: inline-flex; background: white; border: 1px solid #e5e7eb; border-radius: 0.5rem; padding: 0.25rem; }
+        .tab { padding: 0.75rem 1.5rem; border-radius: 0.375rem; border: none; background: transparent; color: #374151; font-weight: 500; cursor: pointer; }
+        .tab.active { background: #2563eb; color: white; }
+        .form-box { background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); padding: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        label { display: block; font-weight: 500; color: #374151; margin-bottom: 0.5rem; }
+        input[type="text"], input[type="file"] { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; font-size: 1rem; }
+        .help-text { margin-top: 0.5rem; font-size: 0.875rem; color: #6b7280; }
+        button[type="submit"] { width: 100%; padding: 0.75rem; background: #2563eb; color: white; border: none; border-radius: 0.5rem; font-size: 1rem; font-weight: 600; cursor: pointer; }
+        button[type="submit"]:disabled { background: #9ca3af; cursor: not-allowed; }
+        .error { margin-top: 1.5rem; padding: 1rem; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 0.5rem; color: #991b1b; }
+        .result { margin-top: 1.5rem; padding: 2rem; background: white; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .result-icon { width: 80px; height: 80px; margin: 0 auto 1rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; }
+        .result-icon.success { background: #d1fae5; }
+        .result-icon.error { background: #fee2e2; }
+        .result-title { font-size: 1.875rem; font-weight: bold; text-align: center; margin-bottom: 1rem; }
+        .result-title.success { color: #065f46; }
+        .result-title.error { color: #991b1b; }
+        .score { font-size: 3rem; font-weight: bold; color: #2563eb; text-align: center; }
+        .metadata { border-top: 1px solid #e5e7eb; padding-top: 1.5rem; margin-top: 1.5rem; }
+        .metadata-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; }
+        .info-box { margin-top: 3rem; padding: 1.5rem; background: #eff6ff; border-radius: 0.75rem; border: 1px solid #bfdbfe; }
+        .info-box h3 { color: #1e40af; margin-bottom: 0.75rem; font-weight: 600; }
+        .info-box ul { color: #1e3a8a; font-size: 0.875rem; padding-left: 1.25rem; }
+        .info-box li { margin-bottom: 0.5rem; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verify Video Authenticity</h1>
+        <p class="subtitle">Check if a video has been tampered with using Rendr verification</p>
+
+        <div class="tabs">
+            <div>
+                <button class="tab active" onclick="switchMode('code')">Quick Verify (Code)</button>
+                <button class="tab" onclick="switchMode('deep')">Deep Verify (Upload File)</button>
+            </div>
+        </div>
+
+        <div class="form-box">
+            <form id="codeForm" onsubmit="verifyCode(event)">
+                <div class="form-group">
+                    <label>Verification Code</label>
+                    <input type="text" id="codeInput" placeholder="RND-ABC123" required>
+                    <p class="help-text">Enter the verification code that was provided with the video</p>
+                </div>
+                <button type="submit" id="codeBtn">Verify Code</button>
+            </form>
+
+            <form id="deepForm" class="hidden" onsubmit="verifyDeep(event)">
+                <div class="form-group">
+                    <label>Verification Code</label>
+                    <input type="text" id="deepCodeInput" placeholder="RND-ABC123" required>
+                </div>
+                <div class="form-group">
+                    <label>Upload Video File</label>
+                    <input type="file" id="videoFile" accept="video/*" required>
+                    <p class="help-text">Upload the video file to compare with the original signature</p>
+                </div>
+                <button type="submit" id="deepBtn">Verify Video</button>
+            </form>
+        </div>
+
+        <div id="errorBox" class="error hidden"></div>
+        <div id="resultBox" class="result hidden"></div>
+
+        <div class="info-box">
+            <h3>How Verification Works</h3>
+            <ul>
+                <li><strong>Quick Verify:</strong> Enter a verification code to check if a video exists in our database</li>
+                <li><strong>Deep Verify:</strong> Upload a video file to compare its fingerprint with the original and detect any tampering</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'https://verify-hub-9.preview.emergentagent.com/api';
+        let currentMode = 'code';
+
+        function switchMode(mode) {
+            currentMode = mode;
+            document.getElementById('codeForm').classList.toggle('hidden', mode !== 'code');
+            document.getElementById('deepForm').classList.toggle('hidden', mode !== 'deep');
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            hideResults();
+        }
+
+        function hideResults() {
+            document.getElementById('errorBox').classList.add('hidden');
+            document.getElementById('resultBox').classList.add('hidden');
+        }
+
+        function showError(message) {
+            const errorBox = document.getElementById('errorBox');
+            errorBox.textContent = 'Error: ' + message;
+            errorBox.classList.remove('hidden');
+        }
+
+        function showResult(data, isDeep = false) {
+            const resultBox = document.getElementById('resultBox');
+            const isSuccess = data.result === 'authentic';
+            
+            let html = `
+                <div class="result-icon ${isSuccess ? 'success' : 'error'}">
+                    ${isSuccess ? '✓' : '✗'}
+                </div>
+                <h2 class="result-title ${isSuccess ? 'success' : 'error'}">
+                    ${isSuccess ? 'Video Verified' : data.result === 'not_found' ? 'Not Found' : 'Tampering Detected'}
+                </h2>
+            `;
+
+            if (isDeep && data.similarity_score !== undefined) {
+                html += `
+                    <div class="score">${data.similarity_score.toFixed(1)}%</div>
+                    <p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-bottom: 1.5rem;">Similarity Score</p>
+                `;
+            }
+
+            if (data.analysis) {
+                html += `<p style="padding: 1rem; background: #f9fafb; border-radius: 0.5rem; margin-bottom: 1.5rem;"><strong>Analysis:</strong> ${data.analysis}</p>`;
+            }
+
+            if (data.metadata) {
+                html += '<div class="metadata"><h3 style="font-weight: 600; margin-bottom: 1rem;">Video Metadata</h3>';
+                if (data.metadata.source) html += `<div class="metadata-row"><span style="color: #6b7280;">Source:</span><span style="font-weight: 500;">${data.metadata.source === 'bodycam' ? 'Rendr Bodycam' : 'Rendr Studio'}</span></div>`;
+                if (data.metadata.captured_at) html += `<div class="metadata-row"><span style="color: #6b7280;">Captured:</span><span style="font-weight: 500;">${new Date(data.metadata.captured_at).toLocaleString()}</span></div>`;
+                if (data.metadata.duration_seconds) html += `<div class="metadata-row"><span style="color: #6b7280;">Duration:</span><span style="font-weight: 500;">${data.metadata.duration_seconds.toFixed(1)}s</span></div>`;
+                html += '</div>';
+            }
+
+            resultBox.innerHTML = html;
+            resultBox.classList.remove('hidden');
+        }
+
+        async function verifyCode(e) {
+            e.preventDefault();
+            hideResults();
+            const btn = document.getElementById('codeBtn');
+            btn.disabled = true;
+            btn.textContent = 'Verifying...';
+
+            try {
+                const code = document.getElementById('codeInput').value.toUpperCase();
+                const response = await fetch(`${API_URL}/verify/code`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ verification_code: code })
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(data, false);
+                } else {
+                    showError(data.detail || 'Verification failed');
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Verify Code';
+            }
+        }
+
+        async function verifyDeep(e) {
+            e.preventDefault();
+            hideResults();
+            const btn = document.getElementById('deepBtn');
+            btn.disabled = true;
+            btn.textContent = 'Analyzing...';
+
+            try {
+                const code = document.getElementById('deepCodeInput').value.toUpperCase();
+                const file = document.getElementById('videoFile').files[0];
+                
+                const formData = new FormData();
+                formData.append('verification_code', code);
+                formData.append('video_file', file);
+
+                const response = await fetch(`${API_URL}/verify/deep`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult(data, true);
+                } else {
+                    showError(data.detail || 'Verification failed');
+                }
+            } catch (err) {
+                showError('Network error. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Verify Video';
+            }
+        }
+    </script>
+</body>
+</html>
