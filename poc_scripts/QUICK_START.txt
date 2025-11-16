@@ -1,0 +1,42 @@
+╔════════════════════════════════════════════════════════════╗
+║         RENDR WEEK 1 POC - QUICK START GUIDE              ║
+║                  (2-Minute Setup)                          ║
+╚════════════════════════════════════════════════════════════╝
+
+✅ YOU'VE ALREADY COMPLETED:
+  • Python 3.14.0 installed
+  • Node.js v24.11.1 installed
+  • Git 2.51.2 installed
+
+📋 NEXT 5 STEPS:
+
+1️⃣  CREATE FOLDER
+    Desktop → Right-click → New Folder → Name: "rendr-poc"
+
+2️⃣  COPY FILES
+    Copy these 3 files from /app/poc_scripts/ to your rendr-poc folder:
+    - test_phash.py
+    - test_blockchain.py
+    - README.md
+
+3️⃣  OPEN CMD
+    In File Explorer, go to rendr-poc folder
+    Click address bar → Type "cmd" → Press Enter
+
+4️⃣  INSTALL LIBRARIES
+    python -m pip install opencv-python pillow imagehash numpy web3
+
+5️⃣  GET TEST VIDEO
+    iPhone: Record 15-30 sec video
+    Transfer to rendr-poc folder
+    Rename to: test_video_original.mp4
+
+6️⃣  RUN FIRST TEST
+    python test_phash.py
+
+╔════════════════════════════════════════════════════════════╗
+║  EXPECTED TIME: 30-45 minutes                              ║
+║  COME BACK HERE: When you see "✅ POC TEST COMPLETE"      ║
+╚════════════════════════════════════════════════════════════╝
+
+Questions? Error? → Return to this chat for help!
