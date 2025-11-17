@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Rendr - Reserve Your Spot</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 3rem 2rem;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+        .tagline {
+            text-align: center;
+            font-size: 1.25rem;
+            color: #6b7280;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+        }
+        .highlight {
+            background: #fef3c7;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            border-left: 4px solid #f59e0b;
+            margin-bottom: 2rem;
+        }
+        .highlight h2 {
+            color: #92400e;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        .highlight p {
+            color: #78350f;
+            font-size: 0.9375rem;
+        }
+        .features {
+            margin-bottom: 2rem;
+        }
+        .features h3 {
+            font-size: 1.25rem;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+        .feature-item {
+            display: flex;
+            align-items: start;
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            background: #f9fafb;
+            border-radius: 0.5rem;
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+        }
+        .feature-text {
+            font-size: 0.9375rem;
+            color: #374151;
+            line-height: 1.5;
+        }
+        .form-section {
+            background: #f9fafb;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .form-section h3 {
+            font-size: 1.5rem;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.9375rem;
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .input-hint {
+            font-size: 0.8125rem;
+            color: #6b7280;
+            margin-top: 0.375rem;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .success-message {
+            display: none;
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+        }
+        .success-message.show {
+            display: block;
+        }
+        .success-message h3 {
+            color: #065f46;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .success-message p {
+            color: #047857;
+            font-size: 1rem;
+        }
+        .footer {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+        }
+        .beta-badge {
+            display: inline-block;
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.375rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <span class="beta-badge">Coming Soon</span>
+            <h1>RENDR</h1>
+            <p class="tagline">The Future of Video Truth Verification</p>
+        </div>
+
+        <div class="highlight">
+            <h2>🎯 Early Access - Reserve Your Username Now</h2>
+            <p>Be among the first to join when Rendr launches. Lock in your username and get exclusive founder benefits.</p>
+        </div>
+
+        <div class="features">
+            <h3>What is Rendr?</h3>
+            <div class="feature-item">
+                <span class="feature-icon">📹</span>
+                <span class="feature-text"><strong>Rendr Bodycam:</strong> Mobile app that captures verified videos proving authenticity from the moment of recording</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">🎨</span>
+                <span class="feature-text"><strong>Rendr Studio:</strong> Platform for creators to watermark and verify their original content</span>
+            </div>
+            <div class="feature-item">
+                <span class="feature-icon">✅</span>
+                <span class="feature-text"><strong>Rendr Verify:</strong> Anyone can check if a video has been tampered with or edited</span>
+            </div>
+        </div>
+
+        <form id="rsvpForm" class="form-section">
+            <h3>Reserve Your Spot</h3>
+            
+            <div class="form-group">
+                <label for="username">Desired Username *</label>
+                <input type="text" id="username" name="username" required 
+                       pattern="[a-zA-Z0-9_]+" 
+                       placeholder="yourusername"
+                       minlength="3"
+                       maxlength="20">
+                <p class="input-hint">Letters, numbers, and underscores only (3-20 characters)</p>
+            </div>
+
+            <div class="form-group">
+                <label for="name">Your Name *</label>
+                <input type="text" id="name" name="name" required placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" required placeholder="you@example.com">
+                <p class="input-hint">We'll notify you when Rendr launches</p>
+            </div>
+
+            <div class="form-group">
+                <label for="interest">What interests you most?</label>
+                <input type="text" id="interest" name="interest" placeholder="e.g., Content creator, Journalist, etc.">
+            </div>
+
+            <button type="submit" class="submit-btn">Reserve My Spot</button>
+        </form>
+
+        <div id="successMessage" class="success-message">
+            <h3>🎉 You're On The List!</h3>
+            <p>We'll email you at <strong id="confirmedEmail"></strong> when Rendr launches.</p>
+            <p style="margin-top: 1rem;">Username <strong id="confirmedUsername"></strong> is reserved for you!</p>
+        </div>
+
+        <div class="footer">
+            <p>© 2025 Rendr • Bringing Truth Back to Video</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('rsvpForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const interest = document.getElementById('interest').value;
+            
+            // Store in localStorage (temporary - you can connect to Google Sheets or email service later)
+            const reservation = {
+                username: username,
+                name: name,
+                email: email,
+                interest: interest,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Get existing reservations
+            let reservations = JSON.parse(localStorage.getItem('rendr_reservations') || '[]');
+            reservations.push(reservation);
+            localStorage.setItem('rendr_reservations', JSON.stringify(reservations));
+            
+            // You can also send to an email (opens default mail client)
+            const mailtoLink = `mailto:you@rendrtruth.com?subject=New Rendr Reservation&body=Username: ${username}%0D%0AName: ${name}%0D%0AEmail: ${email}%0D%0AInterest: ${interest}`;
+            
+            // Show success message
+            document.getElementById('rsvpForm').style.display = 'none';
+            document.getElementById('successMessage').classList.add('show');
+            document.getElementById('confirmedEmail').textContent = email;
+            document.getElementById('confirmedUsername').textContent = username;
+            
+            // Optional: Open mail client (comment out if you don't want this)
+            // window.location.href = mailtoLink;
+            
+            // Track in console (for you to see)
+            console.log('New reservation:', reservation);
+        });
+
+        // Username validation - make it look nice as they type
+        document.getElementById('username').addEventListener('input', function(e) {
+            this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+        });
+    </script>
+</body>
+</html>
