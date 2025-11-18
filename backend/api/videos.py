@@ -150,16 +150,21 @@ async def get_user_videos(
     cursor = db.videos.find({"user_id": current_user['user_id']})
     videos = await cursor.to_list(length=100)
     
+    video_list = []
+    for v in videos:
+        video_info = {
+            "video_id": v['_id'],
+            "verification_code": v['verification_code'],
+            "source": v['source'],
+            "captured_at": v['captured_at'],
+            "status": v['verification_status'],
+            "has_blockchain": bool(v.get('blockchain_signature'))
+        }
+        if v.get('blockchain_signature'):
+            video_info['blockchain_tx'] = v['blockchain_signature'].get('tx_hash')
+        video_list.append(video_info)
+    
     return {
-        "videos": [
-            {
-                "video_id": v['_id'],
-                "verification_code": v['verification_code'],
-                "source": v['source'],
-                "captured_at": v['captured_at'],
-                "status": v['verification_status']
-            }
-            for v in videos
-        ],
+        "videos": video_list,
         "total": len(videos)
     }
