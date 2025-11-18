@@ -40,10 +40,25 @@ async def upload_video(
     
     try:
         # Process video
+        print(f"🎬 Processing video: {video_id}")
         frames, video_metadata = video_processor.extract_frames(file_path)
         perceptual_hash = video_processor.calculate_perceptual_hash(frames)
         
-        # Save to database (without blockchain for now)
+        print(f"✅ Video processed: {len(frames)} frames")
+        print(f"   Hash: {perceptual_hash['combined_hash'][:32]}...")
+        
+        # Write signature to blockchain
+        print(f"⛓️  Writing to blockchain...")
+        blockchain_result = await blockchain_service.write_signature(
+            video_id=video_id,
+            perceptual_hash=perceptual_hash['combined_hash'],
+            metadata={
+                'source': source,
+                'duration': video_metadata['duration_seconds']
+            }
+        )
+        
+        # Prepare video document
         video_doc = {
             "_id": video_id,
             "user_id": current_user["user_id"],
@@ -55,24 +70,42 @@ async def upload_video(
             "total_frames": video_metadata['total_frames'],
             "file_size_bytes": os.path.getsize(file_path),
             "perceptual_hash": perceptual_hash,
-            "verification_status": "verified",
+            "verification_status": "verified" if blockchain_result else "pending",
             "is_public": False,
             "captured_at": datetime.now().isoformat(),
             "uploaded_at": datetime.now().isoformat(),
-            "verified_at": datetime.now().isoformat()
+            "verified_at": datetime.now().isoformat() if blockchain_result else None
         }
         
+        # Add blockchain signature if successful
+        if blockchain_result:
+            video_doc["blockchain_signature"] = blockchain_result
+            print(f"✅ Blockchain signature added")
+            print(f"   TX: {blockchain_result['tx_hash']}")
+        else:
+            video_doc["blockchain_signature"] = None
+            print(f"⚠️ Blockchain write failed - saved without blockchain proof")
+        
+        # Save to database
         await db.videos.insert_one(video_doc)
+        print(f"💾 Saved to database")
         
         # Delete temp file
         os.remove(file_path)
         
-        return {
+        response_data = {
             "video_id": video_id,
             "verification_code": verification_code,
-            "status": "verified",
+            "status": "verified" if blockchain_result else "pending",
             "message": "Video uploaded and verified successfully"
         }
+        
+        # Add blockchain info if available
+        if blockchain_result:
+            response_data["blockchain_tx"] = blockchain_result['tx_hash']
+            response_data["blockchain_explorer"] = blockchain_result['explorer_url']
+        
+        return response_data
         
     except Exception as e:
         if os.path.exists(file_path):
