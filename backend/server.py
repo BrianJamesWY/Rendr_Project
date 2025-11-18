@@ -40,6 +40,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(videos.router, prefix="/api/videos", tags=["Videos"])
 app.include_router(verification.router, prefix="/api/verify", tags=["Verification"])
 app.include_router(blockchain.router, prefix="/api/blockchain", tags=["Blockchain"])
+app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
 
 @app.get("/")
 async def root():
