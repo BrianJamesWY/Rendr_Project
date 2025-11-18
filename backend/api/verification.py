@@ -35,16 +35,27 @@ async def verify_by_code(
         "timestamp": datetime.now().isoformat()
     })
     
+    metadata = {
+        "captured_at": video['captured_at'],
+        "verified_at": video['verified_at'],
+        "duration_seconds": video['duration_seconds'],
+        "source": video['source']
+    }
+    
+    # Add blockchain proof if available
+    if video.get('blockchain_signature'):
+        metadata['blockchain_tx'] = video['blockchain_signature'].get('tx_hash')
+        metadata['blockchain_explorer'] = video['blockchain_signature'].get('explorer_url')
+        metadata['blockchain_block'] = video['blockchain_signature'].get('block_number')
+        metadata['blockchain_verified'] = True
+    else:
+        metadata['blockchain_verified'] = False
+    
     return VerificationResult(
         result="authentic",
         video_id=video['_id'],
         verification_code=video['verification_code'],
-        metadata={
-            "captured_at": video['captured_at'],
-            "verified_at": video['verified_at'],
-            "duration_seconds": video['duration_seconds'],
-            "source": video['source']
-        }
+        metadata=metadata
     )
 
 @router.post("/deep", response_model=VerificationResult)
