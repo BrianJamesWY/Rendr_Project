@@ -17,12 +17,9 @@ async def get_creator_profile(
     db = Depends(get_db)
 ):
     """Get public creator profile by username"""
-    print(f"🔍 Looking for user: {username}")
     # Remove @ if present
     username = username.lstrip('@')
-    print(f"🔍 After strip: {username}")
     user = await db.users.find_one({"username": username})
-    print(f"🔍 User found: {user is not None}")
     
     if not user:
         raise HTTPException(404, f"Creator @{username} not found")
