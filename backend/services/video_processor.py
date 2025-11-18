@@ -138,4 +138,34 @@ class VideoProcessor:
         cap = cv2.VideoCapture(video_path)
         
         if not cap.isOpened():
-            raise ValueError(\"Could not open video file for thumbnail extraction\")\n        \n        # Read first frame\n        ret, frame = cap.read()\n        cap.release()\n        \n        if not ret:\n            raise ValueError(\"Could not read first frame from video\")\n        \n        # Resize frame to reasonable thumbnail size (keep aspect ratio)\n        height, width = frame.shape[:2]\n        max_dimension = 800\n        \n        if width > height:\n            new_width = max_dimension\n            new_height = int(height * (max_dimension / width))\n        else:\n            new_height = max_dimension\n            new_width = int(width * (max_dimension / height))\n        \n        resized_frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_AREA)\n        \n        # Save as JPEG with quality setting\n        thumbnail_filename = f\"{video_id}.jpg\"\n        thumbnail_path = os.path.join(thumbnail_dir, thumbnail_filename)\n        \n        cv2.imwrite(thumbnail_path, resized_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])\n        \n        print(f\"✅ Thumbnail saved: {thumbnail_path}\")\n        \n        return thumbnail_path
+            raise ValueError("Could not open video file for thumbnail extraction")
+        
+        # Read first frame
+        ret, frame = cap.read()
+        cap.release()
+        
+        if not ret:
+            raise ValueError("Could not read first frame from video")
+        
+        # Resize frame to reasonable thumbnail size (keep aspect ratio)
+        height, width = frame.shape[:2]
+        max_dimension = 800
+        
+        if width > height:
+            new_width = max_dimension
+            new_height = int(height * (max_dimension / width))
+        else:
+            new_height = max_dimension
+            new_width = int(width * (max_dimension / height))
+        
+        resized_frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_AREA)
+        
+        # Save as JPEG with quality setting
+        thumbnail_filename = f"{video_id}.jpg"
+        thumbnail_path = os.path.join(thumbnail_dir, thumbnail_filename)
+        
+        cv2.imwrite(thumbnail_path, resized_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+        
+        print(f"✅ Thumbnail saved: {thumbnail_path}")
+        
+        return thumbnail_path
