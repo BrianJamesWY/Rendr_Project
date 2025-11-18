@@ -339,17 +339,11 @@ frontend:
 metadata:
   created_by: "main_agent"
   version: "1.0"
-  test_sequence: 1
+  test_sequence: 2
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Test user registration with username"
-    - "Test creator login"
-    - "Test showcase page display"
-    - "Test video upload with thumbnail extraction"
-    - "Test folder creation and video organization"
-    - "Test verification page with creator link"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
