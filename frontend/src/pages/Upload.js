@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import Logo from '../components/Logo';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -18,10 +19,10 @@ const styles = {
   },
   header: {
     textAlign: 'center',
-    marginBottom: '3rem'
+    marginBottom: '2rem'
   },
   title: {
-    fontSize: '2.5rem',
+    fontSize: '2rem',
     fontWeight: 'bold',
     color: '#111827',
     marginBottom: '0.5rem'
@@ -67,7 +68,7 @@ const styles = {
   button: {
     width: '100%',
     padding: '1rem',
-    background: '#2563eb',
+    background: '#667eea',
     color: 'white',
     border: 'none',
     borderRadius: '0.75rem',
@@ -90,7 +91,7 @@ const styles = {
   },
   progressFill: {
     height: '100%',
-    background: '#2563eb',
+    background: '#667eea',
     transition: 'width 0.3s'
   },
   successCard: {
@@ -114,7 +115,7 @@ const styles = {
   codeDisplay: {
     fontSize: '2rem',
     fontWeight: 'bold',
-    color: '#2563eb',
+    color: '#667eea',
     padding: '1rem',
     background: 'white',
     borderRadius: '0.5rem',
@@ -132,7 +133,7 @@ const styles = {
     marginTop: '1rem'
   },
   link: {
-    color: '#2563eb',
+    color: '#667eea',
     textDecoration: 'none',
     fontSize: '0.875rem',
     fontWeight: '500'
@@ -258,7 +259,7 @@ function Upload() {
   const handleQuickLogin = async () => {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/auth/login`, {
-        email: 'test@rendr.com',
+        username: 'test',
         password: 'Test123!'
       });
       const newToken = response.data.token;
@@ -274,7 +275,11 @@ function Upload() {
     <div style={styles.pageWrapper}>
       <div style={styles.container}>
         
-        {/* Header */}
+        {/* Logo and Header */}
+        <div style={{ marginBottom: '2rem' }}>
+          <Logo size="small" />
+        </div>
+        
         <div style={styles.header}>
           <h1 style={styles.title}>Upload Video</h1>
           <p style={styles.subtitle}>Upload your video to get verified with blockchain proof</p>
@@ -517,25 +522,6 @@ function Upload() {
             </button>
           </div>
         )}
-
-        {/* Info box */}
-        <div style={{
-          marginTop: '2rem',
-          padding: '1.5rem',
-          background: '#eff6ff',
-          borderRadius: '0.75rem',
-          border: '1px solid #bfdbfe'
-        }}>
-          <h3 style={{color: '#1e40af', marginBottom: '0.75rem', fontWeight: '600'}}>
-            How It Works
-          </h3>
-          <ul style={{color: '#1e3a8a', fontSize: '0.875rem', paddingLeft: '1.25rem', lineHeight: '1.6'}}>
-            <li>Your video is analyzed and a unique fingerprint is created</li>
-            <li>The fingerprint is stored on the Polygon blockchain (permanent proof)</li>
-            <li>You receive a verification code that anyone can check</li>
-            <li>Videos are not stored on our servers (only the fingerprint)</li>
-          </ul>
-        </div>
 
       </div>
     </div>
