@@ -526,6 +526,9 @@ class RendrAPITester:
             if folder_id:
                 self.test_folder_update(folder_id)
             self.test_folder_delete_protection()
+            
+            print("\n🎬 Testing Video Upload...")
+            self.test_video_upload_with_thumbnail()
         
         # Test registration validation
         print("\n✅ Testing Registration Validation...")
