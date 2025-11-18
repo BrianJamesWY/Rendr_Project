@@ -164,19 +164,31 @@ function Dashboard() {
             </div>
           </div>
           
-          <div style={{ 
-            background: 'white', 
-            borderRadius: '0.75rem', 
-            padding: '1.5rem',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-          }}>
+          <Link 
+            to="/plans"
+            style={{
+              display: 'block',
+              background: 'white', 
+              borderRadius: '0.75rem', 
+              padding: '1.5rem',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              textDecoration: 'none',
+              transition: 'transform 0.2s',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
             <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
               Account Tier
             </div>
             <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#f59e0b', textTransform: 'capitalize' }}>
               {user?.premium_tier || 'Free'}
             </div>
-          </div>
+            <div style={{ fontSize: '0.75rem', color: '#667eea', marginTop: '0.5rem', fontWeight: '600' }}>
+              View Plans →
+            </div>
+          </Link>
         </div>
       </div>
 
