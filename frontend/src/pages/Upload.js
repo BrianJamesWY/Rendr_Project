@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Logo from '../components/Logo';
+import Navigation from '../components/Navigation';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
