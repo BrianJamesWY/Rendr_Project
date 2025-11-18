@@ -274,6 +274,8 @@ function Upload() {
 
   return (
     <div style={styles.pageWrapper}>
+      <Navigation currentPage="upload" />
+      
       <div style={styles.container}>
         
         {/* Logo and Header */}
