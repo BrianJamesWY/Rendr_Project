@@ -188,7 +188,8 @@ async def upload_video(
             "video_id": video_id,
             "verification_code": verification_code,
             "status": "verified" if blockchain_result else "pending",
-            "message": "Video uploaded and verified successfully"
+            "message": "Video uploaded and verified successfully",
+            "thumbnail_url": f"/api/thumbnails/{video_id}.jpg"
         }
         
         # Add blockchain info if available
