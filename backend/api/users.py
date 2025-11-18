@@ -1,0 +1,129 @@
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from typing import List
+import os
+import shutil
+import uuid
+
+from models.user import CreatorProfile, UpdateProfile
+from models.video import VideoInfo
+from utils.security import get_current_user
+from database.mongodb import get_db
+
+router = APIRouter()
+
+@router.get("/@{username}", response_model=CreatorProfile)
+async def get_creator_profile(
+    username: str,
+    db = Depends(get_db)
+):
+    """Get public creator profile by username"""
+    user = await db.users.find_one({"username": username})
+    
+    if not user:
+        raise HTTPException(404, f"Creator @{username} not found")
+    
+    # Count total videos for this creator
+    total_videos = await db.videos.count_documents({"username": username})
+    
+    return CreatorProfile(
+        username=user["username"],
+        display_name=user.get("display_name", username),
+        bio=user.get("bio"),
+        profile_picture=user.get("profile_picture"),
+        joined_at=user.get("created_at", ""),
+        total_videos=total_videos,
+        showcase_settings=user.get("showcase_settings")
+    )
+
+@router.get("/@{username}/videos", response_model=List[VideoInfo])
+async def get_creator_videos(
+    username: str,
+    db = Depends(get_db)
+):
+    """Get all videos for a creator's showcase"""
+    user = await db.users.find_one({"username": username})
+    
+    if not user:
+        raise HTTPException(404, f"Creator @{username} not found")
+    
+    # Get all videos for this creator
+    cursor = db.videos.find({"username": username}).sort("captured_at", -1)
+    videos = await cursor.to_list(length=1000)
+    
+    # Get folders for this user
+    folders_cursor = db.folders.find({"username": username})
+    folders = await folders_cursor.to_list(length=1000)
+    folder_map = {f["_id"]: f["folder_name"] for f in folders}
+    
+    result = []
+    for video in videos:
+        folder_name = None
+        if video.get("folder_id"):
+            folder_name = folder_map.get(video["folder_id"], "Unknown")
+        
+        thumbnail_url = f"/api/thumbnails/{video['_id']}.jpg" if video.get("thumbnail_path") else None
+        
+        result.append(VideoInfo(
+            video_id=video["_id"],
+            verification_code=video["verification_code"],
+            thumbnail_url=thumbnail_url or "",
+            captured_at=video["captured_at"],
+            folder_name=folder_name,
+            folder_id=video.get("folder_id")
+        ))
+    
+    return result
+
+@router.put("/profile")
+async def update_creator_profile(
+    profile_data: UpdateProfile,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Update current user's profile"""
+    update_fields = {}
+    
+    if profile_data.display_name:
+        update_fields["display_name"] = profile_data.display_name
+    
+    if profile_data.bio is not None:
+        update_fields["bio"] = profile_data.bio
+    
+    if profile_data.showcase_settings is not None:
+        update_fields["showcase_settings"] = profile_data.showcase_settings
+    
+    if update_fields:
+        await db.users.update_one(
+            {"_id": current_user["user_id"]},
+            {"$set": update_fields}
+        )
+    
+    return {"message": "Profile updated successfully"}
+
+@router.post("/profile/picture")
+async def upload_profile_picture(
+    picture: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload profile picture"""
+    # Create directory
+    upload_dir = "uploads/profile_pictures"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    # Save file
+    file_ext = os.path.splitext(picture.filename)[1]
+    filename = f"{current_user['user_id']}{file_ext}"
+    file_path = os.path.join(upload_dir, filename)
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(picture.file, buffer)
+    
+    # Update user record
+    picture_url = f"/api/profile_pictures/{filename}"
+    await db.users.update_one(
+        {"_id": current_user["user_id"]},
+        {"$set": {"profile_picture": picture_url}}
+    )
+    
+    return {"profile_picture": picture_url}
