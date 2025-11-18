@@ -116,16 +116,26 @@ async def deep_verification(
         # Clean up
         os.remove(file_path)
         
+        metadata = {
+            "captured_at": original_video['captured_at'],
+            "verified_at": original_video['verified_at']
+        }
+        
+        # Add blockchain proof if available
+        if original_video.get('blockchain_signature'):
+            metadata['blockchain_tx'] = original_video['blockchain_signature'].get('tx_hash')
+            metadata['blockchain_explorer'] = original_video['blockchain_signature'].get('explorer_url')
+            metadata['blockchain_verified'] = True
+        else:
+            metadata['blockchain_verified'] = False
+        
         return VerificationResult(
             result=comparison['result'],
             similarity_score=comparison['similarity_score'],
             confidence_level=comparison['confidence_level'],
             frame_comparison=comparison['frame_comparison'],
             analysis=analysis,
-            metadata={
-                "captured_at": original_video['captured_at'],
-                "verified_at": original_video['verified_at']
-            }
+            metadata=metadata
         )
         
     except Exception as e:
