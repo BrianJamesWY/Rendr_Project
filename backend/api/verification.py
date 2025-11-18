@@ -25,6 +25,17 @@ async def verify_by_code(
             verification_code=request.verification_code
         )
     
+    # Get creator info
+    creator_info = None
+    if video.get('username'):
+        user = await db.users.find_one({"username": video['username']})
+        if user:
+            creator_info = {
+                "username": user['username'],
+                "display_name": user.get('display_name', user['username']),
+                "profile_url": f"/@{user['username']}"
+            }
+    
     # Log attempt
     await db.verification_attempts.insert_one({
         "_id": str(uuid.uuid4()),
@@ -55,7 +66,8 @@ async def verify_by_code(
         result="authentic",
         video_id=video['_id'],
         verification_code=video['verification_code'],
-        metadata=metadata
+        metadata=metadata,
+        creator=creator_info
     )
 
 @router.post("/deep", response_model=VerificationResult)
