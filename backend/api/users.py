@@ -11,12 +11,14 @@ from database.mongodb import get_db
 
 router = APIRouter()
 
-@router.get("/@{username}", response_model=CreatorProfile)
+@router.get("/{username}", response_model=CreatorProfile)
 async def get_creator_profile(
     username: str,
     db = Depends(get_db)
 ):
     """Get public creator profile by username"""
+    # Remove @ if present
+    username = username.lstrip('@')
     user = await db.users.find_one({"username": username})
     
     if not user:
