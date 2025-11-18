@@ -48,6 +48,88 @@ async def upload_video(
         print(f"✅ Video processed: {len(frames)} frames")
         print(f"   Hash: {perceptual_hash['combined_hash'][:32]}...")
         
+        # 🚨 DUPLICATE DETECTION
+        print(f"🔍 Checking for duplicates...")
+        existing_video = await db.videos.find_one({
+            "perceptual_hash.combined_hash": perceptual_hash['combined_hash']
+        })
+        
+        if existing_video:
+            print(f"⚠️ DUPLICATE DETECTED!")
+            print(f"   Original owner: {existing_video['user_id']}")
+            print(f"   Original code: {existing_video['verification_code']}")
+            print(f"   Current uploader: {current_user['user_id']}")
+            
+            # Check if same user
+            if existing_video['user_id'] == current_user['user_id']:
+                # Same user uploading again
+                print(f"ℹ️ Same user re-uploading their own video")
+                
+                # Delete temp file
+                os.remove(file_path)
+                
+                return {
+                    "video_id": existing_video['_id'],
+                    "verification_code": existing_video['verification_code'],
+                    "status": "duplicate",
+                    "message": "You already uploaded this video",
+                    "duplicate_detected": True,
+                    "is_owner": True,
+                    "original_upload_date": existing_video['uploaded_at'],
+                    "blockchain_tx": existing_video.get('blockchain_signature', {}).get('tx_hash') if existing_video.get('blockchain_signature') else None
+                }
+            
+            else:
+                # Different user trying to upload someone else's video
+                print(f"🚨 SECURITY ALERT: Different user uploading existing video!")
+                
+                # Get original owner info
+                original_owner = await db.users.find_one({"_id": existing_video['user_id']})
+                
+                # Log security event
+                await notification_service.log_security_event(
+                    db=db,
+                    event_type="duplicate_upload_attempt",
+                    user_id=current_user['user_id'],
+                    description=f"User attempted to upload video that belongs to {existing_video['user_id']}",
+                    metadata={
+                        "original_video_id": existing_video['_id'],
+                        "original_code": existing_video['verification_code'],
+                        "duplicate_uploader_id": current_user['user_id'],
+                        "duplicate_uploader_email": current_user.get('email')
+                    }
+                )
+                
+                # Notify original owner if we have their info
+                if original_owner:
+                    await notification_service.notify_duplicate_upload_attempt(
+                        db=db,
+                        original_owner_email=original_owner['email'],
+                        original_owner_name=original_owner['display_name'],
+                        duplicate_uploader_email=current_user.get('email', 'Unknown'),
+                        duplicate_uploader_name=current_user.get('display_name', 'Unknown'),
+                        video_code=existing_video['verification_code'],
+                        video_filename=video_file.filename
+                    )
+                
+                # Delete temp file
+                os.remove(file_path)
+                
+                # Return duplicate warning
+                return {
+                    "video_id": existing_video['_id'],
+                    "verification_code": existing_video['verification_code'],
+                    "status": "duplicate_detected",
+                    "message": "This video has already been verified by another user",
+                    "duplicate_detected": True,
+                    "is_owner": False,
+                    "original_owner": original_owner.get('display_name', 'Another user') if original_owner else 'Another user',
+                    "original_upload_date": existing_video['uploaded_at'],
+                    "security_alert": "The original owner has been notified of this upload attempt"
+                }
+        
+        print(f"✅ No duplicates found - proceeding with upload")
+        
         # Write signature to blockchain
         print(f"⛓️  Writing to blockchain...")
         blockchain_result = await blockchain_service.write_signature(
