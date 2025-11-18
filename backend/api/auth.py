@@ -76,10 +76,10 @@ async def register(user: UserRegister, db=Depends(get_db)):
 @router.post("/login", response_model=UserWithToken)
 async def login(credentials: UserLogin, db=Depends(get_db)):
     """Login user"""
-    user = await db.users.find_one({"email": credentials.email})
+    user = await db.users.find_one({"username": credentials.username})
     
     if not user or not verify_password(credentials.password, user["password_hash"]):
-        raise HTTPException(401, "Invalid email or password")
+        raise HTTPException(401, "Invalid username or password")
     
     # Create token
     token = create_access_token({
