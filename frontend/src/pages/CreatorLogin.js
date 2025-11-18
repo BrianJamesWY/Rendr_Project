@@ -24,7 +24,7 @@ function CreatorLogin() {
 
     try {
       const response = await axios.post(`${BACKEND_URL}/api/auth/login`, {
-        email,
+        username,
         password
       });
 
