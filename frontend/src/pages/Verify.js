@@ -1,15 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Verify() {
+  const location = useLocation();
   const [mode, setMode] = useState('code'); // 'code' or 'deep'
   const [verificationCode, setVerificationCode] = useState('');
   const [videoFile, setVideoFile] = useState(null);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Check for code in URL query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    if (code) {
+      setVerificationCode(code);
+      // Auto-verify if code is in URL
+      setTimeout(() => {
+        verifyCodeFromURL(code);
+      }, 500);
+    }
+  }, [location]);
+
+  const verifyCodeFromURL = async (code) => {
+    setLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const response = await axios.post(`${BACKEND_URL}/api/verify/code`, {
+        verification_code: code
+      });
+      setResult(response.data);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Verification failed');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCodeVerification = async (e) => {
     e.preventDefault();
