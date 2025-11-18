@@ -288,7 +288,7 @@ class RendrAPITester:
         """Test that Default folder cannot be deleted"""
         try:
             # First get folders to find Default folder ID
-            response = self.session.get(f"{BASE_URL}/folders")
+            response = self.session.get(f"{BASE_URL}/folders/")
             if response.status_code != 200:
                 self.log_test("Folder Delete Protection", False, "Could not get folders list")
                 return False
