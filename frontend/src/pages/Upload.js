@@ -330,6 +330,25 @@ function Upload() {
               </select>
             </div>
 
+            {/* Folder selection */}
+            {folders.length > 0 && (
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Save to Folder</label>
+                <select
+                  value={folderId}
+                  onChange={(e) => setFolderId(e.target.value)}
+                  style={styles.select}
+                  disabled={uploading}
+                >
+                  {folders.map(folder => (
+                    <option key={folder.folder_id} value={folder.folder_id}>
+                      {folder.folder_name} ({folder.video_count} videos)
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
             {/* Upload button */}
             <button
               type="submit"
