@@ -16,6 +16,15 @@ async def register(user: UserRegister, db=Depends(get_db)):
     if existing_user:
         raise HTTPException(400, "Email already registered")
     
+    # Check if username is taken
+    existing_username = await db.users.find_one({"username": user.username})
+    if existing_username:
+        raise HTTPException(400, "Username already taken")
+    
+    # Validate username format (alphanumeric and underscores only)
+    if not user.username.replace('_', '').isalnum():
+        raise HTTPException(400, "Username can only contain letters, numbers, and underscores")
+    
     # Create user
     user_id = str(uuid.uuid4())
     hashed_pw = hash_password(user.password)
@@ -25,7 +34,12 @@ async def register(user: UserRegister, db=Depends(get_db)):
         "email": user.email,
         "password_hash": hashed_pw,
         "display_name": user.display_name,
+        "username": user.username,
+        "premium_tier": "free",
         "account_type": "free",
+        "bio": None,
+        "profile_picture": None,
+        "showcase_settings": {},
         "wallet_address": None,
         "created_at": datetime.now().isoformat(),
         "updated_at": datetime.now().isoformat()
@@ -33,14 +47,28 @@ async def register(user: UserRegister, db=Depends(get_db)):
     
     await db.users.insert_one(user_doc)
     
+    # Create default "Default" folder for this user
+    default_folder_id = str(uuid.uuid4())
+    default_folder = {
+        "_id": default_folder_id,
+        "folder_name": "Default",
+        "username": user.username,
+        "user_id": user_id,
+        "order": 1,
+        "created_at": datetime.now().isoformat()
+    }
+    await db.folders.insert_one(default_folder)
+    
     # Create token
-    token = create_access_token({"user_id": user_id, "email": user.email})
+    token = create_access_token({"user_id": user_id, "email": user.email, "username": user.username})
     
     return {
         "user_id": user_id,
         "email": user.email,
         "display_name": user.display_name,
+        "username": user.username,
         "account_type": "free",
+        "premium_tier": "free",
         "created_at": user_doc["created_at"],
         "token": token
     }
