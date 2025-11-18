@@ -216,6 +216,9 @@ function Upload() {
     const formData = new FormData();
     formData.append('video_file', videoFile);
     formData.append('source', source);
+    if (folderId) {
+      formData.append('folder_id', folderId);
+    }
 
     try {
       const response = await axios.post(
