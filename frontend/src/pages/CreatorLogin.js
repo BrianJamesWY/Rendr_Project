@@ -92,16 +92,18 @@ function CreatorLogin() {
         boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
         padding: '2.5rem'
       }}>
-        {/* Header */}
+        {/* Logo and Branding */}
+        <Logo size="medium" />
+        
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ 
-            fontSize: '2rem', 
-            fontWeight: 'bold', 
+          <h2 style={{ 
+            fontSize: '1.5rem', 
+            fontWeight: '600', 
             color: '#111827',
             marginBottom: '0.5rem'
           }}>
-            Rendr Creator Portal
-          </h1>
+            Creator Portal
+          </h2>
           <p style={{ color: '#6b7280', fontSize: '0.9375rem' }}>
             {mode === 'login' ? 'Welcome back!' : 'Create your creator account'}
           </p>
