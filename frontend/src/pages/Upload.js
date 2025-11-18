@@ -153,7 +153,9 @@ const styles = {
 function Upload() {
   // State management
   const [videoFile, setVideoFile] = useState(null);
-  const [source, setSource] = useState('bodycam');
+  const [source, setSource] = useState('studio');
+  const [folderId, setFolderId] = useState('');
+  const [folders, setFolders] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
