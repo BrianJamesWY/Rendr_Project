@@ -189,7 +189,7 @@ class RendrAPITester:
     def test_folders_list(self):
         """Test GET /folders endpoint"""
         try:
-            response = self.session.get(f"{BASE_URL}/folders")
+            response = self.session.get(f"{BASE_URL}/folders/")
             
             if response.status_code == 200:
                 data = response.json()
