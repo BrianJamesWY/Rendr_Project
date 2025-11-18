@@ -223,7 +223,7 @@ class RendrAPITester:
         """Test POST /folders endpoint"""
         try:
             folder_name = f"TestFolder_{datetime.now().strftime('%H%M%S')}"
-            response = self.session.post(f"{BASE_URL}/folders", json={
+            response = self.session.post(f"{BASE_URL}/folders/", json={
                 "folder_name": folder_name
             })
             
