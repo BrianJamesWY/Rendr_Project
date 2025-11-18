@@ -179,12 +179,12 @@ function CreatorLogin() {
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
-                Email
+                Username
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
                 style={{
                   width: '100%',
@@ -193,7 +193,7 @@ function CreatorLogin() {
                   borderRadius: '0.5rem',
                   fontSize: '1rem'
                 }}
-                placeholder="you@example.com"
+                placeholder="YourUsername"
               />
             </div>
 
