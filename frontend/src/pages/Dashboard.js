@@ -99,79 +99,23 @@ function Dashboard() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+      <Navigation currentPage="dashboard" />
+      
       {/* Header */}
       <div style={{ 
         background: 'white', 
         borderBottom: '1px solid #e5e7eb',
-        padding: '1rem 0'
+        padding: '2rem 0',
+        marginBottom: '2rem'
       }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', textAlign: 'center' }}>
           <Logo size="small" />
-        </div>
-        <div style={{ 
-          maxWidth: '1200px', 
-          margin: '0 auto',
-          padding: '0 1rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>
-              Creator Dashboard
-            </h1>
-            <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-              Welcome back, {user?.display_name}!
-            </p>
-          </div>
-          
-          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <Link 
-              to={`/@${username}`}
-              style={{
-                padding: '0.5rem 1rem',
-                background: '#10b981',
-                color: 'white',
-                textDecoration: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                fontWeight: '600'
-              }}
-            >
-              View My Showcase
-            </Link>
-            
-            <Link 
-              to="/upload"
-              style={{
-                padding: '0.5rem 1rem',
-                background: '#2563eb',
-                color: 'white',
-                textDecoration: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                fontWeight: '600'
-              }}
-            >
-              Upload Video
-            </Link>
-            
-            <button
-              onClick={handleLogout}
-              style={{
-                padding: '0.5rem 1rem',
-                background: '#6b7280',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '0.875rem',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              Logout
-            </button>
-          </div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', marginTop: '1rem' }}>
+            Creator Dashboard
+          </h1>
+          <p style={{ fontSize: '1rem', color: '#6b7280' }}>
+            Welcome back, {user?.display_name}!
+          </p>
         </div>
       </div>
 
