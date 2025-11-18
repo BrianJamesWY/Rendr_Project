@@ -162,6 +162,29 @@ function Upload() {
   const [error, setError] = useState(null);
   const [token, setToken] = useState(localStorage.getItem('rendr_token'));
 
+  // Load folders when token is available
+  React.useEffect(() => {
+    if (token) {
+      loadFolders();
+    }
+  }, [token]);
+
+  const loadFolders = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/folders`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setFolders(response.data);
+      // Set default folder as default selection
+      const defaultFolder = response.data.find(f => f.folder_name === 'Default');
+      if (defaultFolder) {
+        setFolderId(defaultFolder.folder_id);
+      }
+    } catch (err) {
+      console.error('Failed to load folders', err);
+    }
+  };
+
   // Handle file selection
   const handleFileChange = (e) => {
     const file = e.target.files[0];
