@@ -118,3 +118,24 @@ class VideoProcessor:
         chars = string.ascii_uppercase + string.digits
         code = ''.join(random.choices(chars, k=6))
         return f"RND-{code}"
+    
+    @staticmethod
+    def extract_thumbnail(video_path: str, video_id: str) -> str:
+        """Extract first frame from video and save as thumbnail
+        
+        Args:
+            video_path: Path to video file
+            video_id: Unique video ID for naming the thumbnail
+            
+        Returns:
+            Path to saved thumbnail file
+        """
+        # Create thumbnails directory if it doesn't exist
+        thumbnail_dir = "uploads/thumbnails"
+        os.makedirs(thumbnail_dir, exist_ok=True)
+        
+        # Open video
+        cap = cv2.VideoCapture(video_path)
+        
+        if not cap.isOpened():
+            raise ValueError(\"Could not open video file for thumbnail extraction\")\n        \n        # Read first frame\n        ret, frame = cap.read()\n        cap.release()\n        \n        if not ret:\n            raise ValueError(\"Could not read first frame from video\")\n        \n        # Resize frame to reasonable thumbnail size (keep aspect ratio)\n        height, width = frame.shape[:2]\n        max_dimension = 800\n        \n        if width > height:\n            new_width = max_dimension\n            new_height = int(height * (max_dimension / width))\n        else:\n            new_height = max_dimension\n            new_width = int(width * (max_dimension / height))\n        \n        resized_frame = cv2.resize(frame, (new_width, new_height), interpolation=cv2.INTER_AREA)\n        \n        # Save as JPEG with quality setting\n        thumbnail_filename = f\"{video_id}.jpg\"\n        thumbnail_path = os.path.join(thumbnail_dir, thumbnail_filename)\n        \n        cv2.imwrite(thumbnail_path, resized_frame, [cv2.IMWRITE_JPEG_QUALITY, 85])\n        \n        print(f\"✅ Thumbnail saved: {thumbnail_path}\")\n        \n        return thumbnail_path
