@@ -150,6 +150,7 @@ async def upload_video(
         video_doc = {
             "_id": video_id,
             "user_id": current_user["user_id"],
+            "username": current_user.get("username", current_user.get("display_name")),
             "source": source,
             "verification_code": verification_code,
             "filename": video_file.filename,
@@ -158,6 +159,8 @@ async def upload_video(
             "total_frames": video_metadata['total_frames'],
             "file_size_bytes": os.path.getsize(file_path),
             "perceptual_hash": perceptual_hash,
+            "thumbnail_path": thumbnail_path,
+            "folder_id": folder_id if folder_id else None,
             "verification_status": "verified" if blockchain_result else "pending",
             "is_public": False,
             "captured_at": datetime.now().isoformat(),
