@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from api import auth, videos, verification, blockchain
+from api import auth, videos, verification, blockchain, notifications
 from database.mongodb import connect_db, close_db
 
 app = FastAPI(
