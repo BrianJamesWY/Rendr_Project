@@ -304,7 +304,7 @@ function CreatorLogin() {
               <input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                onChange={(e) => setUsername(e.target.value.trim())}
                 required
                 style={{
                   width: '100%',
@@ -313,10 +313,10 @@ function CreatorLogin() {
                   borderRadius: '0.5rem',
                   fontSize: '1rem'
                 }}
-                placeholder="yourusername"
+                placeholder="YourUsername"
               />
               <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                Your public URL: rendrtruth.com/@{username || 'yourusername'}
+                Your public URL: rendrtruth.com/@{username || 'YourUsername'}
               </p>
             </div>
 
