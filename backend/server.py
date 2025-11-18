@@ -31,9 +31,15 @@ async def startup():
 async def shutdown():
     await close_db()
 
-# Create uploads directory
+# Create uploads directories
 os.makedirs("uploads/videos", exist_ok=True)
 os.makedirs("uploads/temp", exist_ok=True)
+os.makedirs("uploads/thumbnails", exist_ok=True)
+os.makedirs("uploads/profile_pictures", exist_ok=True)
+
+# Serve static files (thumbnails and profile pictures)
+app.mount("/api/thumbnails", StaticFiles(directory="uploads/thumbnails"), name="thumbnails")
+app.mount("/api/profile_pictures", StaticFiles(directory="uploads/profile_pictures"), name="profile_pictures")
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
@@ -41,6 +47,8 @@ app.include_router(videos.router, prefix="/api/videos", tags=["Videos"])
 app.include_router(verification.router, prefix="/api/verify", tags=["Verification"])
 app.include_router(blockchain.router, prefix="/api/blockchain", tags=["Blockchain"])
 app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
+app.include_router(folders.router, prefix="/api/folders", tags=["Folders"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
 
 @app.get("/")
 async def root():
