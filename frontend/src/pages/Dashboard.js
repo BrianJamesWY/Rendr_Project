@@ -98,6 +98,9 @@ function Dashboard() {
         borderBottom: '1px solid #e5e7eb',
         padding: '1rem 0'
       }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem' }}>
+          <Logo size="small" />
+        </div>
         <div style={{ 
           maxWidth: '1200px', 
           margin: '0 auto',
