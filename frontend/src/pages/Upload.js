@@ -328,7 +328,7 @@ function Upload() {
         )}
 
         {/* Success result */}
-        {result && (
+        {result && !result.isDuplicate && (
           <div style={styles.successCard}>
             <h2 style={styles.successTitle}>✓ Video Verified!</h2>
             
