@@ -1,29 +1,53 @@
 {
   "expo": {
-    "name": "mobile-app",
-    "slug": "mobile-app",
+    "name": "Rendr Bodycam",
+    "slug": "rendr-bodycam",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#667eea"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rendrtruth.bodycam",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Rendr Bodycam needs camera access to record verified videos.",
+        "NSMicrophoneUsageDescription": "Rendr Bodycam needs microphone access to record audio.",
+        "NSPhotoLibraryUsageDescription": "Rendr Bodycam needs photo library access to save your videos."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#667eea"
       },
-      "edgeToEdgeEnabled": true
+      "package": "com.rendrtruth.bodycam",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.READ_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Rendr Bodycam to access your camera",
+          "microphonePermission": "Allow Rendr Bodycam to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
+    ]
   }
 }
