@@ -82,13 +82,19 @@ async def login(credentials: UserLogin, db=Depends(get_db)):
         raise HTTPException(401, "Invalid email or password")
     
     # Create token
-    token = create_access_token({"user_id": user["_id"], "email": user["email"]})
+    token = create_access_token({
+        "user_id": user["_id"], 
+        "email": user["email"],
+        "username": user.get("username", user.get("display_name"))
+    })
     
     return {
         "user_id": user["_id"],
         "email": user["email"],
         "display_name": user["display_name"],
-        "account_type": user["account_type"],
+        "username": user.get("username", user.get("display_name")),
+        "account_type": user.get("account_type", "free"),
+        "premium_tier": user.get("premium_tier", "free"),
         "created_at": user["created_at"],
         "token": token
     }
