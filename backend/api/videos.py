@@ -250,7 +250,9 @@ async def get_user_videos(
             "source": v['source'],
             "captured_at": v['captured_at'],
             "status": v['verification_status'],
-            "has_blockchain": bool(v.get('blockchain_signature'))
+            "has_blockchain": bool(v.get('blockchain_signature')),
+            "thumbnail_url": f"/api/thumbnails/{v['_id']}.jpg" if v.get('thumbnail_path') else None,
+            "folder_id": v.get('folder_id')
         }
         if v.get('blockchain_signature'):
             video_info['blockchain_tx'] = v['blockchain_signature'].get('tx_hash')
@@ -260,3 +262,67 @@ async def get_user_videos(
         "videos": video_list,
         "total": len(videos)
     }
+
+@router.put("/{video_id}/folder")
+async def move_video_to_folder(
+    video_id: str,
+    folder_id: str = Form(None),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Move video to a different folder"""
+    video = await db.videos.find_one({"_id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Access denied")
+    
+    # Verify folder exists if folder_id is provided
+    if folder_id:
+        folder = await db.folders.find_one({"_id": folder_id})
+        if not folder:
+            raise HTTPException(404, "Folder not found")
+        if folder['username'] != current_user.get('username'):
+            raise HTTPException(403, "Folder access denied")
+    
+    await db.videos.update_one(
+        {"_id": video_id},
+        {"$set": {"folder_id": folder_id}}
+    )
+    
+    return {"message": "Video moved successfully"}
+
+@router.post("/{video_id}/thumbnail")
+async def upload_custom_thumbnail(
+    video_id: str,
+    thumbnail: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload custom thumbnail for video"""
+    video = await db.videos.find_one({"_id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Access denied")
+    
+    # Create thumbnails directory
+    thumbnail_dir = "uploads/thumbnails"
+    os.makedirs(thumbnail_dir, exist_ok=True)
+    
+    # Save new thumbnail (overwrite existing)
+    thumbnail_path = f"{thumbnail_dir}/{video_id}.jpg"
+    
+    with open(thumbnail_path, "wb") as buffer:
+        shutil.copyfileobj(thumbnail.file, buffer)
+    
+    await db.videos.update_one(
+        {"_id": video_id},
+        {"$set": {"thumbnail_path": thumbnail_path}}
+    )
+    
+    return {"message": "Thumbnail updated successfully", "thumbnail_url": f"/api/thumbnails/{video_id}.jpg"}
