@@ -127,6 +127,7 @@ function App() {
           <Route path="/upload" element={<Upload />} />
           <Route path="/CreatorLogin" element={<CreatorLogin />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/plans" element={<Plans />} />
           <Route path="/@:username" element={<Showcase />} />
         </Routes>
       </BrowserRouter>
