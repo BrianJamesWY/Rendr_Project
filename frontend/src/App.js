@@ -4,6 +4,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Verify from "./pages/Verify";
 import Upload from "./pages/Upload";
+import Showcase from "./pages/Showcase";
+import CreatorLogin from "./pages/CreatorLogin";
+import Dashboard from "./pages/Dashboard";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
