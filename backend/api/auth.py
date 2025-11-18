@@ -21,9 +21,9 @@ async def register(user: UserRegister, db=Depends(get_db)):
     if existing_username:
         raise HTTPException(400, "Username already taken")
     
-    # Validate username format (alphanumeric and underscores only)
-    if not user.username.replace('_', '').isalnum():
-        raise HTTPException(400, "Username can only contain letters, numbers, and underscores")
+    # Validate username format (no spaces, not empty)
+    if not user.username or user.username.strip() != user.username or ' ' in user.username:
+        raise HTTPException(400, "Username cannot contain spaces or be empty")
     
     # Create user
     user_id = str(uuid.uuid4())
