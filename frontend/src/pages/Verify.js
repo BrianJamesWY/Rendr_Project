@@ -292,6 +292,52 @@ function Verify() {
               </div>
             )}
 
+            {/* Blockchain Verification Badge */}
+            {result.metadata?.blockchain_verified && (
+              <div style={{
+                background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+                border: '2px solid #f59e0b',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                marginBottom: '1.5rem',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>⛓️</div>
+                <div style={{ fontWeight: '700', color: '#92400e', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                  Blockchain Verified
+                </div>
+                <div style={{ fontSize: '0.875rem', color: '#78350f', marginBottom: '1rem' }}>
+                  Permanent proof stored on Polygon blockchain
+                </div>
+                {result.metadata.blockchain_tx && (
+                  <div style={{ fontSize: '0.75rem', color: '#92400e', fontFamily: 'monospace' }}>
+                    TX: {result.metadata.blockchain_tx.substring(0, 10)}...{result.metadata.blockchain_tx.substring(result.metadata.blockchain_tx.length - 8)}
+                  </div>
+                )}
+                {result.metadata.blockchain_explorer && (
+                  <a
+                    href={result.metadata.blockchain_explorer}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-block',
+                      marginTop: '0.75rem',
+                      padding: '0.5rem 1rem',
+                      background: '#f59e0b',
+                      color: 'white',
+                      textDecoration: 'none',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '600'
+                    }}
+                  >
+                    View on Polygonscan →
+                  </a>
+                )}
+              </div>
+            )}
+
+            {/* Video Metadata */}
             {result.metadata && Object.keys(result.metadata).length > 0 && (
               <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
                 <h3 style={{ fontWeight: '600', marginBottom: '1rem', color: '#374151' }}>Video Metadata</h3>
@@ -317,6 +363,18 @@ function Verify() {
                       <span style={{ color: '#6b7280' }}>Duration:</span>
                       <span style={{ fontWeight: '500', color: '#111827' }}>
                         {typeof result.metadata.duration_seconds === 'number' ? result.metadata.duration_seconds.toFixed(1) : result.metadata.duration_seconds}s
+                      </span>
+                    </div>
+                  )}
+                  {result.metadata.blockchain_verified === false && (
+                    <div style={{
+                      background: '#fef2f2',
+                      padding: '0.75rem',
+                      borderRadius: '0.5rem',
+                      marginTop: '0.5rem'
+                    }}>
+                      <span style={{ color: '#991b1b', fontSize: '0.875rem' }}>
+                        ℹ️ This video was verified before blockchain integration
                       </span>
                     </div>
                   )}
