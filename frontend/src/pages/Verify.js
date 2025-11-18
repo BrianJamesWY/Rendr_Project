@@ -475,6 +475,7 @@ function Verify() {
             </li>
           </ul>
         </div>
+        </div>
       </div>
     </div>
   );
