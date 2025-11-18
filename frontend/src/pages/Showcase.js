@@ -20,11 +20,11 @@ function Showcase() {
       setLoading(true);
       
       // Get profile
-      const profileRes = await axios.get(`${BACKEND_URL}/api/users/@${username}`);
+      const profileRes = await axios.get(`${BACKEND_URL}/api/@/${username}`);
       setProfile(profileRes.data);
       
       // Get videos
-      const videosRes = await axios.get(`${BACKEND_URL}/api/users/@${username}/videos`);
+      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${username}/videos`);
       setVideos(videosRes.data);
       
       setLoading(false);
