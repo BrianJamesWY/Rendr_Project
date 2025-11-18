@@ -37,12 +37,14 @@ async def get_creator_profile(
         showcase_settings=user.get("showcase_settings")
     )
 
-@router.get("/@{username}/videos", response_model=List[VideoInfo])
+@router.get("/{username}/videos", response_model=List[VideoInfo])
 async def get_creator_videos(
     username: str,
     db = Depends(get_db)
 ):
     """Get all videos for a creator's showcase"""
+    # Remove @ if present
+    username = username.lstrip('@')
     user = await db.users.find_one({"username": username})
     
     if not user:
