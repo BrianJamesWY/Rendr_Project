@@ -70,6 +70,8 @@ function Showcase() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+      <Navigation currentPage="showcase" />
+      
       {/* Header/Profile Section */}
       <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '3rem 1rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
