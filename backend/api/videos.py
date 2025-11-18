@@ -19,6 +19,7 @@ video_processor = VideoProcessor()
 async def upload_video(
     video_file: UploadFile = File(...),
     source: str = Form(...),
+    folder_id: str = Form(None),
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
