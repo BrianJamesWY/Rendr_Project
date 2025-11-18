@@ -127,12 +127,19 @@ async def get_video_status(
     if video['user_id'] != current_user['user_id']:
         raise HTTPException(403, "Access denied")
     
-    return {
+    response = {
         "video_id": video['_id'],
         "status": video['verification_status'],
         "verification_code": video['verification_code'],
         "verified_at": video.get('verified_at')
     }
+    
+    # Add blockchain info if available
+    if video.get('blockchain_signature'):
+        response['blockchain_tx'] = video['blockchain_signature'].get('tx_hash')
+        response['blockchain_explorer'] = video['blockchain_signature'].get('explorer_url')
+    
+    return response
 
 @router.get("/user/list")
 async def get_user_videos(
