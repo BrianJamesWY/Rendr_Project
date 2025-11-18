@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
+import Logo from "./components/Logo";
+
 const Home = () => {
   const helloWorldApi = async () => {
     try {
@@ -26,18 +28,89 @@ const Home = () => {
   }, []);
 
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
+    <div style={{ 
+      minHeight: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column',
+      alignItems: 'center', 
+      justifyContent: 'center',
+      background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+      padding: '2rem'
+    }}>
+      <Logo size="large" />
+      
+      <div style={{ 
+        maxWidth: '600px', 
+        textAlign: 'center',
+        marginTop: '2rem'
+      }}>
+        <h2 style={{ 
+          fontSize: '2rem', 
+          fontWeight: 'bold', 
+          color: '#111827',
+          marginBottom: '1rem'
+        }}>
+          Welcome to Rendr
+        </h2>
+        <p style={{ 
+          fontSize: '1.125rem', 
+          color: '#6b7280',
+          marginBottom: '2rem',
+          lineHeight: '1.6'
+        }}>
+          Revolutionary video verification platform using blockchain technology to authenticate content and detect tampering.
+        </p>
+        
+        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a 
+            href="/CreatorLogin"
+            style={{
+              padding: '0.875rem 1.5rem',
+              background: '#667eea',
+              color: 'white',
+              textDecoration: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: '600',
+              fontSize: '1rem',
+              boxShadow: '0 4px 6px rgba(102, 126, 234, 0.3)'
+            }}
+          >
+            Creator Login
+          </a>
+          
+          <a 
+            href="/verify"
+            style={{
+              padding: '0.875rem 1.5rem',
+              background: 'white',
+              color: '#667eea',
+              textDecoration: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: '600',
+              fontSize: '1rem',
+              border: '2px solid #667eea'
+            }}
+          >
+            Verify Video
+          </a>
+          
+          <a 
+            href="/upload"
+            style={{
+              padding: '0.875rem 1.5rem',
+              background: 'white',
+              color: '#667eea',
+              textDecoration: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: '600',
+              fontSize: '1rem',
+              border: '2px solid #667eea'
+            }}
+          >
+            Upload Video
+          </a>
+        </div>
+      </div>
     </div>
   );
 };
