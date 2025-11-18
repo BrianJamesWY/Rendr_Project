@@ -48,6 +48,7 @@ function App() {
             <Route index element={<Home />} />
           </Route>
           <Route path="/verify" element={<Verify />} />
+          <Route path="/upload" element={<Upload />} />
         </Routes>
       </BrowserRouter>
     </div>
