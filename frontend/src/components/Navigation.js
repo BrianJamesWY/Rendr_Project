@@ -66,14 +66,7 @@ const Navigation = ({ currentPage }) => {
     <nav style={navStyle}>
       <div style={containerStyle}>
         <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-          <Link 
-            to="/" 
-            style={currentPage === 'home' ? activeLinkStyle : inactiveLinkStyle}
-          >
-            🏠 Home
-          </Link>
-          
-          {token && (
+          {token ? (
             <>
               <Link 
                 to="/dashboard" 
@@ -95,15 +88,31 @@ const Navigation = ({ currentPage }) => {
               >
                 🎨 My Showcase
               </Link>
+              
+              <Link 
+                to="/verify" 
+                style={currentPage === 'verify' ? activeLinkStyle : inactiveLinkStyle}
+              >
+                ✅ Verify
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link 
+                to="/" 
+                style={currentPage === 'home' ? activeLinkStyle : inactiveLinkStyle}
+              >
+                🏠 Home
+              </Link>
+              
+              <Link 
+                to="/verify" 
+                style={currentPage === 'verify' ? activeLinkStyle : inactiveLinkStyle}
+              >
+                ✅ Verify
+              </Link>
             </>
           )}
-          
-          <Link 
-            to="/verify" 
-            style={currentPage === 'verify' ? activeLinkStyle : inactiveLinkStyle}
-          >
-            ✅ Verify
-          </Link>
         </div>
 
         <div style={{ display: 'flex', gap: '0.75rem' }}>
