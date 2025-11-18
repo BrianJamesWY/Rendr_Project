@@ -92,10 +92,13 @@ function Verify() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb', padding: '3rem 1rem' }}>
-      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
+    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+      <Navigation currentPage="verify" />
+      
+      <div style={{ padding: '3rem 1rem' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
           <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
             Verify Video Authenticity
           </h1>
