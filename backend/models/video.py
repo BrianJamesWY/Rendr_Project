@@ -6,12 +6,14 @@ class VideoUploadResponse(BaseModel):
     verification_code: str
     status: str
     message: Optional[str] = None
+    thumbnail_url: Optional[str] = None  # New
 
 class VideoStatusResponse(BaseModel):
     video_id: str
     status: str
     verification_code: str
     verified_at: Optional[str] = None
+    thumbnail_url: Optional[str] = None  # New
 
 class VerificationCodeRequest(BaseModel):
     verification_code: str
@@ -25,3 +27,13 @@ class VerificationResult(BaseModel):
     confidence_level: Optional[str] = None
     frame_comparison: Optional[List[Dict]] = None
     analysis: Optional[str] = None
+    creator: Optional[Dict] = None  # New: creator info
+
+class VideoInfo(BaseModel):
+    """Video info for showcase display"""
+    video_id: str
+    verification_code: str
+    thumbnail_url: str
+    captured_at: str
+    folder_name: Optional[str] = None
+    folder_id: Optional[str] = None
