@@ -337,6 +337,41 @@ function Verify() {
               </div>
             )}
 
+            {/* Creator Info */}
+            {result.creator && (
+              <div style={{
+                background: '#eff6ff',
+                border: '2px solid #bfdbfe',
+                borderRadius: '1rem',
+                padding: '1.5rem',
+                marginBottom: '1.5rem',
+                textAlign: 'center'
+              }}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👤</div>
+                <div style={{ fontWeight: '700', color: '#1e40af', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
+                  Created by {result.creator.display_name}
+                </div>
+                <div style={{ fontSize: '0.875rem', color: '#1e3a8a', marginBottom: '1rem' }}>
+                  @{result.creator.username}
+                </div>
+                <a
+                  href={result.creator.profile_url}
+                  style={{
+                    display: 'inline-block',
+                    padding: '0.5rem 1rem',
+                    background: '#2563eb',
+                    color: 'white',
+                    textDecoration: 'none',
+                    borderRadius: '0.5rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '600'
+                  }}
+                >
+                  View Creator's Portfolio →
+                </a>
+              </div>
+            )}
+
             {/* Video Metadata */}
             {result.metadata && Object.keys(result.metadata).length > 0 && (
               <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '1.5rem' }}>
