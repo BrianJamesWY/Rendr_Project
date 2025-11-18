@@ -208,7 +208,15 @@ function Upload() {
         }
       );
 
-      setResult(response.data);
+      // Check if duplicate detected
+      if (response.data.duplicate_detected) {
+        setResult({
+          ...response.data,
+          isDuplicate: true
+        });
+      } else {
+        setResult(response.data);
+      }
       setVideoFile(null);
       
     } catch (err) {
