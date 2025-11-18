@@ -374,6 +374,103 @@ function Upload() {
           </div>
         )}
 
+        {/* Duplicate Detection Warning */}
+        {result && result.isDuplicate && (
+          <div style={{
+            background: result.is_owner ? '#fef3c7' : '#fef2f2',
+            border: `2px solid ${result.is_owner ? '#f59e0b' : '#ef4444'}`,
+            borderRadius: '1rem',
+            padding: '2rem',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
+              {result.is_owner ? '⚠️' : '🚨'}
+            </div>
+            
+            <h2 style={{
+              color: result.is_owner ? '#92400e' : '#991b1b',
+              fontSize: '1.75rem',
+              fontWeight: 'bold',
+              marginBottom: '1rem'
+            }}>
+              {result.is_owner ? 'Duplicate Upload' : 'Video Already Verified'}
+            </h2>
+
+            {result.is_owner ? (
+              <>
+                <p style={{ color: '#78350f', marginBottom: '1rem' }}>
+                  You already uploaded this video!
+                </p>
+                <p style={{ color: '#78350f', fontSize: '0.875rem', marginBottom: '1rem' }}>
+                  Original upload: {new Date(result.original_upload_date).toLocaleString()}
+                </p>
+              </>
+            ) : (
+              <>
+                <p style={{ color: '#7f1d1d', marginBottom: '1rem' }}>
+                  This video has already been verified by <strong>{result.original_owner}</strong>
+                </p>
+                <p style={{ color: '#7f1d1d', fontSize: '0.875rem', marginBottom: '1rem' }}>
+                  Original upload: {new Date(result.original_upload_date).toLocaleString()}
+                </p>
+                <div style={{
+                  background: 'white',
+                  padding: '1rem',
+                  borderRadius: '0.5rem',
+                  marginTop: '1rem',
+                  marginBottom: '1rem'
+                }}>
+                  <p style={{ color: '#991b1b', fontSize: '0.875rem', fontWeight: '600' }}>
+                    🔒 {result.security_alert}
+                  </p>
+                </div>
+              </>
+            )}
+
+            <div style={styles.codeDisplay}>{result.verification_code}</div>
+            
+            <p style={{
+              color: result.is_owner ? '#78350f' : '#7f1d1d',
+              fontSize: '0.875rem',
+              marginTop: '1rem'
+            }}>
+              {result.is_owner 
+                ? 'Use your original verification code above'
+                : 'This is the original verification code for this video'}
+            </p>
+
+            {result.blockchain_tx && (
+              <div style={{
+                marginTop: '1.5rem',
+                padding: '1rem',
+                background: 'rgba(255,255,255,0.5)',
+                borderRadius: '0.5rem'
+              }}>
+                <p style={{ fontSize: '0.875rem', color: '#92400e', marginBottom: '0.5rem' }}>
+                  Blockchain proof exists from original upload
+                </p>
+                <p style={{ fontSize: '0.75rem', color: '#92400e', fontFamily: 'monospace' }}>
+                  {result.blockchain_tx.substring(0, 10)}...{result.blockchain_tx.substring(result.blockchain_tx.length - 8)}
+                </p>
+              </div>
+            )}
+
+            <button
+              onClick={() => {
+                setResult(null);
+                setProgress(0);
+              }}
+              style={{
+                ...styles.button,
+                marginTop: '1.5rem',
+                background: result.is_owner ? '#10b981' : '#6b7280'
+              }}
+            >
+              {result.is_owner ? 'Upload Different Video' : 'Go Back'}
+            </button>
+          </div>
+        )}
+
         {/* Info box */}
         <div style={{
           marginTop: '2rem',
