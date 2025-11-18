@@ -4,7 +4,8 @@ from PIL import Image
 import uuid
 import random
 import string
-from typing import Dict, List
+import os
+from typing import Dict, List, Tuple
 
 class VideoProcessor:
     
