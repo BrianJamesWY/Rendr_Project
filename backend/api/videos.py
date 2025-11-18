@@ -46,6 +46,10 @@ async def upload_video(
         frames, video_metadata = video_processor.extract_frames(file_path)
         perceptual_hash = video_processor.calculate_perceptual_hash(frames)
         
+        # Extract thumbnail from first frame
+        print(f"📸 Extracting thumbnail...")
+        thumbnail_path = video_processor.extract_thumbnail(file_path, video_id)
+        
         print(f"✅ Video processed: {len(frames)} frames")
         print(f"   Hash: {perceptual_hash['combined_hash'][:32]}...")
         
