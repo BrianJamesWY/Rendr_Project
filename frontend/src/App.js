@@ -7,6 +7,7 @@ import Upload from "./pages/Upload";
 import Showcase from "./pages/Showcase";
 import CreatorLogin from "./pages/CreatorLogin";
 import Dashboard from "./pages/Dashboard";
+import Logo from "./components/Logo";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
