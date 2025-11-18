@@ -9,7 +9,7 @@ class UserRegister(BaseModel):
     username: str  # New: for @username URLs
 
 class UserLogin(BaseModel):
-    email: EmailStr
+    username: str
     password: str
 
 class UserResponse(BaseModel):
