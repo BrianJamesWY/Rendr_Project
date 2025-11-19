@@ -97,6 +97,7 @@ function Dashboard() {
     setVideoDescription(video.description || '');
     setVideoExternalLink(video.external_link || '');
     setVideoPlatform(video.platform || '');
+    setVideoTags(video.tags ? video.tags.join(', ') : 'Rendr');
     setShowEditModal(true);
   };
 
