@@ -91,9 +91,6 @@ function Dashboard() {
     }
   };
 
-  if (loading) {
-    return (
-
   const openEditModal = (video) => {
     setEditingVideo(video);
     setVideoDescription(video.description || '');
@@ -120,6 +117,9 @@ function Dashboard() {
       alert('Failed to update video');
     }
   };
+
+  if (loading) {
+    return (
 
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ fontSize: '1.5rem', color: '#6b7280' }}>Loading...</div>
