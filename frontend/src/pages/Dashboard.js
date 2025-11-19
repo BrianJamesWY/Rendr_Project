@@ -210,6 +210,32 @@ function Dashboard() {
               View Plans →
             </div>
           </Link>
+
+          <Link 
+            to="/showcase-editor"
+            style={{
+              display: 'block',
+              background: 'white', 
+              borderRadius: '0.75rem', 
+              padding: '1.5rem',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              textDecoration: 'none',
+              transition: 'transform 0.2s',
+              cursor: 'pointer'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-2px)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+          >
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+              Showcase Editor
+            </div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#10b981' }}>
+              🎨
+            </div>
+            <div style={{ fontSize: '0.75rem', color: '#667eea', marginTop: '0.5rem', fontWeight: '600' }}>
+              Customize →
+            </div>
+          </Link>
         </div>
       </div>
 
