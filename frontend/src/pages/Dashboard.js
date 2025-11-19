@@ -695,22 +695,6 @@ function Dashboard() {
                       📁 Move
                     </button>
                     <button
-                      onClick={() => openEditModal(video)}
-                      style={{
-                        flex: 1,
-                        padding: '0.5rem',
-                        background: '#10b981',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '0.375rem',
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      ✏️ Edit
-                    </button>
-                    <button
                       onClick={() => {
                         navigator.clipboard.writeText(video.verification_code);
                         alert('Code copied!');
