@@ -83,7 +83,8 @@ async def get_folders(
             username=folder["username"],
             video_count=video_count,
             created_at=folder["created_at"],
-            order=folder.get("order", 0)
+            order=folder.get("order", 0),
+            description=folder.get("description")
         ))
     
     return result
