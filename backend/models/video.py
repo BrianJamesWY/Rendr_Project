@@ -40,9 +40,11 @@ class VideoInfo(BaseModel):
     description: Optional[str] = None
     external_link: Optional[str] = None
     platform: Optional[str] = None
+    tags: Optional[List[str]] = []
 
 class VideoUpdate(BaseModel):
     """For updating video metadata"""
     description: Optional[str] = None
     external_link: Optional[str] = None
     platform: Optional[str] = None
+    tags: Optional[List[str]] = None
