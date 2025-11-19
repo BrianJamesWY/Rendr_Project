@@ -329,6 +329,7 @@ function ShowcaseEditor() {
             { id: 'appearance', icon: '🎨', label: 'Appearance' },
             { id: 'layout', icon: '📐', label: 'Layout' },
             { id: 'typography', icon: '🔤', label: 'Typography' },
+            { id: 'folders', icon: '📁', label: 'Folders' },
             { id: 'effects', icon: '✨', label: 'Effects', pro: true },
             { id: 'content', icon: '🎯', label: 'Content' }
           ].map(tab => (
