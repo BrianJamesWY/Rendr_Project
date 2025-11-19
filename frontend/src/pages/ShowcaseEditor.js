@@ -427,12 +427,66 @@ function ShowcaseEditor() {
         </div>
       </div>
 
+      {/* Custom Social Buttons (Pro) */}
+      {isPro && (
+        <div style={{ marginTop: '2rem', paddingTop: '1.5rem', borderTop: '1px solid #e5e7eb' }}>
+          <h4 style={{ fontWeight: '600', marginBottom: '1rem' }}>Social Media Button Customization</h4>
+          
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '1rem' }}>
+            <input
+              type="checkbox"
+              checked={settings.customSocialButtons}
+              onChange={(e) => setSettings({ ...settings, customSocialButtons: e.target.checked })}
+            />
+            <span style={{ fontWeight: '600' }}>Enable Custom Social Buttons</span>
+          </label>
+
+          {settings.customSocialButtons && (
+            <>
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>Button Style</label>
+                <select
+                  value={settings.socialButtonStyle}
+                  onChange={(e) => setSettings({ ...settings, socialButtonStyle: e.target.value })}
+                  style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '6px' }}
+                >
+                  <option value="default">Default (Platform Colors)</option>
+                  <option value="minimal">Minimal (Outlined)</option>
+                  <option value="solid">Solid Color</option>
+                  <option value="gradient">Gradient</option>
+                  <option value="image">Custom Background Image</option>
+                </select>
+              </div>
+
+              {settings.socialButtonStyle === 'image' && (
+                <div style={{ marginBottom: '1rem' }}>
+                  <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+                    Background Image URL
+                  </label>
+                  <input
+                    type="text"
+                    value={settings.socialButtonBackground || ''}
+                    onChange={(e) => setSettings({ ...settings, socialButtonBackground: e.target.value })}
+                    placeholder="https://example.com/button-bg.jpg"
+                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e7eb', borderRadius: '6px' }}
+                  />
+                  <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                    Upload your image to a hosting service and paste the URL here
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
+
       {!isPro && (
-        <div style={{ padding: '1rem', background: '#fef3c7', borderRadius: '6px', fontSize: '0.875rem' }}>
+        <div style={{ padding: '1rem', background: '#fef3c7', borderRadius: '6px', fontSize: '0.875rem', marginTop: '1rem' }}>
           <strong>⭐ Pro Features:</strong><br/>
           • Gradient backgrounds<br/>
           • Background images<br/>
           • Custom hover colors<br/>
+          • Custom social media buttons<br/>
           • Advanced color controls
         </div>
       )}
