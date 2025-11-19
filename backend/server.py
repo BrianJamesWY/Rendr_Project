@@ -36,10 +36,12 @@ os.makedirs("uploads/videos", exist_ok=True)
 os.makedirs("uploads/temp", exist_ok=True)
 os.makedirs("uploads/thumbnails", exist_ok=True)
 os.makedirs("uploads/profile_pictures", exist_ok=True)
+os.makedirs("uploads/banners", exist_ok=True)
 
-# Serve static files (thumbnails and profile pictures)
+# Serve static files (thumbnails, profile pictures, banners)
 app.mount("/api/thumbnails", StaticFiles(directory="uploads/thumbnails"), name="thumbnails")
 app.mount("/api/profile_pictures", StaticFiles(directory="uploads/profile_pictures"), name="profile_pictures")
+app.mount("/api/banners", StaticFiles(directory="uploads/banners"), name="banners")
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
