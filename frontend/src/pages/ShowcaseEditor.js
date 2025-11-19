@@ -95,7 +95,12 @@ function ShowcaseEditor() {
     
     // Collections
     collectionHeaderStyle: 'bold',
-    collectionDivider: true
+    collectionDivider: true,
+    
+    // Social Media Buttons (Pro)
+    customSocialButtons: false,
+    socialButtonStyle: 'default',
+    socialButtonBackground: null
   });
 
   const token = localStorage.getItem('rendr_token');
