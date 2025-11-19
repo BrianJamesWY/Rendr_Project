@@ -396,6 +396,144 @@ function Admin() {
           </div>
         )}
 
+        {/* Interested Parties Tab */}
+        {activeTab === 'interested' && (
+          <div>
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>📬 Interested Parties List</h2>
+              <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>Users flagged for email campaigns and product updates</p>
+              
+              {interestedParties.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                  No interested parties yet. Add users from the Users tab.
+                </div>
+              ) : (
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  {interestedParties.map(party => (
+                    <div 
+                      key={party.user_id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '1rem',
+                        background: '#f9fafb',
+                        borderRadius: '0.5rem',
+                        border: '1px solid #e5e7eb'
+                      }}
+                    >
+                      <div>
+                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                          @{party.username}
+                        </div>
+                        <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                          {party.email}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>
+                          Added: {new Date(party.created_at).toLocaleDateString()}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => toggleInterestedParty(party.user_id, true)}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          background: '#fee2e2',
+                          color: '#991b1b',
+                          border: 'none',
+                          borderRadius: '0.375rem',
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Bulk Import Tab */}
+        {activeTab === 'import' && (
+          <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>📤 Bulk User Import</h2>
+            <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>Import users from RSVP lists or email campaigns</p>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+                Email Addresses (one per line)
+              </label>
+              <textarea
+                value={bulkEmails}
+                onChange={(e) => setBulkEmails(e.target.value)}
+                placeholder="user1@example.com\nuser2@example.com\nuser3@example.com"
+                rows={10}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontFamily: 'monospace'
+                }}
+              />
+            </div>
+            
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                onClick={bulkImport}
+                disabled={!bulkEmails.trim()}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: bulkEmails.trim() ? '#667eea' : '#e5e7eb',
+                  color: bulkEmails.trim() ? 'white' : '#9ca3af',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: bulkEmails.trim() ? 'pointer' : 'not-allowed'
+                }}
+              >
+                Import Users
+              </button>
+              <button
+                onClick={() => setBulkEmails('')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: 'white',
+                  color: '#6b7280',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Clear
+              </button>
+            </div>
+            
+            <div style={{ 
+              marginTop: '1.5rem', 
+              padding: '1rem', 
+              background: '#f0f9ff', 
+              border: '1px solid #bae6fd',
+              borderRadius: '0.5rem' 
+            }}>
+              <div style={{ fontSize: '0.875rem', color: '#0c4a6e', fontWeight: '600', marginBottom: '0.5rem' }}>
+                ℹ️ Import Details:
+              </div>
+              <ul style={{ fontSize: '0.875rem', color: '#075985', margin: 0, paddingLeft: '1.25rem' }}>
+                <li>Users will be created with temporary passwords</li>
+                <li>Usernames will be auto-generated from email addresses</li>
+                <li>Existing users will be skipped automatically</li>
+                <li>A welcome email will be sent to all new users (if configured)</li>
+              </ul>
+            </div>
+          </div>
+        )}
+
         {/* Logs Tab */}
         {activeTab === 'logs' && (
           <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
