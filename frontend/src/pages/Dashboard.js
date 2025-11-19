@@ -11,6 +11,8 @@ function Dashboard() {
   const [videos, setVideos] = useState([]);
   const [folders, setFolders] = useState([]);
   const [user, setUser] = useState(null);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [showMoveModal, setShowMoveModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('rendr_token');
