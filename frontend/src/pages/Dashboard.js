@@ -802,7 +802,98 @@ function Dashboard() {
                   width: '100%',
                   padding: '0.75rem',
                   border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem'
+                }}
+              >
+                <option value="">Select platform...</option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="YouTube">YouTube</option>
+                <option value="Twitter">Twitter/X</option>
+                <option value="Facebook">Facebook</option>
+              </select>
+            </div>
 
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <label style={{ fontWeight: '600' }}>
+                  Tags (comma-separated)
+                </label>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(videoTags);
+                    alert('Tags copied!');
+                  }}
+                  style={{
+                    padding: '0.25rem 0.75rem',
+                    background: '#f3f4f6',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
+              <input
+                type="text"
+                value={videoTags}
+                onChange={(e) => setVideoTags(e.target.value)}
+                placeholder="Rendr, MyTopic, TruthContent"
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem'
+                }}
+              />
+              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                Rendr tag is automatically added to all videos
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingVideo(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem',
+                  background: '#f3f4f6',
+                  color: '#374151',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveVideoMetadata}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem',
+                  background: '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Create Folder Modal */}
       {showCreateFolderModal && (
