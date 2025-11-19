@@ -382,7 +382,8 @@ function Showcase() {
                 ))}
               </div>
             </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>
