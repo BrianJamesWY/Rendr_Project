@@ -224,6 +224,39 @@ async def get_video_status(
         "status": video['verification_status'],
         "verification_code": video['verification_code'],
         "verified_at": video.get('verified_at')
+
+@router.put("/{video_id}/metadata")
+async def update_video_metadata(
+    video_id: str,
+    video_data: VideoUpdate,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Update video description, external link, and platform"""
+    video = await db.videos.find_one({"_id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Access denied")
+    
+    update_fields = {}
+    if video_data.description is not None:
+        update_fields['description'] = video_data.description
+    if video_data.external_link is not None:
+        update_fields['external_link'] = video_data.external_link
+    if video_data.platform is not None:
+        update_fields['platform'] = video_data.platform
+    
+    if update_fields:
+        await db.videos.update_one(
+            {"_id": video_id},
+            {"$set": update_fields}
+        )
+    
+    return {"message": "Video metadata updated successfully"}
+
     }
     
     # Add blockchain info if available
