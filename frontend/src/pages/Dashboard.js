@@ -125,6 +125,44 @@ function Dashboard() {
     }
   };
 
+  const canCreateFolder = () => {
+    const tier = user?.premium_tier || 'free';
+    if (tier === 'free') {
+      return folders.length < 3;
+    }
+    return true; // Pro and Enterprise unlimited
+  };
+
+  const createFolder = async () => {
+    if (!newFolderName.trim()) {
+      alert('Please enter a folder name');
+      return;
+    }
+
+    if (!canCreateFolder()) {
+      alert('Free tier limited to 3 folders. Upgrade to Pro for unlimited folders!');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${BACKEND_URL}/api/folders`,
+        {
+          folder_name: newFolderName,
+          description: newFolderDescription
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setShowCreateFolderModal(false);
+      setNewFolderName('');
+      setNewFolderDescription('');
+      loadDashboard();
+      alert('Folder created successfully!');
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to create folder');
+    }
+  };
+
   if (loading) {
     return (
 
