@@ -192,12 +192,77 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Videos List */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto 2rem', padding: '0 1rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '1rem' }}>
-          Your Videos
-        </h2>
+      {/* Folder Management & Videos */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto 3rem', padding: '0 1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>
+            Video Library
+          </h2>
+          <button
+            onClick={() => alert('Create new folder feature coming soon!')}
+            style={{
+              padding: '0.5rem 1rem',
+              background: '#10b981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            + New Folder
+          </button>
+        </div>
+
+        {/* Social Media Quick Folders */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+          gap: '1rem',
+          marginBottom: '2rem'
+        }}>
+          {[
+            { name: 'Instagram', icon: '📷', color: '#E4405F' },
+            { name: 'TikTok', icon: '🎵', color: '#000000' },
+            { name: 'YouTube', icon: '▶️', color: '#FF0000' },
+            { name: 'Twitter', icon: '🐦', color: '#1DA1F2' },
+            { name: 'Default', icon: '📁', color: '#667eea' }
+          ].map(platform => (
+            <div
+              key={platform.name}
+              style={{
+                background: 'white',
+                borderRadius: '0.75rem',
+                padding: '1rem',
+                textAlign: 'center',
+                cursor: 'pointer',
+                border: '2px solid #e5e7eb',
+                transition: 'all 0.2s',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = platform.color;
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = '#e5e7eb';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+              onClick={() => alert(`${platform.name} folder - Coming soon!`)}
+            >
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{platform.icon}</div>
+              <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
+                {platform.name}
+              </div>
+              <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+                0 videos
+              </div>
+            </div>
+          ))}
+        </div>
         
+        {/* Videos Grid */}
         {videos.length === 0 ? (
           <div style={{ 
             background: 'white', 
@@ -210,47 +275,58 @@ function Dashboard() {
             <p style={{ fontSize: '1.125rem', color: '#6b7280', marginBottom: '1rem' }}>
               No videos yet
             </p>
+            <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '1.5rem' }}>
+              Upload your first verified video to get started!
+            </p>
             <Link 
               to="/upload"
               style={{
                 display: 'inline-block',
                 padding: '0.75rem 1.5rem',
-                background: '#2563eb',
+                background: '#667eea',
                 color: 'white',
                 textDecoration: 'none',
                 borderRadius: '0.5rem',
-                fontWeight: '600'
+                fontWeight: '600',
+                fontSize: '1rem'
               }}
             >
-              Upload Your First Video
+              Upload Video
             </Link>
           </div>
         ) : (
           <div style={{ 
-            background: 'white', 
-            borderRadius: '0.75rem', 
-            overflow: 'hidden',
-            boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '1.5rem'
           }}>
-            {videos.map((video, index) => (
+            {videos.map(video => (
               <div 
                 key={video.video_id}
-                style={{ 
-                  padding: '1rem',
-                  borderBottom: index < videos.length - 1 ? '1px solid #e5e7eb' : 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1rem'
+                style={{
+                  background: 'white',
+                  borderRadius: '0.75rem',
+                  overflow: 'hidden',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 8px 16px rgba(0, 0, 0, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
                 }}
               >
                 {/* Thumbnail */}
                 <div style={{ 
-                  width: '100px', 
-                  height: '75px', 
+                  width: '100%', 
+                  height: '180px', 
                   background: '#e5e7eb',
-                  borderRadius: '0.5rem',
-                  overflow: 'hidden',
-                  flexShrink: 0
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}>
                   {video.thumbnail_url ? (
                     <img 
@@ -265,83 +341,103 @@ function Dashboard() {
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      fontSize: '1.5rem'
+                      fontSize: '3rem'
                     }}>
                       🎬
                     </div>
                   )}
-                </div>
-                
-                {/* Info */}
-                <div style={{ flex: 1 }}>
-                  <div style={{ 
-                    fontSize: '1.125rem', 
-                    fontWeight: 'bold', 
-                    color: '#2563eb',
-                    fontFamily: 'monospace',
-                    marginBottom: '0.25rem'
-                  }}>
-                    {video.verification_code}
-                  </div>
-                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                    {new Date(video.captured_at).toLocaleString()} • {video.source === 'bodycam' ? 'Rendr Bodycam' : 'Rendr Studio'}
-                  </div>
+                  
+                  {/* Blockchain Badge Overlay */}
                   {video.has_blockchain && (
-                    <div style={{ 
-                      display: 'inline-block',
-                      marginTop: '0.5rem',
+                    <div style={{
+                      position: 'absolute',
+                      top: '10px',
+                      right: '10px',
+                      background: 'rgba(254, 243, 199, 0.95)',
                       padding: '0.25rem 0.75rem',
-                      background: '#fef3c7',
-                      color: '#92400e',
                       borderRadius: '9999px',
                       fontSize: '0.75rem',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      color: '#92400e',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                     }}>
-                      ⛓️ Blockchain Verified
+                      ⛓️ Verified
                     </div>
                   )}
                 </div>
                 
-                {/* Actions */}
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <Link 
-                    to={`/verify?code=${video.verification_code}`}
-                    style={{
-                      padding: '0.5rem 1rem',
-                      background: '#2563eb',
-                      color: 'white',
-                      textDecoration: 'none',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      fontWeight: '600'
-                    }}
-                  >
-                    View
-                  </Link>
+                {/* Video Info */}
+                <div style={{ padding: '1rem' }}>
+                  <div style={{ 
+                    fontSize: '1rem', 
+                    fontWeight: 'bold', 
+                    color: '#667eea',
+                    fontFamily: 'monospace',
+                    marginBottom: '0.5rem',
+                    letterSpacing: '0.05em'
+                  }}>
+                    {video.verification_code}
+                  </div>
+                  
+                  <div style={{ 
+                    fontSize: '0.75rem', 
+                    color: '#6b7280',
+                    marginBottom: '0.75rem'
+                  }}>
+                    {new Date(video.captured_at).toLocaleDateString()} at {new Date(video.captured_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                  </div>
+                  
+                  <div style={{ 
+                    fontSize: '0.75rem', 
+                    color: '#9ca3af',
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.25rem'
+                  }}>
+                    {video.source === 'bodycam' ? '📱 Bodycam' : '💻 Studio'}
+                  </div>
+                  
+                  {/* Action Buttons */}
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      onClick={() => alert('Move to folder feature coming soon!')}
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        background: '#f3f4f6',
+                        color: '#374151',
+                        border: 'none',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      📁 Move
+                    </button>
+                    <button
+                      onClick={() => navigator.clipboard.writeText(video.verification_code)}
+                      style={{
+                        flex: 1,
+                        padding: '0.5rem',
+                        background: '#667eea',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      📋 Copy Code
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         )}
-      </div>
-      
-      {/* Folders Section (Future Enhancement) */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto 3rem', padding: '0 1rem' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '1rem' }}>
-          Folders
-        </h2>
-        
-        <div style={{ 
-          background: 'white', 
-          borderRadius: '0.75rem', 
-          padding: '2rem',
-          textAlign: 'center',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-        }}>
-          <p style={{ color: '#6b7280' }}>
-            Folder management coming soon! You can organize your videos into collections.
-          </p>
-        </div>
       </div>
     </div>
   );
