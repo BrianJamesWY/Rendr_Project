@@ -133,6 +133,7 @@ function App() {
           <Route path="/plans" element={<Plans />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/showcase-editor" element={<ShowcaseEditor />} />
+          <Route path="/settings" element={<ProfileSettings />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
