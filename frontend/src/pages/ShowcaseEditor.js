@@ -30,8 +30,22 @@ function ShowcaseEditor() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [showcaseFolders, setShowcaseFolders] = useState([]);
   const [activeTab, setActiveTab] = useState('appearance');
   const [previewDevice, setPreviewDevice] = useState('desktop');
+  
+  // Edit video modal
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingVideo, setEditingVideo] = useState(null);
+  const [videoDescription, setVideoDescription] = useState('');
+  const [videoExternalLink, setVideoExternalLink] = useState('');
+  const [videoPlatform, setVideoPlatform] = useState('');
+  const [videoTags, setVideoTags] = useState('Rendr');
+  
+  // Folder management
+  const [showCreateFolderModal, setShowCreateFolderModal] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
+  const [newFolderDescription, setNewFolderDescription] = useState('');
   
   const [settings, setSettings] = useState({
     // Appearance
