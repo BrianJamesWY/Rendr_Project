@@ -62,6 +62,17 @@ function Dashboard() {
         console.log('Folders not loaded:', folderErr);
         setFolders([]);
       }
+
+      // Load analytics
+      try {
+        const analyticsRes = await axios.get(`${BACKEND_URL}/api/analytics/dashboard?days=30`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setAnalytics(analyticsRes.data);
+      } catch (analyticsErr) {
+        console.error('Failed to load analytics:', analyticsErr);
+        setAnalytics(null);
+      }
       
       setLoading(false);
     } catch (err) {
