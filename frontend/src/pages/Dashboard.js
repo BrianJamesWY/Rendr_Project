@@ -707,7 +707,10 @@ function Dashboard() {
               }}
             >
               Cancel
-
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Edit Video Modal */}
       {showEditModal && editingVideo && (
