@@ -109,6 +109,44 @@ function Admin() {
     }
   };
 
+  const toggleInterestedParty = async (userId, currentState) => {
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/admin/users/${userId}/interested?interested=${!currentState}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      loadAdminData();
+    } catch (err) {
+      alert('Failed to update interested party status');
+    }
+  };
+
+  const bulkImport = async () => {
+    if (!bulkEmails.trim()) {
+      alert('Please enter email addresses');
+      return;
+    }
+
+    const emails = bulkEmails.split('\\n').filter(e => e.trim());
+    
+    if (!window.confirm(`Import ${emails.length} users?`)) return;
+
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/admin/bulk-import`,
+        emails,
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+      );
+      
+      alert(`Imported: ${response.data.imported}\\nSkipped: ${response.data.skipped}${response.data.errors.length > 0 ? `\\nErrors: ${response.data.errors.length}` : ''}`);
+      setBulkEmails('');
+      loadAdminData();
+    } catch (err) {
+      alert('Failed to import users');
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
