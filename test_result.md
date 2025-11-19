@@ -275,6 +275,51 @@ backend:
         agent: "testing"
         comment: "TESTED: Static file endpoints properly configured. /api/thumbnails/ and /api/profile_pictures/ endpoints responding correctly (404 for non-existent files as expected)."
 
+  - task: "Fixed Dashboard folder creation API calls with trailing slash"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Dashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed Dashboard.js to use /api/folders/ with trailing slash to prevent 307 redirects that lost request body"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Dashboard folder creation working perfectly. POST /api/folders/ with JSON body successfully creates folders. Trailing slash fix resolved 307 redirect issue. Created 'Test Dashboard Folder' with description successfully. GET /api/folders/ retrieves all folders correctly."
+
+  - task: "Fixed Upload page folder API calls with trailing slash"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/Upload.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed Upload.js to use /api/folders/ with trailing slash for folder loading"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Upload page folder loading working correctly. GET /api/folders/ with trailing slash loads folders successfully for dropdown selection."
+
+  - task: "Fixed Showcase Editor folder creation to accept JSON body"
+    implemented: true
+    working: true
+    file: "backend/api/showcase_folders.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Fixed /api/showcase-folders POST endpoint to accept JSON body instead of query parameters"
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Showcase Editor folder creation working perfectly. POST /api/showcase-folders with JSON body successfully creates showcase folders. Created 'Test Showcase Folder 2' with description successfully. GET /api/showcase-folders retrieves all showcase folders correctly. JSON body handling fixed and working properly."
+
 frontend:
   - task: "Creator Showcase Page (/@username)"
     implemented: true
