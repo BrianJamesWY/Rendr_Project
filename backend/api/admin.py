@@ -343,7 +343,8 @@ async def get_interested_parties(
     cursor = db.users.find({'interested_party': True}).sort('created_at', -1)
     users = await cursor.to_list(length=10000)
     
-    return [{\n        'user_id': u['_id'],
+    return [{
+        'user_id': u['_id'],
         'username': u.get('username'),
         'email': u['email'],
         'display_name': u.get('display_name'),
