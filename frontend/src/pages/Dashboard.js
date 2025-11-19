@@ -466,6 +466,100 @@ function Dashboard() {
           </div>
         )}
       </div>
+
+      {/* Move to Folder Modal */}
+      {showMoveModal && selectedVideo && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '90%'
+          }}>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
+              Move Video
+            </h3>
+            <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
+              Move <strong>{selectedVideo.verification_code}</strong> to:
+            </p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              {folders.map(folder => (
+                <button
+                  key={folder.folder_id}
+                  onClick={() => moveVideoToFolder(selectedVideo.video_id, folder.folder_id)}
+                  style={{
+                    padding: '1rem',
+                    background: '#f3f4f6',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontWeight: '600',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = '#667eea';
+                    e.currentTarget.style.background = '#eff6ff';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = '#e5e7eb';
+                    e.currentTarget.style.background = '#f3f4f6';
+                  }}
+                >
+                  📁 {folder.folder_name}
+                </button>
+              ))}
+              
+              <button
+                onClick={() => moveVideoToFolder(selectedVideo.video_id, null)}
+                style={{
+                  padding: '1rem',
+                  background: '#f3f4f6',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  textAlign: 'left',
+                  cursor: 'pointer',
+                  fontWeight: '600'
+                }}
+              >
+                📂 Uncategorized
+              </button>
+            </div>
+            
+            <button
+              onClick={() => {
+                setShowMoveModal(false);
+                setSelectedVideo(null);
+              }}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                background: '#6b7280',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
