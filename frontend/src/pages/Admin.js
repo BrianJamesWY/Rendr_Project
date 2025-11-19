@@ -30,7 +30,7 @@ function Admin() {
     try {
       setLoading(true);
       
-      const [statsRes, usersRes, logsRes] = await Promise.all([
+      const [statsRes, usersRes, logsRes, interestedRes] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/admin/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
@@ -39,12 +39,16 @@ function Admin() {
         }),
         axios.get(`${BACKEND_URL}/api/admin/logs?limit=50`, {
           headers: { Authorization: `Bearer ${token}` }
+        }),
+        axios.get(`${BACKEND_URL}/api/admin/interested-parties`, {
+          headers: { Authorization: `Bearer ${token}` }
         })
       ]);
 
       setStats(statsRes.data);
       setUsers(usersRes.data);
       setLogs(logsRes.data);
+      setInterestedParties(interestedRes.data);
       setLoading(false);
     } catch (err) {
       if (err.response?.status === 403) {
