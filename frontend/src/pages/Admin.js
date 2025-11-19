@@ -10,10 +10,12 @@ function Admin() {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [logs, setLogs] = useState([]);
+  const [interestedParties, setInterestedParties] = useState([]);
+  const [bulkEmails, setBulkEmails] = useState('');
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('stats'); // stats, users, logs
+  const [activeTab, setActiveTab] = useState('stats'); // stats, users, logs, interested, import
   const token = localStorage.getItem('rendr_token');
 
   useEffect(() => {
