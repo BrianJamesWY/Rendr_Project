@@ -210,14 +210,6 @@ async def upload_banner(
     )
     
     return {"banner_image": banner_url}
-
-    )
-    
-    return {"profile_picture": picture_url}
-
-    file_ext = os.path.splitext(picture.filename)[1]
-    filename = f"{current_user['user_id']}{file_ext}"
-    file_path = os.path.join(upload_dir, filename)
     
     with open(file_path, "wb") as buffer:
         shutil.copyfileobj(picture.file, buffer)
