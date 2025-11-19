@@ -142,11 +142,77 @@ function ShowcaseEditor() {
       setUser(userRes.data);
       setVideos(videosRes.data.videos || []);
       
+      // Load showcase-specific folders
+      try {
+        const foldersRes = await axios.get(`${BACKEND_URL}/api/showcase-folders`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setShowcaseFolders(foldersRes.data || []);
+      } catch (err) {
+        console.log('No showcase folders yet');
+        setShowcaseFolders([]);
+      }
+      
       if (userRes.data.showcase_settings) {
         setSettings({ ...settings, ...userRes.data.showcase_settings });
       }
     } catch (err) {
       console.error('Failed to load data:', err);
+    }
+  };
+
+  const openEditModal = (video) => {
+    setEditingVideo(video);
+    setVideoDescription(video.description || '');
+    setVideoExternalLink(video.external_link || '');
+    setVideoPlatform(video.platform || '');
+    setVideoTags(video.tags ? video.tags.join(', ') : 'Rendr');
+    setShowEditModal(true);
+  };
+
+  const saveVideoMetadata = async () => {
+    try {
+      const tagsArray = videoTags.split(',').map(tag => tag.trim()).filter(tag => tag);
+      await axios.put(
+        `${BACKEND_URL}/api/videos/${editingVideo.video_id}/metadata`,
+        {
+          description: videoDescription,
+          external_link: videoExternalLink,
+          platform: videoPlatform,
+          tags: tagsArray
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setShowEditModal(false);
+      loadData();
+      alert('✅ Video updated successfully!');
+    } catch (err) {
+      alert('❌ Failed to update video');
+    }
+  };
+
+  const createShowcaseFolder = async () => {
+    if (!newFolderName.trim()) {
+      alert('Please enter a folder name');
+      return;
+    }
+
+    try {
+      await axios.post(
+        `${BACKEND_URL}/api/showcase-folders`,
+        {
+          folder_name: newFolderName,
+          description: newFolderDescription
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setShowCreateFolderModal(false);
+      setNewFolderName('');
+      setNewFolderDescription('');
+      loadData();
+      alert('✅ Showcase folder created!');
+    } catch (err) {
+      alert('❌ Failed to create folder');
     }
   };
 
