@@ -62,10 +62,29 @@ function Dashboard() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('rendr_token');
-    localStorage.removeItem('rendr_username');
-    navigate('/CreatorLogin');
+  const handleLogout = async () => {
+    if (window.confirm('Are you sure you want to logout?')) {
+      localStorage.removeItem('rendr_token');
+      localStorage.removeItem('rendr_username');
+      navigate('/CreatorLogin');
+    }
+  };
+
+  const moveVideoToFolder = async (videoId, folderId) => {
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/videos/${videoId}/folder?folder_id=${folderId || ''}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Reload videos
+      loadDashboard();
+      setShowMoveModal(false);
+      setSelectedVideo(null);
+    } catch (err) {
+      alert('Failed to move video');
+    }
   };
 
   if (loading) {
