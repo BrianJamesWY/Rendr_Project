@@ -129,6 +129,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/@:username" element={<Showcase />} />
+          <Route path="/:username" element={<Showcase />} />
         </Routes>
       </BrowserRouter>
     </div>
