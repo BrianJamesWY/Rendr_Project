@@ -80,10 +80,16 @@ class RendrAPITester:
         """Test user login"""
         account = TEST_ACCOUNTS[account_key]
         try:
-            response = self.session.post(f"{BASE_URL}/auth/login", json={
-                "email": account["email"],
+            # Use username for BrianJames, email for others
+            login_data = {
                 "password": account["password"]
-            })
+            }
+            if account_key == "brian":
+                login_data["username"] = account["username"]
+            else:
+                login_data["email"] = account["email"]
+            
+            response = self.session.post(f"{BASE_URL}/auth/login", json=login_data)
             
             if response.status_code == 200:
                 data = response.json()
