@@ -56,7 +56,8 @@ async def create_folder(
         username=current_user.get("username"),
         video_count=video_count,
         created_at=folder_doc["created_at"],
-        order=folder_doc["order"]
+        order=folder_doc["order"],
+        description=folder_data.description
     )
 
 @router.get("/", response_model=List[FolderResponse])
