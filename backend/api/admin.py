@@ -244,11 +244,11 @@ async def bulk_import_users(
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    \"\"\"Bulk import users from RSVP list (CEO only)\"\"\"
+    """Bulk import users from RSVP list (CEO only)"""
     verify_ceo(current_user)
     
     from passlib.context import CryptContext
-    pwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
     
     imported = 0
     skipped = 0
@@ -268,7 +268,7 @@ async def bulk_import_users(
         try:
             # Create user with temporary password
             user_id = str(uuid.uuid4())
-            temp_password = f\"Rendr{str(uuid.uuid4())[:8]}!\"
+            temp_password = f"Rendr{str(uuid.uuid4())[:8]}!"
             
             # Generate username from email
             username = email.split('@')[0].replace('.', '').replace('_', '')
@@ -277,7 +277,7 @@ async def bulk_import_users(
             counter = 1
             base_username = username
             while await db.users.find_one({'username': username}):
-                username = f\"{base_username}{counter}\"
+                username = f"{base_username}{counter}"
                 counter += 1
             
             user_doc = {
@@ -309,12 +309,12 @@ async def bulk_import_users(
             
             # TODO: Send welcome email with temp password
             # For now, just log it
-            print(f\"Created user: {email} with password: {temp_password}\")
+            print(f"Created user: {email} with password: {temp_password}")
             
             imported += 1
             
         except Exception as e:
-            errors.append(f\"{email}: {str(e)}\")
+            errors.append(f"{email}: {str(e)}")
     
     # Log the action
     await db.admin_logs.insert_one({
@@ -337,7 +337,7 @@ async def get_interested_parties(
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    \"\"\"Get all interested party users (CEO only)\"\"\"
+    """Get all interested party users (CEO only)"""
     verify_ceo(current_user)
     
     cursor = db.users.find({'interested_party': True}).sort('created_at', -1)
