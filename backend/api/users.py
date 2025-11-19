@@ -78,7 +78,8 @@ async def get_creator_videos(
             folder_id=video.get("folder_id"),
             description=video.get("description"),
             external_link=video.get("external_link"),
-            platform=video.get("platform")
+            platform=video.get("platform"),
+            tags=video.get("tags", ["Rendr"])
         ))
     
     return result
