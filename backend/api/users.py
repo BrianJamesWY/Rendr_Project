@@ -165,6 +165,50 @@ async def upload_profile_picture(
     await db.users.update_one(
         {"_id": current_user["user_id"]},
         {"$set": {"profile_picture": picture_url}}
+
+
+@router.post("/@/upload-banner")
+async def upload_banner(
+    file: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload showcase banner image (Pro/Enterprise only)"""
+    import os
+    from pathlib import Path
+    
+    # Check tier
+    user = await db.users.find_one({"_id": current_user["user_id"]})
+    if user.get("premium_tier") not in ["pro", "enterprise"]:
+        raise HTTPException(403, "Banner upload is a Pro/Enterprise feature")
+    
+    # Validate file type
+    allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if file.content_type not in allowed_types:
+        raise HTTPException(400, "Invalid file type. Use JPG, PNG, or WebP")
+    
+    # Create banners directory
+    banners_dir = Path("uploads/banners")
+    banners_dir.mkdir(exist_ok=True, parents=True)
+    
+    # Save file
+    file_extension = file.filename.split('.')[-1]
+    filename = f"{current_user['user_id']}_banner.{file_extension}"
+    file_path = banners_dir / filename
+    
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    # Update user profile
+    banner_url = f"/api/banners/{filename}"
+    await db.users.update_one(
+        {"_id": current_user["user_id"]},
+        {"$set": {"banner_image": banner_url}}
+    )
+    
+    return {"banner_image": banner_url}
+
     )
     
     return {"profile_picture": picture_url}
