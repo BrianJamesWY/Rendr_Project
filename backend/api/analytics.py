@@ -80,7 +80,7 @@ async def get_public_analytics(db = Depends(get_db)):
             'avg_videos_per_user': round(avg_videos_per_user, 2),
             'active_creators': active_creators
         }
-
+    }
 
 @router.post("/track/page-view")
 async def track_page_view(
