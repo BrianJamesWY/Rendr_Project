@@ -139,11 +139,12 @@ async def update_folder(
     
     return FolderResponse(
         folder_id=folder_id,
-        folder_name=folder_data.folder_name,
+        folder_name=folder["folder_name"],
         username=current_user.get("username"),
         video_count=video_count,
         created_at=folder["created_at"],
-        order=folder.get("order", 0)
+        order=folder.get("order", 0),
+        description=folder.get("description")
     )
 
 @router.delete("/{folder_id}")
