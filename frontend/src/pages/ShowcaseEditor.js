@@ -1340,44 +1340,42 @@ function ShowcaseEditor() {
                     </div>
                     
                     <div style={{ padding: '1rem' }}>
-                      {settings.showVerificationCodes && (
+                      {settings.showVerificationCodes && video.verification_code && (
                         <div style={{ fontWeight: 'bold', marginBottom: '0.5rem', fontFamily: 'monospace', color: settings.primaryColor }}>
-                          ABC123XYZ
+                          {video.verification_code}
                         </div>
                       )}
                       
                       {settings.showDescriptions && (
-                        <p style={{ fontSize: '0.875rem', marginBottom: '0.5rem' }}>
-                          Video description goes here...
+                        <p style={{ 
+                          fontSize: '0.875rem', 
+                          color: '#374151', 
+                          marginBottom: '0.5rem',
+                          lineHeight: '1.5'
+                        }}>
+                          {video.description || 'Click to add description...'}
                         </p>
                       )}
                       
                       {settings.showTags && (
                         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
-                          <span style={{ 
-                            fontSize: '0.75rem', 
-                            padding: '0.25rem 0.5rem', 
-                            background: settings.primaryColor, 
-                            color: '#fff', 
-                            borderRadius: '4px' 
-                          }}>
-                            Rendr
-                          </span>
-                          <span style={{ 
-                            fontSize: '0.75rem', 
-                            padding: '0.25rem 0.5rem', 
-                            background: '#e5e7eb', 
-                            color: '#374151', 
-                            borderRadius: '4px' 
-                          }}>
-                            Truth
-                          </span>
+                          {(video.tags || ['Rendr']).map((tag, idx) => (
+                            <span key={idx} style={{ 
+                              fontSize: '0.75rem', 
+                              padding: '0.25rem 0.5rem', 
+                              background: idx === 0 ? settings.primaryColor : '#e5e7eb', 
+                              color: idx === 0 ? '#fff' : '#374151', 
+                              borderRadius: '4px' 
+                            }}>
+                              {tag}
+                            </span>
+                          ))}
                         </div>
                       )}
                       
-                      {settings.showDates && (
+                      {settings.showDates && video.captured_at && (
                         <div style={{ fontSize: '0.75rem', color: settings.secondaryTextColor }}>
-                          Jan {i}, 2025
+                          {new Date(video.captured_at).toLocaleDateString()}
                         </div>
                       )}
                     </div>
