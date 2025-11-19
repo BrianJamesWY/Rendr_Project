@@ -11,7 +11,7 @@ import tempfile
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://rendr-verify.preview.emergentagent.com/api"
+BASE_URL = "https://truthcontent.preview.emergentagent.com/api"
 
 # Test accounts
 TEST_ACCOUNTS = {
