@@ -147,6 +147,65 @@ function ProfileSettings() {
         <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Basic Information</h2>
           
+          {/* Profile Picture */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>Profile Picture</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              {user?.profile_picture && (
+                <img 
+                  src={`${BACKEND_URL}${user.profile_picture}`}
+                  alt="Profile"
+                  style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover' }}
+                />
+              )}
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="profile-pic-upload"
+                  style={{ display: 'none' }}
+                  onChange={async (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const formData = new FormData();
+                      formData.append('file', file);
+                      try {
+                        const res = await axios.post(`${BACKEND_URL}/api/@/upload-profile-picture`, formData, {
+                          headers: { 
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'multipart/form-data'
+                          }
+                        });
+                        alert('✅ Profile picture updated!');
+                        loadProfile();
+                      } catch (err) {
+                        alert('❌ Failed to upload: ' + (err.response?.data?.detail || 'Unknown error'));
+                      }
+                    }
+                  }}
+                />
+                <label 
+                  htmlFor="profile-pic-upload"
+                  style={{
+                    display: 'inline-block',
+                    padding: '0.5rem 1rem',
+                    background: '#667eea',
+                    color: 'white',
+                    borderRadius: '0.5rem',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: '600'
+                  }}
+                >
+                  Upload Picture
+                </label>
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                  Recommended: Square image, at least 400x400px
+                </p>
+              </div>
+            </div>
+          </div>
+          
           <div style={{ marginBottom: '1rem' }}>
             <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>Display Name</label>
             <input
