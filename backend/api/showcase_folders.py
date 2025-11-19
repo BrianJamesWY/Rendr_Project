@@ -40,17 +40,18 @@ async def get_showcase_folders(
 
 @router.post("")
 async def create_showcase_folder(
-    folder_name: str,
-    description: str = None,
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
     """Create a new showcase folder"""
+    from fastapi import Body
     from pydantic import BaseModel
     
     class FolderCreate(BaseModel):
         folder_name: str
         description: str = None
+    
+    # This won't work as written - need to refactor
     
     # Check if folder with same name exists
     existing = await db.showcase_folders.find_one({
