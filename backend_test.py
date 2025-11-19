@@ -718,12 +718,23 @@ class RendrAPITester:
         
         # Test folder management (requires auth)
         if self.auth_token:
-            print("\n📁 Testing Folder Management...")
+            print("\n📁 Testing Dashboard Folder Management...")
             self.test_folders_list()
             folder_id = self.test_folder_create()
             if folder_id:
                 self.test_folder_update(folder_id)
             self.test_folder_delete_protection()
+            
+            print("\n🎨 Testing Showcase Editor Folder Management...")
+            self.test_showcase_folders_list()
+            showcase_folder_id = self.test_showcase_folder_create()
+            
+            print("\n🔒 Testing Folder Edge Cases...")
+            self.test_folder_edge_cases()
+            self.test_showcase_folder_edge_cases()
+            
+            print("\n🚫 Testing Unauthenticated Access...")
+            self.test_unauthenticated_folder_access()
             
             print("\n🎬 Testing Video Upload...")
             self.test_video_upload_with_thumbnail()
