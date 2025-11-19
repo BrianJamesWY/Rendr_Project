@@ -537,6 +537,52 @@ function ShowcaseEditor() {
           <option value="xlarge">Extra Large (150px)</option>
         </select>
       </div>
+
+      {/* Video Organization */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h4 style={{ fontWeight: '600', marginBottom: '0.75rem' }}>Video Organization</h4>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '0.75rem' }}>
+          <input
+            type="checkbox"
+            checked={settings.organizeByPlatform}
+            onChange={(e) => setSettings({ ...settings, organizeByPlatform: e.target.checked })}
+          />
+          <span>Auto-organize videos by platform</span>
+        </label>
+        <div style={{ fontSize: '0.75rem', color: '#6b7280', marginLeft: '1.5rem', marginBottom: '1rem' }}>
+          Videos will be grouped into Instagram, TikTok, YouTube, etc. folders
+        </div>
+
+        {isPro && (
+          <>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', marginBottom: '0.75rem' }}>
+              <input
+                type="checkbox"
+                checked={settings.showFolderLinks}
+                onChange={(e) => setSettings({ ...settings, showFolderLinks: e.target.checked })}
+              />
+              <span>Show links in collection headers (Pro)</span>
+            </label>
+            
+            {settings.showFolderLinks && (
+              <div style={{ marginLeft: '1.5rem', marginTop: '0.5rem' }}>
+                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '0.25rem' }}>
+                  Link Position
+                </label>
+                <select
+                  value={settings.folderLinkPosition}
+                  onChange={(e) => setSettings({ ...settings, folderLinkPosition: e.target.value })}
+                  style={{ width: '100%', padding: '0.5rem', border: '1px solid #e5e7eb', borderRadius: '6px', fontSize: '0.875rem' }}
+                >
+                  <option value="below">Below Collection Name</option>
+                  <option value="inline">Inline with Name</option>
+                  <option value="button">As Button</option>
+                </select>
+              </div>
+            )}
+          </>
+        )}
+      </div>
     </div>
   );
 
