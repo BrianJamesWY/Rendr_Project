@@ -24,8 +24,7 @@ function Dashboard() {
       return;
     }
     loadDashboard();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token, navigate]);
+  }, [token]);
 
   const loadDashboard = async () => {
     try {
