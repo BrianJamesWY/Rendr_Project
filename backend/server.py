@@ -50,6 +50,7 @@ app.include_router(notifications.router, prefix="/api/notifications", tags=["Not
 app.include_router(folders.router, prefix="/api/folders", tags=["Folders"])
 app.include_router(users.router, prefix="/api/@", tags=["Users"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
+app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 
 @app.get("/")
 async def root():
