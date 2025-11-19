@@ -70,14 +70,25 @@ function Showcase() {
     }
   };
 
-  // Group videos by collection/folder
+  // Group videos by platform or collection/folder
   const groupedVideos = {};
+  const organizeByPlatform = profile?.showcase_settings?.organizeByPlatform !== false;
+  
   videos.forEach(video => {
-    const folderName = video.folder_name || 'Uncategorized';
-    if (!groupedVideos[folderName]) {
-      groupedVideos[folderName] = [];
+    let groupKey;
+    
+    if (organizeByPlatform && video.platform) {
+      // Group by platform
+      groupKey = video.platform;
+    } else {
+      // Group by folder
+      groupKey = video.folder_name || 'Uncategorized';
     }
-    groupedVideos[folderName].push(video);
+    
+    if (!groupedVideos[groupKey]) {
+      groupedVideos[groupKey] = [];
+    }
+    groupedVideos[groupKey].push(video);
   });
 
   if (loading) {
