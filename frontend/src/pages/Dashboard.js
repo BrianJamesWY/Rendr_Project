@@ -14,6 +14,9 @@ function Dashboard() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [showMoveModal, setShowMoveModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showCreateFolderModal, setShowCreateFolderModal] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
+  const [newFolderDescription, setNewFolderDescription] = useState('');
   const [editingVideo, setEditingVideo] = useState(null);
   const [videoDescription, setVideoDescription] = useState('');
   const [videoExternalLink, setVideoExternalLink] = useState('');
