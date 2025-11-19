@@ -49,6 +49,11 @@ function ShowcaseEditor() {
     gridColumns: 3,
     cardSpacing: 'medium',
     showFeaturedSection: false,
+    organizeByPlatform: true,
+    
+    // Folders/Collections
+    showFolderLinks: false,
+    folderLinkPosition: 'below',
     
     // Typography
     fontFamily: 'Inter',
