@@ -220,33 +220,226 @@ class RendrAPITester:
             return False
     
     def test_folder_create(self):
-        """Test POST /folders endpoint"""
+        """Test POST /folders/ endpoint (Dashboard folder creation)"""
         try:
-            folder_name = f"TestFolder_{datetime.now().strftime('%H%M%S')}"
+            folder_name = f"Test Dashboard Folder"
             response = self.session.post(f"{BASE_URL}/folders/", json={
-                "folder_name": folder_name
+                "folder_name": folder_name,
+                "description": "Testing folder creation"
             })
             
             if response.status_code == 200:
                 data = response.json()
                 if data.get("folder_name") == folder_name:
-                    self.log_test("Folder Create", True, 
+                    self.log_test("Dashboard Folder Create", True, 
                                 f"Created folder: {folder_name}")
                     return data.get("folder_id")
                 else:
-                    self.log_test("Folder Create", False, 
+                    self.log_test("Dashboard Folder Create", False, 
                                 "Folder name mismatch", data)
                     return None
             elif response.status_code == 401:
-                self.log_test("Folder Create", False, "Authentication required")
+                self.log_test("Dashboard Folder Create", False, "Authentication required")
                 return None
             else:
-                self.log_test("Folder Create", False, 
+                self.log_test("Dashboard Folder Create", False, 
                             f"Status: {response.status_code}", response.text)
                 return None
         except Exception as e:
-            self.log_test("Folder Create", False, f"Error: {str(e)}")
+            self.log_test("Dashboard Folder Create", False, f"Error: {str(e)}")
             return None
+    
+    def test_showcase_folder_create(self):
+        """Test POST /showcase-folders endpoint (Showcase Editor folder creation)"""
+        try:
+            folder_name = f"Test Showcase Folder"
+            response = self.session.post(f"{BASE_URL}/showcase-folders", json={
+                "folder_name": folder_name,
+                "description": "Testing showcase folders"
+            })
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("folder_name") == folder_name:
+                    self.log_test("Showcase Folder Create", True, 
+                                f"Created showcase folder: {folder_name}")
+                    return data.get("folder_id")
+                else:
+                    self.log_test("Showcase Folder Create", False, 
+                                "Folder name mismatch", data)
+                    return None
+            elif response.status_code == 401:
+                self.log_test("Showcase Folder Create", False, "Authentication required")
+                return None
+            else:
+                self.log_test("Showcase Folder Create", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("Showcase Folder Create", False, f"Error: {str(e)}")
+            return None
+    
+    def test_showcase_folders_list(self):
+        """Test GET /showcase-folders endpoint"""
+        try:
+            response = self.session.get(f"{BASE_URL}/showcase-folders")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if isinstance(data, list):
+                    self.log_test("Showcase Folders List", True, 
+                                f"Retrieved {len(data)} showcase folders")
+                    return True
+                else:
+                    self.log_test("Showcase Folders List", False, 
+                                "Response is not a list", data)
+                    return False
+            elif response.status_code == 401:
+                self.log_test("Showcase Folders List", False, "Authentication required")
+                return False
+            else:
+                self.log_test("Showcase Folders List", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Showcase Folders List", False, f"Error: {str(e)}")
+            return False
+    
+    def test_folder_edge_cases(self):
+        """Test folder creation edge cases"""
+        # Test duplicate folder name
+        try:
+            duplicate_name = "Duplicate Test Folder"
+            
+            # Create first folder
+            response1 = self.session.post(f"{BASE_URL}/folders/", json={
+                "folder_name": duplicate_name,
+                "description": "First folder"
+            })
+            
+            if response1.status_code == 200:
+                # Try to create duplicate
+                response2 = self.session.post(f"{BASE_URL}/folders/", json={
+                    "folder_name": duplicate_name,
+                    "description": "Duplicate folder"
+                })
+                
+                if response2.status_code == 400:
+                    self.log_test("Folder Duplicate Prevention", True, 
+                                "Duplicate folder name properly rejected")
+                else:
+                    self.log_test("Folder Duplicate Prevention", False, 
+                                f"Expected 400, got {response2.status_code}")
+            else:
+                self.log_test("Folder Duplicate Prevention", False, 
+                            "Could not create initial folder for duplicate test")
+        except Exception as e:
+            self.log_test("Folder Duplicate Prevention", False, f"Error: {str(e)}")
+        
+        # Test empty folder name
+        try:
+            response = self.session.post(f"{BASE_URL}/folders/", json={
+                "folder_name": "",
+                "description": "Empty name test"
+            })
+            
+            if response.status_code == 400 or response.status_code == 422:
+                self.log_test("Empty Folder Name Validation", True, 
+                            "Empty folder name properly rejected")
+            else:
+                self.log_test("Empty Folder Name Validation", False, 
+                            f"Expected 400/422, got {response.status_code}")
+        except Exception as e:
+            self.log_test("Empty Folder Name Validation", False, f"Error: {str(e)}")
+    
+    def test_showcase_folder_edge_cases(self):
+        """Test showcase folder creation edge cases"""
+        # Test duplicate showcase folder name
+        try:
+            duplicate_name = "Duplicate Showcase Folder"
+            
+            # Create first showcase folder
+            response1 = self.session.post(f"{BASE_URL}/showcase-folders", json={
+                "folder_name": duplicate_name,
+                "description": "First showcase folder"
+            })
+            
+            if response1.status_code == 200:
+                # Try to create duplicate
+                response2 = self.session.post(f"{BASE_URL}/showcase-folders", json={
+                    "folder_name": duplicate_name,
+                    "description": "Duplicate showcase folder"
+                })
+                
+                if response2.status_code == 400:
+                    self.log_test("Showcase Folder Duplicate Prevention", True, 
+                                "Duplicate showcase folder name properly rejected")
+                else:
+                    self.log_test("Showcase Folder Duplicate Prevention", False, 
+                                f"Expected 400, got {response2.status_code}")
+            else:
+                self.log_test("Showcase Folder Duplicate Prevention", False, 
+                            "Could not create initial showcase folder for duplicate test")
+        except Exception as e:
+            self.log_test("Showcase Folder Duplicate Prevention", False, f"Error: {str(e)}")
+        
+        # Test empty showcase folder name
+        try:
+            response = self.session.post(f"{BASE_URL}/showcase-folders", json={
+                "folder_name": "",
+                "description": "Empty name test"
+            })
+            
+            if response.status_code == 400 or response.status_code == 422:
+                self.log_test("Empty Showcase Folder Name Validation", True, 
+                            "Empty showcase folder name properly rejected")
+            else:
+                self.log_test("Empty Showcase Folder Name Validation", False, 
+                            f"Expected 400/422, got {response.status_code}")
+        except Exception as e:
+            self.log_test("Empty Showcase Folder Name Validation", False, f"Error: {str(e)}")
+    
+    def test_unauthenticated_folder_access(self):
+        """Test folder endpoints without authentication"""
+        # Clear auth temporarily
+        original_token = self.auth_token
+        self.clear_auth()
+        
+        try:
+            # Test folders list without auth
+            response = self.session.get(f"{BASE_URL}/folders/")
+            if response.status_code == 401:
+                self.log_test("Unauthenticated Folders Access", True, 
+                            "Folders list properly requires authentication")
+            else:
+                self.log_test("Unauthenticated Folders Access", False, 
+                            f"Expected 401, got {response.status_code}")
+            
+            # Test folder creation without auth
+            response = self.session.post(f"{BASE_URL}/folders/", json={
+                "folder_name": "Unauthorized Test",
+                "description": "Should fail"
+            })
+            if response.status_code == 401:
+                self.log_test("Unauthenticated Folder Creation", True, 
+                            "Folder creation properly requires authentication")
+            else:
+                self.log_test("Unauthenticated Folder Creation", False, 
+                            f"Expected 401, got {response.status_code}")
+            
+            # Test showcase folders without auth
+            response = self.session.get(f"{BASE_URL}/showcase-folders")
+            if response.status_code == 401:
+                self.log_test("Unauthenticated Showcase Folders Access", True, 
+                            "Showcase folders properly require authentication")
+            else:
+                self.log_test("Unauthenticated Showcase Folders Access", False, 
+                            f"Expected 401, got {response.status_code}")
+                
+        finally:
+            # Restore auth
+            if original_token:
+                self.set_auth_token(original_token)
     
     def test_folder_update(self, folder_id):
         """Test PUT /folders/{folder_id} endpoint"""
