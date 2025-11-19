@@ -883,26 +883,38 @@ function Dashboard() {
 
             <div style={{ marginBottom: '1rem' }}>
               <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
-                Platform
+                Platform(s) - Select Multiple
               </label>
+              <div style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.5rem' }}>
+                Hold Ctrl (Cmd on Mac) to select multiple platforms
+              </div>
               <select
-                value={videoPlatform}
-                onChange={(e) => setVideoPlatform(e.target.value)}
+                multiple
+                value={videoPlatform ? videoPlatform.split(',') : []}
+                onChange={(e) => {
+                  const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
+                  setVideoPlatform(selected.join(','));
+                }}
                 style={{
                   width: '100%',
                   padding: '0.75rem',
                   border: '1px solid #e5e7eb',
                   borderRadius: '0.5rem',
-                  fontSize: '1rem'
+                  fontSize: '1rem',
+                  minHeight: '120px'
                 }}
               >
-                <option value="">Select platform...</option>
-                <option value="Instagram">Instagram</option>
-                <option value="TikTok">TikTok</option>
-                <option value="YouTube">YouTube</option>
-                <option value="Twitter">Twitter/X</option>
-                <option value="Facebook">Facebook</option>
+                <option value="Instagram">📷 Instagram</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter">🐦 Twitter/X</option>
+                <option value="Facebook">👥 Facebook</option>
               </select>
+              {videoPlatform && (
+                <div style={{ fontSize: '0.875rem', color: '#667eea', marginTop: '0.5rem', fontWeight: '600' }}>
+                  Selected: {videoPlatform}
+                </div>
+              )}
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
