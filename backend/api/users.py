@@ -210,15 +210,3 @@ async def upload_banner(
     )
     
     return {"banner_image": banner_url}
-    
-    with open(file_path, "wb") as buffer:
-        shutil.copyfileobj(picture.file, buffer)
-    
-    # Update user record
-    picture_url = f"/api/profile_pictures/{filename}"
-    await db.users.update_one(
-        {"_id": current_user["user_id"]},
-        {"$set": {"profile_picture": picture_url}}
-    )
-    
-    return {"profile_picture": picture_url}
