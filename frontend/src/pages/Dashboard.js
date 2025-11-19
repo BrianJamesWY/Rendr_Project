@@ -93,6 +93,34 @@ function Dashboard() {
 
   if (loading) {
     return (
+
+  const openEditModal = (video) => {
+    setEditingVideo(video);
+    setVideoDescription(video.description || '');
+    setVideoExternalLink(video.external_link || '');
+    setVideoPlatform(video.platform || '');
+    setShowEditModal(true);
+  };
+
+  const saveVideoMetadata = async () => {
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/videos/${editingVideo.video_id}/metadata`,
+        {
+          description: videoDescription,
+          external_link: videoExternalLink,
+          platform: videoPlatform
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setShowEditModal(false);
+      loadDashboard();
+      alert('Video updated successfully!');
+    } catch (err) {
+      alert('Failed to update video');
+    }
+  };
+
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ fontSize: '1.5rem', color: '#6b7280' }}>Loading...</div>
       </div>
