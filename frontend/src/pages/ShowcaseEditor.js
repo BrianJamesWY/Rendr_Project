@@ -1272,7 +1272,7 @@ function ShowcaseEditor() {
               }}>
                 {(videos.length > 0 ? videos.slice(0, 3) : [{ video_id: '1' }, { video_id: '2' }, { video_id: '3' }]).map((video, i) => (
                   <div
-                    key={i}
+                    key={video.video_id}
                     style={{
                       background: settings.cardBackgroundColor,
                       borderRadius: getBorderRadiusValue(),
@@ -1281,11 +1281,63 @@ function ShowcaseEditor() {
                       transition: 'all 0.3s'
                     }}
                   >
-                    <div style={{ 
-                      width: '100%', 
-                      height: '200px', 
-                      background: '#e5e7eb' 
-                    }} />
+                    {/* Clickable Thumbnail */}
+                    <div 
+                      onClick={() => video.verification_code && openEditModal(video)}
+                      style={{ 
+                        width: '100%', 
+                        height: '200px', 
+                        background: '#e5e7eb',
+                        cursor: video.verification_code ? 'pointer' : 'default',
+                        position: 'relative',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      onMouseEnter={(e) => {
+                        if (video.verification_code) {
+                          e.currentTarget.style.opacity = '0.8';
+                          const overlay = e.currentTarget.querySelector('.edit-icon');
+                          if (overlay) overlay.style.opacity = '1';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                        const overlay = e.currentTarget.querySelector('.edit-icon');
+                        if (overlay) overlay.style.opacity = '0';
+                      }}
+                    >
+                      {video.thumbnail_url ? (
+                        <img 
+                          src={`${BACKEND_URL}${video.thumbnail_url}`}
+                          alt={video.verification_code}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <span style={{ fontSize: '3rem' }}>🎬</span>
+                      )}
+                      {video.verification_code && (
+                        <div 
+                          className="edit-icon"
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(0,0,0,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            opacity: 0,
+                            transition: 'opacity 0.2s',
+                            pointerEvents: 'none'
+                          }}
+                        >
+                          <span style={{ color: 'white', fontSize: '2rem' }}>✏️</span>
+                        </div>
+                      )}
+                    </div>
                     
                     <div style={{ padding: '1rem' }}>
                       {settings.showVerificationCodes && (
