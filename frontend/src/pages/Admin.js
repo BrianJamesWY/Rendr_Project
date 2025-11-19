@@ -128,7 +128,7 @@ function Admin() {
       return;
     }
 
-    const emails = bulkEmails.split('\\n').filter(e => e.trim());
+    const emails = bulkEmails.split('\n').filter(e => e.trim());
     
     if (!window.confirm(`Import ${emails.length} users?`)) return;
 
@@ -139,7 +139,7 @@ function Admin() {
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
       
-      alert(`Imported: ${response.data.imported}\\nSkipped: ${response.data.skipped}${response.data.errors.length > 0 ? `\\nErrors: ${response.data.errors.length}` : ''}`);
+      alert(`Imported: ${response.data.imported}\nSkipped: ${response.data.skipped}${response.data.errors.length > 0 ? `\nErrors: ${response.data.errors.length}` : ''}`);
       setBulkEmails('');
       loadAdminData();
     } catch (err) {
