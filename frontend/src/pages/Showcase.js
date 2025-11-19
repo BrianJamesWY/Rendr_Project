@@ -126,8 +126,27 @@ function Showcase() {
       <Navigation currentPage="showcase" />
       
       {/* Header/Profile Section */}
-      <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '3rem 1rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+      <div style={{ 
+        background: profile.banner_image ? `url(${BACKEND_URL}${profile.banner_image})` : 'white',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        borderBottom: '1px solid #e5e7eb',
+        position: 'relative'
+      }}>
+        {/* Overlay for better text readability */}
+        {profile.banner_image && (
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(2px)'
+          }} />
+        )}
+        
+        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center', padding: '3rem 1rem', position: 'relative', zIndex: 1 }}>
           {profile.profile_picture && (
             <img 
               src={`${BACKEND_URL}${profile.profile_picture}`}
@@ -138,7 +157,8 @@ function Showcase() {
                 borderRadius: '50%', 
                 objectFit: 'cover',
                 marginBottom: '1rem',
-                border: '4px solid #2563eb'
+                border: '4px solid #2563eb',
+                boxShadow: profile.banner_image ? '0 4px 6px rgba(0,0,0,0.3)' : 'none'
               }}
             />
           )}
