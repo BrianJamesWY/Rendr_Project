@@ -129,6 +129,7 @@ function App() {
           <Route path="/CreatorLogin" element={<CreatorLogin />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/plans" element={<Plans />} />
+          <Route path="/admin" element={<Admin />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
