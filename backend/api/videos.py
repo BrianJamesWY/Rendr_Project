@@ -266,11 +266,14 @@ async def get_user_videos(
 @router.put("/{video_id}/folder")
 async def move_video_to_folder(
     video_id: str,
-    folder_id: str = Form(None),
+    folder_id: str = None,
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
     """Move video to a different folder"""
+    # Accept folder_id from query params or body
+    from fastapi import Body
+    
     video = await db.videos.find_one({"_id": video_id})
     
     if not video:
@@ -280,19 +283,21 @@ async def move_video_to_folder(
         raise HTTPException(403, "Access denied")
     
     # Verify folder exists if folder_id is provided
-    if folder_id:
+    if folder_id and folder_id != 'null' and folder_id != '':
         folder = await db.folders.find_one({"_id": folder_id})
         if not folder:
             raise HTTPException(404, "Folder not found")
         if folder['username'] != current_user.get('username'):
             raise HTTPException(403, "Folder access denied")
+    else:
+        folder_id = None
     
     await db.videos.update_one(
         {"_id": video_id},
         {"$set": {"folder_id": folder_id}}
     )
     
-    return {"message": "Video moved successfully"}
+    return {"message": "Video moved successfully", "folder_id": folder_id}
 
 @router.post("/{video_id}/thumbnail")
 async def upload_custom_thumbnail(
