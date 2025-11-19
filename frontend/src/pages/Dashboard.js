@@ -563,14 +563,26 @@ function Dashboard() {
                   e.currentTarget.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
                 }}
               >
-                {/* Thumbnail */}
-                <div style={{ 
-                  width: '100%', 
-                  height: '180px', 
-                  background: '#e5e7eb',
-                  position: 'relative',
-                  overflow: 'hidden'
-                }}>
+                {/* Thumbnail - Clickable to edit */}
+                <div 
+                  onClick={() => openEditModal(video)}
+                  style={{ 
+                    width: '100%', 
+                    height: '180px', 
+                    background: '#e5e7eb',
+                    position: 'relative',
+                    overflow: 'hidden',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.opacity = '0.8';
+                    e.currentTarget.querySelector('.edit-overlay').style.opacity = '1';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.opacity = '1';
+                    e.currentTarget.querySelector('.edit-overlay').style.opacity = '0';
+                  }}
+                >
                   {video.thumbnail_url ? (
                     <img 
                       src={`${BACKEND_URL}${video.thumbnail_url}`}
@@ -589,6 +601,26 @@ function Dashboard() {
                       🎬
                     </div>
                   )}
+                  <div 
+                    className="edit-overlay"
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: 'rgba(0,0,0,0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      opacity: 0,
+                      transition: 'opacity 0.2s',
+                      pointerEvents: 'none'
+                    }}
+                  >
+                    <span style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold' }}>✏️</span>
+                  </div>
+                </div>
                   
                   {/* Blockchain Badge Overlay */}
                   {video.has_blockchain && (
