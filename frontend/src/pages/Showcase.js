@@ -236,18 +236,58 @@ function Showcase() {
             </p>
           </div>
         ) : (
-          Object.keys(groupedVideos).map(folderName => (
+          Object.keys(groupedVideos).map(folderName => {
+            const platformInfo = SOCIAL_PLATFORMS[folderName.toLowerCase()];
+            const isPlatformFolder = !!platformInfo;
+            
+            // Get social media link for this platform
+            const platformLink = profile?.social_media_links?.find(
+              link => link.platform.toLowerCase() === folderName.toLowerCase()
+            );
+            
+            return (
             <div key={folderName} style={{ marginBottom: '3rem' }}>
-              <h2 style={{ 
-                fontSize: '1.5rem', 
-                fontWeight: 'bold', 
-                color: '#111827', 
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
                 marginBottom: '1.5rem',
                 paddingBottom: '0.75rem',
                 borderBottom: '2px solid #e5e7eb'
               }}>
-                {folderName}
-              </h2>
+                <h2 style={{ 
+                  fontSize: '1.5rem', 
+                  fontWeight: 'bold', 
+                  color: '#111827',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem'
+                }}>
+                  {isPlatformFolder && <span style={{ fontSize: '1.75rem' }}>{platformInfo.icon}</span>}
+                  {folderName}
+                </h2>
+                
+                {platformLink && profile?.showcase_settings?.showFolderLinks && (
+                  <a
+                    href={platformLink.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => trackSocialClick(folderName)}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: isPlatformFolder ? platformInfo.color : '#667eea',
+                      color: 'white',
+                      textDecoration: 'none',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    View All on {folderName} →
+                  </a>
+                )}
+              </div>
               
               <div style={{ 
                 display: 'grid', 
