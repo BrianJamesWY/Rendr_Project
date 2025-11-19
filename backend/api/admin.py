@@ -235,7 +235,7 @@ async def toggle_interested_party(
         'timestamp': datetime.now().isoformat()
     })
     
-    return {'message': f\"User {'added to' if interested else 'removed from'} interested parties\"}
+    return {'message': f"User {'added to' if interested else 'removed from'} interested parties"}
 
 @router.post("/bulk-import")
 async def bulk_import_users(
