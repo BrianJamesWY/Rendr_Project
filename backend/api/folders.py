@@ -35,6 +35,7 @@ async def create_folder(
     folder_doc = {
         "_id": folder_id,
         "folder_name": folder_data.folder_name,
+        "description": folder_data.description,
         "username": current_user.get("username"),
         "user_id": current_user["user_id"],
         "order": max_order + 1,
