@@ -166,9 +166,40 @@ function Dashboard() {
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', marginTop: '1rem' }}>
             Creator Dashboard
           </h1>
-          <p style={{ fontSize: '1rem', color: '#6b7280' }}>
+          <p style={{ fontSize: '1rem', color: '#6b7280', marginBottom: '1rem' }}>
             Welcome back, {user?.display_name}!
           </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '1rem' }}>
+            <Link
+              to="/settings"
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: '#667eea',
+                color: 'white',
+                textDecoration: 'none',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                fontSize: '0.9rem'
+              }}
+            >
+              ⚙️ Profile Settings
+            </Link>
+            <Link
+              to={`/@${user?.username}`}
+              style={{
+                padding: '0.75rem 1.5rem',
+                background: 'white',
+                color: '#667eea',
+                border: '2px solid #667eea',
+                textDecoration: 'none',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                fontSize: '0.9rem'
+              }}
+            >
+              👁️ View Showcase
+            </Link>
+          </div>
         </div>
       </div>
 
