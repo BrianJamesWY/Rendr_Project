@@ -16,9 +16,8 @@ BASE_URL = "https://portfolioplus-9.preview.emergentagent.com/api"
 # Test accounts
 TEST_ACCOUNTS = {
     "brian": {
-        "email": "brian@rendr.com",
-        "password": "Brian123!",
-        "username": "Brian"
+        "username": "BrianJames",
+        "password": "Brian123!"
     },
     "test": {
         "email": "test@rendr.com", 
