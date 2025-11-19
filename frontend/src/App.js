@@ -131,6 +131,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/showcase-editor" element={<ShowcaseEditor />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
