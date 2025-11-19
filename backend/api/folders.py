@@ -105,20 +105,31 @@ async def update_folder(
     if folder["username"] != current_user.get("username"):
         raise HTTPException(403, "Access denied")
     
-    # Check if new name conflicts
-    existing = await db.folders.find_one({
-        "username": current_user.get("username"),
-        "folder_name": folder_data.folder_name,
-        "_id": {"$ne": folder_id}
-    })
+    update_fields = {}
+    if folder_data.folder_name:
+        # Check if new name conflicts
+        existing = await db.folders.find_one({
+            "username": current_user.get("username"),
+            "folder_name": folder_data.folder_name,
+            "_id": {"$ne": folder_id}
+        })
+        
+        if existing:
+            raise HTTPException(400, "Folder with this name already exists")
+        
+        update_fields["folder_name"] = folder_data.folder_name
     
-    if existing:
-        raise HTTPException(400, "Folder with this name already exists")
+    if folder_data.description is not None:
+        update_fields["description"] = folder_data.description
     
-    await db.folders.update_one(
-        {"_id": folder_id},
-        {"$set": {"folder_name": folder_data.folder_name}}
-    )
+    if update_fields:
+        await db.folders.update_one(
+            {"_id": folder_id},
+            {"$set": update_fields}
+        )
+    
+    # Fetch updated folder
+    folder = await db.folders.find_one({"_id": folder_id})
     
     # Count videos
     video_count = await db.videos.count_documents({
