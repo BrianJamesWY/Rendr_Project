@@ -1,0 +1,355 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
+import Navigation from '../components/Navigation';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+const SOCIAL_PLATFORMS = [
+  { value: 'instagram', label: 'Instagram', icon: '📷' },
+  { value: 'tiktok', label: 'TikTok', icon: '🎵' },
+  { value: 'youtube', label: 'YouTube', icon: '▶️' },
+  { value: 'twitter', label: 'Twitter/X', icon: '🐦' },
+  { value: 'facebook', label: 'Facebook', icon: '👥' },
+];
+
+function ProfileSettings() {
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [displayName, setDisplayName] = useState('');
+  const [bio, setBio] = useState('');
+  const [collectionLabel, setCollectionLabel] = useState('Collections');
+  const [socialLinks, setSocialLinks] = useState([]);
+  const [customPlatforms, setCustomPlatforms] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const token = localStorage.getItem('rendr_token');
+
+  useEffect(() => {
+    if (!token) {
+      navigate('/CreatorLogin');
+      return;
+    }
+    loadProfile();
+  }, [token]);
+
+  const loadProfile = async () => {
+    try {
+      const res = await axios.get(`${BACKEND_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setUser(res.data);
+      setDisplayName(res.data.display_name || '');
+      setBio(res.data.bio || '');
+      
+      // Get full profile with social links
+      const profileRes = await axios.get(`${BACKEND_URL}/api/@/${res.data.username}`);
+      setSocialLinks(profileRes.data.social_media_links || []);
+      setCollectionLabel(profileRes.data.collection_label || 'Collections');
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Failed to load profile:', err);
+      setLoading(false);
+    }
+  };
+
+  const saveProfile = async () => {
+    setSaving(true);
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/@/profile`,
+        {
+          display_name: displayName,
+          bio: bio,
+          social_media_links: socialLinks,
+          collection_label: collectionLabel
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      alert('Profile updated successfully!');
+    } catch (err) {
+      alert('Failed to update profile: ' + (err.response?.data?.detail || 'Unknown error'));
+    }
+    setSaving(false);
+  };
+
+  const addSocialLink = (platform) => {
+    if (socialLinks.find(link => link.platform === platform)) {
+      alert('This platform is already added');
+      return;
+    }
+    setSocialLinks([...socialLinks, { platform, url: '', custom_name: null }]);
+  };
+
+  const updateSocialLink = (index, field, value) => {
+    const updated = [...socialLinks];
+    updated[index][field] = value;
+    setSocialLinks(updated);
+  };
+
+  const removeSocialLink = (index) => {
+    setSocialLinks(socialLinks.filter((_, i) => i !== index));
+  };
+
+  const addCustomPlatform = () => {
+    const name = prompt('Enter custom platform name:');
+    if (!name) return;
+    
+    if (user?.premium_tier === 'free') {
+      alert('Custom platforms are only available for Pro and Enterprise tiers');
+      return;
+    }
+    
+    setSocialLinks([...socialLinks, { 
+      platform: name.toLowerCase().replace(/\s+/g, '_'), 
+      url: '', 
+      custom_name: name 
+    }]);
+  };
+
+  const canEditCollectionLabel = user?.premium_tier === 'pro' || user?.premium_tier === 'enterprise';
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
+      <Navigation currentPage="settings" />
+      
+      <div style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem 1rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827' }}>
+            Profile Settings
+          </h1>
+          <Link 
+            to="/dashboard"
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: 'white',
+              color: '#667eea',
+              border: '2px solid #667eea',
+              borderRadius: '0.5rem',
+              textDecoration: 'none',
+              fontWeight: '600'
+            }}
+          >
+            ← Back to Dashboard
+          </Link>
+        </div>
+
+        {/* Basic Info */}
+        <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Basic Information</h2>
+          
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>Display Name</label>
+            <input
+              type="text"
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                fontSize: '1rem'
+              }}
+            />
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>Bio</label>
+            <textarea
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                fontSize: '1rem'
+              }}
+              placeholder="Tell visitors about yourself..."
+            />
+          </div>
+
+          <div style={{ marginBottom: '1rem' }}>
+            <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+              Collection Label
+              {!canEditCollectionLabel && (
+                <span style={{ fontSize: '0.75rem', fontWeight: 'normal', color: '#9ca3af', marginLeft: '0.5rem' }}>
+                  (Pro/Enterprise only)
+                </span>
+              )}
+            </label>
+            <input
+              type="text"
+              value={collectionLabel}
+              onChange={(e) => setCollectionLabel(e.target.value)}
+              disabled={!canEditCollectionLabel}
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                fontSize: '1rem',
+                background: canEditCollectionLabel ? 'white' : '#f9fafb',
+                cursor: canEditCollectionLabel ? 'text' : 'not-allowed'
+              }}
+              placeholder="Collections, Stories, Topics, etc."
+            />
+            <p style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.5rem' }}>
+              Customize how your video groups are labeled on your showcase page
+            </p>
+          </div>
+        </div>
+
+        {/* Social Media Links */}
+        <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Social Media Links</h2>
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <select
+                onChange={(e) => {
+                  if (e.target.value) {
+                    addSocialLink(e.target.value);
+                    e.target.value = '';
+                  }
+                }}
+                style={{
+                  padding: '0.5rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.875rem'
+                }}
+              >
+                <option value="">+ Add Platform</option>
+                {SOCIAL_PLATFORMS.map(p => (
+                  <option key={p.value} value={p.value}>{p.icon} {p.label}</option>
+                ))}
+              </select>
+              {(user?.premium_tier === 'pro' || user?.premium_tier === 'enterprise') && (
+                <button
+                  onClick={addCustomPlatform}
+                  style={{
+                    padding: '0.5rem 1rem',
+                    background: '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.875rem',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  + Custom
+                </button>
+              )}
+            </div>
+          </div>
+
+          {socialLinks.length === 0 ? (
+            <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>
+              No social media links added yet
+            </p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {socialLinks.map((link, index) => (
+                <div key={index} style={{ display: 'flex', gap: '1rem', alignItems: 'center', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+                  <div style={{ flex: '0 0 150px' }}>
+                    <input
+                      type="text"
+                      value={link.custom_name || link.platform}
+                      disabled={!link.custom_name}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem',
+                        background: link.custom_name ? 'white' : '#e5e7eb',
+                        fontWeight: '600'
+                      }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => updateSocialLink(index, 'url', e.target.value)}
+                      placeholder="https://instagram.com/yourusername"
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem'
+                      }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => removeSocialLink(index)}
+                    style={{
+                      padding: '0.5rem 0.75rem',
+                      background: '#fee2e2',
+                      color: '#991b1b',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Save Button */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+          <button
+            onClick={() => navigate('/dashboard')}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: 'white',
+              color: '#6b7280',
+              border: '1px solid #e5e7eb',
+              borderRadius: '0.5rem',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={saveProfile}
+            disabled={saving}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: saving ? '#9ca3af' : '#667eea',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              fontWeight: '600',
+              cursor: saving ? 'not-allowed' : 'pointer'
+            }}
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default ProfileSettings;
