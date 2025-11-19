@@ -163,6 +163,7 @@ async def upload_video(
             "folder_id": folder_id if folder_id else None,
             "verification_status": "verified" if blockchain_result else "pending",
             "is_public": False,
+            "tags": ["Rendr"],
             "captured_at": datetime.now().isoformat(),
             "uploaded_at": datetime.now().isoformat(),
             "verified_at": datetime.now().isoformat() if blockchain_result else None
