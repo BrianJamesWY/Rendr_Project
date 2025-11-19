@@ -148,8 +148,8 @@ async def upload_profile_picture(
         raise HTTPException(400, "Invalid file type. Use JPG, PNG, or WebP")
     
     # Create profile pictures directory
-    profile_pics_dir = Path("/app/profile_pictures")
-    profile_pics_dir.mkdir(exist_ok=True)
+    profile_pics_dir = Path("uploads/profile_pictures")
+    profile_pics_dir.mkdir(exist_ok=True, parents=True)
     
     # Save file
     file_extension = file.filename.split('.')[-1]
