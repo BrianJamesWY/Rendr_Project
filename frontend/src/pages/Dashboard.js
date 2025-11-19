@@ -630,6 +630,134 @@ function Dashboard() {
               }}
             >
               Cancel
+
+
+      {/* Edit Video Modal */}
+      {showEditModal && editingVideo && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '0.75rem',
+            padding: '2rem',
+            maxWidth: '500px',
+            width: '90%'
+          }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+              Edit Video Details
+            </h2>
+            
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+                Description
+              </label>
+              <textarea
+                value={videoDescription}
+                onChange={(e) => setVideoDescription(e.target.value)}
+                rows={3}
+                placeholder="Describe this video..."
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+                External Link (Instagram, TikTok, etc.)
+              </label>
+              <input
+                type="url"
+                value={videoExternalLink}
+                onChange={(e) => setVideoExternalLink(e.target.value)}
+                placeholder="https://instagram.com/p/..."
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem'
+                }}
+              />
+            </div>
+
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+                Platform
+              </label>
+              <select
+                value={videoPlatform}
+                onChange={(e) => setVideoPlatform(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem'
+                }}
+              >
+                <option value="">Select platform...</option>
+                <option value="Instagram">Instagram</option>
+                <option value="TikTok">TikTok</option>
+                <option value="YouTube">YouTube</option>
+                <option value="Twitter">Twitter/X</option>
+                <option value="Facebook">Facebook</option>
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                onClick={() => {
+                  setShowEditModal(false);
+                  setEditingVideo(null);
+                }}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem',
+                  background: '#f3f4f6',
+                  color: '#374151',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveVideoMetadata}
+                style={{
+                  flex: 1,
+                  padding: '0.75rem',
+                  background: '#667eea',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
             </button>
           </div>
         </div>
