@@ -1133,7 +1133,7 @@ function ShowcaseEditor() {
               <div style={{
                 display: 'grid',
                 gridTemplateColumns: settings.layout === 'list' ? '1fr' : `repeat(${previewDevice === 'mobile' ? 1 : Math.min(settings.gridColumns, 3)}, 1fr)`,
-                gap: settings.cardSpacing === 'tight' ? '0.75rem' : settings.cardSpacing === 'medium' ? '1.25rem' : '2rem'
+                gap: settings.cardSpacing === 'tight' ? '0.75rem' : settings.cardSpacing === 'medium' ? '1.25rem' : settings.cardSpacing === 'relaxed' ? '2rem' : '2.5rem'
               }}>
                 {[1, 2, 3].map((i) => (
                   <div
