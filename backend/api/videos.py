@@ -252,6 +252,8 @@ async def update_video_metadata(
         update_fields['external_link'] = video_data.external_link
     if video_data.platform is not None:
         update_fields['platform'] = video_data.platform
+    if video_data.tags is not None:
+        update_fields['tags'] = video_data.tags
     
     if update_fields:
         await db.videos.update_one(
