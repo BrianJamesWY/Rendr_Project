@@ -422,7 +422,10 @@ function Dashboard() {
                   {/* Action Buttons */}
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button
-                      onClick={() => alert('Move to folder feature coming soon!')}
+                      onClick={() => {
+                        setSelectedVideo(video);
+                        setShowMoveModal(true);
+                      }}
                       style={{
                         flex: 1,
                         padding: '0.5rem',
@@ -438,7 +441,10 @@ function Dashboard() {
                       📁 Move
                     </button>
                     <button
-                      onClick={() => navigator.clipboard.writeText(video.verification_code)}
+                      onClick={() => {
+                        navigator.clipboard.writeText(video.verification_code);
+                        alert('Code copied!');
+                      }}
                       style={{
                         flex: 1,
                         padding: '0.5rem',
