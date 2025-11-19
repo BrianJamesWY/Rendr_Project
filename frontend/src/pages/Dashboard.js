@@ -103,12 +103,14 @@ function Dashboard() {
 
   const saveVideoMetadata = async () => {
     try {
+      const tagsArray = videoTags.split(',').map(tag => tag.trim()).filter(tag => tag);
       await axios.put(
         `${BACKEND_URL}/api/videos/${editingVideo.video_id}/metadata`,
         {
           description: videoDescription,
           external_link: videoExternalLink,
-          platform: videoPlatform
+          platform: videoPlatform,
+          tags: tagsArray
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
