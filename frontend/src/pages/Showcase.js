@@ -165,6 +165,7 @@ function Showcase() {
                     href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackSocialClick(link.platform)}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
