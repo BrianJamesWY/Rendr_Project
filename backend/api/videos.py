@@ -224,6 +224,9 @@ async def get_video_status(
         "status": video['verification_status'],
         "verification_code": video['verification_code'],
         "verified_at": video.get('verified_at')
+    }
+    
+    return response
 
 @router.put("/{video_id}/metadata")
 async def update_video_metadata(
