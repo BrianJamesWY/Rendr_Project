@@ -354,19 +354,20 @@ function Dashboard() {
             Video Library
           </h2>
           <button
-            onClick={() => alert('Create new folder feature coming soon!')}
+            onClick={() => setShowCreateFolderModal(true)}
+            disabled={!canCreateFolder()}
             style={{
               padding: '0.5rem 1rem',
-              background: '#10b981',
+              background: canCreateFolder() ? '#10b981' : '#9ca3af',
               color: 'white',
               border: 'none',
               borderRadius: '0.5rem',
               fontSize: '0.875rem',
               fontWeight: '600',
-              cursor: 'pointer'
+              cursor: canCreateFolder() ? 'pointer' : 'not-allowed'
             }}
           >
-            + New Folder
+            + New Folder {user?.premium_tier === 'free' ? `(${folders.length}/3)` : ''}
           </button>
         </div>
 
