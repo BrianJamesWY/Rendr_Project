@@ -131,6 +131,44 @@ async def upload_profile_picture(
     os.makedirs(upload_dir, exist_ok=True)
     
     # Save file
+
+@router.post("/@/upload-profile-picture")
+async def upload_profile_picture(
+    file: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload profile picture"""
+    import os
+    from pathlib import Path
+    
+    # Validate file type
+    allowed_types = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+    if file.content_type not in allowed_types:
+        raise HTTPException(400, "Invalid file type. Use JPG, PNG, or WebP")
+    
+    # Create profile pictures directory
+    profile_pics_dir = Path("/app/profile_pictures")
+    profile_pics_dir.mkdir(exist_ok=True)
+    
+    # Save file
+    file_extension = file.filename.split('.')[-1]
+    filename = f"{current_user['user_id']}.{file_extension}"
+    file_path = profile_pics_dir / filename
+    
+    with open(file_path, "wb") as f:
+        content = await file.read()
+        f.write(content)
+    
+    # Update user profile
+    picture_url = f"/api/profile-pictures/{filename}"
+    await db.users.update_one(
+        {"_id": current_user["user_id"]},
+        {"$set": {"profile_picture": picture_url}}
+    )
+    
+    return {"profile_picture": picture_url}
+
     file_ext = os.path.splitext(picture.filename)[1]
     filename = f"{current_user['user_id']}{file_ext}"
     file_path = os.path.join(upload_dir, filename)
