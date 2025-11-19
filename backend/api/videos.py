@@ -8,7 +8,7 @@ from datetime import datetime
 from services.video_processor import VideoProcessor
 from services.blockchain_service import blockchain_service
 from services.notification_service import notification_service
-from models.video import VideoUploadResponse, VideoStatusResponse
+from models.video import VideoUploadResponse, VideoStatusResponse, VideoUpdate
 from utils.security import get_current_user
 from database.mongodb import get_db
 
