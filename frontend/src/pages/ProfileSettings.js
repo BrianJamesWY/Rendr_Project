@@ -147,6 +147,65 @@ function ProfileSettings() {
         <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '1rem' }}>Basic Information</h2>
           
+          {/* Banner Image (Pro/Enterprise) */}
+          {(user?.premium_tier === 'pro' || user?.premium_tier === 'enterprise') && (
+            <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f0f9ff', borderRadius: '0.5rem', border: '1px solid #bae6fd' }}>
+              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
+                🎨 Showcase Banner Image (Pro)
+              </label>
+              {user?.banner_image && (
+                <img 
+                  src={`${BACKEND_URL}${user.banner_image}`}
+                  alt="Banner"
+                  style={{ width: '100%', height: '150px', objectFit: 'cover', borderRadius: '0.5rem', marginBottom: '0.5rem' }}
+                />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                id="banner-upload"
+                style={{ display: 'none' }}
+                onChange={async (e) => {
+                  const file = e.target.files[0];
+                  if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    try {
+                      const res = await axios.post(`${BACKEND_URL}/api/@/upload-banner`, formData, {
+                        headers: { 
+                          Authorization: `Bearer ${token}`,
+                          'Content-Type': 'multipart/form-data'
+                        }
+                      });
+                      alert('✅ Banner image updated!');
+                      loadProfile();
+                    } catch (err) {
+                      alert('❌ Failed to upload: ' + (err.response?.data?.detail || 'Unknown error'));
+                    }
+                  }
+                }}
+              />
+              <label 
+                htmlFor="banner-upload"
+                style={{
+                  display: 'inline-block',
+                  padding: '0.5rem 1rem',
+                  background: '#0ea5e9',
+                  color: 'white',
+                  borderRadius: '0.5rem',
+                  cursor: 'pointer',
+                  fontSize: '0.875rem',
+                  fontWeight: '600'
+                }}
+              >
+                Upload Banner
+              </label>
+              <p style={{ fontSize: '0.75rem', color: '#0c4a6e', marginTop: '0.5rem' }}>
+                Recommended: Wide image, at least 1200x300px. Displays behind your profile on showcase page.
+              </p>
+            </div>
+          )}
+
           {/* Profile Picture */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>Profile Picture</label>
