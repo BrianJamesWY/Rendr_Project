@@ -18,6 +18,7 @@ function Dashboard() {
   const [videoDescription, setVideoDescription] = useState('');
   const [videoExternalLink, setVideoExternalLink] = useState('');
   const [videoPlatform, setVideoPlatform] = useState('');
+  const [videoTags, setVideoTags] = useState('Rendr');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('rendr_token');
