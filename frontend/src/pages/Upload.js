@@ -173,7 +173,7 @@ function Upload() {
 
   const loadFolders = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/folders`, {
+      const response = await axios.get(`${BACKEND_URL}/api/folders/`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setFolders(response.data);
