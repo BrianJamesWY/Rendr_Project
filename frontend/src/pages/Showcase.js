@@ -24,8 +24,32 @@ function Showcase() {
   useEffect(() => {
     if (username) {
       loadShowcase();
+      trackPageView();
     }
   }, [username]);
+
+  const trackPageView = async () => {
+    try {
+      const cleanUsername = username.replace(/^@/, '');
+      await axios.post(`${BACKEND_URL}/api/analytics/track/page-view`, null, {
+        params: { username: cleanUsername }
+      });
+    } catch (err) {
+      // Silently fail - don't disrupt user experience
+      console.log('Analytics tracking failed');
+    }
+  };
+
+  const trackSocialClick = async (platform) => {
+    try {
+      const cleanUsername = username.replace(/^@/, '');
+      await axios.post(`${BACKEND_URL}/api/analytics/track/social-click`, null, {
+        params: { username: cleanUsername, platform }
+      });
+    } catch (err) {
+      console.log('Analytics tracking failed');
+    }
+  };
 
   const loadShowcase = async () => {
     try {
