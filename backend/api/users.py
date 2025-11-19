@@ -73,7 +73,10 @@ async def get_creator_videos(
             thumbnail_url=thumbnail_url or "",
             captured_at=video["captured_at"],
             folder_name=folder_name,
-            folder_id=video.get("folder_id")
+            folder_id=video.get("folder_id"),
+            description=video.get("description"),
+            external_link=video.get("external_link"),
+            platform=video.get("platform")
         ))
     
     return result
