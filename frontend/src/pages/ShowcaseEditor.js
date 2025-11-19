@@ -1059,6 +1059,59 @@ function ShowcaseEditor() {
     </div>
   );
 
+
+  const renderFoldersTab = () => (
+    <div>
+      <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem' }}>📁 Showcase Folders</h3>
+      <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1.5rem' }}>
+        Organize how videos appear on your showcase page. These are separate from dashboard folders.
+      </p>
+
+      {/* Create Folder Button */}
+      <button
+        onClick={() => setShowCreateFolderModal(true)}
+        style={{
+          padding: '0.75rem 1.5rem',
+          background: '#10b981',
+          color: 'white',
+          border: 'none',
+          borderRadius: '0.5rem',
+          fontWeight: '600',
+          cursor: 'pointer',
+          marginBottom: '1.5rem',
+          width: '100%'
+        }}
+      >
+        + Create Showcase Folder
+      </button>
+
+      {/* Folders List */}
+      {showcaseFolders.length === 0 ? (
+        <div style={{ padding: '2rem', background: '#f9fafb', borderRadius: '0.5rem', textAlign: 'center', color: '#6b7280' }}>
+          No showcase folders yet. Create one to organize your videos!
+        </div>
+      ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {showcaseFolders.map(folder => (
+            <div key={folder.folder_id} style={{ padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }}>
+              <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{folder.folder_name}</div>
+              {folder.description && (
+                <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>{folder.description}</div>
+              )}
+              <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{folder.video_count} videos</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ marginTop: '1.5rem', padding: '1rem', background: '#f0f9ff', borderRadius: '0.5rem', fontSize: '0.875rem', color: '#0c4a6e' }}>
+        <strong>💡 Tip:</strong> Showcase folders control how videos are grouped on your public page. 
+        Dashboard folders are for your personal organization only.
+      </div>
+    </div>
+  );
+
+
   const getBackgroundStyle = () => {
     if (settings.gradientEnabled && isPro) {
       return {
