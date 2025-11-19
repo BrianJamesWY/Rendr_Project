@@ -75,20 +75,25 @@ function Showcase() {
   const organizeByPlatform = profile?.showcase_settings?.organizeByPlatform !== false;
   
   videos.forEach(video => {
-    let groupKey;
-    
     if (organizeByPlatform && video.platform) {
-      // Group by platform
-      groupKey = video.platform;
-    } else {
-      // Group by folder
-      groupKey = video.folder_name || 'Uncategorized';
+      // Split multiple platforms and add video to each
+      const platforms = video.platform.split(',').map(p => p.trim());
+      platforms.forEach(platform => {
+        if (platform) {
+          if (!groupedVideos[platform]) {
+            groupedVideos[platform] = [];
+          }
+          groupedVideos[platform].push(video);
+        }
+      });
+    } else if (video.folder_name) {
+      // Group by folder only if folder exists
+      if (!groupedVideos[video.folder_name]) {
+        groupedVideos[video.folder_name] = [];
+      }
+      groupedVideos[video.folder_name].push(video);
     }
-    
-    if (!groupedVideos[groupKey]) {
-      groupedVideos[groupKey] = [];
-    }
-    groupedVideos[groupKey].push(video);
+    // Skip videos without platform or folder (don't show "Uncategorized")
   });
 
   if (loading) {
