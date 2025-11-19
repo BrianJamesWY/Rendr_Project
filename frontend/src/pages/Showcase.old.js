@@ -5,15 +5,6 @@ import Navigation from '../components/Navigation';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Social media platform icons and colors
-const SOCIAL_PLATFORMS = {
-  instagram: { icon: '📷', color: '#E4405F', label: 'Instagram' },
-  tiktok: { icon: '🎵', color: '#000000', label: 'TikTok' },
-  youtube: { icon: '▶️', color: '#FF0000', label: 'YouTube' },
-  twitter: { icon: '🐦', color: '#1DA1F2', label: 'Twitter/X' },
-  facebook: { icon: '👥', color: '#1877F2', label: 'Facebook' },
-};
-
 function Showcase() {
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
@@ -31,11 +22,14 @@ function Showcase() {
     try {
       setLoading(true);
       
+      // Clean username (remove @ if present)
       const cleanUsername = username.replace(/^@/, '');
       
+      // Get profile
       const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
       setProfile(profileRes.data);
       
+      // Get videos
       const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
       setVideos(videosRes.data);
       
@@ -46,7 +40,7 @@ function Showcase() {
     }
   };
 
-  // Group videos by collection/folder
+  // Group videos by folder
   const groupedVideos = {};
   videos.forEach(video => {
     const folderName = video.folder_name || 'Uncategorized';
@@ -78,8 +72,6 @@ function Showcase() {
       </div>
     );
   }
-
-  const collectionLabel = profile.collection_label || 'Collections';
 
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
@@ -117,61 +109,6 @@ function Showcase() {
             </p>
           )}
           
-          {/* Social Media Links */}
-          {profile.social_media_links && profile.social_media_links.length > 0 && (
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              gap: '1rem', 
-              marginTop: '1.5rem',
-              marginBottom: '1.5rem',
-              flexWrap: 'wrap'
-            }}>
-              {profile.social_media_links.map((link, index) => {
-                const platformKey = link.platform.toLowerCase();
-                const platformInfo = SOCIAL_PLATFORMS[platformKey] || { 
-                  icon: '🔗', 
-                  color: '#667eea', 
-                  label: link.custom_name || link.platform 
-                };
-                
-                return (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.75rem 1.25rem',
-                      background: 'white',
-                      border: `2px solid ${platformInfo.color}`,
-                      borderRadius: '9999px',
-                      color: platformInfo.color,
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      fontSize: '0.9rem',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = platformInfo.color;
-                      e.currentTarget.style.color = 'white';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'white';
-                      e.currentTarget.style.color = platformInfo.color;
-                    }}
-                  >
-                    <span style={{ fontSize: '1.2rem' }}>{platformInfo.icon}</span>
-                    {platformInfo.label}
-                  </a>
-                );
-              })}
-            </div>
-          )}
-          
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1.5rem' }}>
             <div>
               <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#2563eb' }}>
@@ -190,7 +127,7 @@ function Showcase() {
         </div>
       </div>
 
-      {/* Collections/Videos Section */}
+      {/* Videos Grid Section */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
         {Object.keys(groupedVideos).length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
@@ -226,7 +163,8 @@ function Showcase() {
                       borderRadius: '0.75rem',
                       overflow: 'hidden',
                       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                      transition: 'transform 0.2s'
+                      transition: 'transform 0.2s',
+                      cursor: 'pointer'
                     }}
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
                     onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
@@ -254,7 +192,7 @@ function Showcase() {
                     {/* Video Info */}
                     <div style={{ padding: '1rem' }}>
                       <div style={{ 
-                        fontSize: '1rem', 
+                        fontSize: '1.125rem', 
                         fontWeight: 'bold', 
                         color: '#2563eb',
                         marginBottom: '0.5rem',
@@ -264,43 +202,29 @@ function Showcase() {
                         {video.verification_code}
                       </div>
                       
-                      {video.description && (
-                        <p style={{ 
-                          fontSize: '0.875rem', 
-                          color: '#374151', 
-                          marginBottom: '0.75rem',
-                          lineHeight: '1.5'
-                        }}>
-                          {video.description}
-                        </p>
-                      )}
-                      
-                      <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+                      <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
                         {new Date(video.captured_at).toLocaleDateString()} at {new Date(video.captured_at).toLocaleTimeString()}
                       </div>
                       
-                      {video.external_link && (
-                        <a 
-                          href={video.external_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'inline-block',
-                            padding: '0.5rem 1rem',
-                            background: '#667eea',
-                            color: 'white',
-                            textDecoration: 'none',
-                            borderRadius: '0.5rem',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
-                            transition: 'background 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = '#5568d3'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = '#667eea'}
-                        >
-                          {video.platform ? `View on ${video.platform}` : 'View Original'}
-                        </a>
-                      )}
+                      <Link 
+                        to={`/verify?code=${video.verification_code}`}
+                        style={{
+                          display: 'inline-block',
+                          marginTop: '0.75rem',
+                          padding: '0.5rem 1rem',
+                          background: '#2563eb',
+                          color: 'white',
+                          textDecoration: 'none',
+                          borderRadius: '0.5rem',
+                          fontSize: '0.875rem',
+                          fontWeight: '600',
+                          transition: 'background 0.2s'
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = '#1d4ed8'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = '#2563eb'}
+                      >
+                        Verify Video
+                      </Link>
                     </div>
                   </div>
                 ))}
