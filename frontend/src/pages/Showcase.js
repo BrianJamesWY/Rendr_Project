@@ -163,16 +163,33 @@ function Showcase() {
             />
           )}
           
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+          <h1 style={{ 
+            fontSize: '2.5rem', 
+            fontWeight: 'bold', 
+            color: profile.banner_image ? '#ffffff' : '#111827', 
+            marginBottom: '0.5rem',
+            textShadow: profile.banner_image ? '0 2px 4px rgba(0,0,0,0.8)' : 'none'
+          }}>
             {profile.display_name}
           </h1>
           
-          <p style={{ fontSize: '1.25rem', color: '#6b7280', marginBottom: '1rem' }}>
+          <p style={{ 
+            fontSize: '1.25rem', 
+            color: profile.banner_image ? '#e5e7eb' : '#6b7280', 
+            marginBottom: '1rem',
+            textShadow: profile.banner_image ? '0 1px 2px rgba(0,0,0,0.8)' : 'none'
+          }}>
             @{profile.username}
           </p>
           
           {profile.bio && (
-            <p style={{ fontSize: '1rem', color: '#374151', maxWidth: '600px', margin: '0 auto 1.5rem' }}>
+            <p style={{ 
+              fontSize: '1rem', 
+              color: profile.banner_image ? '#ffffff' : '#374151', 
+              maxWidth: '600px', 
+              margin: '0 auto 1.5rem',
+              textShadow: profile.banner_image ? '0 1px 2px rgba(0,0,0,0.8)' : 'none'
+            }}>
               {profile.bio}
             </p>
           )}
