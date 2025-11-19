@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Plans from "./pages/Plans";
 import Admin from "./pages/Admin";
 import ShowcaseEditor from "./pages/ShowcaseEditor";
+import ProfileSettings from "./pages/ProfileSettings";
 import Logo from "./components/Logo";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
