@@ -13,7 +13,9 @@ function Showcase() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadShowcase();
+    if (username) {
+      loadShowcase();
+    }
   }, [username]);
 
   const loadShowcase = async () => {
