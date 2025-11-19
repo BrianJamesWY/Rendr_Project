@@ -13,6 +13,11 @@ function Dashboard() {
   const [user, setUser] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [showMoveModal, setShowMoveModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingVideo, setEditingVideo] = useState(null);
+  const [videoDescription, setVideoDescription] = useState('');
+  const [videoExternalLink, setVideoExternalLink] = useState('');
+  const [videoPlatform, setVideoPlatform] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('rendr_token');
