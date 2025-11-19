@@ -204,3 +204,148 @@ async def get_admin_logs(
     logs = await cursor.to_list(length=limit)
     
     return logs
+
+@router.put("/users/{user_id}/interested")
+async def toggle_interested_party(
+    user_id: str,
+    interested: bool,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Toggle user as interested party (CEO only)"""
+    verify_ceo(current_user)
+    
+    user = await db.users.find_one({'_id': user_id})
+    if not user:
+        raise HTTPException(404, \"User not found\")
+    
+    await db.users.update_one(
+        {'_id': user_id},
+        {'$set': {'interested_party': interested}}
+    )
+    
+    # Log the action
+    await db.admin_logs.insert_one({
+        '_id': str(uuid.uuid4()),
+        'admin_id': current_user['user_id'],
+        'action': 'toggle_interested_party',
+        'target_user_id': user_id,
+        'target_username': user.get('username'),
+        'interested': interested,
+        'timestamp': datetime.now().isoformat()
+    })
+    
+    return {'message': f\"User {'added to' if interested else 'removed from'} interested parties\"}
+
+@router.post("/bulk-import")
+async def bulk_import_users(
+    emails: list[str],
+    send_welcome: bool = True,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    \"\"\"Bulk import users from RSVP list (CEO only)\"\"\"
+    verify_ceo(current_user)
+    
+    from passlib.context import CryptContext
+    pwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")
+    
+    imported = 0
+    skipped = 0
+    errors = []
+    
+    for email in emails:
+        email = email.strip().lower()
+        if not email:
+            continue
+            
+        # Check if exists
+        existing = await db.users.find_one({'email': email})
+        if existing:
+            skipped += 1
+            continue
+        
+        try:
+            # Create user with temporary password
+            user_id = str(uuid.uuid4())
+            temp_password = f\"Rendr{str(uuid.uuid4())[:8]}!\"
+            
+            # Generate username from email
+            username = email.split('@')[0].replace('.', '').replace('_', '')
+            
+            # Check username uniqueness
+            counter = 1
+            base_username = username
+            while await db.users.find_one({'username': username}):
+                username = f\"{base_username}{counter}\"
+                counter += 1
+            
+            user_doc = {
+                '_id': user_id,
+                'email': email,
+                'password_hash': pwd_context.hash(temp_password),
+                'display_name': email.split('@')[0],
+                'username': username,
+                'premium_tier': 'free',
+                'account_type': 'free',
+                'interested_party': True,  # Mark as interested
+                'imported_from_rsvp': True,
+                'created_at': datetime.now().isoformat(),
+                'updated_at': datetime.now().isoformat()
+            }
+            
+            await db.users.insert_one(user_doc)
+            
+            # Create default folder
+            folder_id = str(uuid.uuid4())
+            await db.folders.insert_one({
+                '_id': folder_id,
+                'folder_name': 'Default',
+                'username': username,
+                'user_id': user_id,
+                'order': 1,
+                'created_at': datetime.now().isoformat()
+            })
+            
+            # TODO: Send welcome email with temp password
+            # For now, just log it
+            print(f\"Created user: {email} with password: {temp_password}\")
+            
+            imported += 1
+            
+        except Exception as e:
+            errors.append(f\"{email}: {str(e)}\")
+    
+    # Log the action
+    await db.admin_logs.insert_one({
+        '_id': str(uuid.uuid4()),
+        'admin_id': current_user['user_id'],
+        'action': 'bulk_import',
+        'imported_count': imported,
+        'skipped_count': skipped,
+        'timestamp': datetime.now().isoformat()
+    })
+    
+    return {
+        'imported': imported,
+        'skipped': skipped,
+        'errors': errors
+    }
+
+@router.get("/interested-parties")
+async def get_interested_parties(
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    \"\"\"Get all interested party users (CEO only)\"\"\"
+    verify_ceo(current_user)
+    
+    cursor = db.users.find({'interested_party': True}).sort('created_at', -1)
+    users = await cursor.to_list(length=10000)
+    
+    return [{\n        'user_id': u['_id'],
+        'username': u.get('username'),
+        'email': u['email'],
+        'display_name': u.get('display_name'),
+        'created_at': u['created_at']
+    } for u in users]
