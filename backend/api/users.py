@@ -34,7 +34,9 @@ async def get_creator_profile(
         profile_picture=user.get("profile_picture"),
         joined_at=user.get("created_at", ""),
         total_videos=total_videos,
-        showcase_settings=user.get("showcase_settings")
+        showcase_settings=user.get("showcase_settings"),
+        social_media_links=user.get("social_media_links", []),
+        collection_label=user.get("collection_label", "Collections")
     )
 
 @router.get("/{username}/videos", response_model=List[VideoInfo])
