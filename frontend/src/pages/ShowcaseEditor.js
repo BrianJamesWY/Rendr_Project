@@ -359,6 +359,7 @@ function ShowcaseEditor() {
           {activeTab === 'appearance' && renderAppearanceTab()}
           {activeTab === 'layout' && renderLayoutTab()}
           {activeTab === 'typography' && renderTypographyTab()}
+          {activeTab === 'folders' && renderFoldersTab()}
           {activeTab === 'effects' && renderEffectsTab()}
           {activeTab === 'content' && renderContentTab()}
         </div>
