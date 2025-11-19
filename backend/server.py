@@ -50,6 +50,7 @@ app.include_router(verification.router, prefix="/api/verify", tags=["Verificatio
 app.include_router(blockchain.router, prefix="/api/blockchain", tags=["Blockchain"])
 app.include_router(notifications.router, prefix="/api/notifications", tags=["Notifications"])
 app.include_router(folders.router, prefix="/api/folders", tags=["Folders"])
+app.include_router(showcase_folders.router, tags=["Showcase Folders"])
 app.include_router(users.router, prefix="/api/@", tags=["Users"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
