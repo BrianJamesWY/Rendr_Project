@@ -217,7 +217,7 @@ async def toggle_interested_party(
     
     user = await db.users.find_one({'_id': user_id})
     if not user:
-        raise HTTPException(404, \"User not found\")
+        raise HTTPException(404, "User not found")
     
     await db.users.update_one(
         {'_id': user_id},
