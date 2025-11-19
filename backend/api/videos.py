@@ -282,7 +282,11 @@ async def get_user_videos(
             "status": v['verification_status'],
             "has_blockchain": bool(v.get('blockchain_signature')),
             "thumbnail_url": f"/api/thumbnails/{v['_id']}.jpg" if v.get('thumbnail_path') else None,
-            "folder_id": v.get('folder_id')
+            "folder_id": v.get('folder_id'),
+            "description": v.get('description'),
+            "external_link": v.get('external_link'),
+            "platform": v.get('platform'),
+            "tags": v.get('tags', ['Rendr'])
         }
         if v.get('blockchain_signature'):
             video_info['blockchain_tx'] = v['blockchain_signature'].get('tx_hash')
