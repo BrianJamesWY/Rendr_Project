@@ -101,6 +101,15 @@ async def update_creator_profile(
     if profile_data.showcase_settings is not None:
         update_fields["showcase_settings"] = profile_data.showcase_settings
     
+    if profile_data.social_media_links is not None:
+        update_fields["social_media_links"] = profile_data.social_media_links
+    
+    if profile_data.collection_label is not None:
+        # Only allow Pro/Enterprise to change collection label
+        user = await db.users.find_one({"_id": current_user["user_id"]})
+        if user.get("premium_tier") in ["pro", "enterprise"]:
+            update_fields["collection_label"] = profile_data.collection_label
+    
     if update_fields:
         await db.users.update_one(
             {"_id": current_user["user_id"]},
