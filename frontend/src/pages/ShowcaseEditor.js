@@ -935,21 +935,6 @@ function ShowcaseEditor() {
               🔄 Reset
             </button>
 
-            <Link
-              to={`/@${username}`}
-              target="_blank"
-              style={{
-                padding: '0.75rem 1.25rem',
-                background: '#10b981',
-                color: '#fff',
-                textDecoration: 'none',
-                borderRadius: '6px',
-                fontWeight: '600'
-              }}
-            >
-              👁️ View Live
-            </Link>
-            
             <button
               onClick={saveSettings}
               style={{
