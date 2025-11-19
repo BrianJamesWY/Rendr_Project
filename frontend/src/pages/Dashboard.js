@@ -54,7 +54,7 @@ function Dashboard() {
       
       // Get folders (optional - don't fail if this errors)
       try {
-        const foldersRes = await axios.get(`${BACKEND_URL}/api/folders`, {
+        const foldersRes = await axios.get(`${BACKEND_URL}/api/folders/`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         setFolders(foldersRes.data || []);
