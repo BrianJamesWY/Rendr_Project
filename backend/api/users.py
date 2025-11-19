@@ -165,7 +165,9 @@ async def upload_profile_picture(
     await db.users.update_one(
         {"_id": current_user["user_id"]},
         {"$set": {"profile_picture": picture_url}}
-
+    )
+    
+    return {"profile_picture": picture_url}
 
 @router.post("/@/upload-banner")
 async def upload_banner(
