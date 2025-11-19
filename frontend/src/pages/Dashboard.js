@@ -693,9 +693,28 @@ function Dashboard() {
             </h2>
             
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem' }}>
-                Description
-              </label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <label style={{ fontWeight: '600' }}>
+                  Description
+                </label>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(videoDescription);
+                    alert('Description copied!');
+                  }}
+                  style={{
+                    padding: '0.25rem 0.75rem',
+                    background: '#f3f4f6',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  📋 Copy
+                </button>
+              </div>
               <textarea
                 value={videoDescription}
                 onChange={(e) => setVideoDescription(e.target.value)}
