@@ -80,4 +80,178 @@ async def get_public_analytics(db = Depends(get_db)):
             'avg_videos_per_user': round(avg_videos_per_user, 2),
             'active_creators': active_creators
         }
+
+
+@router.post("/track/page-view")
+async def track_page_view(
+    username: str,
+    referrer: str = None,
+    db = Depends(get_db)
+):
+    """Track showcase page view"""
+    view_doc = {
+        "username": username,
+        "viewed_at": datetime.now(timezone.utc).isoformat(),
+        "referrer": referrer,
+        "type": "page_view"
+    }
+    await db.analytics_events.insert_one(view_doc)
+    return {"status": "tracked"}
+
+@router.post("/track/video-view")
+async def track_video_view(
+    video_id: str,
+    username: str,
+    referrer: str = None,
+    db = Depends(get_db)
+):
+    """Track individual video view"""
+    view_doc = {
+        "video_id": video_id,
+        "username": username,
+        "viewed_at": datetime.now(timezone.utc).isoformat(),
+        "referrer": referrer,
+        "type": "video_view"
+    }
+    await db.analytics_events.insert_one(view_doc)
+    return {"status": "tracked"}
+
+@router.post("/track/social-click")
+async def track_social_click(
+    username: str,
+    platform: str,
+    referrer: str = None,
+    db = Depends(get_db)
+):
+    """Track social media link click"""
+    click_doc = {
+        "username": username,
+        "platform": platform,
+        "clicked_at": datetime.now(timezone.utc).isoformat(),
+        "referrer": referrer,
+        "type": "social_click"
+    }
+    await db.analytics_events.insert_one(click_doc)
+    return {"status": "tracked"}
+
+@router.get("/dashboard")
+async def get_dashboard_analytics(
+    days: int = 30,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Get analytics summary for creator dashboard"""
+    username = current_user.get("username")
+    
+    # Calculate date range
+    start_date = datetime.now(timezone.utc) - timedelta(days=days)
+    
+    # Count total page views
+    page_views = await db.analytics_events.count_documents({
+        "username": username,
+        "type": "page_view",
+        "viewed_at": {"$gte": start_date.isoformat()}
+    })
+    
+    # Count total video views
+    video_views = await db.analytics_events.count_documents({
+        "username": username,
+        "type": "video_view",
+        "viewed_at": {"$gte": start_date.isoformat()}
+    })
+    
+    # Count total social clicks
+    social_clicks = await db.analytics_events.count_documents({
+        "username": username,
+        "type": "social_click",
+        "clicked_at": {"$gte": start_date.isoformat()}
+    })
+    
+    # Get top videos by views
+    pipeline = [
+        {
+            "$match": {
+                "username": username,
+                "type": "video_view",
+                "viewed_at": {"$gte": start_date.isoformat()}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$video_id",
+                "view_count": {"$sum": 1}
+            }
+        },
+        {
+            "$sort": {"view_count": -1}
+        },
+        {
+            "$limit": 5
+        }
+    ]
+    
+    top_videos_cursor = db.analytics_events.aggregate(pipeline)
+    top_videos_raw = await top_videos_cursor.to_list(length=5)
+    
+    # Enrich with video details
+    top_videos = []
+    for item in top_videos_raw:
+        video = await db.videos.find_one({"_id": item["_id"]}, {"_id": 0, "verification_code": 1, "thumbnail_path": 1})
+        if video:
+            top_videos.append({
+                "video_id": item["_id"],
+                "verification_code": video.get("verification_code"),
+                "thumbnail_path": video.get("thumbnail_path"),
+                "view_count": item["view_count"]
+            })
+    
+    # Get social click breakdown
+    social_pipeline = [
+        {
+            "$match": {
+                "username": username,
+                "type": "social_click",
+                "clicked_at": {"$gte": start_date.isoformat()}
+            }
+        },
+        {
+            "$group": {
+                "_id": "$platform",
+                "click_count": {"$sum": 1}
+            }
+        },
+        {
+            "$sort": {"click_count": -1}
+        }
+    ]
+    
+    social_cursor = db.analytics_events.aggregate(social_pipeline)
+    social_breakdown = await social_cursor.to_list(length=20)
+    
+    social_click_breakdown = [
+        {
+            "platform": item["_id"],
+            "click_count": item["click_count"]
+        }
+        for item in social_breakdown
+    ]
+    
+    # Get recent activity (last 10 events)
+    recent_cursor = db.analytics_events.find(
+        {"username": username},
+        {"_id": 0}
+    ).sort("viewed_at", -1).limit(10)
+    
+    recent_activity = await recent_cursor.to_list(length=10)
+    
+    return {
+        "total_page_views": page_views,
+        "total_video_views": video_views,
+        "total_social_clicks": social_clicks,
+        "top_videos": top_videos,
+        "social_click_breakdown": social_click_breakdown,
+        "recent_activity": recent_activity,
+        "date_range_days": days
+    }
+
     }
