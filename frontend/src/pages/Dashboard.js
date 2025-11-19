@@ -359,6 +359,81 @@ function Dashboard() {
         </div>
       </div>
 
+
+
+      {/* Analytics Section */}
+      {analytics && (
+        <div style={{ maxWidth: '1200px', margin: '2rem auto 3rem', padding: '0 1rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '1.5rem' }}>
+            📊 Analytics (Last 30 Days)
+          </h2>
+          
+          {/* Key Metrics */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>Page Views</div>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981' }}>{analytics.total_page_views}</div>
+              <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>Showcase visits</div>
+            </div>
+            
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>Video Views</div>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#667eea' }}>{analytics.total_video_views}</div>
+              <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>Individual videos viewed</div>
+            </div>
+            
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>Social Clicks</div>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#f59e0b' }}>{analytics.total_social_clicks}</div>
+              <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.25rem' }}>Links followed</div>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+            {/* Top Videos */}
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem' }}>🔥 Top Videos</h3>
+              {analytics.top_videos && analytics.top_videos.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {analytics.top_videos.map((video, index) => (
+                    <div key={video.video_id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#6b7280', width: '24px' }}>{index + 1}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '0.875rem', fontWeight: '600', fontFamily: 'monospace' }}>{video.verification_code}</div>
+                        <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>{video.view_count} views</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: '0.875rem', color: '#9ca3af', textAlign: 'center', padding: '2rem' }}>
+                  No video views yet
+                </p>
+              )}
+            </div>
+
+            {/* Social Click Breakdown */}
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', marginBottom: '1rem' }}>🔗 Social Media Clicks</h3>
+              {analytics.social_click_breakdown && analytics.social_click_breakdown.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  {analytics.social_click_breakdown.map((item) => (
+                    <div key={item.platform} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+                      <span style={{ fontSize: '0.875rem', fontWeight: '600' }}>{item.platform}</span>
+                      <span style={{ fontSize: '1rem', fontWeight: 'bold', color: '#667eea' }}>{item.click_count}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{ fontSize: '0.875rem', color: '#9ca3af', textAlign: 'center', padding: '2rem' }}>
+                  No social clicks yet
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Folder Management & Videos */}
       <div style={{ maxWidth: '1200px', margin: '0 auto 3rem', padding: '0 1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
