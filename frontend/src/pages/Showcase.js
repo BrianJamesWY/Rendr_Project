@@ -22,12 +22,15 @@ function Showcase() {
     try {
       setLoading(true);
       
+      // Clean username (remove @ if present)
+      const cleanUsername = username.replace(/^@/, '');
+      
       // Get profile
-      const profileRes = await axios.get(`${BACKEND_URL}/api/@/${username}`);
+      const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
       setProfile(profileRes.data);
       
       // Get videos
-      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${username}/videos`);
+      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
       setVideos(videosRes.data);
       
       setLoading(false);
