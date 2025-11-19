@@ -158,7 +158,7 @@ function Dashboard() {
 
     try {
       await axios.post(
-        `${BACKEND_URL}/api/folders`,
+        `${BACKEND_URL}/api/folders/`,
         {
           folder_name: newFolderName,
           description: newFolderDescription
