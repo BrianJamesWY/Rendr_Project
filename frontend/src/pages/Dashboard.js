@@ -1014,20 +1014,11 @@ function Dashboard() {
         </div>
       )}
 
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
-              >
-                <option value="">Select platform...</option>
-                <option value="Instagram">Instagram</option>
-                <option value="TikTok">TikTok</option>
-                <option value="YouTube">YouTube</option>
-                <option value="Twitter">Twitter/X</option>
-                <option value="Facebook">Facebook</option>
-              </select>
-            </div>
+    </div>
+  );
+}
 
-            <div style={{ marginBottom: '1.5rem' }}>
+export default Dashboard;
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                 <label style={{ fontWeight: '600' }}>
                   Tags (comma-separated)
