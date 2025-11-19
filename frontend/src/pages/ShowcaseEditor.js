@@ -1270,7 +1270,7 @@ function ShowcaseEditor() {
                 gridTemplateColumns: settings.layout === 'list' ? '1fr' : `repeat(${previewDevice === 'mobile' ? 1 : Math.min(settings.gridColumns, 3)}, 1fr)`,
                 gap: settings.cardSpacing === 'tight' ? '0.75rem' : settings.cardSpacing === 'medium' ? '1.25rem' : settings.cardSpacing === 'relaxed' ? '2rem' : '2.5rem'
               }}>
-                {[1, 2, 3].map((i) => (
+                {(videos.length > 0 ? videos.slice(0, 3) : [{ video_id: '1' }, { video_id: '2' }, { video_id: '3' }]).map((video, i) => (
                   <div
                     key={i}
                     style={{
