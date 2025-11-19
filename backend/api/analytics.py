@@ -253,5 +253,3 @@ async def get_dashboard_analytics(
         "recent_activity": recent_activity,
         "date_range_days": days
     }
-
-    }
