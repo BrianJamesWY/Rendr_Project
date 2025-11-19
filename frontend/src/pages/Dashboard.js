@@ -620,7 +620,6 @@ function Dashboard() {
                   >
                     <span style={{ color: 'white', fontSize: '1.5rem', fontWeight: 'bold' }}>✏️</span>
                   </div>
-                </div>
                   
                   {/* Blockchain Badge Overlay */}
                   {video.has_blockchain && (
