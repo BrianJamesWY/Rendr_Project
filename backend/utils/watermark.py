@@ -36,24 +36,9 @@ class WatermarkProcessor:
         overlay = Image.new('RGBA', (overlay_width, overlay_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(overlay)
         
-        # Load and resize logo
-        try:
-            logo = Image.open(self.logo_path).convert('RGBA')
-            # Resize logo to fit width
-            logo_size = 60
-            logo.thumbnail((logo_size, logo_size), Image.Resampling.LANCZOS)
-            
-            # Paste logo at top
-            logo_x = (overlay_width - logo.width) // 2
-            overlay.paste(logo, (logo_x, 10), logo)
-            
-            current_y = 10 + logo.height + 20
-        except Exception as e:
-            print(f"Error loading logo: {e}")
-            current_y = 10
+        current_y = 10
         
-        # Draw username text vertically
-        # We'll draw text horizontally first, then rotate
+        # Draw username text vertically FIRST (at top)
         text = f"@{username}"
         
         # Use a default font
@@ -74,9 +59,37 @@ class WatermarkProcessor:
         # Rotate text 90 degrees counter-clockwise (bottom to top, letters face left)
         text_img = text_img.rotate(90, expand=True)
         
-        # Paste rotated text below logo
+        # Paste rotated text at top
         text_x = (overlay_width - text_img.width) // 2
         overlay.paste(text_img, (text_x, current_y), text_img)
+        
+        current_y += text_img.height + 20
+        
+        # Load and resize logo (BELOW username)
+        try:
+            logo = Image.open(self.logo_path).convert('RGBA')
+            
+            # Remove white background - make it transparent
+            logo_data = logo.getdata()
+            new_data = []
+            for item in logo_data:
+                # If pixel is white or near-white, make it transparent
+                if item[0] > 200 and item[1] > 200 and item[2] > 200:
+                    new_data.append((255, 255, 255, 0))  # Transparent
+                else:
+                    new_data.append(item)
+            logo.putdata(new_data)
+            
+            # Resize logo to fit width
+            logo_size = 60
+            logo.thumbnail((logo_size, logo_size), Image.Resampling.LANCZOS)
+            
+            # Paste logo below username
+            logo_x = (overlay_width - logo.width) // 2
+            overlay.paste(logo, (logo_x, current_y), logo)
+            
+        except Exception as e:
+            print(f"Error loading logo: {e}")
         
         # Save overlay
         overlay_filename = f"watermark_{username}_{position}.png"
