@@ -28,6 +28,10 @@ function Dashboard() {
   const [videoShowcaseFolder, setVideoShowcaseFolder] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedFolderId, setSelectedFolderId] = useState(null);
+  const [showFolderManagement, setShowFolderManagement] = useState(false);
+  const [editingFolder, setEditingFolder] = useState(null);
+  const [viewMode, setViewMode] = useState('all'); // 'all' or 'folder'
   const token = localStorage.getItem('rendr_token');
   const username = localStorage.getItem('rendr_username');
 
