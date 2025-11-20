@@ -20,7 +20,8 @@ function ProfileSettings() {
   const [displayName, setDisplayName] = useState('');
   const [bio, setBio] = useState('');
   const [collectionLabel, setCollectionLabel] = useState('Collections');
-  const [socialLinks, setSocialLinks] = useState([]);
+  const [socialLinks, setSocialLinks] = useState([]); // Showcase links (public profiles)
+  const [dashboardLinks, setDashboardLinks] = useState([]); // Dashboard links (logged-in accounts)
   const [customPlatforms, setCustomPlatforms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
