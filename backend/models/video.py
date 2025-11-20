@@ -48,3 +48,4 @@ class VideoUpdate(BaseModel):
     external_link: Optional[str] = None
     platform: Optional[str] = None
     tags: Optional[List[str]] = None
+    showcase_folder_id: Optional[str] = None
