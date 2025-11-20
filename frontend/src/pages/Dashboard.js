@@ -66,6 +66,17 @@ function Dashboard() {
         setFolders([]);
       }
 
+      // Get showcase folders
+      try {
+        const showcaseFoldersRes = await axios.get(`${BACKEND_URL}/api/showcase-folders`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        setShowcaseFolders(showcaseFoldersRes.data || []);
+      } catch (showcaseFolderErr) {
+        console.log('Showcase folders not loaded:', showcaseFolderErr);
+        setShowcaseFolders([]);
+      }
+
       // Load analytics
       try {
         const analyticsRes = await axios.get(`${BACKEND_URL}/api/analytics/dashboard?days=30`, {
