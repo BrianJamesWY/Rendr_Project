@@ -434,6 +434,9 @@ function ProfileSettings() {
           )}
         </div>
 
+        {/* Watermark Settings */}
+        <WatermarkSettings user={user} onUpdate={loadProfile} />
+
         {/* Save Button */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
           <button
