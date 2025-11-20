@@ -66,6 +66,7 @@ function ProfileSettings() {
           display_name: displayName,
           bio: bio,
           social_media_links: socialLinks,
+          dashboard_social_links: dashboardLinks,
           collection_label: collectionLabel
         },
         { headers: { Authorization: `Bearer ${token}` } }
