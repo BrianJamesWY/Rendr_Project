@@ -262,6 +262,12 @@ function CreatorLogin() {
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
+
+            <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+              <Link to="/forgot-password" style={{ color: '#667eea', fontSize: '0.875rem', textDecoration: 'none' }}>
+                Forgot Password?
+              </Link>
+            </div>
           </form>
         ) : (
           <form onSubmit={handleRegister}>
