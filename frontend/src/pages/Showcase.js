@@ -277,21 +277,23 @@ function Showcase() {
           <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📹</div>
             <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>
-              No verified videos yet
+              No videos in folders yet
+            </p>
+            <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem' }}>
+              Videos must be added to showcase folders to appear here
             </p>
           </div>
         ) : (
-          Object.keys(groupedVideos).map(folderName => {
-            const platformInfo = SOCIAL_PLATFORMS[folderName.toLowerCase()];
-            const isPlatformFolder = !!platformInfo;
+          Object.keys(groupedVideos).map(folderId => {
+            const folderData = groupedVideos[folderId];
             
-            // Get social media link for this platform
-            const platformLink = profile?.social_media_links?.find(
-              link => link.platform.toLowerCase() === folderName.toLowerCase()
-            );
+            // Skip empty folders
+            if (!folderData.videos || folderData.videos.length === 0) {
+              return null;
+            }
             
             return (
-            <div key={folderName} style={{ marginBottom: '3rem' }}>
+            <div key={folderId} style={{ marginBottom: '3rem' }}>
               <div style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
@@ -300,38 +302,39 @@ function Showcase() {
                 paddingBottom: '0.75rem',
                 borderBottom: '2px solid #e5e7eb'
               }}>
-                <h2 style={{ 
-                  fontSize: '1.5rem', 
-                  fontWeight: 'bold', 
-                  color: '#111827',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
-                }}>
-                  {isPlatformFolder && <span style={{ fontSize: '1.75rem' }}>{platformInfo.icon}</span>}
-                  {folderName}
-                </h2>
+                <div>
+                  <h2 style={{ 
+                    fontSize: '1.5rem', 
+                    fontWeight: 'bold', 
+                    color: '#111827',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    marginBottom: '0.25rem'
+                  }}>
+                    📁 {folderData.folderName}
+                  </h2>
+                  {folderData.description && (
+                    <p style={{ 
+                      fontSize: '0.875rem', 
+                      color: '#6b7280',
+                      margin: 0
+                    }}>
+                      {folderData.description}
+                    </p>
+                  )}
+                </div>
                 
-                {platformLink && profile?.showcase_settings?.showFolderLinks && (
-                  <a
-                    href={platformLink.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackSocialClick(folderName)}
-                    style={{
-                      padding: '0.5rem 1rem',
-                      background: isPlatformFolder ? platformInfo.color : '#667eea',
-                      color: 'white',
-                      textDecoration: 'none',
-                      borderRadius: '0.5rem',
-                      fontSize: '0.875rem',
-                      fontWeight: '600',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    View All on {folderName} →
-                  </a>
-                )}
+                <div style={{
+                  padding: '0.5rem 1rem',
+                  background: '#f3f4f6',
+                  borderRadius: '0.5rem',
+                  fontSize: '0.875rem',
+                  fontWeight: '600',
+                  color: '#374151'
+                }}>
+                  {folderData.videos.length} {folderData.videos.length === 1 ? 'video' : 'videos'}
+                </div>
               </div>
               
               <div style={{ 
@@ -339,7 +342,7 @@ function Showcase() {
                 gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
                 gap: '1.5rem' 
               }}>
-                {groupedVideos[folderName].map(video => (
+                {folderData.videos.map(video => (
                   <div 
                     key={video.video_id}
                     style={{
