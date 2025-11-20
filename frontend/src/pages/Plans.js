@@ -51,7 +51,7 @@ function Plans() {
         'Dedicated support',
         'Custom integrations'
       ],
-      cta: 'Contact Us',
+      cta: 'Subscribe Now',
       color: '#10b981'
     }
   ];
