@@ -167,6 +167,67 @@ function Admin() {
     }
   };
 
+  // Password protection screen
+  if (!isAuthorized) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a' }}>
+        <div style={{ 
+          background: 'white', 
+          padding: '3rem', 
+          borderRadius: '1rem', 
+          boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+          maxWidth: '400px',
+          width: '90%'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔐</div>
+            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+              CEO Access
+            </h1>
+            <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
+              Enter password to continue
+            </p>
+          </div>
+
+          <form onSubmit={handlePasswordSubmit}>
+            <input
+              type="password"
+              value={accessPassword}
+              onChange={(e) => setAccessPassword(e.target.value)}
+              placeholder="Enter CEO password"
+              autoFocus
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                border: '2px solid #e5e7eb',
+                borderRadius: '0.5rem',
+                fontSize: '1rem',
+                marginBottom: '1rem',
+                outline: 'none'
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                width: '100%',
+                padding: '0.75rem',
+                background: '#667eea',
+                color: 'white',
+                border: 'none',
+                borderRadius: '0.5rem',
+                fontWeight: '600',
+                fontSize: '1rem',
+                cursor: 'pointer'
+              }}
+            >
+              Access Panel
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
