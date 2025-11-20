@@ -136,7 +136,7 @@ async def upload_profile_picture(
     
     # Save file
 
-@router.post("/@/upload-profile-picture")
+@router.post("/upload-profile-picture")
 async def upload_profile_picture(
     file: UploadFile = File(...),
     current_user = Depends(get_current_user),
