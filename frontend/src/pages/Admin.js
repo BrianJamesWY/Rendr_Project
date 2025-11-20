@@ -16,6 +16,8 @@ function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('stats'); // stats, users, logs, interested, import
+  const [accessPassword, setAccessPassword] = useState('');
+  const [isAuthorized, setIsAuthorized] = useState(false);
   const token = localStorage.getItem('rendr_token');
 
   useEffect(() => {
@@ -23,8 +25,26 @@ function Admin() {
       navigate('/CreatorLogin');
       return;
     }
-    loadAdminData();
+    // Check if already authorized
+    const authorized = sessionStorage.getItem('ceo_authorized') === 'true';
+    if (authorized) {
+      setIsAuthorized(true);
+      loadAdminData();
+    }
   }, [token]);
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    // Secret password
+    if (accessPassword === 'RendrCEO2025!') {
+      setIsAuthorized(true);
+      sessionStorage.setItem('ceo_authorized', 'true');
+      loadAdminData();
+    } else {
+      alert('❌ Incorrect password');
+      setAccessPassword('');
+    }
+  };
 
   const loadAdminData = async () => {
     try {
