@@ -587,7 +587,6 @@ function ProfileSettings() {
         </div>
       </div>
     </div>
-    </>
   );
 }
 
