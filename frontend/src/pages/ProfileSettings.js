@@ -351,10 +351,105 @@ function ProfileSettings() {
           </div>
         </div>
 
-        {/* Social Media Links */}
+        {/* Dashboard Social Media Links (Logged-in accounts) */}
         <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Social Media Links</h2>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>🔗 Dashboard Social Media Links</h2>
+          </div>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            Links to your logged-in social media accounts (only visible to you on dashboard)
+          </p>
+          <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+            <select
+              onChange={(e) => {
+                if (e.target.value) {
+                  addDashboardLink(e.target.value);
+                  e.target.value = '';
+                }
+              }}
+              style={{
+                padding: '0.5rem',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0.375rem',
+                fontSize: '0.875rem'
+              }}
+            >
+              <option value="">+ Add Platform</option>
+              {SOCIAL_PLATFORMS.map(p => (
+                <option key={p.value} value={p.value}>{p.icon} {p.label}</option>
+              ))}
+            </select>
+          </div>
+
+          {dashboardLinks.length === 0 ? (
+            <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>
+              No dashboard links added yet
+            </p>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {dashboardLinks.map((link, index) => (
+                <div key={index} style={{ display: 'flex', gap: '1rem', alignItems: 'center', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+                  <div style={{ flex: '0 0 150px' }}>
+                    <input
+                      type="text"
+                      value={link.platform}
+                      disabled
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem',
+                        background: '#e5e7eb',
+                        fontWeight: '600',
+                        textTransform: 'capitalize'
+                      }}
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <input
+                      type="url"
+                      value={link.url}
+                      onChange={(e) => updateDashboardLink(index, 'url', e.target.value)}
+                      placeholder="https://instagram.com/accounts/login"
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.875rem'
+                      }}
+                    />
+                  </div>
+                  <button
+                    onClick={() => removeDashboardLink(index)}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      background: '#fee2e2',
+                      color: '#dc2626',
+                      border: 'none',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Showcase Social Media Links (Public profiles) */}
+        <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>👥 Showcase Social Media Links</h2>
+          </div>
+          <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
+            Public links to your social media profiles (visible to visitors on your showcase page)
+          </p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <select
                 onChange={(e) => {
