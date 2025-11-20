@@ -114,5 +114,6 @@ async def get_me(current_user=Depends(get_current_user), db=Depends(get_db)):
         "username": user.get("username", user.get("display_name")),
         "account_type": user.get("account_type", "free"),
         "premium_tier": user.get("premium_tier", "free"),
+        "dashboard_social_links": user.get("dashboard_social_links", []),
         "created_at": user["created_at"]
     }
