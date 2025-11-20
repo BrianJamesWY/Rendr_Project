@@ -681,53 +681,6 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Social Media Quick Folders */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
-          gap: '1rem',
-          marginBottom: '2rem'
-        }}>
-          {[
-            { name: 'Instagram', icon: '📷', color: '#E4405F' },
-            { name: 'TikTok', icon: '🎵', color: '#000000' },
-            { name: 'YouTube', icon: '▶️', color: '#FF0000' },
-            { name: 'Twitter', icon: '🐦', color: '#1DA1F2' },
-            { name: 'Default', icon: '📁', color: '#667eea' }
-          ].map(platform => (
-            <div
-              key={platform.name}
-              style={{
-                background: 'white',
-                borderRadius: '0.75rem',
-                padding: '1rem',
-                textAlign: 'center',
-                cursor: 'pointer',
-                border: '2px solid #e5e7eb',
-                transition: 'all 0.2s',
-                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = platform.color;
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = '#e5e7eb';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-              onClick={() => alert(`${platform.name} folder - Coming soon!`)}
-            >
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{platform.icon}</div>
-              <div style={{ fontSize: '0.875rem', fontWeight: '600', color: '#111827' }}>
-                {platform.name}
-              </div>
-              <div style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
-                0 videos
-              </div>
-            </div>
-          ))}
-        </div>
-        
         {/* Videos Grid */}
         {videos.length === 0 ? (
           <div style={{ 
