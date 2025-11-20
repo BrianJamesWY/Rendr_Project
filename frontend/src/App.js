@@ -13,6 +13,8 @@ import ShowcaseEditor from "./pages/ShowcaseEditor";
 import ProfileSettings from "./pages/ProfileSettings";
 import Pricing from "./pages/Pricing";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Logo from "./components/Logo";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
