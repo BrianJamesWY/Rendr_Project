@@ -54,6 +54,7 @@ app.include_router(showcase_folders.router, tags=["Showcase Folders"])
 app.include_router(users.router, prefix="/api/@", tags=["Users"])
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 
 @app.get("/")
 async def root():
