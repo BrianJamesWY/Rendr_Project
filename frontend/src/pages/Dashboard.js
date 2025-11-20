@@ -123,6 +123,7 @@ function Dashboard() {
 
   const openEditModal = (video) => {
     setEditingVideo(video);
+    setVideoShowcaseFolder(video.showcase_folder_id || '');
     setVideoDescription(video.description || '');
     setVideoExternalLink(video.external_link || '');
     setVideoPlatform(video.platform || '');
