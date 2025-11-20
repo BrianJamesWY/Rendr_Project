@@ -43,7 +43,34 @@ async def upload_video(
         shutil.copyfileobj(video_file.file, buffer)
     
     try:
-        # Process video
+        # Get user info for watermark
+        user = await db.users.find_one({"_id": current_user["user_id"]})
+        username = user.get("username", current_user.get("username", "user"))
+        tier = user.get("premium_tier", "free")
+        watermark_position = user.get("watermark_position", "left")
+        
+        # Apply watermark BEFORE processing (critical for hash integrity)
+        print(f"💧 Applying watermark to video...")
+        watermarked_path = f"{upload_dir}/{video_id}_watermarked.mp4"
+        
+        watermark_success = watermark_processor.apply_watermark(
+            input_video_path=file_path,
+            output_video_path=watermarked_path,
+            username=username,
+            position=watermark_position,
+            tier=tier
+        )
+        
+        if not watermark_success:
+            print(f"⚠️ Watermark failed, continuing with original video")
+            watermarked_path = file_path
+        else:
+            # Replace original with watermarked version
+            os.remove(file_path)
+            os.rename(watermarked_path, file_path)
+            print(f"✅ Watermark applied successfully")
+        
+        # Process video (with watermark already applied)
         print(f"🎬 Processing video: {video_id}")
         frames, video_metadata = video_processor.extract_frames(file_path)
         perceptual_hash = video_processor.calculate_perceptual_hash(frames)
