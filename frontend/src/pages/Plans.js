@@ -23,8 +23,8 @@ function Plans() {
     },
     {
       name: 'Pro',
-      price: 'Coming Soon',
-      period: '',
+      price: '$9.99',
+      period: '/month',
       features: [
         'Everything in Free, plus:',
         'Custom watermark positioning',
@@ -34,14 +34,14 @@ function Plans() {
         'Advanced analytics',
         'Monetization tools'
       ],
-      cta: 'Notify Me',
+      cta: 'Subscribe Now',
       color: '#667eea',
       popular: true
     },
     {
       name: 'Enterprise',
-      price: 'Coming Soon',
-      period: '',
+      price: '$49.99',
+      period: '/month',
       features: [
         'Everything in Pro, plus:',
         'Video storage on our servers',
