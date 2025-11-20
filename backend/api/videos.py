@@ -285,6 +285,7 @@ async def get_user_videos(
             "has_blockchain": bool(v.get('blockchain_signature')),
             "thumbnail_url": f"/api/thumbnails/{v['_id']}.jpg" if v.get('thumbnail_path') else None,
             "folder_id": v.get('folder_id'),
+            "showcase_folder_id": v.get('showcase_folder_id'),
             "description": v.get('description'),
             "external_link": v.get('external_link'),
             "platform": v.get('platform'),
