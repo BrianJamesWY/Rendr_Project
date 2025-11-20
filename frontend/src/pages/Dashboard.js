@@ -1016,6 +1016,51 @@ function Dashboard() {
               </p>
             </div>
 
+            <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                <label style={{ fontWeight: '600' }}>
+                  📁 Showcase Folder
+                </label>
+                <button
+                  onClick={() => setShowQuickCreateFolder(true)}
+                  style={{
+                    padding: '0.25rem 0.75rem',
+                    background: '#10b981',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.375rem',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  + New Folder
+                </button>
+              </div>
+              <select
+                value={videoShowcaseFolder}
+                onChange={(e) => setVideoShowcaseFolder(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  background: 'white'
+                }}
+              >
+                <option value="">No Folder (Not visible on showcase)</option>
+                {showcaseFolders.map(folder => (
+                  <option key={folder.folder_id} value={folder.folder_id}>
+                    {folder.folder_name}
+                  </option>
+                ))}
+              </select>
+              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                Videos must be in a showcase folder to appear on your public page
+              </p>
+            </div>
+
             <div style={{ display: 'flex', gap: '1rem' }}>
               <button
                 onClick={() => {
