@@ -81,7 +81,7 @@ function Admin() {
 
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/api/admin/impersonate/${userId}`,
+        `${BACKEND_URL}/api/ceo-access-b7k9m2x/impersonate/${userId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
