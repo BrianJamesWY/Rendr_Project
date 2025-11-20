@@ -18,6 +18,7 @@ function Showcase() {
   const { username } = useParams();
   const [profile, setProfile] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [showcaseFolders, setShowcaseFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
