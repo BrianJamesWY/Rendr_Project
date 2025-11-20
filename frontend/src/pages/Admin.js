@@ -112,7 +112,7 @@ function Admin() {
   const toggleInterestedParty = async (userId, currentState) => {
     try {
       await axios.put(
-        `${BACKEND_URL}/api/admin/users/${userId}/interested?interested=${!currentState}`,
+        `${BACKEND_URL}/api/ceo-access-b7k9m2x/users/${userId}/interested?interested=${!currentState}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
