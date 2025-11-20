@@ -242,6 +242,43 @@ async def get_creator_showcase_folders(
             "folder_id": folder["_id"],
             "folder_name": folder["folder_name"],
             "description": folder.get("description"),
+
+
+@router.put("/watermark-settings")
+async def update_watermark_settings(
+    position: str,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Update watermark position (Pro/Enterprise only for non-left positions)"""
+    from utils.watermark import WatermarkProcessor
+    
+    # Get user tier
+    user = await db.users.find_one({"_id": current_user["user_id"]})
+    tier = user.get("premium_tier", "free")
+    
+    watermark_processor = WatermarkProcessor()
+    allowed_positions = watermark_processor.get_allowed_positions(tier)
+    
+    if position not in allowed_positions:
+        raise HTTPException(
+            403,
+            f"Position '{position}' not available for {tier} tier. Allowed: {', '.join(allowed_positions)}"
+        )
+    
+    # Update watermark position
+    await db.users.update_one(
+        {"_id": current_user["user_id"]},
+        {"$set": {"watermark_position": position}}
+    )
+    
+    return {
+        "message": "Watermark settings updated",
+        "position": position,
+        "tier": tier,
+        "allowed_positions": allowed_positions
+    }
+
             "video_count": video_count,
             "order": folder.get("order", 0)
         })
