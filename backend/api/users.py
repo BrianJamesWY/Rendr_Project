@@ -210,3 +210,40 @@ async def upload_banner(
     )
     
     return {"banner_image": banner_url}
+
+
+@router.get("/{username}/showcase-folders")
+async def get_creator_showcase_folders(
+    username: str,
+    db = Depends(get_db)
+):
+    """Get showcase folders for a creator's public page"""
+    # Remove @ if present
+    username = username.lstrip('@')
+    user = await db.users.find_one({"username": username})
+    
+    if not user:
+        raise HTTPException(404, f"Creator @{username} not found")
+    
+    # Get showcase folders for this user
+    cursor = db.showcase_folders.find({"username": username}).sort("order", 1)
+    folders = await cursor.to_list(length=100)
+    
+    result = []
+    for folder in folders:
+        # Count videos in this folder
+        video_count = await db.videos.count_documents({
+            "user_id": user["_id"],
+            "showcase_folder_id": folder["_id"]
+        })
+        
+        result.append({
+            "folder_id": folder["_id"],
+            "folder_name": folder["folder_name"],
+            "description": folder.get("description"),
+            "video_count": video_count,
+            "order": folder.get("order", 0)
+        })
+    
+    return result
+
