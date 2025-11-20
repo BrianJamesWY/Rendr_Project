@@ -47,6 +47,7 @@ function ProfileSettings() {
       // Get full profile with social links
       const profileRes = await axios.get(`${BACKEND_URL}/api/@/${res.data.username}`);
       setSocialLinks(profileRes.data.social_media_links || []);
+      setDashboardLinks(res.data.dashboard_social_links || []);
       setCollectionLabel(profileRes.data.collection_label || 'Collections');
       
       setLoading(false);
