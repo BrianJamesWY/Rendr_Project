@@ -488,7 +488,6 @@ function ProfileSettings() {
                 </button>
               )}
             </div>
-          </div>
 
           {socialLinks.length === 0 ? (
             <p style={{ color: '#6b7280', textAlign: 'center', padding: '2rem' }}>
