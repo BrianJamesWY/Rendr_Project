@@ -324,20 +324,6 @@ function Upload() {
               )}
             </div>
 
-            {/* Source selection */}
-            <div style={styles.formGroup}>
-              <label style={styles.label}>Video Source</label>
-              <select
-                value={source}
-                onChange={(e) => setSource(e.target.value)}
-                style={styles.select}
-                disabled={uploading}
-              >
-                <option value="bodycam">Rendr Bodycam</option>
-                <option value="studio">Rendr Studio</option>
-              </select>
-            </div>
-
             {/* Folder selection */}
             {folders.length > 0 && (
               <div style={styles.formGroup}>
