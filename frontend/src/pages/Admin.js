@@ -134,7 +134,7 @@ function Admin() {
 
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/api/admin/bulk-import`,
+        `${BACKEND_URL}/api/ceo-access-b7k9m2x/bulk-import`,
         emails,
         { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
       );
