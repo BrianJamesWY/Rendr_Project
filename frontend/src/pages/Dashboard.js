@@ -153,6 +153,33 @@ function Dashboard() {
     }
   };
 
+  const createQuickShowcaseFolder = async () => {
+    if (!newFolderName.trim()) {
+      alert('Please enter a folder name');
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/showcase-folders`,
+        {
+          folder_name: newFolderName,
+          description: newFolderDescription
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setShowQuickCreateFolder(false);
+      setNewFolderName('');
+      setNewFolderDescription('');
+      loadDashboard();
+      // Set the newly created folder as selected
+      setVideoShowcaseFolder(response.data.folder_id);
+      alert('✅ Folder created successfully!');
+    } catch (err) {
+      alert('❌ Failed to create folder: ' + (err.response?.data?.detail || 'Unknown error'));
+    }
+  };
+
   const canCreateFolder = () => {
     const tier = user?.premium_tier || 'free';
     if (tier === 'free') {
