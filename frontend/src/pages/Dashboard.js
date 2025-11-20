@@ -568,6 +568,68 @@ function Dashboard() {
           </button>
         </div>
 
+        {/* Quick Links to Social Media (Logged-in accounts) */}
+        {user?.social_media_links && user.social_media_links.length > 0 && (
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#374151', marginBottom: '1rem' }}>
+              🔗 Your Social Media Accounts
+            </h3>
+            <div style={{ 
+              display: 'flex', 
+              gap: '1rem',
+              flexWrap: 'wrap'
+            }}>
+              {user.social_media_links.map((link, idx) => {
+                const platformLoggedInUrls = {
+                  'instagram': 'https://www.instagram.com/accounts/login/',
+                  'tiktok': 'https://www.tiktok.com/login',
+                  'youtube': 'https://studio.youtube.com/',
+                  'twitter': 'https://twitter.com/home',
+                  'facebook': 'https://www.facebook.com/'
+                };
+                
+                const loggedInUrl = platformLoggedInUrls[link.platform?.toLowerCase()] || link.url;
+                
+                return (
+                  <a
+                    key={idx}
+                    href={loggedInUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '0.75rem 1.5rem',
+                      background: 'white',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      textDecoration: 'none',
+                      color: '#374151',
+                      fontWeight: '600',
+                      fontSize: '0.875rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#667eea';
+                      e.currentTarget.style.background = '#f9fafb';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#e5e7eb';
+                      e.currentTarget.style.background = 'white';
+                    }}
+                  >
+                    {link.platform} →
+                  </a>
+                );
+              })}
+            </div>
+            <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginTop: '0.5rem' }}>
+              Quick links to your logged-in social media accounts
+            </p>
+          </div>
+        )}
+
         {/* Folder Cards */}
         {viewMode === 'all' && showcaseFolders.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
