@@ -704,7 +704,11 @@ function Dashboard() {
             gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
             gap: '1.5rem'
           }}>
-            {videos.map(video => (
+            {videos
+              .filter(video => viewMode === 'all' || video.showcase_folder_id === selectedFolderId)
+              .map(video => {
+                const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
+                return (
               <div 
                 key={video.video_id}
                 style={{
