@@ -64,6 +64,15 @@ function Showcase() {
       const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
       setVideos(videosRes.data);
       
+      // Load showcase folders for this user
+      try {
+        const foldersRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/showcase-folders`);
+        setShowcaseFolders(foldersRes.data || []);
+      } catch (folderErr) {
+        console.log('No showcase folders loaded');
+        setShowcaseFolders([]);
+      }
+      
       setLoading(false);
     } catch (err) {
       setError(err.response?.data?.detail || 'Creator not found');
