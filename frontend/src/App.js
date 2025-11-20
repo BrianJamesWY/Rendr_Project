@@ -140,6 +140,8 @@ function App() {
           <Route path="/settings" element={<ProfileSettings />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
