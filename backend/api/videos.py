@@ -254,6 +254,8 @@ async def update_video_metadata(
         update_fields['platform'] = video_data.platform
     if video_data.tags is not None:
         update_fields['tags'] = video_data.tags
+    if video_data.showcase_folder_id is not None:
+        update_fields['showcase_folder_id'] = video_data.showcase_folder_id
     
     if update_fields:
         await db.videos.update_one(
