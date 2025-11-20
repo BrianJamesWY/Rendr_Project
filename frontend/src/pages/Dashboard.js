@@ -579,7 +579,7 @@ function Dashboard() {
               gap: '1rem',
               flexWrap: 'wrap'
             }}>
-              {user.social_media_links.map((link, idx) => {
+              {user.dashboard_social_links.map((link, idx) => {
                 const platformLoggedInUrls = {
                   'instagram': 'https://www.instagram.com/accounts/login/',
                   'tiktok': 'https://www.tiktok.com/login',
