@@ -705,7 +705,15 @@ function Dashboard() {
             gap: '1.5rem'
           }}>
             {videos
-              .filter(video => viewMode === 'all' || video.showcase_folder_id === selectedFolderId)
+              .filter(video => {
+                if (viewMode === 'folder') {
+                  // When viewing a specific folder, only show videos in that folder
+                  return video.showcase_folder_id === selectedFolderId;
+                } else {
+                  // When in "all" mode, only show videos NOT in any folder
+                  return !video.showcase_folder_id;
+                }
+              })
               .map(video => {
                 const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
                 return (
