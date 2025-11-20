@@ -170,9 +170,8 @@ function Plans() {
                     transition: 'all 0.2s'
                   }}
                   onClick={(e) => {
-                    if (plan.name !== 'Free') {
+                    if (plan.name === 'Free') {
                       e.preventDefault();
-                      alert('Coming soon! We\'ll notify you when this plan launches.');
                     }
                   }}
                 >
