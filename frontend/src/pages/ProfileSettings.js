@@ -96,6 +96,24 @@ function ProfileSettings() {
     setSocialLinks(socialLinks.filter((_, i) => i !== index));
   };
 
+  const addDashboardLink = (platform) => {
+    if (dashboardLinks.find(link => link.platform === platform)) {
+      alert('This platform is already added');
+      return;
+    }
+    dashboardLinks([...dashboardLinks, { platform, url: '', custom_name: null }]);
+  };
+
+  const updateDashboardLink = (index, field, value) => {
+    const updated = [...dashboardLinks];
+    updated[index][field] = value;
+    setDashboardLinks(updated);
+  };
+
+  const removeDashboardLink = (index) => {
+    setDashboardLinks(dashboardLinks.filter((_, i) => i !== index));
+  };
+
   const addCustomPlatform = () => {
     const name = prompt('Enter custom platform name:');
     if (!name) return;
