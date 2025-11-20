@@ -628,6 +628,18 @@ function Dashboard() {
               Quick links to your logged-in social media accounts
             </p>
           </div>
+        ) : (
+          <div style={{ 
+            marginBottom: '2rem', 
+            padding: '1rem', 
+            background: '#eff6ff', 
+            border: '1px solid #bfdbfe', 
+            borderRadius: '0.5rem' 
+          }}>
+            <p style={{ fontSize: '0.875rem', color: '#1e40af', margin: 0 }}>
+              💡 <strong>Tip:</strong> Add your social media account links in <Link to="/settings" style={{ color: '#667eea', textDecoration: 'underline' }}>Settings</Link> for quick access to your logged-in accounts
+            </p>
+          </div>
         )}
 
         {/* Folder Cards */}
