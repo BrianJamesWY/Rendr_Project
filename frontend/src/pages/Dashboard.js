@@ -526,26 +526,98 @@ function Dashboard() {
       {/* Folder Management & Videos */}
       <div style={{ maxWidth: '1200px', margin: '0 auto 3rem', padding: '0 1rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>
-            Video Library
-          </h2>
+          <div>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>
+              {viewMode === 'all' ? 'All Videos' : selectedFolderId ? showcaseFolders.find(f => f.folder_id === selectedFolderId)?.folder_name : 'Video Library'}
+            </h2>
+            {viewMode === 'folder' && (
+              <button
+                onClick={() => { setViewMode('all'); setSelectedFolderId(null); }}
+                style={{
+                  marginTop: '0.5rem',
+                  padding: '0.25rem 0.75rem',
+                  background: '#f3f4f6',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  color: '#374151'
+                }}
+              >
+                ← Back to All Videos
+              </button>
+            )}
+          </div>
           <button
-            onClick={() => setShowCreateFolderModal(true)}
-            disabled={!canCreateFolder()}
+            onClick={() => setShowFolderManagement(true)}
             style={{
-              padding: '0.5rem 1rem',
-              background: canCreateFolder() ? '#10b981' : '#9ca3af',
+              padding: '0.75rem 1.5rem',
+              background: '#667eea',
               color: 'white',
               border: 'none',
               borderRadius: '0.5rem',
               fontSize: '0.875rem',
               fontWeight: '600',
-              cursor: canCreateFolder() ? 'pointer' : 'not-allowed'
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
             }}
           >
-            + New Folder {user?.premium_tier === 'free' ? `(${folders.length}/3)` : ''}
+            📁 Folders ({showcaseFolders.length})
           </button>
         </div>
+
+        {/* Folder Cards */}
+        {viewMode === 'all' && showcaseFolders.length > 0 && (
+          <div style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#374151', marginBottom: '1rem' }}>
+              Your Showcase Folders
+            </h3>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+              gap: '1rem' 
+            }}>
+              {showcaseFolders.map(folder => {
+                const folderVideos = videos.filter(v => v.showcase_folder_id === folder.folder_id);
+                return (
+                  <div 
+                    key={folder.folder_id}
+                    onClick={() => { setSelectedFolderId(folder.folder_id); setViewMode('folder'); }}
+                    style={{
+                      background: 'white',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '0.75rem',
+                      padding: '1.5rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s',
+                      textAlign: 'center'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#667eea';
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#e5e7eb';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                  >
+                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📁</div>
+                    <div style={{ fontWeight: '600', color: '#111827', marginBottom: '0.25rem' }}>
+                      {folder.folder_name}
+                    </div>
+                    <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                      {folderVideos.length} {folderVideos.length === 1 ? 'video' : 'videos'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Social Media Quick Folders */}
         <div style={{ 
