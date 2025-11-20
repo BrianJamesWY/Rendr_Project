@@ -403,6 +403,31 @@ function Showcase() {
                         {new Date(video.captured_at).toLocaleDateString()} at {new Date(video.captured_at).toLocaleTimeString()}
                       </div>
                       
+                      {video.tags && video.tags.length > 0 && (
+                        <div style={{ marginBottom: '0.75rem' }}>
+                          <div style={{ fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.25rem' }}>
+                            Tags:
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
+                            {video.tags.map((tag, idx) => (
+                              <span 
+                                key={idx}
+                                style={{
+                                  padding: '0.25rem 0.5rem',
+                                  background: '#f3f4f6',
+                                  color: '#374151',
+                                  borderRadius: '0.25rem',
+                                  fontSize: '0.75rem',
+                                  fontWeight: '500'
+                                }}
+                              >
+                                #{tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       {video.external_link && (
                         <a 
                           href={video.external_link}
