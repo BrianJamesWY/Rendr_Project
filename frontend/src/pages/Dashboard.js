@@ -829,13 +829,40 @@ function Dashboard() {
                   <div style={{ 
                     fontSize: '0.75rem', 
                     color: '#9ca3af',
-                    marginBottom: '1rem',
+                    marginBottom: '0.5rem',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.25rem'
                   }}>
                     {video.source === 'bodycam' ? '📱 Bodycam' : '💻 Studio'}
                   </div>
+                  
+                  {/* Folder Badge */}
+                  {videoFolder ? (
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: '#059669',
+                      background: '#d1fae5',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      marginBottom: '1rem',
+                      display: 'inline-block'
+                    }}>
+                      📁 {videoFolder.folder_name}
+                    </div>
+                  ) : (
+                    <div style={{
+                      fontSize: '0.75rem',
+                      color: '#dc2626',
+                      background: '#fee2e2',
+                      padding: '0.25rem 0.5rem',
+                      borderRadius: '0.25rem',
+                      marginBottom: '1rem',
+                      display: 'inline-block'
+                    }}>
+                      ⚠️ Not in folder
+                    </div>
+                  )}
                   
                   {/* Action Buttons */}
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
