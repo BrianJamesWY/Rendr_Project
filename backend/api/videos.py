@@ -10,10 +10,12 @@ from services.blockchain_service import blockchain_service
 from services.notification_service import notification_service
 from models.video import VideoUploadResponse, VideoStatusResponse, VideoUpdate
 from utils.security import get_current_user
+from utils.watermark import WatermarkProcessor
 from database.mongodb import get_db
 
 router = APIRouter()
 video_processor = VideoProcessor()
+watermark_processor = WatermarkProcessor()
 
 @router.post("/upload", response_model=VideoUploadResponse)
 async def upload_video(
