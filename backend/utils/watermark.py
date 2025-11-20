@@ -39,7 +39,7 @@ class WatermarkProcessor:
         current_y = 10
         
         # Draw username text vertically FIRST (at top)
-        text = f"@{username}"
+        text = username
         
         # Use a default font
         try:
