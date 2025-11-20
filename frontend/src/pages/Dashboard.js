@@ -184,6 +184,48 @@ function Dashboard() {
     }
   };
 
+  const updateShowcaseFolder = async () => {
+    if (!editingFolder || !newFolderName.trim()) {
+      alert('Please enter a folder name');
+      return;
+    }
+
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/showcase-folders/${editingFolder.folder_id}`,
+        {
+          folder_name: newFolderName,
+          description: newFolderDescription
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setEditingFolder(null);
+      setNewFolderName('');
+      setNewFolderDescription('');
+      loadDashboard();
+      alert('✅ Folder updated successfully!');
+    } catch (err) {
+      alert('❌ Failed to update folder: ' + (err.response?.data?.detail || 'Unknown error'));
+    }
+  };
+
+  const deleteShowcaseFolder = async (folderId) => {
+    if (!window.confirm('Delete this folder? Videos will remain but will be unassigned.')) {
+      return;
+    }
+
+    try {
+      await axios.delete(
+        `${BACKEND_URL}/api/showcase-folders/${folderId}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      loadDashboard();
+      alert('✅ Folder deleted successfully!');
+    } catch (err) {
+      alert('❌ Failed to delete folder: ' + (err.response?.data?.detail || 'Unknown error'));
+    }
+  };
+
   const canCreateFolder = () => {
     const tier = user?.premium_tier || 'free';
     if (tier === 'free') {
