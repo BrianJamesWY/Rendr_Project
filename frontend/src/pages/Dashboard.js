@@ -140,7 +140,8 @@ function Dashboard() {
           description: videoDescription,
           external_link: videoExternalLink,
           platform: videoPlatform,
-          tags: tagsArray
+          tags: tagsArray,
+          showcase_folder_id: videoShowcaseFolder || null
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
