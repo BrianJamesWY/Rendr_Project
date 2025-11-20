@@ -155,7 +155,7 @@ function Plans() {
                 </ul>
 
                 <Link
-                  to={plan.name === 'Free' ? '/dashboard' : '#'}
+                  to={plan.name === 'Free' ? '/dashboard' : '/pricing'}
                   style={{
                     display: 'block',
                     width: '100%',
