@@ -141,7 +141,6 @@ function ProfileSettings() {
   }
 
   return (
-    <>
     <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
       <Navigation currentPage="settings" />
       
