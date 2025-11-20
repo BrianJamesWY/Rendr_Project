@@ -173,7 +173,7 @@ async def upload_profile_picture(
     
     return {"profile_picture": picture_url}
 
-@router.post("/@/upload-banner")
+@router.post("/upload-banner")
 async def upload_banner(
     file: UploadFile = File(...),
     current_user = Depends(get_current_user),
