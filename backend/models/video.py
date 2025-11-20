@@ -37,6 +37,7 @@ class VideoInfo(BaseModel):
     captured_at: str
     folder_name: Optional[str] = None
     folder_id: Optional[str] = None
+    showcase_folder_id: Optional[str] = None
     description: Optional[str] = None
     external_link: Optional[str] = None
     platform: Optional[str] = None
