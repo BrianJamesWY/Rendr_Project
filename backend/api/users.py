@@ -242,6 +242,11 @@ async def get_creator_showcase_folders(
             "folder_id": folder["_id"],
             "folder_name": folder["folder_name"],
             "description": folder.get("description"),
+            "video_count": video_count,
+            "order": folder.get("order", 0)
+        })
+    
+    return result
 
 
 @router.put("/watermark-settings")
