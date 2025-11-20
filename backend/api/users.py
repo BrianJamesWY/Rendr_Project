@@ -284,9 +284,3 @@ async def update_watermark_settings(
         "allowed_positions": allowed_positions
     }
 
-            "video_count": video_count,
-            "order": folder.get("order", 0)
-        })
-    
-    return result
-
