@@ -10,12 +10,14 @@ function Dashboard() {
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [folders, setFolders] = useState([]);
+  const [showcaseFolders, setShowcaseFolders] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [user, setUser] = useState(null);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [showMoveModal, setShowMoveModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCreateFolderModal, setShowCreateFolderModal] = useState(false);
+  const [showQuickCreateFolder, setShowQuickCreateFolder] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const [newFolderDescription, setNewFolderDescription] = useState('');
   const [editingVideo, setEditingVideo] = useState(null);
@@ -23,6 +25,7 @@ function Dashboard() {
   const [videoExternalLink, setVideoExternalLink] = useState('');
   const [videoPlatform, setVideoPlatform] = useState('');
   const [videoTags, setVideoTags] = useState('Rendr');
+  const [videoShowcaseFolder, setVideoShowcaseFolder] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const token = localStorage.getItem('rendr_token');
