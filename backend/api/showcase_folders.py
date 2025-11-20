@@ -92,6 +92,49 @@ async def create_showcase_folder(
         "order": folder_doc["order"]
     }
 
+
+@router.put("/{folder_id}")
+async def update_showcase_folder(
+    folder_id: str,
+    folder_data: dict,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Update a showcase folder"""
+    folder = await db.showcase_folders.find_one({"_id": folder_id})
+    
+    if not folder:
+        raise HTTPException(404, "Folder not found")
+    
+    if folder["user_id"] != current_user["user_id"]:
+        raise HTTPException(403, "Access denied")
+    
+    folder_name = folder_data.get("folder_name")
+    description = folder_data.get("description")
+    
+    update_fields = {}
+    if folder_name:
+        # Check for name conflicts
+        existing = await db.showcase_folders.find_one({
+            "user_id": current_user["user_id"],
+            "folder_name": folder_name,
+            "_id": {"$ne": folder_id}
+        })
+        if existing:
+            raise HTTPException(400, "Folder with this name already exists")
+        update_fields["folder_name"] = folder_name
+    
+    if description is not None:
+        update_fields["description"] = description
+    
+    if update_fields:
+        await db.showcase_folders.update_one(
+            {"_id": folder_id},
+            {"$set": update_fields}
+        )
+    
+    return {"message": "Folder updated successfully"}
+
 @router.delete("/{folder_id}")
 async def delete_showcase_folder(
     folder_id: str,
