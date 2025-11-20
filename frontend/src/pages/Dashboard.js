@@ -1369,6 +1369,213 @@ function Dashboard() {
         </div>
       )}
 
+      {/* Folder Management Modal */}
+      {showFolderManagement && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '0.75rem',
+            padding: '2rem',
+            maxWidth: '600px',
+            width: '90%',
+            maxHeight: '80vh',
+            overflow: 'auto'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+                📁 Manage Folders
+              </h2>
+              <button
+                onClick={() => { setShowFolderManagement(false); setEditingFolder(null); setNewFolderName(''); setNewFolderDescription(''); }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '1.5rem',
+                  cursor: 'pointer',
+                  color: '#6b7280'
+                }}
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Create/Edit Form */}
+            <div style={{ marginBottom: '2rem', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+              <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>
+                {editingFolder ? 'Edit Folder' : 'Create New Folder'}
+              </h3>
+              
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  Folder Name
+                </label>
+                <input
+                  type="text"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  placeholder="e.g., My Best Work"
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  Description (optional)
+                </label>
+                <textarea
+                  value={newFolderDescription}
+                  onChange={(e) => setNewFolderDescription(e.target.value)}
+                  rows={2}
+                  placeholder="Brief description..."
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem'
+                  }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                {editingFolder && (
+                  <button
+                    onClick={() => { setEditingFolder(null); setNewFolderName(''); setNewFolderDescription(''); }}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      background: '#f3f4f6',
+                      color: '#374151',
+                      border: 'none',
+                      borderRadius: '0.5rem',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem'
+                    }}
+                  >
+                    Cancel
+                  </button>
+                )}
+                <button
+                  onClick={editingFolder ? updateShowcaseFolder : createQuickShowcaseFolder}
+                  style={{
+                    flex: 1,
+                    padding: '0.75rem',
+                    background: '#10b981',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '0.5rem',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem'
+                  }}
+                >
+                  {editingFolder ? 'Update Folder' : 'Create Folder'}
+                </button>
+              </div>
+            </div>
+
+            {/* Folders List */}
+            <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>
+              Your Folders ({showcaseFolders.length})
+            </h3>
+
+            {showcaseFolders.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem', color: '#6b7280' }}>
+                No folders yet. Create one above!
+              </div>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {showcaseFolders.map(folder => {
+                  const folderVideos = videos.filter(v => v.showcase_folder_id === folder.folder_id);
+                  return (
+                    <div 
+                      key={folder.folder_id}
+                      style={{
+                        padding: '1rem',
+                        background: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.5rem',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>
+                          📁 {folder.folder_name}
+                        </div>
+                        {folder.description && (
+                          <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.25rem' }}>
+                            {folder.description}
+                          </div>
+                        )}
+                        <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+                          {folderVideos.length} {folderVideos.length === 1 ? 'video' : 'videos'}
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.5rem' }}>
+                        <button
+                          onClick={() => {
+                            setEditingFolder(folder);
+                            setNewFolderName(folder.folder_name);
+                            setNewFolderDescription(folder.description || '');
+                          }}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: '#f3f4f6',
+                            border: 'none',
+                            borderRadius: '0.375rem',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            color: '#374151'
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => deleteShowcaseFolder(folder.folder_id)}
+                          style={{
+                            padding: '0.5rem 1rem',
+                            background: '#fee2e2',
+                            border: 'none',
+                            borderRadius: '0.375rem',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            color: '#dc2626'
+                          }}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {showQuickCreateFolder && (
         <div style={{
           position: 'fixed',
