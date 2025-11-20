@@ -65,7 +65,7 @@ function Admin() {
 
     try {
       await axios.put(
-        `${BACKEND_URL}/api/admin/users/${userId}/tier?tier=${tier}`,
+        `${BACKEND_URL}/api/ceo-access-b7k9m2x/users/${userId}/tier?tier=${tier}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
