@@ -48,5 +48,6 @@ class UpdateProfile(BaseModel):
     bio: Optional[str] = None
     showcase_settings: Optional[Dict] = None
     social_media_links: Optional[List[Dict]] = None
+    dashboard_social_links: Optional[List[Dict]] = None
     collection_label: Optional[str] = None
     banner_image: Optional[str] = None
