@@ -101,7 +101,7 @@ function ProfileSettings() {
       alert('This platform is already added');
       return;
     }
-    dashboardLinks([...dashboardLinks, { platform, url: '', custom_name: null }]);
+    setDashboardLinks([...dashboardLinks, { platform, url: '', custom_name: null }]);
   };
 
   const updateDashboardLink = (index, field, value) => {
