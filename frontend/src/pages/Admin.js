@@ -31,7 +31,7 @@ function Admin() {
       setLoading(true);
       
       const [statsRes, usersRes, logsRes, interestedRes] = await Promise.all([
-        axios.get(`${BACKEND_URL}/api/admin/stats`, {
+        axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/stats`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get(`${BACKEND_URL}/api/admin/users`, {
