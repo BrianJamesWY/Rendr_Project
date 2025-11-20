@@ -24,6 +24,7 @@ class UserResponse(BaseModel):
     username: str
     account_type: str
     premium_tier: str
+    dashboard_social_links: Optional[List[Dict]] = []
     created_at: str
 
 class UserWithToken(UserResponse):
