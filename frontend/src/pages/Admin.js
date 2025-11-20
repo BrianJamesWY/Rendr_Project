@@ -37,7 +37,7 @@ function Admin() {
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/users`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`${BACKEND_URL}/api/admin/logs?limit=50`, {
+        axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/logs?limit=50`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
         axios.get(`${BACKEND_URL}/api/admin/interested-parties`, {
