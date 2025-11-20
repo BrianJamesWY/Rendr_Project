@@ -387,6 +387,20 @@ function Showcase() {
                       }}>
                         {video.verification_code}
                       </div>
+
+                      {/* Source Badge */}
+                      <div style={{
+                        display: 'inline-block',
+                        padding: '0.25rem 0.75rem',
+                        background: video.source === 'bodycam' ? '#fef3c7' : '#dbeafe',
+                        color: video.source === 'bodycam' ? '#92400e' : '#1e40af',
+                        borderRadius: '0.375rem',
+                        fontSize: '0.75rem',
+                        fontWeight: '600',
+                        marginBottom: '0.75rem'
+                      }}>
+                        {video.source === 'bodycam' ? '📱 Rendr BodyCam' : '💻 Rendr Studio'}
+                      </div>
                       
                       {video.description && (
                         <p style={{ 
