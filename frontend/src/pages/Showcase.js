@@ -80,30 +80,23 @@ function Showcase() {
     }
   };
 
-  // Group videos by platform or collection/folder
+  // Group videos by showcase folders
   const groupedVideos = {};
-  const organizeByPlatform = profile?.showcase_settings?.organizeByPlatform !== false;
   
+  // Create folder groups from showcase folders
+  showcaseFolders.forEach(folder => {
+    groupedVideos[folder.folder_id] = {
+      folderName: folder.folder_name,
+      description: folder.description,
+      videos: []
+    };
+  });
+  
+  // Assign videos to their folders
   videos.forEach(video => {
-    if (organizeByPlatform && video.platform) {
-      // Split multiple platforms and add video to each
-      const platforms = video.platform.split(',').map(p => p.trim());
-      platforms.forEach(platform => {
-        if (platform) {
-          if (!groupedVideos[platform]) {
-            groupedVideos[platform] = [];
-          }
-          groupedVideos[platform].push(video);
-        }
-      });
-    } else if (video.folder_name) {
-      // Group by folder only if folder exists
-      if (!groupedVideos[video.folder_name]) {
-        groupedVideos[video.folder_name] = [];
-      }
-      groupedVideos[video.folder_name].push(video);
+    if (video.showcase_folder_id && groupedVideos[video.showcase_folder_id]) {
+      groupedVideos[video.showcase_folder_id].videos.push(video);
     }
-    // Skip videos without platform or folder (don't show "Uncategorized")
   });
 
   if (loading) {
