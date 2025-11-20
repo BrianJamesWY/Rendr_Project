@@ -436,7 +436,11 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Dashboard Folder Cards View Implementation"
+    - "Folders Management Button Implementation"
+    - "Video Organization with Folder Badges"
+    - "Showcase Page Tags with Headers"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
