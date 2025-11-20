@@ -569,7 +569,7 @@ function Dashboard() {
         </div>
 
         {/* Quick Links to Social Media (Logged-in accounts) */}
-        {user?.dashboard_social_links && user.dashboard_social_links.length > 0 && (
+        {user?.dashboard_social_links && user.dashboard_social_links.length > 0 ? (
           <div style={{ marginBottom: '2rem' }}>
             <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#374151', marginBottom: '1rem' }}>
               🔗 Your Social Media Accounts
