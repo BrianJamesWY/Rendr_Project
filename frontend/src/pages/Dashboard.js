@@ -935,53 +935,113 @@ function Dashboard() {
             width: '90%'
           }}>
             <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>
-              Move Video
+              📁 Organize Video
             </h3>
-            <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>
-              Move <strong>{selectedVideo.verification_code}</strong> to:
+            <p style={{ color: '#6b7280', marginBottom: '0.5rem' }}>
+              Video: <strong>{selectedVideo.verification_code}</strong>
             </p>
+            {selectedVideo.showcase_folder_id && (
+              <p style={{ fontSize: '0.875rem', color: '#059669', marginBottom: '1.5rem', background: '#d1fae5', padding: '0.5rem', borderRadius: '0.375rem' }}>
+                Currently in: <strong>{showcaseFolders.find(f => f.folder_id === selectedVideo.showcase_folder_id)?.folder_name || 'Unknown'}</strong>
+              </p>
+            )}
+            {!selectedVideo.showcase_folder_id && (
+              <p style={{ fontSize: '0.875rem', color: '#dc2626', marginBottom: '1.5rem', background: '#fee2e2', padding: '0.5rem', borderRadius: '0.375rem' }}>
+                ⚠️ Not in any showcase folder (won't appear on public page)
+              </p>
+            )}
             
+            <h4 style={{ fontSize: '0.875rem', fontWeight: '600', color: '#374151', marginBottom: '0.75rem' }}>
+              Move to showcase folder:
+            </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-              {folders.map(folder => (
-                <button
-                  key={folder.folder_id}
-                  onClick={() => moveVideoToFolder(selectedVideo.video_id, folder.folder_id)}
-                  style={{
-                    padding: '1rem',
-                    background: '#f3f4f6',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '0.5rem',
-                    textAlign: 'left',
-                    cursor: 'pointer',
-                    fontWeight: '600',
-                    transition: 'all 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#667eea';
-                    e.currentTarget.style.background = '#eff6ff';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = '#e5e7eb';
-                    e.currentTarget.style.background = '#f3f4f6';
-                  }}
-                >
-                  📁 {folder.folder_name}
-                </button>
-              ))}
+              {showcaseFolders.map(folder => {
+                const isCurrentFolder = selectedVideo.showcase_folder_id === folder.folder_id;
+                return (
+                  <button
+                    key={folder.folder_id}
+                    onClick={async () => {
+                      try {
+                        await axios.put(
+                          `${BACKEND_URL}/api/videos/${selectedVideo.video_id}/metadata`,
+                          { showcase_folder_id: folder.folder_id },
+                          { headers: { Authorization: `Bearer ${token}` } }
+                        );
+                        setShowMoveModal(false);
+                        loadDashboard();
+                        alert('✅ Video moved successfully!');
+                      } catch (err) {
+                        alert('❌ Failed to move video');
+                      }
+                    }}
+                    style={{
+                      padding: '1rem',
+                      background: isCurrentFolder ? '#eff6ff' : '#f3f4f6',
+                      border: isCurrentFolder ? '2px solid #667eea' : '2px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      textAlign: 'left',
+                      cursor: 'pointer',
+                      fontWeight: '600',
+                      transition: 'all 0.2s',
+                      position: 'relative'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isCurrentFolder) {
+                        e.currentTarget.style.borderColor = '#667eea';
+                        e.currentTarget.style.background = '#eff6ff';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isCurrentFolder) {
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.background = '#f3f4f6';
+                      }
+                    }}
+                  >
+                    📁 {folder.folder_name}
+                    {isCurrentFolder && (
+                      <span style={{ 
+                        position: 'absolute', 
+                        right: '1rem', 
+                        top: '50%', 
+                        transform: 'translateY(-50%)',
+                        fontSize: '0.75rem',
+                        color: '#667eea'
+                      }}>
+                        ✓ Current
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
               
               <button
-                onClick={() => moveVideoToFolder(selectedVideo.video_id, null)}
+                onClick={async () => {
+                  try {
+                    await axios.put(
+                      `${BACKEND_URL}/api/videos/${selectedVideo.video_id}/metadata`,
+                      { showcase_folder_id: null },
+                      { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                    setShowMoveModal(false);
+                    loadDashboard();
+                    alert('✅ Video removed from folder');
+                  } catch (err) {
+                    alert('❌ Failed to update video');
+                  }
+                }}
                 style={{
                   padding: '1rem',
-                  background: '#f3f4f6',
-                  border: '2px solid #e5e7eb',
+                  background: '#fee2e2',
+                  border: '2px solid #fecaca',
                   borderRadius: '0.5rem',
                   textAlign: 'left',
                   cursor: 'pointer',
-                  fontWeight: '600'
+                  fontWeight: '600',
+                  color: '#dc2626'
                 }}
               >
-                📂 Uncategorized
+                🗑️ Remove from folder (won't show on showcase)
               </button>
             </div>
             
