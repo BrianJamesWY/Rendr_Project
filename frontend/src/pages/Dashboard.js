@@ -32,6 +32,9 @@ function Dashboard() {
   const [selectedFolderId, setSelectedFolderId] = useState(null);
   const [showFolderManagement, setShowFolderManagement] = useState(false);
   const [editingFolder, setEditingFolder] = useState(null);
+  const [folderIconEmoji, setFolderIconEmoji] = useState('📁');
+  const [folderColor, setFolderColor] = useState('#667eea');
+
   const [viewMode, setViewMode] = useState('all'); // 'all' or 'folder'
   const token = localStorage.getItem('rendr_token');
   const username = localStorage.getItem('rendr_username');
