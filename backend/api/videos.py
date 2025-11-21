@@ -134,7 +134,7 @@ async def upload_video(
                 "message": "This video was already uploaded. Returning existing verification code.",
                 "duplicate_detected": True,
                 "confidence_score": confidence,
-                "original_upload_date": matching_video.get('uploaded_at')
+                "original_upload_date": matching_video.get('uploaded_at').isoformat() if matching_video.get('uploaded_at') else None
             }
         
         # STEP 3: NEW VIDEO - Generate verification code
