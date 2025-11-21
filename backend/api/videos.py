@@ -50,7 +50,7 @@ async def upload_video(
         watermark_position = user.get("watermark_position", "left")
         
         # Apply watermark BEFORE processing (critical for hash integrity)
-        print(f"💧 Applying watermark to video...")
+        print(f"💧 Applying watermark to video with code: {verification_code}...")
         watermarked_path = f"{upload_dir}/{video_id}_watermarked.mp4"
         
         watermark_success = watermark_processor.apply_watermark(
@@ -58,7 +58,8 @@ async def upload_video(
             output_video_path=watermarked_path,
             username=username,
             position=watermark_position,
-            tier=tier
+            tier=tier,
+            verification_code=verification_code
         )
         
         if not watermark_success:
