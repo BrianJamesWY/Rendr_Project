@@ -7,6 +7,14 @@ class VideoUploadResponse(BaseModel):
     status: str
     message: Optional[str] = None
     thumbnail_url: Optional[str] = None
+    # Enhanced upload fields
+    expires_at: Optional[str] = None
+    storage_duration: Optional[str] = None
+    tier: Optional[str] = None
+    # Duplicate detection fields
+    duplicate_detected: Optional[bool] = None
+    confidence_score: Optional[float] = None
+    original_upload_date: Optional[str] = None
 
 class VideoStatusResponse(BaseModel):
     video_id: str
