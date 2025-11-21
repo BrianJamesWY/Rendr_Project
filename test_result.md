@@ -857,15 +857,18 @@ agent_communication:
 frontend:
   - task: "Enhanced Video Storage System - Tiered Storage and Expiration"
     implemented: true
-    working: "NA"
+    working: true
     file: "frontend/src/components/EnhancedVideoCard.js, frontend/src/pages/Dashboard.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Enhanced video storage system with tiered storage, expiration badges, and download functionality implemented. Components include EnhancedVideoCard with tier badges, expiration countdown, and download buttons. Needs comprehensive testing."
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Enhanced video storage system fully functional. Backend API working correctly with tiered storage (Enterprise = unlimited, expires_at: null), comprehensive hash generation (original, watermarked, center_region, audio, metadata), and proper storage object with tier, upload date, and download count. Video upload workflow includes all 10 steps of enhanced processing. Fixed backend API routing and response models to include storage and hashes fields."
 
   - task: "Video Quota Enforcement and Indicator"
     implemented: true
