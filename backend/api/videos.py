@@ -318,11 +318,15 @@ async def get_user_videos(
             "description": v.get('description'),
             "external_link": v.get('external_link'),
             "platform": v.get('platform'),
-            "tags": v.get('tags', ['Rendr'])
+            "tags": v.get('tags', ['Rendr']),
+            "folder_video_order": v.get('folder_video_order', 999)
         }
         if v.get('blockchain_signature'):
             video_info['blockchain_tx'] = v['blockchain_signature'].get('tx_hash')
         video_list.append(video_info)
+    
+    # Sort by folder and order
+    video_list.sort(key=lambda x: (x.get('showcase_folder_id') or '', x.get('folder_video_order', 999)))
     
     return {
         "videos": video_list,
