@@ -26,6 +26,10 @@ class UserResponse(BaseModel):
     premium_tier: str
     dashboard_social_links: Optional[List[Dict]] = []
     created_at: str
+    phone: Optional[str] = None
+    notification_preference: Optional[str] = "email"
+    notify_video_length_threshold: Optional[int] = 30
+    sms_opted_in: Optional[bool] = True
 
 class UserWithToken(UserResponse):
     token: str
