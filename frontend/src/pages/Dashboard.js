@@ -265,6 +265,79 @@ function Dashboard() {
     }
   };
 
+  const handleDragEnd = async (result) => {
+    const { destination, source, type } = result;
+
+    // Dropped outside
+    if (!destination) return;
+
+    // No movement
+    if (destination.droppableId === source.droppableId && destination.index === source.index) {
+      return;
+    }
+
+    if (type === 'FOLDER') {
+      // Reordering folders
+      const reorderedFolders = Array.from(showcaseFolders);
+      const [removed] = reorderedFolders.splice(source.index, 1);
+      reorderedFolders.splice(destination.index, 0, removed);
+
+      // Update state immediately for smooth UX
+      setShowcaseFolders(reorderedFolders);
+
+      // Save to backend
+      try {
+        const folder_orders = reorderedFolders.map((folder, index) => ({
+          folder_id: folder.folder_id,
+          order: index
+        }));
+
+        await axios.put(
+          `${BACKEND_URL}/api/showcase-folders/reorder`,
+          { folder_orders },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (err) {
+        console.error('Failed to reorder folders:', err);
+        loadDashboard(); // Revert on error
+      }
+    } else if (type === 'VIDEO' && selectedFolderId) {
+      // Reordering videos within a folder
+      const folderVideos = videos.filter(v => v.showcase_folder_id === selectedFolderId);
+      const reorderedVideos = Array.from(folderVideos);
+      const [removed] = reorderedVideos.splice(source.index, 1);
+      reorderedVideos.splice(destination.index, 0, removed);
+
+      // Update video order in state
+      const updatedVideos = videos.map(v => {
+        const index = reorderedVideos.findIndex(rv => rv.video_id === v.video_id);
+        if (index !== -1) {
+          return { ...v, folder_video_order: index };
+        }
+        return v;
+      });
+      setVideos(updatedVideos);
+
+      // Save to backend
+      try {
+        const video_orders = reorderedVideos.map((video, index) => ({
+          video_id: video.video_id,
+          order: index
+        }));
+
+        await axios.put(
+          `${BACKEND_URL}/api/showcase-folders/${selectedFolderId}/reorder-videos`,
+          { video_orders },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+      } catch (err) {
+        console.error('Failed to reorder videos:', err);
+        loadDashboard(); // Revert on error
+      }
+    }
+  };
+
+
   if (loading) {
     return (
 
