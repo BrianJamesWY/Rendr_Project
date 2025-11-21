@@ -33,7 +33,7 @@ class WatermarkProcessor:
         # Create a transparent image for the watermark
         # We'll make it tall and narrow for vertical text
         overlay_width = 80  # Width of vertical bar
-        overlay_height = 400  # Height to accommodate logo + text
+        overlay_height = 500  # Height to accommodate logo + text + code
         
         overlay = Image.new('RGBA', (overlay_width, overlay_height), (0, 0, 0, 0))
         draw = ImageDraw.Draw(overlay)
@@ -47,10 +47,12 @@ class WatermarkProcessor:
         # Use a default font
         try:
             font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
+            code_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 18)
         except:
             font = ImageFont.load_default()
+            code_font = ImageFont.load_default()
         
-        # Create temporary image for horizontal text
+        # Create temporary image for horizontal text (username)
         bbox = draw.textbbox((0, 0), text, font=font)
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
@@ -67,6 +69,25 @@ class WatermarkProcessor:
         overlay.paste(text_img, (text_x, current_y), text_img)
         
         current_y += text_img.height + 5
+        
+        # Draw verification code (if provided) BETWEEN username and logo
+        if verification_code:
+            code_bbox = draw.textbbox((0, 0), verification_code, font=code_font)
+            code_width = code_bbox[2] - code_bbox[0]
+            code_height = code_bbox[3] - code_bbox[1]
+            
+            code_img = Image.new('RGBA', (code_width + 20, code_height + 20), (0, 0, 0, 0))
+            code_draw = ImageDraw.Draw(code_img)
+            code_draw.text((10, 10), verification_code, fill=(255, 255, 255, 200), font=code_font)
+            
+            # Rotate code 90 degrees counter-clockwise
+            code_img = code_img.rotate(90, expand=True)
+            
+            # Paste rotated code
+            code_x = (overlay_width - code_img.width) // 2
+            overlay.paste(code_img, (code_x, current_y), code_img)
+            
+            current_y += code_img.height + 5
         
         # Load and resize logo (BELOW username)
         try:
