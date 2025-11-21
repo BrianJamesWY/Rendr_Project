@@ -3,22 +3,16 @@ from datetime import datetime, timezone, timedelta
 import os
 import shutil
 import uuid
-from utils.security import get_current_user
+from utils.auth import get_current_user
 from database.mongodb import get_db
-from services.video_processor import VideoProcessor
-from services.watermark import WatermarkProcessor
-from services.blockchain_service import BlockchainService
-from services.enhanced_video_processor import EnhancedVideoProcessor
+from services.video_processor import video_processor
+from services.watermark import watermark_processor
+from services.blockchain_service import blockchain_service
+from services.enhanced_video_processor import enhanced_processor
 from services.notification_service import notification_service
 from pydantic import BaseModel
 from typing import Optional
 from fastapi.responses import FileResponse
-
-# Initialize service instances
-video_processor = VideoProcessor()
-watermark_processor = WatermarkProcessor()
-blockchain_service = BlockchainService()
-enhanced_processor = EnhancedVideoProcessor()
 
 router = APIRouter()
 
