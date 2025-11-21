@@ -165,10 +165,10 @@ async def upload_profile_picture(
         f.write(content)
     
     # Update user profile
-    picture_url = f"/api/profile-pictures/{filename}"
+    picture_url = f"/api/profile_pictures/{filename}"
     await db.users.update_one(
         {"_id": current_user["user_id"]},
-        {"$set": {"profile_picture": picture_url}}
+        {"$set": {"profile_picture_url": picture_url}}
     )
     
     return {"profile_picture": picture_url}
