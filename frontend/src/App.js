@@ -15,6 +15,7 @@ import Pricing from "./pages/Pricing";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import NotificationSettings from "./pages/NotificationSettings";
 import Logo from "./components/Logo";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
