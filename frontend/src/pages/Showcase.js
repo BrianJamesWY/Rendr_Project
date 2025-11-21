@@ -367,10 +367,10 @@ function Showcase() {
                     onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
                     onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
                   >
-                    {/* Thumbnail */}
+                    {/* Smaller Thumbnail */}
                     <div style={{ 
                       width: '100%', 
-                      height: '200px', 
+                      height: '140px', 
                       background: '#e5e7eb',
                       display: 'flex',
                       alignItems: 'center',
@@ -383,7 +383,7 @@ function Showcase() {
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       ) : (
-                        <span style={{ fontSize: '3rem' }}>🎬</span>
+                        <span style={{ fontSize: '2rem' }}>🎬</span>
                       )}
                     </div>
                     
