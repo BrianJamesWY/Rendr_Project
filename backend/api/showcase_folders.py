@@ -67,6 +67,15 @@ async def create_showcase_folder(
     )
     max_order = max_folder["order"] if max_folder and "order" in max_folder else -1
     
+    # Get parent folder ID if provided
+    parent_folder_id = folder_data.get("parent_folder_id")
+    
+    # If parent folder is specified, verify it exists and belongs to user
+    if parent_folder_id:
+        parent_folder = await db.showcase_folders.find_one({"_id": parent_folder_id})
+        if not parent_folder or parent_folder["user_id"] != current_user["user_id"]:
+            raise HTTPException(400, "Invalid parent folder")
+    
     # Create folder
     folder_id = str(uuid4())
     folder_doc = {
@@ -75,6 +84,7 @@ async def create_showcase_folder(
         "description": description,
         "user_id": current_user["user_id"],
         "username": current_user.get("username"),
+        "parent_folder_id": parent_folder_id,
         "order": max_order + 1,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
