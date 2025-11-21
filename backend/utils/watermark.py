@@ -206,3 +206,6 @@ class WatermarkProcessor:
         elif tier in ["pro", "enterprise"]:
             return ["left", "right", "top", "bottom"]
         return ["left"]
+
+# Global instance
+watermark_processor = WatermarkProcessor()
