@@ -64,7 +64,7 @@ class WatermarkProcessor:
         text_x = (overlay_width - text_img.width) // 2
         overlay.paste(text_img, (text_x, current_y), text_img)
         
-        current_y += text_img.height + 20
+        current_y += text_img.height + 5
         
         # Load and resize logo (BELOW username)
         try:
