@@ -48,7 +48,7 @@ class WatermarkProcessor:
         try:
             font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 24)
             code_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 18)
-        except:
+        except Exception:
             font = ImageFont.load_default()
             code_font = ImageFont.load_default()
         
