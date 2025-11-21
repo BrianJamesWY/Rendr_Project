@@ -436,7 +436,13 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Enhanced Video Storage System Testing"
+    - "Video Upload with Tiered Storage"
+    - "Quota Enforcement Testing"
+    - "Notification Settings Page"
+    - "Download Functionality"
+    - "Expiration Badges on Videos"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
