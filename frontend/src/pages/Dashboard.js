@@ -1782,7 +1782,7 @@ function Dashboard() {
                   </button>
                 )}
                 <button
-                  onClick={editingFolder ? updateShowcaseFolder : createQuickShowcaseFolder}
+                  type="submit"
                   style={{
                     flex: 1,
                     padding: '0.75rem',
