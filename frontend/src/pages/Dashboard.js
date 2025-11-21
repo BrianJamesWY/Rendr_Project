@@ -1798,7 +1798,7 @@ function Dashboard() {
                   {editingFolder ? 'Update Folder' : 'Create Folder'}
                 </button>
               </div>
-            </div>
+            </form>
 
             {/* Folders List */}
             <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>
