@@ -387,10 +387,10 @@ function Showcase() {
                       )}
                     </div>
                     
-                    {/* Video Info */}
-                    <div style={{ padding: '1rem' }}>
+                    {/* Compact Video Info */}
+                    <div style={{ padding: '0.75rem' }}>
                       <div style={{ 
-                        fontSize: '1rem', 
+                        fontSize: '0.875rem', 
                         fontWeight: 'bold', 
                         color: '#2563eb',
                         marginBottom: '0.5rem',
@@ -403,15 +403,15 @@ function Showcase() {
                       {/* Source Badge */}
                       <div style={{
                         display: 'inline-block',
-                        padding: '0.25rem 0.75rem',
+                        padding: '0.2rem 0.6rem',
                         background: video.source === 'bodycam' ? '#fef3c7' : '#dbeafe',
                         color: video.source === 'bodycam' ? '#92400e' : '#1e40af',
                         borderRadius: '0.375rem',
-                        fontSize: '0.75rem',
+                        fontSize: '0.7rem',
                         fontWeight: '600',
-                        marginBottom: '0.75rem'
+                        marginBottom: '0.5rem'
                       }}>
-                        {video.source === 'bodycam' ? '📱 Rendr BodyCam' : '💻 Rendr Studio'}
+                        {video.source === 'bodycam' ? '📱 BodyCam' : '💻 Studio'}
                       </div>
                       
                       {video.description && (
