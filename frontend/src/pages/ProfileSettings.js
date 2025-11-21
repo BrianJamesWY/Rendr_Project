@@ -352,10 +352,10 @@ function ProfileSettings() {
         {/* Dashboard Social Media Links (Logged-in accounts) */}
         <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>🔗 Dashboard Social Media Links</h2>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>🔗 Creator - Logged-In Social Media Dashboard Links</h2>
           </div>
           <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
-            Links to your logged-in social media accounts (only visible to you on dashboard)
+            Quick access links to your logged-in social media accounts (e.g., Instagram Studio, TikTok Creator Portal). These appear ONLY on YOUR Creator Dashboard for easy access.
           </p>
           <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
             <select
