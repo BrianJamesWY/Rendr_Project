@@ -88,11 +88,12 @@ class VideoCleanupService:
             print(f"   Expires in: {hours_remaining} hours")
             
             # Send notification
+            download_url = f"https://creator-vault-7.preview.emergentagent.com/dashboard?video={video['id']}"
             await notification_service.send_expiration_warning(
                 user=user,
-                video_code=video['verification_code'],
+                verification_code=video['verification_code'],
                 hours_remaining=hours_remaining,
-                video_id=video['id']
+                download_url=download_url
             )
             
             # Mark as warned
