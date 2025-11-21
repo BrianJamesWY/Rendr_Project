@@ -210,7 +210,7 @@ async def upload_banner(
     banner_url = f"/api/banners/{filename}"
     await db.users.update_one(
         {"_id": current_user["user_id"]},
-        {"$set": {"banner_image": banner_url}}
+        {"$set": {"banner_image_url": banner_url}}
     )
     
     return {"banner_image": banner_url}
