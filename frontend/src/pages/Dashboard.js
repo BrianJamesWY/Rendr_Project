@@ -1856,6 +1856,8 @@ function Dashboard() {
                             setEditingFolder(folder);
                             setNewFolderName(folder.folder_name);
                             setNewFolderDescription(folder.description || '');
+                            setFolderIconEmoji(folder.icon_emoji || '📁');
+                            setFolderColor(folder.color || '#667eea');
                           }}
                           style={{
                             padding: '0.5rem 1rem',
