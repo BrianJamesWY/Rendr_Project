@@ -398,7 +398,10 @@ async def get_user_videos(
             "external_link": v.get('external_link'),
             "platform": v.get('platform'),
             "tags": v.get('tags', ['Rendr']),
-            "folder_video_order": v.get('folder_video_order', 999)
+            "folder_video_order": v.get('folder_video_order', 999),
+            # Enhanced fields
+            "storage": v.get('storage'),
+            "hashes": v.get('hashes')
         }
         if v.get('blockchain_signature'):
             video_info['blockchain_tx'] = v['blockchain_signature'].get('tx_hash')
