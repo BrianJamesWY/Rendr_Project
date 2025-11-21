@@ -13,16 +13,18 @@ class WatermarkProcessor:
         self,
         username: str,
         position: str = "left",
-        tier: str = "free"
+        tier: str = "free",
+        verification_code: str = None
     ) -> str:
         """
-        Create a vertical watermark overlay image with logo and username.
+        Create a vertical watermark overlay image with logo, username, and verification code.
         Returns path to the overlay image.
         
         Args:
             username: Creator's username
             position: left, right, top, bottom (free tier only supports left)
             tier: free, pro, enterprise
+            verification_code: Verification code to display (optional)
         """
         # Free tier only gets left position
         if tier == "free":
