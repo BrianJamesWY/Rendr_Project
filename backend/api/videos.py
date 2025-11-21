@@ -397,6 +397,90 @@ async def upload_custom_thumbnail(
         shutil.copyfileobj(thumbnail.file, buffer)
     
     await db.videos.update_one(
+
+
+@router.get("/{video_id}/download")
+async def download_video(
+    video_id: str,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Download video file"""
+    from fastapi.responses import FileResponse
+    
+    # Get video metadata
+    video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    # Check ownership or public access
+    if video["user_id"] != current_user["user_id"]:
+        raise HTTPException(403, "Access denied")
+    
+    # Check if expired
+    if video.get("storage", {}).get("expires_at"):
+        from datetime import datetime, timezone
+        expires_at = video["storage"]["expires_at"]
+        if datetime.now(timezone.utc) > expires_at:
+            raise HTTPException(410, "Video has expired and been deleted")
+    
+    # Find video file
+    upload_dir = "/app/backend/uploads/videos"
+    video_files = [f for f in os.listdir(upload_dir) if f.startswith(video_id)]
+    
+    if not video_files:
+        raise HTTPException(404, "Video file not found on server")
+    
+    video_path = os.path.join(upload_dir, video_files[0])
+    
+    # Update download count
+    await db.videos.update_one(
+        {"_id": video_id},
+        {"$inc": {"storage.download_count": 1}}
+    )
+    
+    return FileResponse(
+        video_path,
+        media_type="video/mp4",
+        filename=f"{video['verification_code']}.mp4"
+    )
+
+@router.get("/{video_id}/stream")
+async def stream_video(
+    video_id: str,
+    db = Depends(get_db)
+):
+    """Stream video (public access for showcase)"""
+    from fastapi.responses import FileResponse
+    
+    # Get video metadata
+    video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    # Check if expired
+    if video.get("storage", {}).get("expires_at"):
+        from datetime import datetime, timezone
+        expires_at = video["storage"]["expires_at"]
+        if datetime.now(timezone.utc) > expires_at:
+            raise HTTPException(410, "Video has expired")
+    
+    # Find video file
+    upload_dir = "/app/backend/uploads/videos"
+    video_files = [f for f in os.listdir(upload_dir) if f.startswith(video_id)]
+    
+    if not video_files:
+        raise HTTPException(404, "Video file not found")
+    
+    video_path = os.path.join(upload_dir, video_files[0])
+    
+    return FileResponse(
+        video_path,
+        media_type="video/mp4"
+    )
+
         {"_id": video_id},
         {"$set": {"thumbnail_path": thumbnail_path}}
     )
