@@ -160,3 +160,72 @@ async def delete_showcase_folder(
     await db.showcase_folders.delete_one({"_id": folder_id})
     
     return {"message": "Showcase folder deleted successfully"}
+
+@router.put("/reorder")
+async def reorder_folders(
+    reorder_data: dict,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Reorder folders - expects {folder_orders: [{folder_id, order}, ...]}"""
+    folder_orders = reorder_data.get("folder_orders", [])
+    
+    if not folder_orders:
+        raise HTTPException(400, "folder_orders is required")
+    
+    # Update each folder's order
+    for item in folder_orders:
+        folder_id = item.get("folder_id")
+        order = item.get("order")
+        
+        if folder_id is None or order is None:
+            continue
+        
+        # Verify ownership
+        folder = await db.showcase_folders.find_one({"_id": folder_id})
+        if folder and folder["user_id"] == current_user["user_id"]:
+            await db.showcase_folders.update_one(
+                {"_id": folder_id},
+                {"$set": {"order": order}}
+            )
+    
+    return {"message": "Folders reordered successfully"}
+
+@router.put("/{folder_id}/reorder-videos")
+async def reorder_videos_in_folder(
+    folder_id: str,
+    reorder_data: dict,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Reorder videos within a folder - expects {video_orders: [{video_id, order}, ...]}"""
+    # Verify folder ownership
+    folder = await db.showcase_folders.find_one({"_id": folder_id})
+    if not folder:
+        raise HTTPException(404, "Folder not found")
+    
+    if folder["user_id"] != current_user["user_id"]:
+        raise HTTPException(403, "Access denied")
+    
+    video_orders = reorder_data.get("video_orders", [])
+    
+    if not video_orders:
+        raise HTTPException(400, "video_orders is required")
+    
+    # Update each video's order
+    for item in video_orders:
+        video_id = item.get("video_id")
+        order = item.get("order")
+        
+        if video_id is None or order is None:
+            continue
+        
+        # Verify video belongs to user and is in this folder
+        video = await db.videos.find_one({"video_id": video_id})
+        if video and video["user_id"] == current_user["user_id"] and video.get("showcase_folder_id") == folder_id:
+            await db.videos.update_one(
+                {"video_id": video_id},
+                {"$set": {"folder_video_order": order}}
+            )
+    
+    return {"message": "Videos reordered successfully"}
