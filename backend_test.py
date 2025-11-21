@@ -1774,6 +1774,16 @@ class RendrAPITester:
             # Test user tier check
             print("\n👤 Testing User Tier...")
             user_tier = self.test_user_tier_check()
+            
+            # If this is Enterprise tier, run comprehensive Enterprise tests
+            if user_tier == "enterprise":
+                print("\n" + "🏢" * 20)
+                print("ENTERPRISE TIER DETECTED - RUNNING COMPREHENSIVE ENHANCED FEATURES TEST")
+                print("🏢" * 20)
+                self.run_enterprise_comprehensive_test()
+                print("\n" + "🏢" * 20)
+                print("ENTERPRISE COMPREHENSIVE TEST COMPLETE")
+                print("🏢" * 20)
         
         # Test creator profiles (both existing users)
         print("\n👤 Testing Creator Profiles...")
