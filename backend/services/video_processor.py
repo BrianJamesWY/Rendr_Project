@@ -169,3 +169,6 @@ class VideoProcessor:
         print(f"✅ Thumbnail saved: {thumbnail_path}")
         
         return thumbnail_path
+
+# Global instance
+video_processor = VideoProcessor()
