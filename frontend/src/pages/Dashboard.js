@@ -716,54 +716,70 @@ function Dashboard() {
           </div>
         )}
 
-        {/* Folder Cards */}
+        {/* Folder Cards - With Drag & Drop */}
         {viewMode === 'all' && showcaseFolders.length > 0 && (
           <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#374151', marginBottom: '1rem' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#374151', marginBottom: '0.5rem' }}>
               Your Showcase Folders
             </h3>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-              gap: '1rem' 
-            }}>
-              {showcaseFolders.map(folder => {
-                const folderVideos = videos.filter(v => v.showcase_folder_id === folder.folder_id);
-                return (
-                  <div 
-                    key={folder.folder_id}
-                    onClick={() => { setSelectedFolderId(folder.folder_id); setViewMode('folder'); }}
-                    style={{
-                      background: 'white',
-                      border: '2px solid #e5e7eb',
-                      borderRadius: '0.75rem',
-                      padding: '1.5rem',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s',
-                      textAlign: 'center'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = '#667eea';
-                      e.currentTarget.style.transform = 'translateY(-4px)';
-                      e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = '#e5e7eb';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
+            <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '1rem' }}>
+              💡 Drag folders to reorder them on your showcase page
+            </p>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="folders" direction="horizontal" type="FOLDER">
+                {(provided, snapshot) => (
+                  <div
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                    style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+                      gap: '1rem',
+                      background: snapshot.isDraggingOver ? '#f3f4f6' : 'transparent',
+                      padding: '0.5rem',
+                      borderRadius: '0.5rem',
+                      transition: 'background 0.2s'
                     }}
                   >
-                    <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📁</div>
-                    <div style={{ fontWeight: '600', color: '#111827', marginBottom: '0.25rem' }}>
-                      {folder.folder_name}
-                    </div>
-                    <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                      {folderVideos.length} {folderVideos.length === 1 ? 'video' : 'videos'}
-                    </div>
+                    {showcaseFolders.map((folder, index) => {
+                      const folderVideos = videos.filter(v => v.showcase_folder_id === folder.folder_id);
+                      return (
+                        <Draggable key={folder.folder_id} draggableId={folder.folder_id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              onClick={() => { setSelectedFolderId(folder.folder_id); setViewMode('folder'); }}
+                              style={{
+                                ...provided.draggableProps.style,
+                                background: 'white',
+                                border: snapshot.isDragging ? '2px solid #667eea' : '2px solid #e5e7eb',
+                                borderRadius: '0.75rem',
+                                padding: '1.5rem',
+                                cursor: snapshot.isDragging ? 'grabbing' : 'grab',
+                                transition: 'all 0.2s',
+                                textAlign: 'center',
+                                boxShadow: snapshot.isDragging ? '0 10px 30px rgba(0,0,0,0.2)' : 'none'
+                              }}
+                            >
+                              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📁</div>
+                              <div style={{ fontWeight: '600', color: '#111827', marginBottom: '0.25rem' }}>
+                                {folder.folder_name}
+                              </div>
+                              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                                {folderVideos.length} {folderVideos.length === 1 ? 'video' : 'videos'}
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
+                    {provided.placeholder}
                   </div>
-                );
-              })}
-            </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </div>
         )}
 
