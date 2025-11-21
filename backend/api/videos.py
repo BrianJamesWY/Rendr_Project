@@ -388,7 +388,7 @@ async def get_user_videos(
             "video_id": v['_id'],
             "verification_code": v['verification_code'],
             "source": v['source'],
-            "captured_at": v['captured_at'],
+            "captured_at": v.get('captured_at', v.get('uploaded_at')),  # Use uploaded_at if captured_at doesn't exist
             "status": v['verification_status'],
             "has_blockchain": bool(v.get('blockchain_signature')),
             "thumbnail_url": f"/api/thumbnails/{v['_id']}.jpg" if v.get('thumbnail_path') else None,
