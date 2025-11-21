@@ -344,10 +344,17 @@ async def get_user_quota(
     user_id = current_user["user_id"]
     tier = current_user.get("premium_tier", "free")
     
-    # Count active videos
+    # Count active videos (including legacy videos without storage field)
+    from datetime import datetime
+    now = datetime.utcnow()
+    
     active_videos = await db.videos.count_documents({
         "user_id": user_id,
-        "storage.expires_at": {"$gt": None}  # Not expired
+        "$or": [
+            {"storage.expires_at": {"$gt": now}},  # New videos not expired
+            {"storage.expires_at": None},  # New videos with unlimited storage
+            {"storage": {"$exists": False}}  # Legacy videos without storage field
+        ]
     })
     
     # Define quota limits
