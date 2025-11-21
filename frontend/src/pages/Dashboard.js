@@ -946,7 +946,6 @@ function Dashboard() {
                 gap: '1.5rem'
               }}>
                 {videos
-                  .filter(video => !video.showcase_folder_id)
                   .map(video => {
                     const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
                     return (
