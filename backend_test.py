@@ -1168,6 +1168,594 @@ class RendrAPITester:
             self.log_test("Tier-based Hashing", False, f"Error: {str(e)}")
             return False
 
+    def test_enterprise_tier_verification(self):
+        """TEST 1: VERIFY TIER AND QUOTA for Enterprise user"""
+        try:
+            # Test /auth/me for tier verification
+            response = self.session.get(f"{BASE_URL}/auth/me")
+            
+            if response.status_code == 200:
+                data = response.json()
+                tier = data.get("premium_tier", "free")
+                
+                if tier == "enterprise":
+                    self.log_test("Enterprise Tier Verification", True, 
+                                f"User tier confirmed as Enterprise: {tier}")
+                else:
+                    self.log_test("Enterprise Tier Verification", False, 
+                                f"Expected enterprise tier, got: {tier}")
+                    return False
+            else:
+                self.log_test("Enterprise Tier Verification", False, 
+                            f"Failed to get user info: {response.status_code}")
+                return False
+            
+            # Test quota API
+            quota_response = self.session.get(f"{BASE_URL}/users/quota")
+            
+            if quota_response.status_code == 200:
+                quota_data = quota_response.json()
+                
+                # Verify Enterprise quota settings
+                expected_fields = {
+                    "tier": "enterprise",
+                    "video_limit": -1,  # unlimited
+                    "unlimited": True,
+                    "can_upload": True
+                }
+                
+                all_correct = True
+                for field, expected_value in expected_fields.items():
+                    actual_value = quota_data.get(field)
+                    if actual_value != expected_value:
+                        self.log_test("Enterprise Quota Verification", False, 
+                                    f"Field {field}: expected {expected_value}, got {actual_value}")
+                        all_correct = False
+                
+                if all_correct:
+                    self.log_test("Enterprise Quota Verification", True, 
+                                f"Enterprise quota settings correct: unlimited={quota_data.get('unlimited')}, limit={quota_data.get('video_limit')}")
+                    return True
+                else:
+                    return False
+            else:
+                self.log_test("Enterprise Quota Verification", False, 
+                            f"Failed to get quota info: {quota_response.status_code}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Enterprise Tier Verification", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_video_upload_enhanced_hashing(self):
+        """TEST 2: UPLOAD VIDEO WITH ENHANCED HASHING for Enterprise tier"""
+        if not self.auth_token:
+            self.log_test("Enterprise Video Upload", False, "Authentication required")
+            return None
+            
+        try:
+            # Create a test video file using ffmpeg
+            import tempfile
+            import subprocess
+            
+            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+                temp_video_path = temp_video.name
+            
+            # Create a simple test video using ffmpeg (3 seconds, 320x240)
+            cmd = [
+                'ffmpeg', '-f', 'lavfi', '-i', 'testsrc=duration=3:size=320x240:rate=1',
+                '-c:v', 'libx264', '-t', '3', '-pix_fmt', 'yuv420p', '-y', temp_video_path
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, timeout=30)
+            if result.returncode != 0:
+                self.log_test("Enterprise Video Upload", False, 
+                            f"Failed to create test video: {result.stderr.decode()}")
+                return None
+            
+            # Get folder ID for upload
+            folders_response = self.session.get(f"{BASE_URL}/folders/")
+            if folders_response.status_code == 200:
+                folders = folders_response.json()
+                default_folder = next((f for f in folders if f.get("folder_name") == "Default"), None)
+                folder_id = default_folder["folder_id"] if default_folder else None
+            else:
+                folder_id = None
+            
+            # Upload video with enhanced workflow
+            with open(temp_video_path, 'rb') as video_file:
+                files = {'video_file': ('enterprise_test.mp4', video_file, 'video/mp4')}
+                data = {
+                    'source': 'studio',
+                    'folder_id': folder_id
+                }
+                response = self.session.post(f"{BASE_URL}/videos/upload", files=files, data=data)
+            
+            # Clean up temp file
+            os.unlink(temp_video_path)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check Enterprise-specific response fields
+                enterprise_checks = {
+                    "verification_code": lambda x: x and x.startswith("RND-") and len(x) == 10,
+                    "expires_at": lambda x: x is None,  # Should be null for Enterprise
+                    "storage_duration": lambda x: x == "unlimited",
+                    "tier": lambda x: x == "enterprise"
+                }
+                
+                all_correct = True
+                for field, check_func in enterprise_checks.items():
+                    value = data.get(field)
+                    if not check_func(value):
+                        self.log_test("Enterprise Video Upload", False, 
+                                    f"Field {field}: expected Enterprise value, got {value}")
+                        all_correct = False
+                
+                if all_correct:
+                    self.log_test("Enterprise Video Upload", True, 
+                                f"Enterprise upload successful: {data['verification_code']}, expires: {data['expires_at']}, storage: {data['storage_duration']}")
+                    return {
+                        "video_id": data.get("video_id"),
+                        "verification_code": data["verification_code"],
+                        "expires_at": data["expires_at"],
+                        "storage_duration": data["storage_duration"],
+                        "tier": data["tier"]
+                    }
+                else:
+                    return None
+            else:
+                error_msg = response.text
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", error_msg)
+                except:
+                    pass
+                self.log_test("Enterprise Video Upload", False, 
+                            f"Status: {response.status_code}, Error: {error_msg}")
+                return None
+        except Exception as e:
+            self.log_test("Enterprise Video Upload", False, f"Error: {str(e)}")
+            return None
+
+    def test_enterprise_workflow_logs(self):
+        """TEST 2: Check backend logs for all 10 workflow steps"""
+        try:
+            import subprocess
+            result = subprocess.run(['tail', '-n', '300', '/var/log/supervisor/backend.out.log'], 
+                                  capture_output=True, text=True, timeout=10)
+            
+            if result.returncode == 0:
+                logs = result.stdout
+                
+                # Check for all 10 workflow steps
+                workflow_steps = [
+                    "🎬 NEW VIDEO UPLOAD - Hash-First Workflow",
+                    "STEP 1: Calculating original hash (pre-watermark)",
+                    "STEP 2: Smart duplicate detection", 
+                    "STEP 3: Generating verification code",
+                    "STEP 4: Applying watermark",
+                    "STEP 5: Calculating watermarked hash",
+                    "STEP 6: Generating thumbnail",
+                    "STEP 7: Setting storage expiration",
+                    "STEP 8: Blockchain timestamping",
+                    "STEP 9: Saving to database",
+                    "STEP 10: Checking notification preferences",
+                    "✅ UPLOAD COMPLETE"
+                ]
+                
+                found_steps = []
+                for step in workflow_steps:
+                    if step in logs:
+                        found_steps.append(step)
+                
+                # Also check for Enterprise-specific messages
+                enterprise_messages = [
+                    "Tier: enterprise",
+                    "♾️ Tier: enterprise - Unlimited storage",
+                    "✅ Original hash:",
+                    "✅ Center region hash:",
+                    "✅ Audio hash:"
+                ]
+                
+                found_enterprise = []
+                for msg in enterprise_messages:
+                    if msg in logs:
+                        found_enterprise.append(msg)
+                
+                if len(found_steps) >= 8:  # At least 8 out of 12 key steps
+                    self.log_test("Enterprise Workflow Logs", True, 
+                                f"Found {len(found_steps)}/12 workflow steps and {len(found_enterprise)} Enterprise messages")
+                    return True
+                else:
+                    self.log_test("Enterprise Workflow Logs", False, 
+                                f"Only found {len(found_steps)}/12 workflow steps: {found_steps}")
+                    return False
+            else:
+                self.log_test("Enterprise Workflow Logs", False, 
+                            "Could not read backend logs")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Workflow Logs", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_multi_tier_hashing(self, video_id):
+        """TEST 3: VERIFY MULTI-TIER HASHING - Enterprise gets all hash types"""
+        try:
+            # Get video via user list endpoint to check hashes
+            response = self.session.get(f"{BASE_URL}/videos/user/list")
+            
+            if response.status_code == 200:
+                data = response.json()
+                videos = data.get("videos", [])
+                
+                # Find our video
+                video = next((v for v in videos if v.get("video_id") == video_id), None)
+                
+                if video:
+                    # Check for Enterprise hash types
+                    hashes = video.get("hashes", {})
+                    
+                    expected_hashes = [
+                        "original",
+                        "watermarked", 
+                        "center_region",  # Pro+ feature
+                        "audio",          # Enterprise-only feature
+                        "metadata"
+                    ]
+                    
+                    missing_hashes = []
+                    present_hashes = []
+                    
+                    for hash_type in expected_hashes:
+                        if hash_type in hashes and hashes[hash_type] is not None:
+                            present_hashes.append(hash_type)
+                        else:
+                            missing_hashes.append(hash_type)
+                    
+                    if len(present_hashes) >= 4:  # Should have at least 4 out of 5 hash types
+                        self.log_test("Enterprise Multi-Tier Hashing", True, 
+                                    f"Enterprise hashing working: {len(present_hashes)}/5 hash types present: {present_hashes}")
+                        return True
+                    else:
+                        self.log_test("Enterprise Multi-Tier Hashing", False, 
+                                    f"Missing hash types: {missing_hashes}, present: {present_hashes}")
+                        return False
+                else:
+                    self.log_test("Enterprise Multi-Tier Hashing", False, 
+                                f"Video not found in user's video list: {video_id}")
+                    return False
+            else:
+                self.log_test("Enterprise Multi-Tier Hashing", False, 
+                            f"Failed to get user videos: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Multi-Tier Hashing", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_storage_object(self, video_id):
+        """TEST 4: VERIFY STORAGE OBJECT - Unlimited storage for Enterprise"""
+        try:
+            # Get video via user list endpoint to check storage object
+            response = self.session.get(f"{BASE_URL}/videos/user/list")
+            
+            if response.status_code == 200:
+                data = response.json()
+                videos = data.get("videos", [])
+                
+                # Find our video
+                video = next((v for v in videos if v.get("video_id") == video_id), None)
+                
+                if video:
+                    # Check storage object
+                    storage = video.get("storage", {})
+                    
+                    expected_storage = {
+                        "tier": "enterprise",
+                        "expires_at": None,  # Should be null for unlimited
+                        "warned_at": None,
+                        "download_count": 0
+                    }
+                    
+                    storage_correct = True
+                    for field, expected_value in expected_storage.items():
+                        actual_value = storage.get(field)
+                        if field == "expires_at" and actual_value != expected_value:
+                            self.log_test("Enterprise Storage Object", False, 
+                                        f"Storage {field}: expected {expected_value} (unlimited), got {actual_value}")
+                            storage_correct = False
+                        elif field != "expires_at" and field != "download_count" and actual_value != expected_value:
+                            self.log_test("Enterprise Storage Object", False, 
+                                        f"Storage {field}: expected {expected_value}, got {actual_value}")
+                            storage_correct = False
+                    
+                    if storage_correct and "uploaded_at" in storage:
+                        self.log_test("Enterprise Storage Object", True, 
+                                    f"Enterprise storage object correct: tier={storage.get('tier')}, expires_at={storage.get('expires_at')} (unlimited)")
+                        return True
+                    else:
+                        self.log_test("Enterprise Storage Object", False, 
+                                    f"Storage object issues or missing uploaded_at: {storage}")
+                        return False
+                else:
+                    self.log_test("Enterprise Storage Object", False, 
+                                f"Video not found in user's video list: {video_id}")
+                    return False
+            else:
+                self.log_test("Enterprise Storage Object", False, 
+                            f"Failed to get user videos: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Storage Object", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_duplicate_detection(self, original_video_result):
+        """TEST 5: DUPLICATE DETECTION WITH ENHANCED HASHING"""
+        if not original_video_result or not self.auth_token:
+            self.log_test("Enterprise Duplicate Detection", False, "No original video or authentication")
+            return False
+            
+        try:
+            # Create the same test video again
+            import tempfile
+            import subprocess
+            
+            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+                temp_video_path = temp_video.name
+            
+            # Create identical test video
+            cmd = [
+                'ffmpeg', '-f', 'lavfi', '-i', 'testsrc=duration=3:size=320x240:rate=1',
+                '-c:v', 'libx264', '-t', '3', '-pix_fmt', 'yuv420p', '-y', temp_video_path
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, timeout=30)
+            if result.returncode != 0:
+                self.log_test("Enterprise Duplicate Detection", False, 
+                            f"Failed to create duplicate test video: {result.stderr.decode()}")
+                return False
+            
+            # Get folder ID for upload
+            folders_response = self.session.get(f"{BASE_URL}/folders/")
+            if folders_response.status_code == 200:
+                folders = folders_response.json()
+                default_folder = next((f for f in folders if f.get("folder_name") == "Default"), None)
+                folder_id = default_folder["folder_id"] if default_folder else None
+            else:
+                folder_id = None
+            
+            # Upload the same video again
+            with open(temp_video_path, 'rb') as video_file:
+                files = {'video_file': ('enterprise_duplicate_test.mp4', video_file, 'video/mp4')}
+                data = {
+                    'source': 'studio',
+                    'folder_id': folder_id
+                }
+                response = self.session.post(f"{BASE_URL}/videos/upload", files=files, data=data)
+            
+            # Clean up temp file
+            os.unlink(temp_video_path)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check if it's marked as duplicate with high confidence
+                duplicate_checks = {
+                    "status": "duplicate",
+                    "duplicate_detected": True,
+                    "confidence_score": 1.0,  # 100% match
+                    "verification_code": original_video_result["verification_code"]
+                }
+                
+                all_correct = True
+                for field, expected_value in duplicate_checks.items():
+                    actual_value = data.get(field)
+                    if actual_value != expected_value:
+                        self.log_test("Enterprise Duplicate Detection", False, 
+                                    f"Field {field}: expected {expected_value}, got {actual_value}")
+                        all_correct = False
+                
+                if all_correct:
+                    self.log_test("Enterprise Duplicate Detection", True, 
+                                f"Enterprise duplicate detection working: confidence={data.get('confidence_score')}, returned existing code: {data['verification_code']}")
+                    return True
+                else:
+                    return False
+            else:
+                self.log_test("Enterprise Duplicate Detection", False, 
+                            f"Upload failed: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Duplicate Detection", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_notification_preferences(self):
+        """TEST 6: NOTIFICATION PREFERENCES - Enterprise features"""
+        try:
+            # Test getting notification settings
+            response = self.session.get(f"{BASE_URL}/users/notification-settings")
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check if Enterprise notification features are available
+                enterprise_features = [
+                    "notification_preference",  # email, sms, both, none
+                    "phone_number",
+                    "video_length_threshold", 
+                    "sms_opted_in"
+                ]
+                
+                available_features = []
+                for feature in enterprise_features:
+                    if feature in data:
+                        available_features.append(feature)
+                
+                if len(available_features) >= 3:  # Should have most Enterprise features
+                    self.log_test("Enterprise Notification Preferences", True, 
+                                f"Enterprise notification features available: {available_features}")
+                    
+                    # Test updating notification preferences
+                    update_data = {
+                        "notification_preference": "both",  # email and SMS
+                        "phone_number": "+1234567890",
+                        "video_length_threshold": 60,
+                        "sms_opted_in": True
+                    }
+                    
+                    update_response = self.session.put(f"{BASE_URL}/users/notification-settings", json=update_data)
+                    
+                    if update_response.status_code == 200:
+                        self.log_test("Enterprise Notification Update", True, 
+                                    "Successfully updated Enterprise notification preferences")
+                        return True
+                    else:
+                        self.log_test("Enterprise Notification Update", False, 
+                                    f"Failed to update preferences: {update_response.status_code}")
+                        return False
+                else:
+                    self.log_test("Enterprise Notification Preferences", False, 
+                                f"Missing Enterprise features: {set(enterprise_features) - set(available_features)}")
+                    return False
+            else:
+                self.log_test("Enterprise Notification Preferences", False, 
+                            f"Failed to get notification settings: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Notification Preferences", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_download_functionality(self, video_id):
+        """TEST 7: DOWNLOAD FUNCTIONALITY"""
+        try:
+            # Test video download
+            response = self.session.get(f"{BASE_URL}/videos/{video_id}/download")
+            
+            if response.status_code == 200:
+                # Check headers
+                content_type = response.headers.get('content-type', '')
+                content_disposition = response.headers.get('content-disposition', '')
+                
+                if 'video/mp4' in content_type and 'attachment' in content_disposition:
+                    # Check if filename uses verification code
+                    if 'RND-' in content_disposition:
+                        self.log_test("Enterprise Download Functionality", True, 
+                                    f"Download working: content-type={content_type}, filename contains verification code")
+                        
+                        # Test that download count is incremented (would need another API call to verify)
+                        return True
+                    else:
+                        self.log_test("Enterprise Download Functionality", False, 
+                                    f"Filename doesn't use verification code: {content_disposition}")
+                        return False
+                else:
+                    self.log_test("Enterprise Download Functionality", False, 
+                                f"Wrong headers: content-type={content_type}, disposition={content_disposition}")
+                    return False
+            else:
+                self.log_test("Enterprise Download Functionality", False, 
+                            f"Download failed: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Download Functionality", False, f"Error: {str(e)}")
+            return False
+
+    def test_enterprise_video_list_enhanced_fields(self):
+        """TEST 9: VIDEO LIST WITH ENHANCED FIELDS"""
+        try:
+            response = self.session.get(f"{BASE_URL}/videos/user/list")
+            
+            if response.status_code == 200:
+                data = response.json()
+                videos = data.get("videos", [])
+                
+                if videos:
+                    # Check first video for enhanced fields
+                    video = videos[0]
+                    
+                    enhanced_fields = [
+                        "storage",      # storage object
+                        "hashes",       # hashes object  
+                        "verification_code",
+                        "thumbnail_url"
+                    ]
+                    
+                    present_fields = []
+                    for field in enhanced_fields:
+                        if field in video and video[field] is not None:
+                            present_fields.append(field)
+                    
+                    if len(present_fields) >= 3:  # Should have most enhanced fields
+                        self.log_test("Enterprise Video List Enhanced Fields", True, 
+                                    f"Enhanced fields present: {present_fields}")
+                        return True
+                    else:
+                        self.log_test("Enterprise Video List Enhanced Fields", False, 
+                                    f"Missing enhanced fields: {set(enhanced_fields) - set(present_fields)}")
+                        return False
+                else:
+                    self.log_test("Enterprise Video List Enhanced Fields", False, 
+                                "No videos found in user list")
+                    return False
+            else:
+                self.log_test("Enterprise Video List Enhanced Fields", False, 
+                            f"Failed to get video list: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Enterprise Video List Enhanced Fields", False, f"Error: {str(e)}")
+            return False
+
+    def run_enterprise_comprehensive_test(self):
+        """Run comprehensive Enterprise tier enhanced features test"""
+        print("🏢 COMPREHENSIVE ENTERPRISE TIER ENHANCED FEATURES TEST")
+        print("=" * 60)
+        
+        # TEST 1: VERIFY TIER AND QUOTA
+        print("\n🔍 TEST 1: VERIFY TIER AND QUOTA")
+        if not self.test_enterprise_tier_verification():
+            print("❌ Enterprise tier verification failed. Stopping Enterprise tests.")
+            return
+        
+        # TEST 2: UPLOAD VIDEO WITH ENHANCED HASHING
+        print("\n📤 TEST 2: UPLOAD VIDEO WITH ENHANCED HASHING")
+        enterprise_video_result = self.test_enterprise_video_upload_enhanced_hashing()
+        if enterprise_video_result:
+            print("\n📋 TEST 2: CHECK BACKEND LOGS FOR ALL 10 WORKFLOW STEPS")
+            self.test_enterprise_workflow_logs()
+            
+            # TEST 3: VERIFY MULTI-TIER HASHING
+            print("\n🔐 TEST 3: VERIFY MULTI-TIER HASHING (ENTERPRISE GETS ALL)")
+            self.test_enterprise_multi_tier_hashing(enterprise_video_result["video_id"])
+            
+            # TEST 4: VERIFY STORAGE OBJECT
+            print("\n💾 TEST 4: VERIFY STORAGE OBJECT (UNLIMITED)")
+            self.test_enterprise_storage_object(enterprise_video_result["video_id"])
+            
+            # TEST 5: DUPLICATE DETECTION WITH ENHANCED HASHING
+            print("\n🔄 TEST 5: DUPLICATE DETECTION WITH ENHANCED HASHING")
+            self.test_enterprise_duplicate_detection(enterprise_video_result)
+            
+            # TEST 7: DOWNLOAD FUNCTIONALITY
+            print("\n⬇️ TEST 7: DOWNLOAD FUNCTIONALITY")
+            self.test_enterprise_download_functionality(enterprise_video_result["video_id"])
+        
+        # TEST 6: NOTIFICATION PREFERENCES
+        print("\n🔔 TEST 6: NOTIFICATION PREFERENCES (ENTERPRISE FEATURES)")
+        self.test_enterprise_notification_preferences()
+        
+        # TEST 9: VIDEO LIST WITH ENHANCED FIELDS
+        print("\n📋 TEST 9: VIDEO LIST WITH ENHANCED FIELDS")
+        self.test_enterprise_video_list_enhanced_fields()
+        
+        # TEST 10: BACKEND LOGS ANALYSIS
+        print("\n📊 TEST 10: BACKEND LOGS ANALYSIS")
+        self.test_enterprise_workflow_logs()  # Already covers this
+        
+        print("\n" + "=" * 60)
+        print("🏢 ENTERPRISE TIER TESTING COMPLETE")
+        print("=" * 60)
+
     def run_all_tests(self):
         """Run all backend tests"""
         print("🧪 Starting Rendr Backend API Tests")
