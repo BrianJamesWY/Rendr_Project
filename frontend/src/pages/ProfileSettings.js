@@ -195,8 +195,7 @@ function ProfileSettings() {
                     try {
                       const res = await axios.post(`${BACKEND_URL}/api/@/upload-banner`, formData, {
                         headers: { 
-                          Authorization: `Bearer ${token}`,
-                          'Content-Type': 'multipart/form-data'
+                          Authorization: `Bearer ${token}`
                         }
                       });
                       alert('✅ Banner image updated!');
