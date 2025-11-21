@@ -486,9 +486,3 @@ async def stream_video(
         video_path,
         media_type="video/mp4"
     )
-
-        {"_id": video_id},
-        {"$set": {"thumbnail_path": thumbnail_path}}
-    )
-    
-    return {"message": "Thumbnail updated successfully", "thumbnail_url": f"/api/thumbnails/{video_id}.jpg"}
