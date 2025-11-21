@@ -128,7 +128,8 @@ class WatermarkProcessor:
         output_video_path: str,
         username: str,
         position: str = "left",
-        tier: str = "free"
+        tier: str = "free",
+        verification_code: str = None
     ) -> bool:
         """
         Apply watermark to video using ffmpeg.
@@ -139,13 +140,14 @@ class WatermarkProcessor:
             username: Creator's username
             position: Watermark position (left/right/top/bottom)
             tier: User tier
+            verification_code: Verification code to display (optional)
             
         Returns:
             True if successful, False otherwise
         """
         try:
             # Create watermark overlay
-            watermark_path = self.create_watermark_overlay(username, position, tier)
+            watermark_path = self.create_watermark_overlay(username, position, tier, verification_code)
             
             # Position calculations for ffmpeg overlay filter
             if position == "left":
