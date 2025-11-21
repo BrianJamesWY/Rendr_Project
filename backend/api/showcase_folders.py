@@ -84,6 +84,10 @@ async def create_showcase_folder(
         if not parent_folder or parent_folder["user_id"] != current_user["user_id"]:
             raise HTTPException(400, "Invalid parent folder")
     
+    # Get styling options (tier-based)
+    icon_emoji = folder_data.get("icon_emoji", "📁")
+    color = folder_data.get("color", "#667eea")
+    
     # Create folder
     folder_id = str(uuid4())
     folder_doc = {
@@ -93,6 +97,8 @@ async def create_showcase_folder(
         "user_id": current_user["user_id"],
         "username": current_user.get("username"),
         "parent_folder_id": parent_folder_id,
+        "icon_emoji": icon_emoji,
+        "color": color,
         "order": max_order + 1,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
