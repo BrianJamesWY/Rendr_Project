@@ -39,7 +39,8 @@ class WatermarkProcessor:
         current_y = 10
         
         # Draw username text vertically FIRST (at top)
-        text = username
+        # Remove @ symbol if present
+        text = username.lstrip('@')
         
         # Use a default font
         try:
