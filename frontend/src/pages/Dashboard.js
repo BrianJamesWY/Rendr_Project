@@ -711,7 +711,7 @@ function Dashboard() {
             borderRadius: '0.5rem' 
           }}>
             <p style={{ fontSize: '0.875rem', color: '#1e40af', margin: 0 }}>
-              💡 <strong>Tip:</strong> Add your social media account links in <Link to="/settings" style={{ color: '#667eea', textDecoration: 'underline' }}>Settings</Link> for quick access to your logged-in accounts
+              💡 <strong>No Dashboard Social Links Yet:</strong> Please add your "Creator - Logged In Social Media Links" in <Link to="/settings" style={{ color: '#667eea', textDecoration: 'underline', fontWeight: '600' }}>Profile Settings</Link> for quick access to your logged-in social media accounts (Instagram Studio, TikTok Creator Portal, etc.)
             </p>
           </div>
         )}
