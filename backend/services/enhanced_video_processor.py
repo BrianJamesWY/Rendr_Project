@@ -293,10 +293,16 @@ class EnhancedVideoProcessor:
         print(f"🔍 Smart detection: Checking {len(existing_videos)} existing videos...")
         
         for existing in existing_videos:
-            # Always check original hash
+            # Always check original hash (check both new and legacy formats)
+            existing_original_hash = (
+                existing.get("hashes", {}).get("original") or  # New format
+                existing.get("original_hash", "") or           # Legacy format
+                existing.get("perceptual_hash", {}).get("combined_hash", "")  # Very old format
+            )
+            
             original_similarity = self.calculate_similarity_score(
                 new_hashes["original_hash"],
-                existing.get("original_hash", "")
+                existing_original_hash
             )
             
             if original_similarity >= 0.95:
@@ -305,9 +311,14 @@ class EnhancedVideoProcessor:
             
             # Check center hash for Pro/Enterprise
             if tier in ["pro", "enterprise"] and new_hashes.get("center_region_hash"):
+                existing_center_hash = (
+                    existing.get("hashes", {}).get("center_region") or  # New format
+                    existing.get("center_region_hash", "")              # Legacy format
+                )
+                
                 center_similarity = self.calculate_similarity_score(
                     new_hashes["center_region_hash"],
-                    existing.get("center_region_hash", "")
+                    existing_center_hash
                 )
                 
                 if center_similarity >= 0.95:
