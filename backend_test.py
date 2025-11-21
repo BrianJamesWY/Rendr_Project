@@ -737,7 +737,14 @@ class RendrAPITester:
             self.test_unauthenticated_folder_access()
             
             print("\n🎬 Testing Video Upload...")
-            self.test_video_upload_with_thumbnail()
+            # Test watermark functionality
+            print("\n💧 Testing Watermark Functionality...")
+            upload_result = self.test_video_upload_with_watermark()
+            if upload_result:
+                self.test_watermark_verification_code_format(upload_result["verification_code"])
+                self.test_video_file_exists(upload_result["video_id"])
+                self.test_video_database_record(upload_result["video_id"])
+                self.test_watermark_processing_logs()
         
         # Test registration validation
         print("\n✅ Testing Registration Validation...")
