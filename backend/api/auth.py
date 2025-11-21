@@ -115,5 +115,9 @@ async def get_me(current_user=Depends(get_current_user), db=Depends(get_db)):
         "account_type": user.get("account_type", "free"),
         "premium_tier": user.get("premium_tier", "free"),
         "dashboard_social_links": user.get("dashboard_social_links", []),
-        "created_at": user["created_at"]
+        "created_at": user["created_at"],
+        "phone": user.get("phone"),
+        "notification_preference": user.get("notification_preference", "email"),
+        "notify_video_length_threshold": user.get("notify_video_length_threshold", 30),
+        "sms_opted_in": user.get("sms_opted_in", True)
     }
