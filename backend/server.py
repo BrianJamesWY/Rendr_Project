@@ -52,6 +52,16 @@ app.include_router(notifications.router, prefix="/api/notifications", tags=["Not
 app.include_router(folders.router, prefix="/api/folders", tags=["Folders"])
 app.include_router(showcase_folders.router, tags=["Showcase Folders"])
 app.include_router(users.router, prefix="/api/@", tags=["Users"])
+# Add users endpoints under /api/users for quota and notification settings
+from fastapi import APIRouter
+users_api_router = APIRouter()
+
+# Import the specific endpoints we need
+from api.users import get_user_quota, update_notification_settings
+users_api_router.add_api_route("/quota", get_user_quota, methods=["GET"])
+users_api_router.add_api_route("/notification-settings", update_notification_settings, methods=["PUT"])
+
+app.include_router(users_api_router, prefix="/api/users", tags=["User Settings"])
 app.include_router(admin.router, prefix="/api/ceo-access-b7k9m2x", tags=["Admin"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
