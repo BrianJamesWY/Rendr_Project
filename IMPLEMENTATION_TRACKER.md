@@ -16,16 +16,19 @@
 - [x] Watermark bug fixed (FFmpeg reinstalled)
 - [x] Verification code added to watermark
 
-### ✅ Phase 2: Core Systems (IN PROGRESS)
-- [ ] Hash-first workflow integration
-- [ ] Dual hash storage in MongoDB
-- [ ] Storage expiration system (24hr Free, 7day Pro, Unlimited Enterprise)
-- [ ] Tier-based quotas (5/100/Unlimited)
-- [ ] Download endpoints
-- [ ] Video streaming endpoints
-- [ ] Notification preferences system
-- [ ] Profile settings UI for notifications
-- [ ] Cleanup cron job
+### ✅ Phase 2: Core Systems (MOSTLY COMPLETE)
+- [x] Hash-first workflow integration ✅ TESTED
+- [x] Dual hash storage in MongoDB ✅ TESTED
+- [x] Storage expiration system (24hr Free, 7day Pro, Unlimited Enterprise) ✅
+- [x] Tier-based quotas (5/100/Unlimited) ✅ TESTED
+- [x] Download endpoints ✅
+- [x] Video streaming endpoints ✅
+- [x] Notification preferences system ✅
+- [x] Cleanup script created (/app/backend/scripts/cleanup_expired_videos.py) ✅
+- [ ] Profile settings UI for notifications (PENDING)
+- [ ] Frontend UI for expiration badges (PENDING)
+- [ ] Frontend UI for download buttons (PENDING)
+- [ ] Frontend UI for quota indicators (PENDING)
 
 ---
 
