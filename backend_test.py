@@ -690,6 +690,194 @@ class RendrAPITester:
             self.log_test("Non-existent Creator", False, f"Error: {str(e)}")
             return False
     
+    def test_video_upload_with_watermark(self):
+        """Test video upload with watermark and verification code"""
+        if not self.auth_token:
+            self.log_test("Video Upload with Watermark", False, "Authentication required")
+            return None
+            
+        try:
+            # Create a small test video file using ffmpeg
+            import tempfile
+            import subprocess
+            
+            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+                temp_video_path = temp_video.name
+            
+            # Create a simple test video using ffmpeg (5 seconds, 320x240)
+            cmd = [
+                'ffmpeg', '-f', 'lavfi', '-i', 'testsrc=duration=5:size=320x240:rate=1',
+                '-c:v', 'libx264', '-t', '5', '-pix_fmt', 'yuv420p', '-y', temp_video_path
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, timeout=30)
+            if result.returncode != 0:
+                self.log_test("Video Upload with Watermark", False, 
+                            f"Failed to create test video: {result.stderr.decode()}")
+                return None
+            
+            # Get folder ID for upload
+            folders_response = self.session.get(f"{BASE_URL}/folders/")
+            if folders_response.status_code == 200:
+                folders = folders_response.json()
+                default_folder = next((f for f in folders if f.get("folder_name") == "Default"), None)
+                folder_id = default_folder["folder_id"] if default_folder else None
+            else:
+                folder_id = None
+            
+            # Attempt video upload
+            with open(temp_video_path, 'rb') as video_file:
+                files = {'video_file': ('watermark_test.mp4', video_file, 'video/mp4')}
+                data = {
+                    'source': 'studio',
+                    'folder_id': folder_id
+                }
+                response = self.session.post(f"{BASE_URL}/videos/upload", files=files, data=data)
+            
+            # Clean up temp file
+            os.unlink(temp_video_path)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "thumbnail_url" in data and "verification_code" in data:
+                    verification_code = data["verification_code"]
+                    self.log_test("Video Upload with Watermark", True, 
+                                f"Video uploaded successfully with verification code: {verification_code}")
+                    return {
+                        "video_id": data.get("video_id"),
+                        "verification_code": verification_code,
+                        "thumbnail_url": data.get("thumbnail_url")
+                    }
+                else:
+                    self.log_test("Video Upload with Watermark", False, 
+                                "Missing thumbnail_url or verification_code", data)
+                    return None
+            else:
+                error_msg = response.text
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", error_msg)
+                except:
+                    pass
+                self.log_test("Video Upload with Watermark", False, 
+                            f"Status: {response.status_code}, Error: {error_msg}")
+                return None
+        except Exception as e:
+            self.log_test("Video Upload with Watermark", False, f"Error: {str(e)}")
+            return None
+    
+    def test_watermark_verification_code_format(self, verification_code):
+        """Test that verification code follows RND-XXXX format"""
+        try:
+            import re
+            pattern = r'^RND-[A-Z0-9]{6}$'
+            
+            if re.match(pattern, verification_code):
+                self.log_test("Verification Code Format", True, 
+                            f"Code follows RND-XXXX format: {verification_code}")
+                return True
+            else:
+                self.log_test("Verification Code Format", False, 
+                            f"Code doesn't match RND-XXXX format: {verification_code}")
+                return False
+        except Exception as e:
+            self.log_test("Verification Code Format", False, f"Error: {str(e)}")
+            return False
+    
+    def test_watermark_processing_logs(self):
+        """Check backend logs for watermark processing"""
+        try:
+            import subprocess
+            result = subprocess.run(['tail', '-n', '100', '/var/log/supervisor/backend.out.log'], 
+                                  capture_output=True, text=True, timeout=10)
+            
+            if result.returncode == 0:
+                logs = result.stdout
+                watermark_indicators = [
+                    "💧 Applying watermark",
+                    "✅ Watermark applied successfully",
+                    "⚠️ Watermark failed"
+                ]
+                
+                found_indicators = []
+                for indicator in watermark_indicators:
+                    if indicator in logs:
+                        found_indicators.append(indicator)
+                
+                if found_indicators:
+                    self.log_test("Watermark Processing Logs", True, 
+                                f"Found watermark processing indicators: {', '.join(found_indicators)}")
+                    return True
+                else:
+                    self.log_test("Watermark Processing Logs", False, 
+                                "No watermark processing indicators found in logs")
+                    return False
+            else:
+                self.log_test("Watermark Processing Logs", False, 
+                            "Could not read backend logs")
+                return False
+        except Exception as e:
+            self.log_test("Watermark Processing Logs", False, f"Error: {str(e)}")
+            return False
+    
+    def test_video_file_exists(self, video_id):
+        """Check if processed video file exists in uploads directory"""
+        try:
+            upload_dir = "/app/backend/uploads/videos"
+            if not os.path.exists(upload_dir):
+                self.log_test("Video File Exists", False, "Upload directory not found")
+                return False
+            
+            # Look for video files with the video_id
+            video_files = [f for f in os.listdir(upload_dir) if video_id in f]
+            
+            if video_files:
+                self.log_test("Video File Exists", True, 
+                            f"Found video file(s): {', '.join(video_files)}")
+                return True
+            else:
+                self.log_test("Video File Exists", False, 
+                            f"No video files found for video_id: {video_id}")
+                return False
+        except Exception as e:
+            self.log_test("Video File Exists", False, f"Error: {str(e)}")
+            return False
+    
+    def test_video_database_record(self, video_id):
+        """Test that video record in database contains verification code"""
+        try:
+            # We can't directly access the database, but we can check via API
+            response = self.session.get(f"{BASE_URL}/videos/user/list")
+            
+            if response.status_code == 200:
+                data = response.json()
+                videos = data.get("videos", [])
+                
+                # Find our video
+                video = next((v for v in videos if v.get("video_id") == video_id), None)
+                
+                if video:
+                    verification_code = video.get("verification_code")
+                    if verification_code:
+                        self.log_test("Video Database Record", True, 
+                                    f"Video record contains verification code: {verification_code}")
+                        return verification_code
+                    else:
+                        self.log_test("Video Database Record", False, 
+                                    "Video record missing verification code")
+                        return None
+                else:
+                    self.log_test("Video Database Record", False, 
+                                f"Video not found in user's video list: {video_id}")
+                    return None
+            else:
+                self.log_test("Video Database Record", False, 
+                            f"Failed to get user videos: {response.status_code}")
+                return None
+        except Exception as e:
+            self.log_test("Video Database Record", False, f"Error: {str(e)}")
+            return None
+    
     def run_all_tests(self):
         """Run all backend tests"""
         print("🧪 Starting Rendr Backend API Tests")
