@@ -1199,7 +1199,7 @@ class RendrAPITester:
                 # Verify Enterprise quota settings
                 expected_fields = {
                     "tier": "enterprise",
-                    "video_limit": -1,  # unlimited
+                    "limit": -1,  # unlimited (field is 'limit', not 'video_limit')
                     "unlimited": True,
                     "can_upload": True
                 }
