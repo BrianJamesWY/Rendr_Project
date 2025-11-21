@@ -137,6 +137,8 @@ async def update_showcase_folder(
     
     folder_name = folder_data.get("folder_name")
     description = folder_data.get("description")
+    icon_emoji = folder_data.get("icon_emoji")
+    color = folder_data.get("color")
     
     update_fields = {}
     if folder_name:
@@ -152,6 +154,12 @@ async def update_showcase_folder(
     
     if description is not None:
         update_fields["description"] = description
+    
+    if icon_emoji is not None:
+        update_fields["icon_emoji"] = icon_emoji
+    
+    if color is not None:
+        update_fields["color"] = color
     
     if update_fields:
         await db.showcase_folders.update_one(
