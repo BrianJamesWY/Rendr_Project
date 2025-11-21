@@ -328,7 +328,12 @@ class EnhancedVideoProcessor:
             
             # Check audio hash for Enterprise
             if tier == "enterprise" and new_hashes.get("audio_hash") != "no_audio":
-                if new_hashes["audio_hash"] == existing.get("audio_hash"):
+                existing_audio_hash = (
+                    existing.get("hashes", {}).get("audio") or  # New format
+                    existing.get("audio_hash", "")              # Legacy format
+                )
+                
+                if new_hashes["audio_hash"] == existing_audio_hash:
                     print(f"✅ Match found (audio fingerprint)")
                     print(f"   (Video edited but audio identical)")
                     return (True, existing, 1.0)
