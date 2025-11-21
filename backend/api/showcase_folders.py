@@ -35,6 +35,8 @@ async def get_showcase_folders(
             "folder_name": folder["folder_name"],
             "description": folder.get("description"),
             "parent_folder_id": folder.get("parent_folder_id"),
+            "icon_emoji": folder.get("icon_emoji", "📁"),
+            "color": folder.get("color", "#667eea"),
             "video_count": video_count,
             "subfolder_count": subfolder_count,
             "created_at": folder["created_at"],
