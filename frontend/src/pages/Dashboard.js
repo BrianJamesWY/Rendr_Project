@@ -754,7 +754,7 @@ function Dashboard() {
                               style={{
                                 ...provided.draggableProps.style,
                                 background: 'white',
-                                border: snapshot.isDragging ? '2px solid #667eea' : '2px solid #e5e7eb',
+                                border: snapshot.isDragging ? `2px solid ${folder.color || '#667eea'}` : '2px solid #e5e7eb',
                                 borderRadius: '0.75rem',
                                 padding: '1.5rem',
                                 cursor: snapshot.isDragging ? 'grabbing' : 'grab',
@@ -763,12 +763,13 @@ function Dashboard() {
                                 boxShadow: snapshot.isDragging ? '0 10px 30px rgba(0,0,0,0.2)' : 'none'
                               }}
                             >
-                              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📁</div>
-                              <div style={{ fontWeight: '600', color: '#111827', marginBottom: '0.25rem' }}>
+                              <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>{folder.icon_emoji || '📁'}</div>
+                              <div style={{ fontWeight: '600', color: folder.color || '#111827', marginBottom: '0.25rem' }}>
                                 {folder.folder_name}
                               </div>
                               <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
                                 {folderVideos.length} {folderVideos.length === 1 ? 'video' : 'videos'}
+                                {folder.subfolder_count > 0 && ` • ${folder.subfolder_count} subfolders`}
                               </div>
                             </div>
                           )}
