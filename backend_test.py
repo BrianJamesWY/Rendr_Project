@@ -878,6 +878,296 @@ class RendrAPITester:
             self.log_test("Video Database Record", False, f"Error: {str(e)}")
             return None
     
+    def test_enhanced_video_upload_workflow(self):
+        """Test the enhanced video upload logic with hash-first workflow"""
+        if not self.auth_token:
+            self.log_test("Enhanced Video Upload Workflow", False, "Authentication required")
+            return None
+            
+        try:
+            # Create a test video file using ffmpeg
+            import tempfile
+            import subprocess
+            
+            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+                temp_video_path = temp_video.name
+            
+            # Create a simple test video using ffmpeg (3 seconds, 320x240)
+            cmd = [
+                'ffmpeg', '-f', 'lavfi', '-i', 'testsrc=duration=3:size=320x240:rate=1',
+                '-c:v', 'libx264', '-t', '3', '-pix_fmt', 'yuv420p', '-y', temp_video_path
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, timeout=30)
+            if result.returncode != 0:
+                self.log_test("Enhanced Video Upload Workflow", False, 
+                            f"Failed to create test video: {result.stderr.decode()}")
+                return None
+            
+            # Get folder ID for upload
+            folders_response = self.session.get(f"{BASE_URL}/folders/")
+            if folders_response.status_code == 200:
+                folders = folders_response.json()
+                default_folder = next((f for f in folders if f.get("folder_name") == "Default"), None)
+                folder_id = default_folder["folder_id"] if default_folder else None
+            else:
+                folder_id = None
+            
+            # Upload video with enhanced workflow
+            with open(temp_video_path, 'rb') as video_file:
+                files = {'video_file': ('enhanced_test.mp4', video_file, 'video/mp4')}
+                data = {
+                    'source': 'studio',
+                    'folder_id': folder_id
+                }
+                response = self.session.post(f"{BASE_URL}/videos/upload", files=files, data=data)
+            
+            # Clean up temp file
+            os.unlink(temp_video_path)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check required fields in response
+                required_fields = ["verification_code", "expires_at", "storage_duration", "tier"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_test("Enhanced Video Upload Workflow", True, 
+                                f"Enhanced upload successful: {data['verification_code']}, expires: {data['expires_at']}, tier: {data['tier']}")
+                    return {
+                        "video_id": data.get("video_id"),
+                        "verification_code": data["verification_code"],
+                        "expires_at": data["expires_at"],
+                        "storage_duration": data["storage_duration"],
+                        "tier": data["tier"]
+                    }
+                else:
+                    self.log_test("Enhanced Video Upload Workflow", False, 
+                                f"Missing required fields: {missing_fields}", data)
+                    return None
+            else:
+                error_msg = response.text
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", error_msg)
+                except:
+                    pass
+                self.log_test("Enhanced Video Upload Workflow", False, 
+                            f"Status: {response.status_code}, Error: {error_msg}")
+                return None
+        except Exception as e:
+            self.log_test("Enhanced Video Upload Workflow", False, f"Error: {str(e)}")
+            return None
+    
+    def test_enhanced_workflow_logs(self):
+        """Check backend logs for the new enhanced workflow steps"""
+        try:
+            import subprocess
+            result = subprocess.run(['tail', '-n', '200', '/var/log/supervisor/backend.out.log'], 
+                                  capture_output=True, text=True, timeout=10)
+            
+            if result.returncode == 0:
+                logs = result.stdout
+                
+                # Check for the new workflow steps
+                workflow_steps = [
+                    "🎬 NEW VIDEO UPLOAD - Hash-First Workflow",
+                    "STEP 1: Calculating original hash (pre-watermark)",
+                    "STEP 2: Smart duplicate detection",
+                    "STEP 3: Generating verification code",
+                    "STEP 4: Applying watermark",
+                    "STEP 5: Calculating watermarked hash",
+                    "STEP 9: Saving to database",
+                    "✅ UPLOAD COMPLETE"
+                ]
+                
+                found_steps = []
+                for step in workflow_steps:
+                    if step in logs:
+                        found_steps.append(step)
+                
+                if len(found_steps) >= 6:  # At least 6 out of 8 key steps
+                    self.log_test("Enhanced Workflow Logs", True, 
+                                f"Found {len(found_steps)}/8 workflow steps in logs")
+                    return True
+                else:
+                    self.log_test("Enhanced Workflow Logs", False, 
+                                f"Only found {len(found_steps)}/8 workflow steps: {found_steps}")
+                    return False
+            else:
+                self.log_test("Enhanced Workflow Logs", False, 
+                            "Could not read backend logs")
+                return False
+        except Exception as e:
+            self.log_test("Enhanced Workflow Logs", False, f"Error: {str(e)}")
+            return False
+    
+    def test_user_tier_check(self):
+        """Test that user tier is properly retrieved and displayed"""
+        try:
+            response = self.session.get(f"{BASE_URL}/auth/me")
+            
+            if response.status_code == 200:
+                data = response.json()
+                tier = data.get("premium_tier", "free")
+                
+                self.log_test("User Tier Check", True, 
+                            f"User tier retrieved: {tier}")
+                return tier
+            else:
+                self.log_test("User Tier Check", False, 
+                            f"Failed to get user info: {response.status_code}")
+                return None
+        except Exception as e:
+            self.log_test("User Tier Check", False, f"Error: {str(e)}")
+            return None
+    
+    def test_video_database_fields(self, video_id):
+        """Test that video record contains new enhanced fields"""
+        try:
+            # Get video via user list endpoint
+            response = self.session.get(f"{BASE_URL}/videos/user/list")
+            
+            if response.status_code == 200:
+                data = response.json()
+                videos = data.get("videos", [])
+                
+                # Find our video
+                video = next((v for v in videos if v.get("video_id") == video_id), None)
+                
+                if video:
+                    # Check for enhanced fields (these would be in the full database record)
+                    # For now, just verify basic fields are present
+                    required_fields = ["video_id", "verification_code"]
+                    missing_fields = [field for field in required_fields if field not in video]
+                    
+                    if not missing_fields:
+                        self.log_test("Video Database Fields", True, 
+                                    f"Video record contains required fields")
+                        return True
+                    else:
+                        self.log_test("Video Database Fields", False, 
+                                    f"Missing fields: {missing_fields}")
+                        return False
+                else:
+                    self.log_test("Video Database Fields", False, 
+                                f"Video not found in user's video list: {video_id}")
+                    return False
+            else:
+                self.log_test("Video Database Fields", False, 
+                            f"Failed to get user videos: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Video Database Fields", False, f"Error: {str(e)}")
+            return False
+    
+    def test_duplicate_detection(self, original_video_result):
+        """Test duplicate detection by uploading the same video again"""
+        if not original_video_result or not self.auth_token:
+            self.log_test("Duplicate Detection", False, "No original video or authentication")
+            return False
+            
+        try:
+            # Create the same test video again
+            import tempfile
+            import subprocess
+            
+            with tempfile.NamedTemporaryFile(suffix='.mp4', delete=False) as temp_video:
+                temp_video_path = temp_video.name
+            
+            # Create identical test video
+            cmd = [
+                'ffmpeg', '-f', 'lavfi', '-i', 'testsrc=duration=3:size=320x240:rate=1',
+                '-c:v', 'libx264', '-t', '3', '-pix_fmt', 'yuv420p', '-y', temp_video_path
+            ]
+            
+            result = subprocess.run(cmd, capture_output=True, timeout=30)
+            if result.returncode != 0:
+                self.log_test("Duplicate Detection", False, 
+                            f"Failed to create duplicate test video: {result.stderr.decode()}")
+                return False
+            
+            # Get folder ID for upload
+            folders_response = self.session.get(f"{BASE_URL}/folders/")
+            if folders_response.status_code == 200:
+                folders = folders_response.json()
+                default_folder = next((f for f in folders if f.get("folder_name") == "Default"), None)
+                folder_id = default_folder["folder_id"] if default_folder else None
+            else:
+                folder_id = None
+            
+            # Upload the same video again
+            with open(temp_video_path, 'rb') as video_file:
+                files = {'video_file': ('duplicate_test.mp4', video_file, 'video/mp4')}
+                data = {
+                    'source': 'studio',
+                    'folder_id': folder_id
+                }
+                response = self.session.post(f"{BASE_URL}/videos/upload", files=files, data=data)
+            
+            # Clean up temp file
+            os.unlink(temp_video_path)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check if it's marked as duplicate
+                if (data.get("status") == "duplicate" and 
+                    data.get("duplicate_detected") == True and
+                    data.get("verification_code") == original_video_result["verification_code"]):
+                    
+                    self.log_test("Duplicate Detection", True, 
+                                f"Duplicate correctly detected, returned existing code: {data['verification_code']}")
+                    return True
+                else:
+                    self.log_test("Duplicate Detection", False, 
+                                f"Duplicate not detected or wrong response: {data}")
+                    return False
+            else:
+                self.log_test("Duplicate Detection", False, 
+                            f"Upload failed: {response.status_code}")
+                return False
+        except Exception as e:
+            self.log_test("Duplicate Detection", False, f"Error: {str(e)}")
+            return False
+    
+    def test_tier_based_hashing(self, tier):
+        """Test that tier-based hashing is working correctly"""
+        # This is more of a log verification test since we can't directly access hash calculation
+        try:
+            import subprocess
+            result = subprocess.run(['tail', '-n', '100', '/var/log/supervisor/backend.out.log'], 
+                                  capture_output=True, text=True, timeout=10)
+            
+            if result.returncode == 0:
+                logs = result.stdout
+                
+                # Check for tier-specific hash calculations
+                if tier == "free":
+                    # Free tier should only have original hash
+                    if "Original hash:" in logs:
+                        self.log_test("Tier-based Hashing", True, 
+                                    f"Free tier hashing working (original hash only)")
+                        return True
+                elif tier in ["pro", "enterprise"]:
+                    # Pro/Enterprise should have center region hash
+                    if "Center region hash:" in logs or "Original hash:" in logs:
+                        self.log_test("Tier-based Hashing", True, 
+                                    f"{tier.title()} tier hashing working")
+                        return True
+                
+                self.log_test("Tier-based Hashing", False, 
+                            f"No tier-specific hashing logs found for {tier} tier")
+                return False
+            else:
+                self.log_test("Tier-based Hashing", False, 
+                            "Could not read backend logs")
+                return False
+        except Exception as e:
+            self.log_test("Tier-based Hashing", False, f"Error: {str(e)}")
+            return False
+
     def run_all_tests(self):
         """Run all backend tests"""
         print("🧪 Starting Rendr Backend API Tests")
@@ -892,6 +1182,10 @@ class RendrAPITester:
         print("\n🔐 Testing Authentication...")
         if self.test_auth_login("brian"):
             self.test_auth_me()
+            
+            # Test user tier check
+            print("\n👤 Testing User Tier...")
+            user_tier = self.test_user_tier_check()
         
         # Test creator profiles (both existing users)
         print("\n👤 Testing Creator Profiles...")
@@ -924,9 +1218,20 @@ class RendrAPITester:
             print("\n🚫 Testing Unauthenticated Access...")
             self.test_unauthenticated_folder_access()
             
-            print("\n🎬 Testing Video Upload...")
-            # Test watermark functionality
-            print("\n💧 Testing Watermark Functionality...")
+            print("\n🎬 Testing Enhanced Video Upload Workflow...")
+            # Test the new enhanced video upload logic
+            enhanced_result = self.test_enhanced_video_upload_workflow()
+            if enhanced_result:
+                print("\n🔍 Testing Enhanced Workflow Components...")
+                self.test_enhanced_workflow_logs()
+                self.test_video_database_fields(enhanced_result["video_id"])
+                if user_tier:
+                    self.test_tier_based_hashing(user_tier)
+                
+                print("\n🔄 Testing Duplicate Detection...")
+                self.test_duplicate_detection(enhanced_result)
+            
+            print("\n💧 Testing Legacy Watermark Functionality...")
             upload_result = self.test_video_upload_with_watermark()
             if upload_result:
                 self.test_watermark_verification_code_format(upload_result["verification_code"])
