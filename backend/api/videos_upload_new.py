@@ -257,7 +257,7 @@ async def upload_video_enhanced(
         if should_notify:
             print(f"   📧 Video length ({original_hashes['duration']}s) exceeds threshold - sending notification")
             
-            download_url = f"https://rendr-showcase.preview.emergentagent.com/dashboard?video={video_id}"
+            download_url = f"https://creator-vault-7.preview.emergentagent.com/dashboard?video={video_id}"
             
             notification_results = await notification_service.send_video_ready_notification(
                 user=user,
