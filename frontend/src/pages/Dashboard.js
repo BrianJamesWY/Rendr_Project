@@ -172,13 +172,17 @@ function Dashboard() {
         `${BACKEND_URL}/api/showcase-folders`,
         {
           folder_name: newFolderName,
-          description: newFolderDescription
+          description: newFolderDescription,
+          icon_emoji: folderIconEmoji,
+          color: folderColor
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setShowQuickCreateFolder(false);
       setNewFolderName('');
       setNewFolderDescription('');
+      setFolderIconEmoji('📁');
+      setFolderColor('#667eea');
       loadDashboard();
       // Set the newly created folder as selected
       setVideoShowcaseFolder(response.data.folder_id);
