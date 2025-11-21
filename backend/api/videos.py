@@ -341,14 +341,16 @@ async def list_user_videos(
 ):
     """Get all videos for current user"""
     videos = await db.videos.find(
-        {"user_id": current_user["user_id"]},
-        {"_id": 0}
+        {"user_id": current_user["user_id"]}
     ).to_list(length=1000)
     
     video_list = []
     for v in videos:
+        # Get video_id, prefer 'id' field, fallback to '_id'
+        video_id = v.get('id') or str(v.get('_id', ''))
+        
         video_list.append({
-            "video_id": v.get('id', v.get('_id')),
+            "video_id": video_id,
             "verification_code": v.get('verification_code'),
             "source": v.get('source'),
             "captured_at": v.get('captured_at'),
