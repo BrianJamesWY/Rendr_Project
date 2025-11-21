@@ -1713,7 +1713,13 @@ function Dashboard() {
             </div>
 
             {/* Create/Edit Form */}
-            <div style={{ marginBottom: '2rem', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}>
+            <form 
+              onSubmit={(e) => {
+                e.preventDefault();
+                editingFolder ? updateShowcaseFolder() : createQuickShowcaseFolder();
+              }}
+              style={{ marginBottom: '2rem', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem' }}
+            >
               <h3 style={{ fontSize: '1rem', fontWeight: '600', marginBottom: '1rem' }}>
                 {editingFolder ? 'Edit Folder' : 'Create New Folder'}
               </h3>
