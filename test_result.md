@@ -454,6 +454,19 @@ backend:
         agent: "testing"
         comment: "TESTED: Watermark functionality fully operational. Video upload successfully applies watermark with verification code RND-C3C2YZ. Verification code follows correct RND-XXXX format. Backend logs confirm watermark processing: '💧 Applying watermark to video with code: RND-C3C2YZ...' and '✅ Watermark applied successfully'. Video database record contains verification code. Thumbnail extraction working correctly. Video files are properly cleaned up after processing (expected behavior). FFmpeg dependency resolved and working correctly."
 
+backend:
+  - task: "Enhanced Video Upload Logic - Hash-First Workflow"
+    implemented: true
+    working: true
+    file: "backend/api/videos.py, backend/services/enhanced_video_processor.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Enhanced video upload logic with hash-first workflow fully functional. All requested features verified: 1) Login with BrianJames/Brian123! successful, user tier retrieved (enterprise), 2) Video upload includes all required response fields (verification_code: RND-RMSO5L, expires_at: None, storage_duration: unlimited, tier: enterprise), 3) Backend logs show all 10 workflow steps including '🎬 NEW VIDEO UPLOAD - Hash-First Workflow', 'STEP 1: Calculating original hash (pre-watermark)', 'STEP 2: Smart duplicate detection', through 'STEP 9: Saving to database' and '✅ UPLOAD COMPLETE', 4) Database records contain new hashes object (original, watermarked, center_region, audio, metadata) and storage object (tier, expires_at, uploaded_at), 5) Duplicate detection working perfectly - uploading same video twice returns existing verification code with status='duplicate', duplicate_detected=True, confidence_score=1.0, 6) Tier-based hashing working (Enterprise tier gets all hash types including center region and audio), 7) Quota enforcement working, 8) Storage expiration properly set (Enterprise = unlimited). Fixed database field access issues and response model validation. All critical workflow components operational."
+
 agent_communication:
   - agent: "main"
     message: |
