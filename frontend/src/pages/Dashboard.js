@@ -862,7 +862,72 @@ function Dashboard() {
                                   <div {...provided.dragHandleProps} style={{ cursor: 'grab', padding: '0.5rem', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', textAlign: 'center', fontSize: '0.75rem', color: '#6b7280' }}>
                                     ⋮⋮ Drag to reorder
                                   </div>
-              <VideoCard video={video} videoFolder={videoFolder} openEditModal={openEditModal} setShowMoveModal={setShowMoveModal} setSelectedVideo={setSelectedVideo} />
+                                  
+                                  {/* Thumbnail */}
+                                  <div 
+                                    onClick={() => openEditModal(video)}
+                                    style={{ 
+                                      width: '100%', 
+                                      height: '180px', 
+                                      background: '#e5e7eb',
+                                      position: 'relative',
+                                      overflow: 'hidden',
+                                      cursor: 'pointer'
+                                    }}
+                                  >
+                                    {video.thumbnail_url ? (
+                                      <img 
+                                        src={`${BACKEND_URL}${video.thumbnail_url}`}
+                                        alt={video.verification_code}
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                      />
+                                    ) : (
+                                      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
+                                        🎬
+                                      </div>
+                                    )}
+                                    {video.has_blockchain && (
+                                      <div style={{
+                                        position: 'absolute',
+                                        top: '10px',
+                                        right: '10px',
+                                        background: 'rgba(254, 243, 199, 0.95)',
+                                        padding: '0.25rem 0.75rem',
+                                        borderRadius: '9999px',
+                                        fontSize: '0.75rem',
+                                        fontWeight: '600',
+                                        color: '#92400e'
+                                      }}>
+                                        ⛓️ Verified
+                                      </div>
+                                    )}
+                                  </div>
+                                  
+                                  {/* Video Info */}
+                                  <div style={{ padding: '1rem' }}>
+                                    <div style={{ fontSize: '1rem', fontWeight: 'bold', color: '#667eea', fontFamily: 'monospace', marginBottom: '0.5rem' }}>
+                                      {video.verification_code}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: '#6b7280', marginBottom: '0.75rem' }}>
+                                      {new Date(video.captured_at).toLocaleDateString()}
+                                    </div>
+                                    <div style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                                      {video.source === 'bodycam' ? '📱 Bodycam' : '💻 Studio'}
+                                    </div>
+                                    {videoFolder && (
+                                      <div style={{ fontSize: '0.75rem', color: '#059669', background: '#d1fae5', padding: '0.25rem 0.5rem', borderRadius: '0.25rem', marginBottom: '1rem', display: 'inline-block' }}>
+                                        📁 {videoFolder.folder_name}
+                                      </div>
+                                    )}
+                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                      <button onClick={() => { setSelectedVideo(video); setShowMoveModal(true); }} style={{ flex: 1, padding: '0.5rem', background: '#f3f4f6', color: '#374151', border: 'none', borderRadius: '0.375rem', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer' }}>
+                                        📁 Move
+                                      </button>
+                                      <button onClick={() => { navigator.clipboard.writeText(video.verification_code); alert('Code copied!'); }} style={{ flex: 1, padding: '0.5rem', background: '#667eea', color: 'white', border: 'none', borderRadius: '0.375rem', fontSize: '0.75rem', fontWeight: '600', cursor: 'pointer' }}>
+                                        📋 Copy Code
+                                      </button>
+                                    </div>
+                                  </div>
                                 </div>
                               )}
                             </Draggable>
