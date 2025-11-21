@@ -287,3 +287,84 @@ async def update_watermark_settings(
         "allowed_positions": allowed_positions
     }
 
+
+
+@router.put("/notification-settings")
+async def update_notification_settings(
+    settings: dict,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Update user notification preferences"""
+    user_id = current_user["user_id"]
+    
+    # Validate settings
+    valid_preferences = ["email", "sms", "both", "none"]
+    if settings.get("notification_preference") and settings["notification_preference"] not in valid_preferences:
+        raise HTTPException(400, "Invalid notification preference")
+    
+    # Build update document
+    update_doc = {}
+    
+    if "phone" in settings:
+        update_doc["phone"] = settings["phone"]
+    
+    if "notification_preference" in settings:
+        update_doc["notification_preference"] = settings["notification_preference"]
+    
+    if "notify_video_length_threshold" in settings:
+        threshold = int(settings["notify_video_length_threshold"])
+        if threshold < 0 or threshold > 600:
+            raise HTTPException(400, "Threshold must be between 0 and 600 seconds")
+        update_doc["notify_video_length_threshold"] = threshold
+    
+    if "sms_opted_in" in settings:
+        update_doc["sms_opted_in"] = bool(settings["sms_opted_in"])
+    
+    if not update_doc:
+        raise HTTPException(400, "No valid settings provided")
+    
+    # Update user
+    result = await db.users.update_one(
+        {"_id": user_id},
+        {"$set": update_doc}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(404, "User not found or no changes made")
+    
+    return {"message": "Notification settings updated", "updated": update_doc}
+
+@router.get("/quota")
+async def get_user_quota(
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Get user's video quota and usage"""
+    user_id = current_user["user_id"]
+    tier = current_user.get("premium_tier", "free")
+    
+    # Count active videos
+    active_videos = await db.videos.count_documents({
+        "user_id": user_id,
+        "storage.expires_at": {"$gt": None}  # Not expired
+    })
+    
+    # Define quota limits
+    quota_limits = {
+        "free": 5,
+        "pro": 100,
+        "enterprise": -1  # Unlimited
+    }
+    
+    limit = quota_limits.get(tier, 5)
+    
+    return {
+        "tier": tier,
+        "used": active_videos,
+        "limit": limit,
+        "unlimited": limit == -1,
+        "percentage": (active_videos / limit * 100) if limit > 0 else 0,
+        "can_upload": limit == -1 or active_videos < limit
+    }
+
