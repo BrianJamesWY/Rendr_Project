@@ -55,3 +55,7 @@ class UpdateProfile(BaseModel):
     dashboard_social_links: Optional[List[Dict]] = None
     collection_label: Optional[str] = None
     banner_image: Optional[str] = None
+    phone: Optional[str] = None
+    notification_preference: Optional[str] = None
+    notify_video_length_threshold: Optional[int] = None
+    sms_opted_in: Optional[bool] = None
