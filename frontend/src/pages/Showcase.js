@@ -306,13 +306,13 @@ function Showcase() {
                   <h2 style={{ 
                     fontSize: '1.5rem', 
                     fontWeight: 'bold', 
-                    color: '#111827',
+                    color: folderData.color || '#111827',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '0.5rem',
                     marginBottom: '0.25rem'
                   }}>
-                    📁 {folderData.folderName}
+                    {folderData.icon_emoji || '📁'} {folderData.folderName}
                   </h2>
                   {folderData.description && (
                     <p style={{ 
