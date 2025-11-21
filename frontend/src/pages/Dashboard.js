@@ -203,13 +203,17 @@ function Dashboard() {
         `${BACKEND_URL}/api/showcase-folders/${editingFolder.folder_id}`,
         {
           folder_name: newFolderName,
-          description: newFolderDescription
+          description: newFolderDescription,
+          icon_emoji: folderIconEmoji,
+          color: folderColor
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setEditingFolder(null);
       setNewFolderName('');
       setNewFolderDescription('');
+      setFolderIconEmoji('📁');
+      setFolderColor('#667eea');
       loadDashboard();
       alert('✅ Folder updated successfully!');
     } catch (err) {
