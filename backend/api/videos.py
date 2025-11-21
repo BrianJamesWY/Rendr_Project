@@ -1,28 +1,44 @@
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException
-from typing import Optional
-import uuid
+from datetime import datetime, timezone, timedelta
 import os
 import shutil
-from datetime import datetime
-
-from services.video_processor import VideoProcessor
-from services.blockchain_service import blockchain_service
-from services.notification_service import notification_service
-from services.enhanced_video_processor import enhanced_processor
-from models.video import VideoUploadResponse, VideoStatusResponse, VideoUpdate
-from utils.security import get_current_user
-from utils.watermark import WatermarkProcessor
-from database.mongodb import get_db
-from datetime import timezone, timedelta
+import uuid
+from ..utils.auth import get_current_user
+from ..utils.database import get_db
+from ..services.video_processor import video_processor
+from ..services.watermark import watermark_processor
+from ..services.blockchain_service import blockchain_service
+from ..services.enhanced_video_processor import enhanced_processor
+from ..services.notification_service import notification_service
+from pydantic import BaseModel
+from typing import Optional
+from fastapi.responses import FileResponse
 
 router = APIRouter()
-video_processor = VideoProcessor()
-watermark_processor = WatermarkProcessor()
+
+class VideoUploadResponse(BaseModel):
+    video_id: str
+    verification_code: str
+    status: str
+    message: str
+    expires_at: Optional[str] = None
+    storage_duration: Optional[str] = None
+    tier: Optional[str] = None
+    duplicate_detected: Optional[bool] = None
+    confidence_score: Optional[float] = None
+    original_upload_date: Optional[str] = None
+
+class VideoUpdateData(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    tags: Optional[list] = None
+    is_public: Optional[bool] = None
+    showcase_folder_id: Optional[str] = None
+    folder_id: Optional[str] = None
 
 @router.post("/upload", response_model=VideoUploadResponse)
 async def upload_video(
     video_file: UploadFile = File(...),
-    source: str = Form(...),
     folder_id: str = Form(None),
     current_user = Depends(get_current_user),
     db = Depends(get_db)
@@ -36,10 +52,12 @@ async def upload_video(
     3. Check for duplicates using smart detection
     4. If duplicate -> return existing code
     5. If new -> Generate code, watermark, calculate all hashes, store with expiration
+    
+    Source is auto-detected: "studio" for web uploads
     """
     
-    if source not in ["bodycam", "studio"]:
-        raise HTTPException(400, "Invalid source. Must be 'bodycam' or 'studio'")
+    # Auto-detect source: Web platform = "studio"
+    source = "studio"
     
     # Check quota FIRST
     user = await db.users.find_one({"_id": current_user["user_id"]}, {"_id": 0})
@@ -134,7 +152,7 @@ async def upload_video(
                 "message": "This video was already uploaded. Returning existing verification code.",
                 "duplicate_detected": True,
                 "confidence_score": confidence,
-                "original_upload_date": matching_video.get('uploaded_at').isoformat() if matching_video.get('uploaded_at') else None
+                "original_upload_date": matching_video.get('uploaded_at')
             }
         
         # STEP 3: NEW VIDEO - Generate verification code
@@ -259,8 +277,10 @@ async def upload_video(
             },
             "thumbnail_path": thumbnail_path,
             "folder_id": folder_id,
+            "showcase_folder_id": folder_id,  # NEW: Also set showcase folder
             "blockchain_signature": blockchain_data,
-            "verification_status": "verified"
+            "verification_status": "verified",
+            "is_public": True  # NEW: Default to public for showcase
         }
         
         await db.videos.insert_one(video_doc)
@@ -313,176 +333,115 @@ async def upload_video(
         
         raise HTTPException(500, f"Video processing failed: {str(e)}")
 
-@router.get("/{video_id}/status", response_model=VideoStatusResponse)
-async def get_video_status(
-    video_id: str,
-    current_user = Depends(get_current_user),
-    db = Depends(get_db)
-):
-    """Get video status"""
-    video = await db.videos.find_one({"_id": video_id})
-    
-    if not video:
-        raise HTTPException(404, "Video not found")
-    
-    if video['user_id'] != current_user['user_id']:
-        raise HTTPException(403, "Access denied")
-    
-    response = {
-        "video_id": video['_id'],
-        "status": video['verification_status'],
-        "verification_code": video['verification_code'],
-        "verified_at": video.get('verified_at')
-    }
-    
-    return response
-
-@router.put("/{video_id}/metadata")
-async def update_video_metadata(
-    video_id: str,
-    video_data: VideoUpdate,
-    current_user = Depends(get_current_user),
-    db = Depends(get_db)
-):
-    """Update video description, external link, and platform"""
-    video = await db.videos.find_one({"_id": video_id})
-    
-    if not video:
-        raise HTTPException(404, "Video not found")
-    
-    if video['user_id'] != current_user['user_id']:
-        raise HTTPException(403, "Access denied")
-    
-    update_fields = {}
-    if video_data.description is not None:
-        update_fields['description'] = video_data.description
-    if video_data.external_link is not None:
-        update_fields['external_link'] = video_data.external_link
-    if video_data.platform is not None:
-        update_fields['platform'] = video_data.platform
-    if video_data.tags is not None:
-        update_fields['tags'] = video_data.tags
-    if video_data.showcase_folder_id is not None:
-        update_fields['showcase_folder_id'] = video_data.showcase_folder_id
-    
-    if update_fields:
-        await db.videos.update_one(
-            {"_id": video_id},
-            {"$set": update_fields}
-        )
-    
-    return {"message": "Video metadata updated successfully"}
 
 @router.get("/user/list")
-async def get_user_videos(
+async def list_user_videos(
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
     """Get all videos for current user"""
-    cursor = db.videos.find({"user_id": current_user['user_id']})
-    videos = await cursor.to_list(length=100)
+    videos = await db.videos.find(
+        {"user_id": current_user["user_id"]},
+        {"_id": 0}
+    ).to_list(length=1000)
     
     video_list = []
     for v in videos:
-        video_info = {
-            "video_id": v['_id'],
-            "verification_code": v['verification_code'],
-            "source": v['source'],
-            "captured_at": v.get('captured_at', v.get('uploaded_at')),  # Use uploaded_at if captured_at doesn't exist
-            "status": v['verification_status'],
-            "has_blockchain": bool(v.get('blockchain_signature')),
-            "thumbnail_url": f"/api/thumbnails/{v['_id']}.jpg" if v.get('thumbnail_path') else None,
+        video_list.append({
+            "video_id": v.get('id', v.get('_id')),
+            "verification_code": v.get('verification_code'),
+            "source": v.get('source'),
+            "captured_at": v.get('captured_at'),
+            "uploaded_at": v.get('uploaded_at'),
+            "thumbnail_url": v.get('thumbnail_path'),
             "folder_id": v.get('folder_id'),
             "showcase_folder_id": v.get('showcase_folder_id'),
-            "description": v.get('description'),
-            "external_link": v.get('external_link'),
-            "platform": v.get('platform'),
-            "tags": v.get('tags', ['Rendr']),
-            "folder_video_order": v.get('folder_video_order', 999),
-            # Enhanced fields
+            "is_public": v.get('is_public', False),
+            "has_blockchain": v.get('blockchain_signature') is not None,
+            "verification_status": v.get('verification_status', 'pending'),
             "storage": v.get('storage'),
             "hashes": v.get('hashes')
-        }
-        if v.get('blockchain_signature'):
-            video_info['blockchain_tx'] = v['blockchain_signature'].get('tx_hash')
-        video_list.append(video_info)
+        })
     
-    # Sort by folder and order
+    # Sort by showcase folder, then by order
     video_list.sort(key=lambda x: (x.get('showcase_folder_id') or '', x.get('folder_video_order', 999)))
     
-    return {
-        "videos": video_list,
-        "total": len(videos)
-    }
+    return video_list
 
-@router.put("/{video_id}/folder")
-async def move_video_to_folder(
+
+@router.put("/{video_id}")
+async def update_video(
     video_id: str,
-    folder_id: str = None,
+    video_data: VideoUpdateData,
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Move video to a different folder"""
-    # Accept folder_id from query params or body
-    from fastapi import Body
-    
-    video = await db.videos.find_one({"_id": video_id})
+    """Update video metadata"""
+    video = await db.videos.find_one({"id": video_id})
     
     if not video:
         raise HTTPException(404, "Video not found")
     
     if video['user_id'] != current_user['user_id']:
-        raise HTTPException(403, "Access denied")
+        raise HTTPException(403, "Not authorized")
     
-    # Verify folder exists if folder_id is provided
-    if folder_id and folder_id != 'null' and folder_id != '':
-        folder = await db.folders.find_one({"_id": folder_id})
-        if not folder:
-            raise HTTPException(404, "Folder not found")
-        if folder['username'] != current_user.get('username'):
-            raise HTTPException(403, "Folder access denied")
-    else:
-        folder_id = None
+    update_fields = {}
     
-    await db.videos.update_one(
-        {"_id": video_id},
-        {"$set": {"folder_id": folder_id}}
-    )
+    if video_data.title is not None:
+        update_fields['title'] = video_data.title
+    if video_data.description is not None:
+        update_fields['description'] = video_data.description
+    if video_data.tags is not None:
+        update_fields['tags'] = video_data.tags
+    if video_data.is_public is not None:
+        update_fields['is_public'] = video_data.is_public
+    if video_data.showcase_folder_id is not None:
+        update_fields['showcase_folder_id'] = video_data.showcase_folder_id
+    if video_data.folder_id is not None:
+        update_fields['folder_id'] = video_data.folder_id
+        # Also update showcase_folder_id to match
+        update_fields['showcase_folder_id'] = video_data.folder_id
     
-    return {"message": "Video moved successfully", "folder_id": folder_id}
+    if update_fields:
+        await db.videos.update_one(
+            {"id": video_id},
+            {"$set": update_fields}
+        )
+    
+    return {"message": "Video updated successfully"}
 
-@router.post("/{video_id}/thumbnail")
-async def upload_custom_thumbnail(
+
+@router.delete("/{video_id}")
+async def delete_video(
     video_id: str,
-    thumbnail: UploadFile = File(...),
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Upload custom thumbnail for video"""
-    video = await db.videos.find_one({"_id": video_id})
+    """Delete a video"""
+    video = await db.videos.find_one({"id": video_id})
     
     if not video:
         raise HTTPException(404, "Video not found")
     
     if video['user_id'] != current_user['user_id']:
-        raise HTTPException(403, "Access denied")
+        raise HTTPException(403, "Not authorized")
     
-    # Create thumbnails directory
-    thumbnail_dir = "uploads/thumbnails"
-    os.makedirs(thumbnail_dir, exist_ok=True)
+    # Delete video file
+    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
+    if os.path.exists(video_path):
+        os.remove(video_path)
     
-    # Save new thumbnail (overwrite existing)
-    thumbnail_path = f"{thumbnail_dir}/{video_id}.jpg"
+    # Delete thumbnail
+    if video.get('thumbnail_path'):
+        thumb_path = f"/app/backend{video['thumbnail_path']}"
+        if os.path.exists(thumb_path):
+            os.remove(thumb_path)
     
-    with open(thumbnail_path, "wb") as buffer:
-        shutil.copyfileobj(thumbnail.file, buffer)
+    # Delete from database
+    await db.videos.delete_one({"id": video_id})
     
-    await db.videos.update_one(
-        {"_id": video_id},
-        {"$set": {"thumbnail_path": thumbnail_path}}
-    )
-    
-    return {"message": "Thumbnail updated successfully", "thumbnail_url": f"/api/thumbnails/{video_id}.jpg"}
+    return {"message": "Video deleted successfully"}
+
 
 @router.get("/{video_id}/download")
 async def download_video(
@@ -491,75 +450,51 @@ async def download_video(
     db = Depends(get_db)
 ):
     """Download video file"""
-    from fastapi.responses import FileResponse
-    
-    # Get video metadata
-    video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
+    video = await db.videos.find_one({"id": video_id})
     
     if not video:
         raise HTTPException(404, "Video not found")
     
-    # Check ownership or public access
-    if video["user_id"] != current_user["user_id"]:
-        raise HTTPException(403, "Access denied")
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Not authorized")
     
-    # Check if expired
-    if video.get("storage", {}).get("expires_at"):
-        from datetime import datetime, timezone
-        expires_at = video["storage"]["expires_at"]
-        if datetime.now(timezone.utc) > expires_at:
-            raise HTTPException(410, "Video has expired and been deleted")
+    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
     
-    # Find video file
-    upload_dir = "/app/backend/uploads/videos"
-    video_files = [f for f in os.listdir(upload_dir) if f.startswith(video_id)]
+    if not os.path.exists(video_path):
+        raise HTTPException(404, "Video file not found")
     
-    if not video_files:
-        raise HTTPException(404, "Video file not found on server")
-    
-    video_path = os.path.join(upload_dir, video_files[0])
-    
-    # Update download count
+    # Increment download count
     await db.videos.update_one(
-        {"_id": video_id},
+        {"id": video_id},
         {"$inc": {"storage.download_count": 1}}
     )
     
+    # Return file with proper headers
     return FileResponse(
         video_path,
         media_type="video/mp4",
         filename=f"{video['verification_code']}.mp4"
     )
 
+
 @router.get("/{video_id}/stream")
 async def stream_video(
     video_id: str,
     db = Depends(get_db)
 ):
-    """Stream video (public access for showcase)"""
-    from fastapi.responses import FileResponse
-    
-    # Get video metadata
-    video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
+    """Stream video file (public access if video is public)"""
+    video = await db.videos.find_one({"id": video_id})
     
     if not video:
         raise HTTPException(404, "Video not found")
     
-    # Check if expired
-    if video.get("storage", {}).get("expires_at"):
-        from datetime import datetime, timezone
-        expires_at = video["storage"]["expires_at"]
-        if datetime.now(timezone.utc) > expires_at:
-            raise HTTPException(410, "Video has expired")
+    if not video.get('is_public', False):
+        raise HTTPException(403, "Video is private")
     
-    # Find video file
-    upload_dir = "/app/backend/uploads/videos"
-    video_files = [f for f in os.listdir(upload_dir) if f.startswith(video_id)]
+    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
     
-    if not video_files:
+    if not os.path.exists(video_path):
         raise HTTPException(404, "Video file not found")
-    
-    video_path = os.path.join(upload_dir, video_files[0])
     
     return FileResponse(
         video_path,
