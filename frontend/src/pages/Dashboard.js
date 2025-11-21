@@ -816,24 +816,74 @@ function Dashboard() {
             </Link>
           </div>
         ) : (
-          <div style={{ 
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '1.5rem'
-          }}>
-            {videos
-              .filter(video => {
-                if (viewMode === 'folder') {
-                  // When viewing a specific folder, only show videos in that folder
-                  return video.showcase_folder_id === selectedFolderId;
-                } else {
-                  // When in "all" mode, only show videos NOT in any folder
-                  return !video.showcase_folder_id;
-                }
-              })
-              .map(video => {
-                const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
-                return (
+          <>
+            {viewMode === 'folder' && (
+              <p style={{ fontSize: '0.75rem', color: '#9ca3af', marginBottom: '1rem' }}>
+                💡 Drag videos to reorder them within this folder
+              </p>
+            )}
+            {viewMode === 'folder' ? (
+              <DragDropContext onDragEnd={handleDragEnd}>
+                <Droppable droppableId="videos" type="VIDEO">
+                  {(provided, snapshot) => (
+                    <div
+                      {...provided.droppableProps}
+                      ref={provided.innerRef}
+                      style={{ 
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                        gap: '1.5rem',
+                        background: snapshot.isDraggingOver ? '#f3f4f6' : 'transparent',
+                        padding: '0.5rem',
+                        borderRadius: '0.5rem',
+                        transition: 'background 0.2s'
+                      }}
+                    >
+                      {videos
+                        .filter(video => video.showcase_folder_id === selectedFolderId)
+                        .sort((a, b) => (a.folder_video_order || 999) - (b.folder_video_order || 999))
+                        .map((video, index) => {
+                          const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
+                          return (
+                            <Draggable key={video.video_id} draggableId={video.video_id} index={index}>
+                              {(provided, snapshot) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.draggableProps}
+                                  style={{
+                                    ...provided.draggableProps.style,
+                                    background: 'white',
+                                    borderRadius: '0.75rem',
+                                    overflow: 'hidden',
+                                    boxShadow: snapshot.isDragging ? '0 10px 30px rgba(0,0,0,0.2)' : '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                    cursor: snapshot.isDragging ? 'grabbing' : 'default'
+                                  }}
+                                >
+                                  <div {...provided.dragHandleProps} style={{ cursor: 'grab', padding: '0.5rem', background: '#f9fafb', borderBottom: '1px solid #e5e7eb', textAlign: 'center', fontSize: '0.75rem', color: '#6b7280' }}>
+                                    ⋮⋮ Drag to reorder
+                                  </div>
+              <VideoCard video={video} videoFolder={videoFolder} openEditModal={openEditModal} setShowMoveModal={setShowMoveModal} setSelectedVideo={setSelectedVideo} />
+                                </div>
+                              )}
+                            </Draggable>
+                          );
+                        })}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable>
+              </DragDropContext>
+            ) : (
+              <div style={{ 
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '1.5rem'
+              }}>
+                {videos
+                  .filter(video => !video.showcase_folder_id)
+                  .map(video => {
+                    const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
+                    return (
               <div 
                 key={video.video_id}
                 style={{
