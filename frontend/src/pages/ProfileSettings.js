@@ -443,10 +443,10 @@ function ProfileSettings() {
         {/* Showcase Social Media Links (Public profiles) */}
         <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', marginBottom: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>👥 Showcase Social Media Links</h2>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>👥 Public Showcase Social Media Links</h2>
           </div>
           <p style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '1rem' }}>
-            Public links to your social media profiles (visible to visitors on your showcase page)
+            Public links to your social media profiles (e.g., instagram.com/yourusername). These appear on your PUBLIC Showcase page (@username) for visitors to follow you.
           </p>
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <select
