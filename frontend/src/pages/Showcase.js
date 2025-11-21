@@ -293,54 +293,66 @@ function Showcase() {
             }
             
             return (
-            <div key={folderId} style={{ marginBottom: '3rem' }}>
+            <div key={folderId} style={{ marginBottom: '4rem' }}>
+              {/* Large Folder Header Card */}
               <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                marginBottom: '1.5rem',
-                paddingBottom: '0.75rem',
-                borderBottom: '2px solid #e5e7eb'
+                background: 'white',
+                borderRadius: '1rem',
+                padding: '2rem',
+                marginBottom: '2rem',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                border: `3px solid ${folderData.color || '#667eea'}`
               }}>
-                <div>
-                  <h2 style={{ 
-                    fontSize: '1.5rem', 
-                    fontWeight: 'bold', 
-                    color: folderData.color || '#111827',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.5rem',
-                    marginBottom: '0.25rem'
-                  }}>
-                    {folderData.icon_emoji || '📁'} {folderData.folderName}
-                  </h2>
-                  {folderData.description && (
-                    <p style={{ 
-                      fontSize: '0.875rem', 
-                      color: '#6b7280',
-                      margin: 0
-                    }}>
-                      {folderData.description}
-                    </p>
-                  )}
-                </div>
-                
-                <div style={{
-                  padding: '0.5rem 1rem',
-                  background: '#f3f4f6',
-                  borderRadius: '0.5rem',
-                  fontSize: '0.875rem',
-                  fontWeight: '600',
-                  color: '#374151'
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '1.5rem'
                 }}>
-                  {folderData.videos.length} {folderData.videos.length === 1 ? 'video' : 'videos'}
+                  <div style={{ 
+                    fontSize: '4rem',
+                    flexShrink: 0
+                  }}>
+                    {folderData.icon_emoji || '📁'}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h2 style={{ 
+                      fontSize: '2rem', 
+                      fontWeight: 'bold', 
+                      color: folderData.color || '#111827',
+                      marginBottom: '0.5rem'
+                    }}>
+                      {folderData.folderName}
+                    </h2>
+                    {folderData.description && (
+                      <p style={{ 
+                        fontSize: '1rem', 
+                        color: '#6b7280',
+                        margin: 0,
+                        marginBottom: '0.75rem'
+                      }}>
+                        {folderData.description}
+                      </p>
+                    )}
+                    <div style={{
+                      display: 'inline-block',
+                      padding: '0.5rem 1.25rem',
+                      background: folderData.color || '#667eea',
+                      color: 'white',
+                      borderRadius: '9999px',
+                      fontSize: '0.875rem',
+                      fontWeight: '600'
+                    }}>
+                      {folderData.videos.length} {folderData.videos.length === 1 ? 'video' : 'videos'}
+                    </div>
+                  </div>
                 </div>
               </div>
               
+              {/* Smaller Video Grid */}
               <div style={{ 
                 display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', 
-                gap: '1.5rem' 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+                gap: '1rem' 
               }}>
                 {folderData.videos.map(video => (
                   <div 
