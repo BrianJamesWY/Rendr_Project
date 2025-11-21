@@ -50,6 +50,12 @@ class VideoInfo(BaseModel):
     external_link: Optional[str] = None
     platform: Optional[str] = None
     tags: Optional[List[str]] = []
+    # Enhanced storage fields
+    storage: Optional[Dict] = None
+    hashes: Optional[Dict] = None
+    has_blockchain: Optional[bool] = False
+    source: Optional[str] = None
+    folder_video_order: Optional[int] = None
 
 class VideoUpdate(BaseModel):
     """For updating video metadata"""
