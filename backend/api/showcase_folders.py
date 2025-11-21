@@ -12,7 +12,7 @@ async def get_showcase_folders(
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Get all showcase folders for current user"""
+    """Get all showcase folders for current user (with nested structure support)"""
     cursor = db.showcase_folders.find({"user_id": current_user["user_id"]})
     folders = await cursor.to_list(length=100)
     
@@ -24,11 +24,19 @@ async def get_showcase_folders(
             "showcase_folder_id": folder["_id"]
         })
         
+        # Count subfolders
+        subfolder_count = await db.showcase_folders.count_documents({
+            "user_id": current_user["user_id"],
+            "parent_folder_id": folder["_id"]
+        })
+        
         result.append({
             "folder_id": folder["_id"],
             "folder_name": folder["folder_name"],
             "description": folder.get("description"),
+            "parent_folder_id": folder.get("parent_folder_id"),
             "video_count": video_count,
+            "subfolder_count": subfolder_count,
             "created_at": folder["created_at"],
             "order": folder.get("order", 0)
         })
