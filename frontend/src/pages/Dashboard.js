@@ -1773,6 +1773,56 @@ function Dashboard() {
                 />
               </div>
 
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  Folder Icon
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {['📁', '🎬', '🎥', '📹', '🎞️', '⭐', '🔥', '💎', '🎯', '🚀', '💼', '📱', '🎨', '🎵', '🏆'].map(emoji => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => setFolderIconEmoji(emoji)}
+                      style={{
+                        padding: '0.5rem',
+                        fontSize: '1.5rem',
+                        background: folderIconEmoji === emoji ? '#667eea' : 'white',
+                        border: '2px solid ' + (folderIconEmoji === emoji ? '#667eea' : '#e5e7eb'),
+                        borderRadius: '0.5rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', fontSize: '0.875rem' }}>
+                  Folder Color
+                </label>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                  {['#667eea', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#6366f1'].map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setFolderColor(color)}
+                      style={{
+                        width: '40px',
+                        height: '40px',
+                        background: color,
+                        border: '3px solid ' + (folderColor === color ? '#000' : 'transparent'),
+                        borderRadius: '0.5rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s'
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 {editingFolder && (
                   <button
