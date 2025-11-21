@@ -342,7 +342,13 @@ async def get_user_quota(
 ):
     """Get user's video quota and usage"""
     user_id = current_user["user_id"]
-    tier = current_user.get("premium_tier", "free")
+    
+    # Get user from database to get current tier
+    user = await db.users.find_one({"_id": user_id})
+    if not user:
+        raise HTTPException(404, "User not found")
+    
+    tier = user.get("premium_tier", "free")
     
     # Count active videos (including legacy videos without storage field)
     from datetime import datetime
