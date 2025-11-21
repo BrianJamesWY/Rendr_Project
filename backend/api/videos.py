@@ -399,7 +399,11 @@ async def upload_custom_thumbnail(
         shutil.copyfileobj(thumbnail.file, buffer)
     
     await db.videos.update_one(
-
+        {"_id": video_id},
+        {"$set": {"thumbnail_path": thumbnail_path}}
+    )
+    
+    return {"message": "Thumbnail updated successfully", "thumbnail_url": f"/api/thumbnails/{video_id}.jpg"}
 
 @router.get("/{video_id}/download")
 async def download_video(
