@@ -1830,6 +1830,33 @@ function Dashboard() {
                 </div>
               </div>
 
+              {/* Show on Showcase Toggle */}
+              <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f9fafb', borderRadius: '0.5rem', border: '1px solid #e5e7eb' }}>
+                <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: '0.75rem' }}>
+                  <input
+                    type="checkbox"
+                    checked={showOnShowcase}
+                    onChange={(e) => setShowOnShowcase(e.target.checked)}
+                    style={{ 
+                      width: '1.25rem', 
+                      height: '1.25rem', 
+                      cursor: 'pointer',
+                      accentColor: '#667eea'
+                    }}
+                  />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: '600', fontSize: '0.875rem', color: '#111827', marginBottom: '0.25rem' }}>
+                      👁️ Show on Public Showcase
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
+                      {showOnShowcase 
+                        ? 'This folder will be visible on your public showcase page (@' + (user?.username || 'username') + ')'
+                        : 'This folder is private and only visible to you on the dashboard (for organization)'}
+                    </div>
+                  </div>
+                </label>
+              </div>
+
               <div style={{ display: 'flex', gap: '0.5rem' }}>
                 {editingFolder && (
                   <button
