@@ -416,10 +416,12 @@ async def update_video(
     return {"message": "Video updated successfully"}
 
 
+from fastapi import Query
+
 @router.put("/{video_id}/folder")
 async def move_video_to_folder(
     video_id: str,
-    folder_id: str = None,
+    folder_id: str = Query(None),
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
