@@ -210,7 +210,8 @@ function Dashboard() {
           folder_name: newFolderName,
           description: newFolderDescription,
           icon_emoji: folderIconEmoji,
-          color: folderColor
+          color: folderColor,
+          is_public: showOnShowcase
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
