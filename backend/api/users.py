@@ -32,6 +32,7 @@ async def get_creator_profile(
         display_name=user.get("display_name", username),
         bio=user.get("bio"),
         profile_picture=user.get("profile_picture"),
+        banner_image=user.get("banner_image"),
         joined_at=user.get("created_at", ""),
         total_videos=total_videos,
         showcase_settings=user.get("showcase_settings"),
