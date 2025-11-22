@@ -102,7 +102,7 @@ class VideoCleanupService:
                 {"$set": {"storage.warned_at": datetime.now(timezone.utc)}}
             )
             
-            print(f"   ✅ Warning sent and recorded")
+            print("   ✅ Warning sent and recorded")
             return True
             
         except Exception as e:
@@ -123,7 +123,7 @@ class VideoCleanupService:
             video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
             if os.path.exists(video_path):
                 os.remove(video_path)
-                print(f"   ✅ Video file deleted")
+                print("   ✅ Video file deleted")
             else:
                 print(f"   ⚠️ Video file not found: {video_path}")
                 
@@ -131,14 +131,14 @@ class VideoCleanupService:
             thumbnail_path = f"/app/backend/uploads/thumbnails/{video_id}.jpg"
             if os.path.exists(thumbnail_path):
                 os.remove(thumbnail_path)
-                print(f"   ✅ Thumbnail deleted")
+                print("   ✅ Thumbnail deleted")
                 
             # Delete from database
             result = await self.db.videos.delete_one({"id": video_id})
             if result.deleted_count > 0:
-                print(f"   ✅ Database record deleted")
+                print("   ✅ Database record deleted")
             else:
-                print(f"   ⚠️ Database record not found")
+                print("   ⚠️ Database record not found")
                 
             return True
             
@@ -151,7 +151,7 @@ class VideoCleanupService:
         Find and delete orphaned video/thumbnail files that don't have database records
         """
         try:
-            print(f"\n🧹 Checking for orphaned files...")
+            print("\n🧹 Checking for orphaned files...")
             
             # Get all video IDs from database
             video_ids = set()
@@ -183,7 +183,7 @@ class VideoCleanupService:
             if orphaned_count > 0:
                 print(f"   ✅ Deleted {orphaned_count} orphaned files")
             else:
-                print(f"   ✅ No orphaned files found")
+                print("   ✅ No orphaned files found")
                 
             return orphaned_count
             
@@ -203,7 +203,7 @@ class VideoCleanupService:
         
         try:
             # Step 1: Send warnings for videos expiring soon
-            print(f"📧 Step 1: Checking for videos to warn...")
+            print("📧 Step 1: Checking for videos to warn...")
             videos_to_warn = await self.find_videos_to_warn()
             
             if videos_to_warn:
@@ -223,10 +223,10 @@ class VideoCleanupService:
                             
                 print(f"   ✅ Sent {warned_count} warnings")
             else:
-                print(f"   ✅ No videos need warnings")
+                print("   ✅ No videos need warnings")
                 
             # Step 2: Delete expired videos
-            print(f"\n🗑️ Step 2: Checking for expired videos...")
+            print("\n🗑️ Step 2: Checking for expired videos...")
             expired_videos = await self.find_expired_videos()
             
             if expired_videos:
@@ -239,15 +239,15 @@ class VideoCleanupService:
                         
                 print(f"   ✅ Deleted {deleted_count} expired videos")
             else:
-                print(f"   ✅ No expired videos to delete")
+                print("   ✅ No expired videos to delete")
                 
             # Step 3: Cleanup orphaned files
-            print(f"\n🧹 Step 3: Cleaning up orphaned files...")
+            print("\n🧹 Step 3: Cleaning up orphaned files...")
             orphaned_count = await self.cleanup_orphaned_files()
             
             # Summary
             print(f"\n{'='*60}")
-            print(f"✅ CLEANUP COMPLETE")
+            print("✅ CLEANUP COMPLETE")
             print(f"{'='*60}")
             print(f"   Warnings sent: {len(videos_to_warn) if videos_to_warn else 0}")
             print(f"   Videos deleted: {len(expired_videos) if expired_videos else 0}")
