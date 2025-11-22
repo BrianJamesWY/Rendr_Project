@@ -61,7 +61,8 @@ function Dashboard() {
       const videosRes = await axios.get(`${BACKEND_URL}/api/videos/user/list`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      setVideos(videosRes.data.videos);
+      // API returns array directly, not nested in .videos
+      setVideos(Array.isArray(videosRes.data) ? videosRes.data : videosRes.data.videos || []);
       
       // Get folders (optional - don't fail if this errors)
       try {
