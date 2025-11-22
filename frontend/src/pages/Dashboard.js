@@ -1944,6 +1944,7 @@ function Dashboard() {
                             setNewFolderDescription(folder.description || '');
                             setFolderIconEmoji(folder.icon_emoji || '📁');
                             setFolderColor(folder.color || '#667eea');
+                            setShowOnShowcase(folder.is_public !== false); // Default to true if not set
                           }}
                           style={{
                             padding: '0.5rem 1rem',
