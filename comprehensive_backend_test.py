@@ -178,8 +178,7 @@ class RendrComprehensiveTester:
             response = self.session.get(f"{BASE_URL}/videos/user/list")
             
             if response.status_code == 200:
-                data = response.json()
-                videos = data.get("videos", [])
+                videos = response.json()  # API returns direct list
                 
                 self.log_test("Video List", True, 
                             f"Retrieved {len(videos)} videos")
@@ -187,11 +186,11 @@ class RendrComprehensiveTester:
                 # Check video structure for required fields
                 if videos:
                     sample_video = videos[0]
-                    required_fields = ["id", "verification_code"]
+                    required_fields = ["video_id", "verification_code"]  # Use video_id not id
                     optional_fields = ["hashes", "storage"]
                     
                     missing_required = [field for field in required_fields if field not in sample_video]
-                    present_optional = [field for field in optional_fields if field in sample_video]
+                    present_optional = [field for field in optional_fields if field in sample_video and sample_video[field] is not None]
                     
                     if not missing_required:
                         self.log_test("Video Structure Validation", True, 
