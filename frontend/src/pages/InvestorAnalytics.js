@@ -26,7 +26,7 @@ function InvestorAnalytics() {
   const loadAnalytics = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${BACKEND_URL}/api/admin/analytics`, {
+      const response = await axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/analytics`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAnalytics(response.data);
