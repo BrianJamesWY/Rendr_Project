@@ -30,7 +30,7 @@ class BlockchainService:
         """Check if connected to blockchain"""
         try:
             return self.w3.is_connected()
-        except:
+        except Exception:
             return False
     
     def get_account_address(self) -> Optional[str]:
