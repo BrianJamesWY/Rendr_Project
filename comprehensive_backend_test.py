@@ -469,33 +469,39 @@ class RendrComprehensiveTester:
             response = self.session.get(f"{BASE_URL}/videos/user/list")
             
             if response.status_code == 200:
-                data = response.json()
-                videos = data.get("videos", [])
+                videos = response.json()  # API returns direct list
                 
                 if not videos:
                     self.log_test("Verification System", True, 
                                 "No videos to verify (system ready)")
                     return True
                 
-                # Check first video for verification fields
-                video = videos[0]
-                verification_fields = ["verification_code", "hashes", "storage"]
-                present_fields = [field for field in verification_fields if field in video and video[field] is not None]
+                # Check videos for verification fields
+                verified_videos = [v for v in videos if v.get("verification_status") == "verified"]
+                pending_videos = [v for v in videos if v.get("verification_status") == "pending"]
                 
-                # Check hash types if hashes exist
-                hash_types = []
-                if "hashes" in video and video["hashes"]:
-                    hashes = video["hashes"]
-                    hash_types = list(hashes.keys())
-                
-                # Check storage tier system
-                storage_info = ""
-                if "storage" in video and video["storage"]:
-                    storage = video["storage"]
-                    storage_info = f"tier: {storage.get('tier', 'N/A')}"
-                
-                self.log_test("Verification System", True, 
-                            f"Verification fields: {present_fields}, hash types: {hash_types}, {storage_info}")
+                if verified_videos:
+                    video = verified_videos[0]  # Check a verified video
+                    verification_fields = ["verification_code", "hashes", "storage"]
+                    present_fields = [field for field in verification_fields if field in video and video[field] is not None]
+                    
+                    # Check hash types if hashes exist
+                    hash_types = []
+                    if "hashes" in video and video["hashes"]:
+                        hashes = video["hashes"]
+                        hash_types = list(hashes.keys())
+                    
+                    # Check storage tier system
+                    storage_info = ""
+                    if "storage" in video and video["storage"]:
+                        storage = video["storage"]
+                        storage_info = f"tier: {storage.get('tier', 'N/A')}, expires: {storage.get('expires_at', 'N/A')}"
+                    
+                    self.log_test("Verification System", True, 
+                                f"Verified videos: {len(verified_videos)}, pending: {len(pending_videos)}, fields: {present_fields}, hash types: {hash_types}, {storage_info}")
+                else:
+                    self.log_test("Verification System", True, 
+                                f"System ready - {len(pending_videos)} pending videos, {len(verified_videos)} verified")
                 return True
             else:
                 self.log_test("Verification System", False, 
