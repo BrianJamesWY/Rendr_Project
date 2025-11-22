@@ -441,6 +441,44 @@ async def move_video_to_folder(
     return {"message": "Video moved successfully"}
 
 
+@router.put("/{video_id}/metadata")
+async def update_video_metadata(
+    video_id: str,
+    video_data: VideoUpdateData,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Update video metadata (description, tags, external link, showcase folder, etc.)"""
+    video = await db.videos.find_one({"id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Not authorized")
+    
+    update_fields = {}
+    
+    if video_data.title is not None:
+        update_fields['title'] = video_data.title
+    if video_data.description is not None:
+        update_fields['description'] = video_data.description
+    if video_data.tags is not None:
+        update_fields['tags'] = video_data.tags
+    if video_data.is_public is not None:
+        update_fields['is_public'] = video_data.is_public
+    if video_data.showcase_folder_id is not None:
+        update_fields['showcase_folder_id'] = video_data.showcase_folder_id
+    
+    if update_fields:
+        await db.videos.update_one(
+            {"id": video_id},
+            {"$set": update_fields}
+        )
+    
+    return {"message": "Video metadata updated successfully"}
+
+
 @router.delete("/{video_id}")
 async def delete_video(
     video_id: str,
