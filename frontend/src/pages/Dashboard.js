@@ -220,6 +220,7 @@ function Dashboard() {
       setNewFolderDescription('');
       setFolderIconEmoji('📁');
       setFolderColor('#667eea');
+      setShowOnShowcase(true);
       loadDashboard();
       alert('✅ Folder updated successfully!');
     } catch (err) {
