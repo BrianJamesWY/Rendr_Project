@@ -11,7 +11,7 @@ import tempfile
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://creator-vault-7.preview.emergentagent.com/api"
+BASE_URL = "https://videovault-322.preview.emergentagent.com/api"
 
 # Test accounts
 TEST_ACCOUNTS = {

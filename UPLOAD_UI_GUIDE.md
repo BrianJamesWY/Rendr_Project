@@ -336,8 +336,8 @@ User sees permanent proof on blockchain
 - Verify: `https://rendrtruth.com/verify`
 
 ### On Emergent Platform (Now):
-- Upload: `https://creator-vault-7.preview.emergentagent.com/upload`
-- Verify: `https://creator-vault-7.preview.emergentagent.com/verify`
+- Upload: `https://videovault-322.preview.emergentagent.com/upload`
+- Verify: `https://videovault-322.preview.emergentagent.com/verify`
 
 ---
 

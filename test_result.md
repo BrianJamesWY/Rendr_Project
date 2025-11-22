@@ -517,11 +517,11 @@ agent_communication:
       - API login endpoint responding properly - WORKING
       
       ✅ URL TESTING RESULTS (using both Python requests and curl):
-      - https://creator-vault-7.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://creator-vault-7.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
-      - https://creator-vault-7.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://creator-vault-7.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://creator-vault-7.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://videovault-322.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://videovault-322.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
+      - https://videovault-322.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://videovault-322.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://videovault-322.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
       
       ✅ VERIFICATION METHODS:
       - Python requests with authentication headers - WORKING
