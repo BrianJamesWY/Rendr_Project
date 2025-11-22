@@ -94,14 +94,14 @@ async def upload_video(
     
     try:
         print(f"\n{'='*60}")
-        print(f"🎬 NEW VIDEO UPLOAD - Hash-First Workflow")
+        print("🎬 NEW VIDEO UPLOAD - Hash-First Workflow")
         print(f"{'='*60}")
         print(f"   User: {user.get('username')}")
         print(f"   Tier: {tier}")
         print(f"   Quota: {active_count + 1}/{limit if limit != -1 else 'unlimited'}")
         
         # STEP 1: Calculate ORIGINAL hash (pre-watermark)
-        print(f"\n🔍 STEP 1: Calculating original hash (pre-watermark)...")
+        print("\n🔍 STEP 1: Calculating original hash (pre-watermark)...")
         original_hashes = enhanced_processor.calculate_all_hashes(file_path, tier)
         
         print(f"   ✅ Original hash: {original_hashes['original_hash'][:32]}...")
@@ -109,7 +109,7 @@ async def upload_video(
         print(f"   ✅ Frames: {original_hashes['frame_count']}")
         
         # STEP 2: Smart Duplicate Detection
-        print(f"\n🔍 STEP 2: Smart duplicate detection...")
+        print("\n🔍 STEP 2: Smart duplicate detection...")
         
         # Get all user's existing videos
         existing_videos = await db.videos.find(
@@ -124,7 +124,7 @@ async def upload_video(
         )
         
         if is_duplicate:
-            print(f"\n🚨 DUPLICATE DETECTED!")
+            print("\n🚨 DUPLICATE DETECTED!")
             print(f"   Confidence: {confidence:.2%}")
             print(f"   Original code: {matching_video['verification_code']}")
             print(f"   Original upload: {matching_video.get('uploaded_at')}")
@@ -156,13 +156,13 @@ async def upload_video(
             }
         
         # STEP 3: NEW VIDEO - Generate verification code
-        print(f"\n✅ NEW VIDEO DETECTED")
-        print(f"\n🔐 STEP 3: Generating verification code...")
+        print("\n✅ NEW VIDEO DETECTED")
+        print("\n🔐 STEP 3: Generating verification code...")
         verification_code = video_processor.generate_verification_code()
         print(f"   ✅ Code: {verification_code}")
         
         # STEP 4: Apply Watermark
-        print(f"\n💧 STEP 4: Applying watermark...")
+        print("\n💧 STEP 4: Applying watermark...")
         username = user.get("username", "user")
         watermark_position = user.get("watermark_position", "left")
         watermarked_path = f"{upload_dir}/{video_id}_watermarked.mp4"
@@ -179,27 +179,27 @@ async def upload_video(
         if watermark_success:
             os.remove(file_path)
             final_video_path = watermarked_path
-            print(f"   ✅ Watermark applied")
+            print("   ✅ Watermark applied")
         else:
             final_video_path = file_path
-            print(f"   ⚠️ Watermark failed - using original")
+            print("   ⚠️ Watermark failed - using original")
         
         # Rename to standard format
         final_path = f"{upload_dir}/{video_id}.mp4"
         os.rename(final_video_path, final_path)
         
         # STEP 5: Calculate watermarked hash
-        print(f"\n🔐 STEP 5: Calculating watermarked hash...")
+        print("\n🔐 STEP 5: Calculating watermarked hash...")
         watermarked_hashes = enhanced_processor.calculate_all_hashes(final_path, tier)
         print(f"   ✅ Watermarked hash: {watermarked_hashes['original_hash'][:32]}...")
         
         # STEP 6: Generate thumbnail
-        print(f"\n📸 STEP 6: Generating thumbnail...")
+        print("\n📸 STEP 6: Generating thumbnail...")
         thumbnail_path = video_processor.extract_thumbnail(final_path, video_id)
-        print(f"   ✅ Thumbnail saved")
+        print("   ✅ Thumbnail saved")
         
         # STEP 7: Calculate expiration
-        print(f"\n⏰ STEP 7: Setting storage expiration...")
+        print("\n⏰ STEP 7: Setting storage expiration...")
         uploaded_at = datetime.now(timezone.utc)
         
         storage_durations = {
@@ -221,7 +221,7 @@ async def upload_video(
         # STEP 8: Blockchain (optional)
         blockchain_data = None
         try:
-            print(f"\n⛓️ STEP 8: Blockchain timestamping...")
+            print("\n⛓️ STEP 8: Blockchain timestamping...")
             blockchain_data = blockchain_service.timestamp_video(
                 video_id=video_id,
                 verification_code=verification_code,
@@ -238,7 +238,7 @@ async def upload_video(
             print(f"   ⚠️ Blockchain failed: {e}")
         
         # STEP 9: Save to database
-        print(f"\n💾 STEP 9: Saving to database...")
+        print("\n💾 STEP 9: Saving to database...")
         
         video_doc = {
             "_id": video_id,
@@ -284,10 +284,10 @@ async def upload_video(
         }
         
         await db.videos.insert_one(video_doc)
-        print(f"   ✅ Saved to database")
+        print("   ✅ Saved to database")
         
         # STEP 10: Send notification (if applicable)
-        print(f"\n📧 STEP 10: Checking notification preferences...")
+        print("\n📧 STEP 10: Checking notification preferences...")
         
         should_notify = original_hashes['duration'] >= user.get('notify_video_length_threshold', 30)
         
@@ -309,7 +309,7 @@ async def upload_video(
             print(f"   ℹ️ Video too short ({original_hashes['duration']}s < threshold) - skipping notification")
         
         print(f"\n{'='*60}")
-        print(f"✅ UPLOAD COMPLETE")
+        print("✅ UPLOAD COMPLETE")
         print(f"{'='*60}\n")
         
         return {
