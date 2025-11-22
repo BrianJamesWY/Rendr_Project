@@ -323,7 +323,7 @@ class EnhancedVideoProcessor:
                 
                 if center_similarity >= 0.95:
                     print(f"✅ Match found (center hash): {center_similarity:.2%}")
-                    print(f"   (Possible watermark removal detected)")
+                    print("   (Possible watermark removal detected)")
                     return (True, existing, center_similarity)
             
             # Check audio hash for Enterprise
@@ -334,8 +334,8 @@ class EnhancedVideoProcessor:
                 )
                 
                 if new_hashes["audio_hash"] == existing_audio_hash:
-                    print(f"✅ Match found (audio fingerprint)")
-                    print(f"   (Video edited but audio identical)")
+                    print("✅ Match found (audio fingerprint)")
+                    print("   (Video edited but audio identical)")
                     return (True, existing, 1.0)
             
             # Check for "possible duplicate" (85-95% similar)
@@ -343,7 +343,7 @@ class EnhancedVideoProcessor:
                 print(f"⚠️ Possible duplicate detected: {original_similarity:.2%}")
                 # Log but don't block for now
         
-        print(f"✅ No duplicates found - new video")
+        print("✅ No duplicates found - new video")
         return (False, None, 0.0)
 
 # Global instance
