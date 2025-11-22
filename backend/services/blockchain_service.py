@@ -51,7 +51,7 @@ class BlockchainService:
         try:
             balance_wei = self.w3.eth.get_balance(address)
             return float(self.w3.from_wei(balance_wei, 'ether'))
-        except:
+        except Exception:
             return 0.0
     
     async def write_signature(self, video_id: str, perceptual_hash: str, metadata: Dict = None) -> Optional[Dict]:
