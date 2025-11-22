@@ -564,7 +564,8 @@ async def stream_video(
     db = Depends(get_db)
 ):
     """Stream video file (public access if video is public)"""
-    video = await db.videos.find_one({"id": video_id})
+    # Check both 'id' and '_id' fields for compatibility with old videos
+    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
     
     if not video:
         raise HTTPException(404, "Video not found")
