@@ -968,6 +968,7 @@ function Dashboard() {
                 gap: '1.5rem'
               }}>
                 {videos
+                  .filter(video => !video.folder_id && !video.showcase_folder_id) // Only show videos NOT in folders
                   .map(video => {
                     const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
                     return (
