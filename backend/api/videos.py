@@ -432,8 +432,10 @@ async def move_video_to_folder(
         raise HTTPException(403, "Not authorized")
     
     # Update both folder_id and showcase_folder_id
+    # Use whichever ID field exists in the video
+    id_field = "id" if video.get("id") else "_id"
     await db.videos.update_one(
-        {"id": video_id},
+        {id_field: video_id},
         {"$set": {
             "folder_id": folder_id,
             "showcase_folder_id": folder_id
