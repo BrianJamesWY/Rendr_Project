@@ -413,6 +413,34 @@ async def update_video(
     return {"message": "Video updated successfully"}
 
 
+@router.put("/{video_id}/folder")
+async def move_video_to_folder(
+    video_id: str,
+    folder_id: str = None,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Move video to a folder (or remove from folder if folder_id is None)"""
+    video = await db.videos.find_one({"id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Not authorized")
+    
+    # Update both folder_id and showcase_folder_id
+    await db.videos.update_one(
+        {"id": video_id},
+        {"$set": {
+            "folder_id": folder_id,
+            "showcase_folder_id": folder_id
+        }}
+    )
+    
+    return {"message": "Video moved successfully"}
+
+
 @router.delete("/{video_id}")
 async def delete_video(
     video_id: str,
