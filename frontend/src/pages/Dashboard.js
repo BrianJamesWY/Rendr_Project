@@ -534,9 +534,12 @@ function Dashboard() {
             </div>
           </Link>
         </div>
+
+        {/* Quota Indicator */}
+        <div style={{ marginTop: '1.5rem' }}>
+          <QuotaIndicator user={user} />
+        </div>
       </div>
-
-
 
       {/* Analytics Section */}
       {analytics && (
