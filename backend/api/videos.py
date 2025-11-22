@@ -406,8 +406,10 @@ async def update_video(
         update_fields['showcase_folder_id'] = video_data.folder_id
     
     if update_fields:
+        # Use whichever ID field exists in the video
+        id_field = "id" if video.get("id") else "_id"
         await db.videos.update_one(
-            {"id": video_id},
+            {id_field: video_id},
             {"$set": update_fields}
         )
     
