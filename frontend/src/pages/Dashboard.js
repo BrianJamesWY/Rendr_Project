@@ -36,6 +36,7 @@ function Dashboard() {
   const [editingFolder, setEditingFolder] = useState(null);
   const [folderIconEmoji, setFolderIconEmoji] = useState('📁');
   const [folderColor, setFolderColor] = useState('#667eea');
+  const [showOnShowcase, setShowOnShowcase] = useState(true);
 
   const [viewMode, setViewMode] = useState('all'); // 'all' or 'folder'
   const token = localStorage.getItem('rendr_token');
