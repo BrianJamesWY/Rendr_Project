@@ -231,8 +231,7 @@ class RendrComprehensiveTester:
             response = self.session.get(f"{BASE_URL}/videos/user/list?folder_id={folder_id}")
             
             if response.status_code == 200:
-                data = response.json()
-                videos = data.get("videos", [])
+                videos = response.json()  # API returns direct list
                 self.log_test("Video Folder Filtering", True, 
                             f"Folder filtering works: {len(videos)} videos in folder")
                 return True
