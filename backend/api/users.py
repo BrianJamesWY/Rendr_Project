@@ -124,19 +124,6 @@ async def update_creator_profile(
     
     return {"message": "Profile updated successfully"}
 
-@router.post("/profile/picture")
-async def upload_profile_picture(
-    picture: UploadFile = File(...),
-    current_user = Depends(get_current_user),
-    db = Depends(get_db)
-):
-    """Upload profile picture"""
-    # Create directory
-    upload_dir = "uploads/profile_pictures"
-    os.makedirs(upload_dir, exist_ok=True)
-    
-    # Save file
-
 @router.post("/upload-profile-picture")
 async def upload_profile_picture(
     file: UploadFile = File(...),
