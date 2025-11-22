@@ -495,7 +495,8 @@ async def delete_video(
     db = Depends(get_db)
 ):
     """Delete a video"""
-    video = await db.videos.find_one({"id": video_id})
+    # Check both 'id' and '_id' fields for compatibility with old videos
+    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
     
     if not video:
         raise HTTPException(404, "Video not found")
@@ -514,8 +515,9 @@ async def delete_video(
         if os.path.exists(thumb_path):
             os.remove(thumb_path)
     
-    # Delete from database
-    await db.videos.delete_one({"id": video_id})
+    # Delete from database - use whichever ID field exists
+    id_field = "id" if video.get("id") else "_id"
+    await db.videos.delete_one({id_field: video_id})
     
     return {"message": "Video deleted successfully"}
 
