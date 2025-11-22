@@ -4,6 +4,8 @@ import axios from 'axios';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import Logo from '../components/Logo';
 import Navigation from '../components/Navigation';
+import EnhancedVideoCard from '../components/EnhancedVideoCard';
+import QuotaIndicator from '../components/QuotaIndicator';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
