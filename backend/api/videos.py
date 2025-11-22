@@ -529,7 +529,8 @@ async def download_video(
     db = Depends(get_db)
 ):
     """Download video file"""
-    video = await db.videos.find_one({"id": video_id})
+    # Check both 'id' and '_id' fields for compatibility with old videos
+    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
     
     if not video:
         raise HTTPException(404, "Video not found")
@@ -543,8 +544,9 @@ async def download_video(
         raise HTTPException(404, "Video file not found")
     
     # Increment download count
+    id_field = "id" if video.get("id") else "_id"
     await db.videos.update_one(
-        {"id": video_id},
+        {id_field: video_id},
         {"$inc": {"storage.download_count": 1}}
     )
     
