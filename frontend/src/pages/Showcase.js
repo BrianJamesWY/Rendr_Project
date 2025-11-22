@@ -83,8 +83,11 @@ function Showcase() {
   // Group videos by showcase folders
   const groupedVideos = {};
   
-  // Create folder groups from showcase folders
-  showcaseFolders.forEach(folder => {
+  // Filter to only show public folders on showcase
+  const publicFolders = showcaseFolders.filter(folder => folder.is_public !== false);
+  
+  // Create folder groups from public showcase folders only
+  publicFolders.forEach(folder => {
     groupedVideos[folder.folder_id] = {
       folderName: folder.folder_name,
       description: folder.description,
