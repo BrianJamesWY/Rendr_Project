@@ -241,7 +241,7 @@ class BlockchainService:
             try:
                 status['block_number'] = self.w3.eth.block_number
                 status['gas_price_gwei'] = float(self.w3.from_wei(self.w3.eth.gas_price, 'gwei'))
-            except:
+            except Exception:
                 pass
         
         return status
