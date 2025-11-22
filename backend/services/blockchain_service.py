@@ -40,7 +40,7 @@ class BlockchainService:
         try:
             account = self.w3.eth.account.from_key(self.private_key)
             return account.address
-        except:
+        except Exception:
             return None
     
     def get_balance(self) -> float:
