@@ -236,8 +236,14 @@ async def get_creator_showcase_folders(
     if not user:
         raise HTTPException(404, f"Creator @{username} not found")
     
-    # Get showcase folders for this user
-    cursor = db.showcase_folders.find({"username": username}).sort("order", 1)
+    # Get showcase folders for this user - ONLY PUBLIC ones for showcase display
+    cursor = db.showcase_folders.find({
+        "username": username,
+        "$or": [
+            {"is_public": True},
+            {"is_public": {"$exists": False}}  # Default to public if field doesn't exist
+        ]
+    }).sort("order", 1)
     folders = await cursor.to_list(length=100)
     
     result = []
@@ -253,7 +259,8 @@ async def get_creator_showcase_folders(
             "folder_name": folder["folder_name"],
             "description": folder.get("description"),
             "video_count": video_count,
-            "order": folder.get("order", 0)
+            "order": folder.get("order", 0),
+            "is_public": folder.get("is_public", True)
         })
     
     return result
