@@ -90,6 +90,7 @@ async def create_showcase_folder(
     # Get styling options (tier-based)
     icon_emoji = folder_data.get("icon_emoji", "📁")
     color = folder_data.get("color", "#667eea")
+    is_public = folder_data.get("is_public", True)  # Default to public
     
     # Create folder
     folder_id = str(uuid4())
@@ -102,6 +103,7 @@ async def create_showcase_folder(
         "parent_folder_id": parent_folder_id,
         "icon_emoji": icon_emoji,
         "color": color,
+        "is_public": is_public,
         "order": max_order + 1,
         "created_at": datetime.now(timezone.utc).isoformat()
     }
