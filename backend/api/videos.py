@@ -422,7 +422,8 @@ async def move_video_to_folder(
     db = Depends(get_db)
 ):
     """Move video to a folder (or remove from folder if folder_id is None)"""
-    video = await db.videos.find_one({"id": video_id})
+    # Check both 'id' and '_id' fields for compatibility with old videos
+    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
     
     if not video:
         raise HTTPException(404, "Video not found")
