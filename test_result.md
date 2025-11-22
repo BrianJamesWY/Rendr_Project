@@ -930,6 +930,18 @@ frontend:
         agent: "testing"
         comment: "TESTED: Tier indicators and expiration system working correctly in backend. Enterprise tier videos have expires_at: null (unlimited storage), proper tier identification in storage object. EnhancedVideoCard component implemented with tier badge colors (Enterprise: #f59e0b, Pro: #10b981, Free: #6b7280) and unlimited badge for Enterprise tier. Expiration countdown logic implemented with warning states for videos expiring soon."
 
+  - task: "Investor Analytics Dashboard"
+    implemented: true
+    working: true
+    file: "frontend/src/pages/InvestorAnalytics.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Investor Analytics dashboard fully functional. All requested sections implemented and working: Header with '📊 Investor Analytics', Key Platform Metrics (Total Users: 4, Total Videos: 27, Active Users: 1, Storage Used: 1.3 GB), User Distribution by Tier (Free: 2, Pro: 0, Enterprise: 2), Video Analytics (Bodycam: 1, Studio: 26, Blockchain Verified: 0, Uploads Today: 0), Engagement Metrics (Showcase Views: 60, Video Downloads: 81, Social Clicks: 20, Avg Session: 8.5m). Fixed API endpoint from /api/admin/analytics to /api/ceo-access-b7k9m2x/analytics. CEO access control working correctly. Navigation and Back to Dashboard button functional. Real-time data from backend API displaying accurately."
+
   - agent: "testing"
     message: |
       COMPREHENSIVE ENHANCED VIDEO STORAGE SYSTEM TESTING COMPLETED - ALL FEATURES WORKING
