@@ -40,6 +40,7 @@ class CreatorProfile(BaseModel):
     display_name: str
     bio: Optional[str] = None
     profile_picture: Optional[str] = None
+    banner_image: Optional[str] = None
     joined_at: str
     total_videos: int
     showcase_settings: Optional[Dict] = None
