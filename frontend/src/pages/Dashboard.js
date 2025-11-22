@@ -858,7 +858,7 @@ function Dashboard() {
                       }}
                     >
                       {videos
-                        .filter(video => video.showcase_folder_id === selectedFolderId)
+                        .filter(video => video.showcase_folder_id === selectedFolderId || video.folder_id === selectedFolderId)
                         .sort((a, b) => (a.folder_video_order || 999) - (b.folder_video_order || 999))
                         .map((video, index) => {
                           const videoFolder = showcaseFolders.find(f => f.folder_id === video.showcase_folder_id);
