@@ -108,7 +108,7 @@ class EmailService:
                 <div style="background: #fef3c7; padding: 15px; border-radius: 8px; border-left: 4px solid #f59e0b;">
                     <p style="margin: 0;"><strong>⚠️ Storage Duration ({tier} tier):</strong></p>
                     <p style="margin: 5px 0 0 0;">Your video will be available for {storage_info.get(tier, '24 hours')}.</p>
-                    {f'<p style="margin: 5px 0 0 0;">Download it now to keep a permanent copy.</p>' if tier == 'free' else ''}
+                    {'<p style="margin: 5px 0 0 0;">Download it now to keep a permanent copy.</p>' if tier == 'free' else ''}
                 </div>
                 
                 <p style="margin-top: 30px; font-size: 14px; color: #6b7280;">
