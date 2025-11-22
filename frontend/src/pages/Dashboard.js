@@ -188,6 +188,7 @@ function Dashboard() {
       setNewFolderDescription('');
       setFolderIconEmoji('📁');
       setFolderColor('#667eea');
+      setShowOnShowcase(true);
       loadDashboard();
       // Set the newly created folder as selected
       setVideoShowcaseFolder(response.data.folder_id);
