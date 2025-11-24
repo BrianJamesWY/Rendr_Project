@@ -64,6 +64,7 @@ users_api_router.add_api_route("/notification-settings", update_notification_set
 app.include_router(users_api_router, prefix="/api/users", tags=["User Settings"])
 app.include_router(admin.router, prefix="/api/ceo-access-b7k9m2x", tags=["Admin"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(analytics_events.router, prefix="/api/analytics/events", tags=["Analytics Events"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 app.include_router(password_reset.router, prefix="/api/password", tags=["Password Reset"])
 
