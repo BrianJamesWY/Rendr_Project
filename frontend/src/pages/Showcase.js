@@ -92,8 +92,7 @@ function Showcase() {
       setError('Invalid showcase URL');
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [username]);
+  }, [username, initializeShowcase]);
 
   const handleSubscribeToFolder = async (folderId) => {
     const token = localStorage.getItem('token');
