@@ -120,7 +120,7 @@ const Earnings = () => {
         {/* Stats Grid */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
           <div style={{ background: 'white', borderRadius: '0.75rem', padding: '1.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>This Month's Revenue</div>
+            <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.5rem' }}>This Month&apos;s Revenue</div>
             <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#10b981', marginBottom: '0.25rem' }}>
               ${earnings?.monthly_revenue || 0}
             </div>
