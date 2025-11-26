@@ -81,7 +81,7 @@ function Showcase() {
       setError(err.response?.data?.detail || 'Creator not found');
       setLoading(false);
     }
-  };
+  }, [username]);
 
   useEffect(() => {
     console.log('useEffect triggered, username:', username);
