@@ -20,6 +20,7 @@ function Admin() {
   // CEO Authentication - separate from regular user auth
   const [ceoUsername, setCeoUsername] = useState('');
   const [ceoPassword, setCeoPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [ceoToken, setCeoToken] = useState(null);
 
