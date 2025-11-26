@@ -21,6 +21,10 @@ import HelpCenter from "./pages/HelpCenter";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
+import StripeConnect from "./pages/StripeConnect";
+import StripeConnectReturn from "./pages/StripeConnectReturn";
+import Earnings from "./pages/Earnings";
+import MySubscriptions from "./pages/MySubscriptions";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
