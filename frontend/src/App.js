@@ -139,9 +139,7 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/verify" element={<Verify />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/CreatorLogin" element={<CreatorLogin />} />
