@@ -145,7 +145,7 @@ const SubscriptionCheckout = () => {
           </div>
 
           {/* Benefits */}
-          <h3 style={{ marginBottom: '1rem' }}>What You'll Get:</h3>
+          <h3 style={{ marginBottom: '1rem' }}>What You&apos;ll Get:</h3>
           <ul style={{ listStyle: 'none', margin: '1.5rem 0', padding: 0 }}>
             {[
               'Instant access to all premium videos',
