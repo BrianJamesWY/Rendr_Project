@@ -48,23 +48,25 @@ async def get_all_users(
     # Get video counts for each user (both public and private)
     result = []
     for user in users:
+        user_id = user['_id']  # MongoDB uses _id as the user identifier
+        
         # Get total video count
-        total_videos = await db.videos.count_documents({'user_id': user['user_id']})
+        total_videos = await db.videos.count_documents({'user_id': user_id})
         
         # Get public vs private breakdown
         public_videos = await db.videos.count_documents({
-            'user_id': user['user_id'],
+            'user_id': user_id,
             'visibility': 'public'
         })
         private_videos = total_videos - public_videos
         
         # Get premium folder count
         premium_folder_count = await db.premium_folders.count_documents({
-            'creator_id': user['user_id']
+            'creator_id': user_id
         })
         
         result.append({
-            'user_id': user['user_id'],
+            'user_id': user_id,
             'username': user.get('username', ''),
             'email': user['email'],
             'display_name': user.get('display_name', ''),
