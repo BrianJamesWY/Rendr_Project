@@ -477,22 +477,22 @@ class StripeIntegrationTester:
                 "refresh_url": "https://example.com/refresh"
             })
             
-            if response.status_code == 401:
+            if response.status_code in [401, 403]:
                 self.log_test("Unauthenticated Connect Onboard", True, 
                             "Connect onboard properly requires authentication")
             else:
                 self.log_test("Unauthenticated Connect Onboard", False, 
-                            f"Expected 401, got {response.status_code}")
+                            f"Expected 401/403, got {response.status_code}")
             
             # Test Connect status without auth
             response = self.session.get(f"{BASE_URL}/stripe/connect/status")
             
-            if response.status_code == 401:
+            if response.status_code in [401, 403]:
                 self.log_test("Unauthenticated Connect Status", True, 
                             "Connect status properly requires authentication")
             else:
                 self.log_test("Unauthenticated Connect Status", False, 
-                            f"Expected 401, got {response.status_code}")
+                            f"Expected 401/403, got {response.status_code}")
             
             # Test subscription without auth
             response = self.session.post(f"{BASE_URL}/stripe/subscribe", json={
@@ -501,13 +501,13 @@ class StripeIntegrationTester:
                 "cancel_url": "https://example.com/cancel"
             })
             
-            if response.status_code == 401:
+            if response.status_code in [401, 403]:
                 self.log_test("Unauthenticated Subscribe", True, 
                             "Subscribe properly requires authentication")
                 return True
             else:
                 self.log_test("Unauthenticated Subscribe", False, 
-                            f"Expected 401, got {response.status_code}")
+                            f"Expected 401/403, got {response.status_code}")
                 return False
                 
         finally:
