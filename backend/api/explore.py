@@ -42,14 +42,14 @@ async def get_creators(
     featured: Optional[bool] = Query(None, description="Show only featured creators"),
     trending: Optional[bool] = Query(None, description="Show only trending creators"),
     page: int = Query(1, ge=1, description="Page number"),
-    pageSize: int = Query(48, ge=1, le=100, description="Items per page")
+    pageSize: int = Query(48, ge=1, le=100, description="Items per page"),
+    db = Depends(get_db)
 ):
     """
     Get list of creators for explore page.
     Only returns creators with public showcases.
     Does not expose sensitive data.
     """
-    db = await get_db()
     
     # Build match stage for aggregation pipeline
     match_stage = {
