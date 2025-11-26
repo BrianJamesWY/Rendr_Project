@@ -147,7 +147,7 @@ class StripeService:
             )
             
             return price.id
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Price creation failed: {str(e)}")
     
     @classmethod
