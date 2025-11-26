@@ -36,7 +36,7 @@ async def request_password_reset(
     
     # In production: Send email with reset link
     # For now, return token in response (dev only!)
-    reset_link = f"https://videovault-322.preview.emergentagent.com/reset-password?token={reset_token}"
+    reset_link = f"https://stripe-premium-2.preview.emergentagent.com/reset-password?token={reset_token}"
     
     return {
         "message": "Reset link generated",

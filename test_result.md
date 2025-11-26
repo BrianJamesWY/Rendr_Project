@@ -517,11 +517,11 @@ agent_communication:
       - API login endpoint responding properly - WORKING
       
       ✅ URL TESTING RESULTS (using both Python requests and curl):
-      - https://videovault-322.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://videovault-322.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
-      - https://videovault-322.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://videovault-322.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://videovault-322.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://stripe-premium-2.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://stripe-premium-2.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
+      - https://stripe-premium-2.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://stripe-premium-2.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://stripe-premium-2.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
       
       ✅ VERIFICATION METHODS:
       - Python requests with authentication headers - WORKING
@@ -1484,7 +1484,7 @@ frontend:
       ✅ TEST 2: DASHBOARD CONTENT VERIFICATION
       - Dashboard header "Creator Dashboard" displays correctly - WORKING
       - Welcome message shows "Welcome back, Brian James!" - WORKING
-      - Page title and URL correct (https://videovault-322.preview.emergentagent.com/dashboard) - WORKING
+      - Page title and URL correct (https://stripe-premium-2.preview.emergentagent.com/dashboard) - WORKING
       - Navigation bar with Dashboard, Upload, My Showcase, Verify buttons present - WORKING
       
       ✅ TEST 3: STATS SECTION LAYOUT VERIFICATION

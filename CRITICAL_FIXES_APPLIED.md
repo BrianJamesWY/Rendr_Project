@@ -96,7 +96,7 @@
 
 ### **Test 1: Video Upload & Showcase Display**
 **Steps:**
-1. Login at `https://videovault-322.preview.emergentagent.com/CreatorLogin`
+1. Login at `https://stripe-premium-2.preview.emergentagent.com/CreatorLogin`
 2. Upload a new video
 3. Assign to "Best Videos" folder (or any showcase folder)
 4. Check Dashboard - video should appear in folder
@@ -230,13 +230,13 @@
 ## 📞 TESTING CREDENTIALS
 
 **Main Login:**
-- URL: `https://videovault-322.preview.emergentagent.com/CreatorLogin`
+- URL: `https://stripe-premium-2.preview.emergentagent.com/CreatorLogin`
 - Username: `BrianJames`
 - Password: `Brian123!`
 - Tier: Enterprise
 
 **Showcase URL:**
-- Public: `https://videovault-322.preview.emergentagent.com/@BrianJames`
+- Public: `https://stripe-premium-2.preview.emergentagent.com/@BrianJames`
 
 ---
 
