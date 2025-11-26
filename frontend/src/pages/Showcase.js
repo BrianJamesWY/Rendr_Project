@@ -1,42 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navigation from '../components/Navigation';
+import './NewShowcase.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-// Social media platform icons and colors
-const SOCIAL_PLATFORMS = {
-  instagram: { icon: '📷', color: '#E4405F', label: 'Instagram' },
-  tiktok: { icon: '🎵', color: '#000000', label: 'TikTok' },
-  youtube: { icon: '▶️', color: '#FF0000', label: 'YouTube' },
-  twitter: { icon: '🐦', color: '#1DA1F2', label: 'Twitter/X' },
-  facebook: { icon: '👥', color: '#1877F2', label: 'Facebook' },
-};
-
-function Showcase() {
+function NewShowcase() {
   const { username } = useParams();
+  const navigate = useNavigate();
+  
+  // State management
+  const [activeTab, setActiveTab] = useState('videos');
   const [profile, setProfile] = useState(null);
   const [videos, setVideos] = useState([]);
-  const [showcaseFolders, setShowcaseFolders] = useState([]);
+  const [premiumFolders, setPremiumFolders] = useState([]);
+  const [communityPosts, setCommunityPosts] = useState([]);
+  const [scheduleItems, setScheduleItems] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [analytics, setAnalytics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [newPost, setNewPost] = useState('');
+  const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
 
   useEffect(() => {
     if (username) {
-      loadShowcase();
-      trackPageView();
+      initializeShowcase();
     }
   }, [username]);
 
-  const trackPageView = async () => {
+  const initializeShowcase = async () => {
     try {
+      setLoading(true);
       const cleanUsername = username.replace(/^@/, '');
+      
+      // Fetch profile data
+      const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
+      setProfile(profileRes.data);
+      
+      // Fetch videos
+      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
+      setVideos(videosRes.data || []);
+      
+      // Fetch premium folders
+      try {
+        const foldersRes = await axios.get(`${BACKEND_URL}/api/premium-folders`);
+        const userFolders = foldersRes.data.filter(f => f.creator_id === profileRes.data._id);
+        setPremiumFolders(userFolders || []);
+      } catch (err) {
+        console.log('No premium folders');
+        setPremiumFolders([]);
+      }
+      
+      // Track page view
+      trackPageView(cleanUsername);
+      
+      setLoading(false);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Creator not found');
+      setLoading(false);
+    }
+  };
+
+  const trackPageView = async (cleanUsername) => {
+    try {
       await axios.post(`${BACKEND_URL}/api/analytics/track/page-view`, null, {
         params: { username: cleanUsername }
       });
     } catch (err) {
-      // Silently fail - don't disrupt user experience
       console.log('Analytics tracking failed');
     }
   };
@@ -52,444 +83,486 @@ function Showcase() {
     }
   };
 
-  const loadShowcase = async () => {
+  const handleSubscribeToFolder = async (folderId) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/creator-login');
+      return;
+    }
+
     try {
-      setLoading(true);
-      
-      const cleanUsername = username.replace(/^@/, '');
-      
-      const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
-      setProfile(profileRes.data);
-      
-      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
-      setVideos(videosRes.data);
-      
-      // Load showcase folders for this user
-      try {
-        const foldersRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/showcase-folders`);
-        setShowcaseFolders(foldersRes.data || []);
-      } catch (folderErr) {
-        console.log('No showcase folders loaded');
-        setShowcaseFolders([]);
+      const response = await axios.post(
+        `${BACKEND_URL}/api/stripe/subscribe`,
+        {
+          folder_id: folderId,
+          success_url: `${window.location.origin}/subscription-success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: window.location.href
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (response.data.checkout_url) {
+        window.location.href = response.data.checkout_url;
       }
-      
-      setLoading(false);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Creator not found');
-      setLoading(false);
+      alert(err.response?.data?.detail || 'Failed to start subscription');
     }
   };
 
-  // Group videos by showcase folders
-  const groupedVideos = {};
-  
-  // Filter to only show public folders on showcase
-  const publicFolders = showcaseFolders.filter(folder => folder.is_public !== false);
-  
-  // Create folder groups from public showcase folders only
-  publicFolders.forEach(folder => {
-    groupedVideos[folder.folder_id] = {
-      folderName: folder.folder_name,
-      description: folder.description,
-      videos: []
+  const handleVideoClick = (videoId) => {
+    navigate(`/verify?code=${videoId}`);
+  };
+
+  const handlePostUpdate = async (e) => {
+    e.preventDefault();
+    if (!newPost.trim()) return;
+
+    // Placeholder for community post functionality
+    const newPostObj = {
+      id: Date.now(),
+      author: profile?.display_name || profile?.username,
+      content: newPost,
+      timestamp: new Date().toISOString(),
+      likes: 0,
+      comments: 0
     };
-  });
-  
-  // Assign videos to their folders
-  videos.forEach(video => {
-    if (video.showcase_folder_id && groupedVideos[video.showcase_folder_id]) {
-      groupedVideos[video.showcase_folder_id].videos.push(video);
+
+    setCommunityPosts([newPostObj, ...communityPosts]);
+    setNewPost('');
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Placeholder for contact message functionality
+    alert('Message sent! (This is a placeholder)');
+    setContactForm({ name: '', email: '', message: '' });
+  };
+
+  const shareShowcase = async () => {
+    const url = window.location.href;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `${profile?.display_name}'s Showcase`,
+          url: url
+        });
+      } catch (err) {
+        console.log('Share failed');
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Link copied to clipboard!');
     }
-  });
+  };
 
   if (loading) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ fontSize: '1.5rem', color: '#6b7280' }}>Loading...</div>
+      <div className="showcase-loading">
+        <div className="loading-spinner"></div>
+        <p>Loading showcase...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>😕</div>
-          <h1 style={{ fontSize: '2rem', color: '#111827', marginBottom: '0.5rem' }}>Creator Not Found</h1>
-          <p style={{ color: '#6b7280', marginBottom: '2rem' }}>{error}</p>
-          <Link to="/" style={{ color: '#2563eb', textDecoration: 'none', fontWeight: '600' }}>
-            ← Go Home
-          </Link>
-        </div>
+      <div className="showcase-error">
+        <h2>Creator Not Found</h2>
+        <p>{error}</p>
       </div>
     );
   }
 
-  const collectionLabel = profile.collection_label || 'Collections';
+  const stats = profile?.stats || {};
+  const socialLinks = profile?.social_links || {};
 
   return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
-      <Navigation currentPage="showcase" />
-      
-      {/* Header/Profile Section */}
-      <div style={{ 
-        background: profile.banner_image ? `url(${BACKEND_URL}${profile.banner_image})` : 'white',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        borderBottom: '1px solid #e5e7eb',
-        position: 'relative'
-      }}>
-        {/* Overlay for better text readability */}
-        {profile.banner_image && (
-          <div style={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0, 0, 0, 0.4)',
-            backdropFilter: 'blur(2px)'
-          }} />
-        )}
-        
-        <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center', padding: '3rem 1rem', position: 'relative', zIndex: 1 }}>
-          {profile.profile_picture && (
+    <div className="new-showcase">
+      {/* Navbar */}
+      <nav className="showcase-navbar">
+        <div className="nav-brand">
+          <span className="brand-icon">⭐</span>
+          <span className="brand-name">RENDR</span>
+        </div>
+        <div className="nav-actions">
+          <button className="subscribe-btn primary-gradient" onClick={() => alert('Subscribe feature coming soon!')}>
+            Subscribe
+          </button>
+        </div>
+      </nav>
+
+      {/* Header Section */}
+      <header className="header-section">
+        <div className="header-content">
+          <div className="profile-left-section">
             <img 
-              src={`${BACKEND_URL}${profile.profile_picture}`}
-              alt={profile.display_name}
-              style={{ 
-                width: '120px', 
-                height: '120px', 
-                borderRadius: '50%', 
-                objectFit: 'cover',
-                marginBottom: '1rem',
-                border: '4px solid #2563eb',
-                boxShadow: profile.banner_image ? '0 4px 6px rgba(0,0,0,0.3)' : 'none'
-              }}
+              src={profile?.profile_picture || '/default-avatar.png'} 
+              alt={profile?.display_name}
+              className="profile-pic-large"
             />
-          )}
-          
-          <h1 style={{ 
-            fontSize: '2.5rem', 
-            fontWeight: 'bold', 
-            color: profile.banner_image ? '#ffffff' : '#111827', 
-            marginBottom: '0.5rem',
-            textShadow: profile.banner_image ? '0 2px 4px rgba(0,0,0,0.8)' : 'none'
-          }}>
-            {profile.display_name}
-          </h1>
-          
-          <p style={{ 
-            fontSize: '1.25rem', 
-            color: profile.banner_image ? '#e5e7eb' : '#6b7280', 
-            marginBottom: '1rem',
-            textShadow: profile.banner_image ? '0 1px 2px rgba(0,0,0,0.8)' : 'none'
-          }}>
-            @{profile.username}
-          </p>
-          
-          {profile.bio && (
-            <p style={{ 
-              fontSize: '1rem', 
-              color: profile.banner_image ? '#ffffff' : '#374151', 
-              maxWidth: '600px', 
-              margin: '0 auto 1.5rem',
-              textShadow: profile.banner_image ? '0 1px 2px rgba(0,0,0,0.8)' : 'none'
-            }}>
-              {profile.bio}
-            </p>
-          )}
-          
-          {/* Social Media Links */}
-          {profile.social_media_links && profile.social_media_links.length > 0 && (
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              gap: '1rem', 
-              marginTop: '1.5rem',
-              marginBottom: '1.5rem',
-              flexWrap: 'wrap'
-            }}>
-              {profile.social_media_links.map((link, index) => {
-                const platformKey = link.platform.toLowerCase();
-                const platformInfo = SOCIAL_PLATFORMS[platformKey] || { 
-                  icon: '🔗', 
-                  color: '#667eea', 
-                  label: link.custom_name || link.platform 
-                };
-                
-                return (
-                  <a
-                    key={index}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => trackSocialClick(link.platform)}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.5rem',
-                      padding: '0.75rem 1.25rem',
-                      background: 'white',
-                      border: `2px solid ${platformInfo.color}`,
-                      borderRadius: '9999px',
-                      color: platformInfo.color,
-                      textDecoration: 'none',
-                      fontWeight: '600',
-                      fontSize: '0.9rem',
-                      transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = platformInfo.color;
-                      e.currentTarget.style.color = 'white';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'white';
-                      e.currentTarget.style.color = platformInfo.color;
-                    }}
-                  >
-                    <span style={{ fontSize: '1.2rem' }}>{platformInfo.icon}</span>
-                    {platformInfo.label}
-                  </a>
-                );
-              })}
-            </div>
-          )}
-          
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', marginTop: '1.5rem' }}>
-            <div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#2563eb' }}>
-                {profile.total_videos}
-              </div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Verified Videos</div>
-            </div>
+          </div>
+          <div className="profile-info">
+            <h1 className="display-name">
+              {profile?.display_name || profile?.username}
+              <span className="verification-badge">Creator</span>
+            </h1>
+            <p className="username">@{profile?.username}</p>
+            <p className="bio">{profile?.bio || 'Content creator on RENDR'}</p>
             
-            <div>
-              <div style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#10b981' }}>
-                {new Date(profile.joined_at).getFullYear()}
+            {/* Social Links */}
+            {Object.keys(socialLinks).length > 0 && (
+              <div className="social-links">
+                {Object.entries(socialLinks).map(([platform, url]) => (
+                  url && (
+                    <a
+                      key={platform}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-link"
+                      onClick={() => trackSocialClick(platform)}
+                    >
+                      {platform === 'instagram' && '📷'}
+                      {platform === 'tiktok' && '🎵'}
+                      {platform === 'youtube' && '▶️'}
+                      {platform === 'twitter' && '🐦'}
+                      {platform === 'facebook' && '👥'}
+                    </a>
+                  )
+                ))}
               </div>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Joined</div>
+            )}
+
+            {/* Stats */}
+            <div className="stats-row">
+              <div className="stat-item">
+                <div className="stat-value">{stats.videos || videos.length}</div>
+                <div className="stat-label">Videos</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">{premiumFolders.length}</div>
+                <div className="stat-label">Folders</div>
+              </div>
+              <div className="stat-item">
+                <div className="stat-value">{stats.views || 0}</div>
+                <div className="stat-label">Views</div>
+              </div>
             </div>
           </div>
         </div>
+      </header>
+
+      {/* Tab Navigation */}
+      <div className="nav-tabs">
+        <div className="tabs-container">
+          <button
+            className={`tab ${activeTab === 'videos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('videos')}
+          >
+            Videos
+          </button>
+          <button
+            className={`tab ${activeTab === 'premium' ? 'active' : ''}`}
+            onClick={() => setActiveTab('premium')}
+          >
+            Premium
+          </button>
+          <button
+            className={`tab ${activeTab === 'about' ? 'active' : ''}`}
+            onClick={() => setActiveTab('about')}
+          >
+            About
+          </button>
+          <button
+            className={`tab ${activeTab === 'community' ? 'active' : ''}`}
+            onClick={() => setActiveTab('community')}
+          >
+            Community
+          </button>
+          <button
+            className={`tab ${activeTab === 'schedule' ? 'active' : ''}`}
+            onClick={() => setActiveTab('schedule')}
+          >
+            Schedule
+          </button>
+          <button
+            className={`tab ${activeTab === 'store' ? 'active' : ''}`}
+            onClick={() => setActiveTab('store')}
+          >
+            Store
+          </button>
+          <button
+            className={`tab ${activeTab === 'analytics' ? 'active' : ''}`}
+            onClick={() => setActiveTab('analytics')}
+          >
+            Analytics
+          </button>
+        </div>
       </div>
 
-      {/* Collections/Videos Section */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 1rem' }}>
-        {Object.keys(groupedVideos).length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📹</div>
-            <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>
-              No videos in folders yet
-            </p>
-            <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginTop: '0.5rem' }}>
-              Videos must be added to showcase folders to appear here
-            </p>
-          </div>
-        ) : (
-          Object.keys(groupedVideos).map(folderId => {
-            const folderData = groupedVideos[folderId];
-            
-            // Skip empty folders
-            if (!folderData.videos || folderData.videos.length === 0) {
-              return null;
-            }
-            
-            return (
-            <div key={folderId} style={{ marginBottom: '4rem' }}>
-              {/* Large Folder Header Card */}
-              <div style={{ 
-                background: 'white',
-                borderRadius: '1rem',
-                padding: '2rem',
-                marginBottom: '2rem',
-                boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                border: `3px solid ${folderData.color || '#667eea'}`
-              }}>
-                <div style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  gap: '1.5rem'
-                }}>
-                  <div style={{ 
-                    fontSize: '4rem',
-                    flexShrink: 0
-                  }}>
-                    {folderData.icon_emoji || '📁'}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <h2 style={{ 
-                      fontSize: '2rem', 
-                      fontWeight: 'bold', 
-                      color: folderData.color || '#111827',
-                      marginBottom: '0.5rem'
-                    }}>
-                      {folderData.folderName}
-                    </h2>
-                    {folderData.description && (
-                      <p style={{ 
-                        fontSize: '1rem', 
-                        color: '#6b7280',
-                        margin: 0,
-                        marginBottom: '0.75rem'
-                      }}>
-                        {folderData.description}
-                      </p>
-                    )}
-                    <div style={{
-                      display: 'inline-block',
-                      padding: '0.5rem 1.25rem',
-                      background: folderData.color || '#667eea',
-                      color: 'white',
-                      borderRadius: '9999px',
-                      fontSize: '0.875rem',
-                      fontWeight: '600'
-                    }}>
-                      {folderData.videos.length} {folderData.videos.length === 1 ? 'video' : 'videos'}
+      {/* Main Content */}
+      <main className="content-wrapper">
+        {/* Videos Tab */}
+        {activeTab === 'videos' && (
+          <div className="tab-content active">
+            <div className="video-controls">
+              <h2>All Videos ({videos.length})</h2>
+            </div>
+            <div className="videos-grid">
+              {videos.map(video => (
+                <div
+                  key={video.video_id}
+                  className="video-card"
+                  onClick={() => handleVideoClick(video.verification_code)}
+                >
+                  <div className="thumbnail-wrapper">
+                    <img
+                      src={video.thumbnail_url || '/default-thumbnail.png'}
+                      alt={video.title || 'Video'}
+                      className="video-thumbnail"
+                    />
+                    <div className="play-overlay">
+                      <span className="play-icon">▶</span>
                     </div>
+                  </div>
+                  <div className="video-info-compact">
+                    <span className="rendr-code">{video.verification_code}</span>
                   </div>
                 </div>
+              ))}
+            </div>
+            {videos.length === 0 && (
+              <div className="empty-state">
+                <p>No videos yet</p>
               </div>
-              
-              {/* Smaller Video Grid */}
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
-                gap: '1rem' 
-              }}>
-                {folderData.videos.map(video => (
-                  <div 
-                    key={video.video_id}
-                    style={{
-                      background: 'white',
-                      borderRadius: '0.75rem',
-                      overflow: 'hidden',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                      transition: 'transform 0.2s'
-                    }}
-                    onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-4px)'}
-                    onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                  >
-                    {/* Smaller Thumbnail */}
-                    <div style={{ 
-                      width: '100%', 
-                      height: '140px', 
-                      background: '#e5e7eb',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                    }}>
-                      {video.thumbnail_url ? (
-                        <img 
-                          src={`${BACKEND_URL}${video.thumbnail_url}`}
-                          alt={video.verification_code}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                      ) : (
-                        <span style={{ fontSize: '2rem' }}>🎬</span>
-                      )}
-                    </div>
-                    
-                    {/* Compact Video Info */}
-                    <div style={{ padding: '0.75rem' }}>
-                      <div style={{ 
-                        fontSize: '0.875rem', 
-                        fontWeight: 'bold', 
-                        color: '#2563eb',
-                        marginBottom: '0.5rem',
-                        fontFamily: 'monospace',
-                        letterSpacing: '0.05em'
-                      }}>
-                        {video.verification_code}
-                      </div>
+            )}
+          </div>
+        )}
 
-                      {/* Source Badge */}
-                      <div style={{
-                        display: 'inline-block',
-                        padding: '0.2rem 0.6rem',
-                        background: video.source === 'bodycam' ? '#fef3c7' : '#dbeafe',
-                        color: video.source === 'bodycam' ? '#92400e' : '#1e40af',
-                        borderRadius: '0.375rem',
-                        fontSize: '0.7rem',
-                        fontWeight: '600',
-                        marginBottom: '0.5rem'
-                      }}>
-                        {video.source === 'bodycam' ? '📱 BodyCam' : '💻 Studio'}
+        {/* Premium Tab */}
+        {activeTab === 'premium' && (
+          <div className="tab-content active">
+            <h2>Premium Content</h2>
+            <div className="folders-grid">
+              {premiumFolders.map(folder => (
+                <div key={folder.folder_id} className="folder-card premium-folder">
+                  <div className="folder-header" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                    <span className="folder-icon">🔒</span>
+                  </div>
+                  <div className="folder-content">
+                    <h3 className="folder-name">{folder.name}</h3>
+                    <p className="folder-description">{folder.description}</p>
+                    <div className="folder-price">
+                      ${(folder.price_cents / 100).toFixed(2)}/{folder.billing_period || 'month'}
+                    </div>
+                    <div className="folder-stats">
+                      <span>{folder.video_count || 0} videos</span>
+                      <span>{folder.subscriber_count || 0} subscribers</span>
+                    </div>
+                    <button
+                      className="subscribe-btn primary-gradient"
+                      onClick={() => handleSubscribeToFolder(folder.folder_id)}
+                    >
+                      Subscribe Now
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {premiumFolders.length === 0 && (
+              <div className="empty-state">
+                <p>No premium content available yet</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* About Tab */}
+        {activeTab === 'about' && (
+          <div className="tab-content active">
+            <div className="about-content">
+              <div className="about-main">
+                <h2>About {profile?.display_name}</h2>
+                <p className="about-bio">{profile?.bio || 'Content creator on RENDR'}</p>
+                
+                <h3>Contact</h3>
+                <form className="message-form" onSubmit={handleContactSubmit}>
+                  <div className="form-group">
+                    <input
+                      type="text"
+                      placeholder="Your Name"
+                      className="form-input"
+                      value={contactForm.name}
+                      onChange={(e) => setContactForm({ ...contactForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <input
+                      type="email"
+                      placeholder="Your Email"
+                      className="form-input"
+                      value={contactForm.email}
+                      onChange={(e) => setContactForm({ ...contactForm, email: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <textarea
+                      placeholder="Your Message"
+                      className="form-textarea"
+                      rows="4"
+                      value={contactForm.message}
+                      onChange={(e) => setContactForm({ ...contactForm, message: e.target.value })}
+                      required
+                    ></textarea>
+                  </div>
+                  <button type="submit" className="send-btn primary-gradient">
+                    Send Message
+                  </button>
+                </form>
+              </div>
+              <div className="about-sidebar">
+                <div className="sidebar-card">
+                  <h4>Verified Creator</h4>
+                  <p className="verified-badge">✓ Verified on RENDR</p>
+                </div>
+                <div className="sidebar-card">
+                  <h4>Share Profile</h4>
+                  <button className="share-btn" onClick={shareShowcase}>
+                    Share Showcase
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Community Tab */}
+        {activeTab === 'community' && (
+          <div className="tab-content active">
+            <h2>Community</h2>
+            <div className="community-feed">
+              <div className="post-composer">
+                <textarea
+                  placeholder="Share an update with your community..."
+                  className="post-input"
+                  value={newPost}
+                  onChange={(e) => setNewPost(e.target.value)}
+                  rows="3"
+                ></textarea>
+                <button onClick={handlePostUpdate} className="post-btn primary-gradient">
+                  Post Update
+                </button>
+              </div>
+
+              <div className="posts-list">
+                {communityPosts.length === 0 && (
+                  <div className="empty-state">
+                    <p>No posts yet. Be the first to share something!</p>
+                  </div>
+                )}
+                {communityPosts.map(post => (
+                  <div key={post.id} className="post-card">
+                    <div className="post-header">
+                      <img src={profile?.profile_picture || '/default-avatar.png'} alt="Author" className="post-avatar" />
+                      <div>
+                        <div className="post-author">{post.author}</div>
+                        <div className="post-time">{new Date(post.timestamp).toLocaleDateString()}</div>
                       </div>
-                      
-                      {video.description && (
-                        <p style={{ 
-                          fontSize: '0.875rem', 
-                          color: '#374151', 
-                          marginBottom: '0.75rem',
-                          lineHeight: '1.5'
-                        }}>
-                          {video.description}
-                        </p>
-                      )}
-                      
-                      <div style={{ fontSize: '0.875rem', color: '#6b7280', marginBottom: '0.75rem' }}>
-                        {new Date(video.captured_at).toLocaleDateString()} at {new Date(video.captured_at).toLocaleTimeString()}
-                      </div>
-                      
-                      {video.tags && video.tags.length > 0 && (
-                        <div style={{ marginBottom: '0.75rem' }}>
-                          <div style={{ fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.25rem' }}>
-                            Tags:
-                          </div>
-                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.375rem' }}>
-                            {video.tags.map((tag, idx) => (
-                              <span 
-                                key={idx}
-                                style={{
-                                  padding: '0.25rem 0.5rem',
-                                  background: '#f3f4f6',
-                                  color: '#374151',
-                                  borderRadius: '0.25rem',
-                                  fontSize: '0.75rem',
-                                  fontWeight: '500'
-                                }}
-                              >
-                                #{tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {video.external_link && (
-                        <a 
-                          href={video.external_link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            display: 'inline-block',
-                            padding: '0.5rem 1rem',
-                            background: '#667eea',
-                            color: 'white',
-                            textDecoration: 'none',
-                            borderRadius: '0.5rem',
-                            fontSize: '0.875rem',
-                            fontWeight: '600',
-                            transition: 'background 0.2s'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.background = '#5568d3'}
-                          onMouseLeave={(e) => e.currentTarget.style.background = '#667eea'}
-                        >
-                          {video.platform ? `View on ${video.platform}` : 'View Original'}
-                        </a>
-                      )}
+                    </div>
+                    <div className="post-content">{post.content}</div>
+                    <div className="post-actions">
+                      <button className="post-action-btn">👍 {post.likes}</button>
+                      <button className="post-action-btn">💬 {post.comments}</button>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
-            );
-          })
+          </div>
         )}
-      </div>
+
+        {/* Schedule Tab */}
+        {activeTab === 'schedule' && (
+          <div className="tab-content active">
+            <h2>Upcoming Schedule</h2>
+            <div className="schedule-calendar">
+              <div className="upcoming-list">
+                {scheduleItems.length === 0 && (
+                  <div className="empty-state">
+                    <p>No scheduled events yet</p>
+                  </div>
+                )}
+                {scheduleItems.map(item => (
+                  <div key={item.id} className="schedule-item">
+                    <div className="schedule-date">{item.date}</div>
+                    <div className="schedule-details">
+                      <h4>{item.title}</h4>
+                      <p>{item.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Store Tab */}
+        {activeTab === 'store' && (
+          <div className="tab-content active">
+            <h2>Merch Store</h2>
+            <div className="store-section">
+              <div className="store-grid">
+                {products.length === 0 && (
+                  <div className="empty-state">
+                    <p>No products available yet</p>
+                  </div>
+                )}
+                {products.map(product => (
+                  <div key={product.id} className="product-card">
+                    <img src={product.image} alt={product.name} className="product-image" />
+                    <h4>{product.name}</h4>
+                    <p className="product-price">${product.price}</p>
+                    <button className="add-to-cart-btn primary-gradient">Add to Cart</button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && (
+          <div className="tab-content active">
+            <h2>Analytics</h2>
+            <div className="analytics-grid">
+              <div className="stat-card">
+                <h4>Total Views</h4>
+                <div className="stat-value-large">{stats.views || 0}</div>
+              </div>
+              <div className="stat-card">
+                <h4>Total Videos</h4>
+                <div className="stat-value-large">{videos.length}</div>
+              </div>
+              <div className="stat-card">
+                <h4>Subscribers</h4>
+                <div className="stat-value-large">{stats.subscribers || 0}</div>
+              </div>
+              <div className="stat-card">
+                <h4>Premium Folders</h4>
+                <div className="stat-value-large">{premiumFolders.length}</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
 
-export default Showcase;
+export default NewShowcase;
