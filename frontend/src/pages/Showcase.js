@@ -181,7 +181,7 @@ function Showcase() {
   const socialLinks = profile?.social_links || {};
 
   return (
-    <div className="new-showcase">
+    <div className="showcase-container-new">
       {/* Navbar */}
       <nav className="showcase-navbar">
         <div className="nav-brand">
