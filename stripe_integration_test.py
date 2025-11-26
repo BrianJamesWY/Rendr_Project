@@ -199,18 +199,19 @@ class StripeIntegrationTester:
     def test_premium_folders_exist(self):
         """Check if premium folders exist for subscription testing"""
         try:
-            response = self.session.get(f"{BASE_URL}/premium-folders")
+            # First try to get user's premium folders
+            response = self.session.get(f"{BASE_URL}/premium-folders/my-folders")
             
             if response.status_code == 200:
                 data = response.json()
-                if isinstance(data, list) and len(data) > 0:
+                folders = data.get("folders", [])
+                if len(folders) > 0:
                     self.log_test("Premium Folders Check", True, 
-                                f"Found {len(data)} premium folders")
-                    return data
+                                f"Found {len(folders)} premium folders")
+                    return folders
                 else:
-                    self.log_test("Premium Folders Check", False, 
-                                "No premium folders found")
-                    return []
+                    # Try to create a test premium folder
+                    return self.create_test_premium_folder()
             elif response.status_code == 404:
                 self.log_test("Premium Folders Check", False, 
                             "Premium folders endpoint not found")
@@ -221,6 +222,48 @@ class StripeIntegrationTester:
                 return []
         except Exception as e:
             self.log_test("Premium Folders Check", False, f"Error: {str(e)}")
+            return []
+    
+    def create_test_premium_folder(self):
+        """Create a test premium folder for testing"""
+        try:
+            folder_data = {
+                "name": "Test Premium Folder",
+                "description": "Test folder for Stripe integration testing",
+                "price_cents": 999,  # $9.99
+                "currency": "USD",
+                "visibility": "public",
+                "allow_downloads": True,
+                "watermark_enabled": False
+            }
+            
+            response = self.session.post(f"{BASE_URL}/premium-folders", json=folder_data)
+            
+            if response.status_code == 201:
+                data = response.json()
+                folder_id = data.get("folder_id")
+                
+                # Get the created folder details
+                folder_response = self.session.get(f"{BASE_URL}/premium-folders/{folder_id}")
+                if folder_response.status_code == 200:
+                    folder = folder_response.json()
+                    self.log_test("Create Test Premium Folder", True, 
+                                f"Created test premium folder: {folder_id}")
+                    return [folder]
+                else:
+                    self.log_test("Create Test Premium Folder", False, 
+                                "Could not retrieve created folder")
+                    return []
+            elif response.status_code == 403:
+                self.log_test("Create Test Premium Folder", False, 
+                            "User tier not eligible for premium folders")
+                return []
+            else:
+                self.log_test("Create Test Premium Folder", False, 
+                            f"Status: {response.status_code}", response.text)
+                return []
+        except Exception as e:
+            self.log_test("Create Test Premium Folder", False, f"Error: {str(e)}")
             return []
     
     def test_subscription_checkout(self, premium_folders):
