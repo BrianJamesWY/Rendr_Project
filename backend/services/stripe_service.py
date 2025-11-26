@@ -295,5 +295,7 @@ class StripeService:
             return event
         except ValueError:
             raise Exception("Invalid payload")
-        except stripe.error.SignatureVerificationError:
-            raise Exception("Invalid signature")
+        except Exception as e:
+            if "signature" in str(e).lower():
+                raise Exception("Invalid signature")
+            raise Exception("Invalid payload")
