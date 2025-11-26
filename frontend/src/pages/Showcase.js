@@ -24,8 +24,13 @@ function Showcase() {
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
 
   useEffect(() => {
+    console.log('useEffect triggered, username:', username);
     if (username) {
       initializeShowcase();
+    } else {
+      console.error('No username found in URL params');
+      setError('Invalid showcase URL');
+      setLoading(false);
     }
   }, [username]);
 
