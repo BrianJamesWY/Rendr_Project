@@ -82,16 +82,16 @@ function Admin() {
           
           const [statsRes, usersRes, logsRes, interestedRes] = await Promise.all([
             axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/stats`, {
-              headers: { 'X-CEO-Token': storedToken }
+              headers: { Authorization: `Bearer ${storedToken}` }
             }),
             axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/users`, {
-              headers: { 'X-CEO-Token': storedToken }
+              headers: { Authorization: `Bearer ${storedToken}` }
             }),
             axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/logs?limit=50`, {
-              headers: { 'X-CEO-Token': storedToken }
+              headers: { Authorization: `Bearer ${storedToken}` }
             }),
             axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/interested-parties`, {
-              headers: { 'X-CEO-Token': storedToken }
+              headers: { Authorization: `Bearer ${storedToken}` }
             })
           ]);
 
