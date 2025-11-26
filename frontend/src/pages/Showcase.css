@@ -26,11 +26,11 @@
 }
 
 /* Reset & Base */
-.new-showcase * {
+.showcase-container-new * {
   box-sizing: border-box;
 }
 
-.new-showcase {
+.showcase-container-new {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   background: var(--bg-gray);
   color: var(--text-primary);
