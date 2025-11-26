@@ -23,16 +23,26 @@ function Showcase() {
   const [newPost, setNewPost] = useState('');
   const [contactForm, setContactForm] = useState({ name: '', email: '', message: '' });
 
-  useEffect(() => {
-    console.log('useEffect triggered, username:', username);
-    if (username) {
-      initializeShowcase();
-    } else {
-      console.error('No username found in URL params');
-      setError('Invalid showcase URL');
-      setLoading(false);
+  const trackPageView = async (cleanUsername) => {
+    try {
+      await axios.post(`${BACKEND_URL}/api/analytics/track/page-view`, null, {
+        params: { username: cleanUsername }
+      });
+    } catch (err) {
+      console.log('Analytics tracking failed');
     }
-  }, [username]);
+  };
+
+  const trackSocialClick = async (platform) => {
+    try {
+      const cleanUsername = username.replace(/^@/, '');
+      await axios.post(`${BACKEND_URL}/api/analytics/track/social-click`, null, {
+        params: { username: cleanUsername, platform }
+      });
+    } catch (err) {
+      console.log('Analytics tracking failed');
+    }
+  };
 
   const initializeShowcase = async () => {
     try {
