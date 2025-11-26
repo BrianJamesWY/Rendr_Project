@@ -28,21 +28,21 @@ function Admin() {
       setLoading(true);
       setError(null);
       
-      // Use CEO token, not regular user token
+      // Use CEO token (which is actually a regular Bearer token)
       const authToken = tokenToUse || ceoToken;
       
       const [statsRes, usersRes, logsRes, interestedRes] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/stats`, {
-          headers: { 'X-CEO-Token': authToken }
+          headers: { Authorization: `Bearer ${authToken}` }
         }),
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/users`, {
-          headers: { 'X-CEO-Token': authToken }
+          headers: { Authorization: `Bearer ${authToken}` }
         }),
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/logs?limit=50`, {
-          headers: { 'X-CEO-Token': authToken }
+          headers: { Authorization: `Bearer ${authToken}` }
         }),
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/interested-parties`, {
-          headers: { 'X-CEO-Token': authToken }
+          headers: { Authorization: `Bearer ${authToken}` }
         })
       ]);
 
@@ -53,7 +53,7 @@ function Admin() {
       setLoading(false);
     } catch (err) {
       if (err.response?.status === 403) {
-        setError('Access Denied. CEO credentials required.');
+        setError('Access Denied. Only CEO accounts can access this panel.');
         // Clear authorization
         setIsAuthorized(false);
         sessionStorage.removeItem('ceo_authorized');
