@@ -25,6 +25,7 @@ import StripeConnect from "./pages/StripeConnect";
 import StripeConnectReturn from "./pages/StripeConnectReturn";
 import Earnings from "./pages/Earnings";
 import MySubscriptions from "./pages/MySubscriptions";
+import LandingPage from "./pages/LandingPage";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
