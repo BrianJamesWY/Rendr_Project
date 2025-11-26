@@ -70,7 +70,7 @@ const LandingPage = () => {
             Powered by DCT-domain steganographic watermarking technology.
           </p>
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link to="/CreatorLogin" style={{
+            <Link to="/pricing" style={{
               padding: '1rem 2.5rem',
               background: 'white',
               color: '#667eea',
@@ -80,7 +80,7 @@ const LandingPage = () => {
               fontSize: '1.125rem',
               boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
             }}>
-              🚀 Start Free Trial
+              🚀 Get Started
             </Link>
             <a href="#how-it-works" style={{
               padding: '1rem 2.5rem',
