@@ -70,7 +70,7 @@ const TermsOfService = () => {
           <h2 style={{ fontSize: '1.75rem', color: '#667eea', marginTop: '2rem', marginBottom: '1rem', borderLeft: '4px solid #667eea', paddingLeft: '1rem' }}>4. Content & Intellectual Property</h2>
 
           <h3 style={{ fontSize: '1.25rem', color: '#764ba2', marginTop: '1.5rem', marginBottom: '0.75rem' }}>4.1 Your Content</h3>
-          <p>You retain all ownership rights to the content you upload to Rendr ("Your Content"). By uploading content, you grant Rendr a worldwide, non-exclusive, royalty-free license to:</p>
+          <p>You retain all ownership rights to the content you upload to Rendr (&quot;Your Content&quot;). By uploading content, you grant Rendr a worldwide, non-exclusive, royalty-free license to:</p>
           <ul style={{ marginLeft: '2rem', marginBottom: '1rem' }}>
             <li>Store, process, and display Your Content</li>
             <li>Generate verification codes and watermarks</li>
