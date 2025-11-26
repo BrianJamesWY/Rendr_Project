@@ -431,9 +431,8 @@ async def get_trending_creators(
 
 
 @router.get("/api/explore/categories")
-async def get_categories():
+async def get_categories(db = Depends(get_db)):
     """Get list of all creator categories"""
-    db = await get_db()
     
     categories = await db.users.distinct("categories", {
         "showcase_settings.isPublic": True,
