@@ -67,6 +67,7 @@ app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"]
 app.include_router(analytics_events.router, prefix="/api/analytics/events", tags=["Analytics Events"])
 app.include_router(payments.router, prefix="/api/payments", tags=["Payments"])
 app.include_router(password_reset.router, prefix="/api/password", tags=["Password Reset"])
+app.include_router(explore.router, tags=["Explore"])
 
 @app.get("/")
 async def root():
