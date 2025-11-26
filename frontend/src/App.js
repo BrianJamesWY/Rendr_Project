@@ -158,6 +158,7 @@ function App() {
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
+        <CookieConsent />
       </BrowserRouter>
     </div>
   );
