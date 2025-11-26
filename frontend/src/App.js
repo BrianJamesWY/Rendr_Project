@@ -151,6 +151,10 @@ function App() {
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/help" element={<HelpCenter />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/refund-policy" element={<RefundPolicy />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
