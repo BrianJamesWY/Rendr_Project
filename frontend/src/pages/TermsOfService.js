@@ -32,8 +32,8 @@ const TermsOfService = () => {
           </div>
 
           <h2 style={{ fontSize: '1.75rem', color: '#667eea', marginTop: '2rem', marginBottom: '1rem', borderLeft: '4px solid #667eea', paddingLeft: '1rem' }}>1. Acceptance of Terms</h2>
-          <p>Welcome to Rendr! By creating an account, accessing, or using Rendr (the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Platform.</p>
-          <p>These Terms constitute a legally binding agreement between you and Rendr ("we," "us," or "our"). We reserve the right to modify these Terms at any time. Continued use of the Platform after changes constitutes acceptance of the modified Terms.</p>
+          <p>Welcome to Rendr! By creating an account, accessing, or using Rendr (the &quot;Platform&quot;), you agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, do not use the Platform.</p>
+          <p>These Terms constitute a legally binding agreement between you and Rendr (&quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). We reserve the right to modify these Terms at any time. Continued use of the Platform after changes constitutes acceptance of the modified Terms.</p>
 
           <h2 style={{ fontSize: '1.75rem', color: '#667eea', marginTop: '2rem', marginBottom: '1rem', borderLeft: '4px solid #667eea', paddingLeft: '1rem' }}>2. Description of Service</h2>
           <p>Rendr is a video authentication and verification platform that allows users to:</p>
