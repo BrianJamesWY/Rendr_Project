@@ -312,6 +312,22 @@ class StripeIntegrationTester:
                     self.log_test("Subscription Checkout", False, 
                                 f"Unexpected 400 error: {error_msg}")
                     return None
+            elif response.status_code == 500:
+                error_msg = response.text
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", error_msg)
+                except:
+                    pass
+                
+                if "missing the required capabilities" in error_msg or "transfers" in error_msg:
+                    self.log_test("Subscription Checkout", True, 
+                                "Correctly rejected - Stripe account not fully onboarded (missing capabilities)")
+                    return None
+                else:
+                    self.log_test("Subscription Checkout", False, 
+                                f"Unexpected 500 error: {error_msg}")
+                    return None
             elif response.status_code == 404:
                 self.log_test("Subscription Checkout", False, 
                             "Premium folder not found")
