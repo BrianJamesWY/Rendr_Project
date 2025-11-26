@@ -47,40 +47,6 @@ const SubscriptionCheckout = () => {
     loadData();
   }, [searchParams]);
 
-  const loadFolderDetails = async () => {
-    const folderId = searchParams.get('folder');
-    
-    if (!folderId) {
-      setError('No folder specified');
-      setLoading(false);
-      return;
-    }
-
-    try {
-      // TODO: Replace with actual API call
-      // const response = await fetch(`${BACKEND_URL}/api/premium-folders/${folderId}/public`);
-      // const data = await response.json();
-      
-      // Mock data for now
-      setFolderDetails({
-        id: folderId,
-        creatorName: 'BrianJames',
-        creatorTitle: 'Content Creator',
-        icon: '🔒',
-        name: 'Premium Videos',
-        description: 'Exclusive content with blockchain verification',
-        videoCount: 15,
-        subscriberCount: 47,
-        priceCents: 999
-      });
-    } catch (err) {
-      console.error('Error loading folder:', err);
-      setError('Failed to load folder details');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setProcessing(true);
