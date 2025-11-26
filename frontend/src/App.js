@@ -159,6 +159,10 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/refund-policy" element={<RefundPolicy />} />
+          <Route path="/stripe-connect" element={<StripeConnect />} />
+          <Route path="/stripe-connect/return" element={<StripeConnectReturn />} />
+          <Route path="/earnings" element={<Earnings />} />
+          <Route path="/my-subscriptions" element={<MySubscriptions />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
         </Routes>
