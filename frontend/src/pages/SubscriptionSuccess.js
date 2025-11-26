@@ -9,46 +9,36 @@ const SubscriptionSuccess = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    loadSubscriptionDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const loadData = async () => {
+      const folderId = searchParams.get('folder');
 
-  const loadSubscriptionDetails = async () => {
-    const folderId = searchParams.get('folder');
+      if (!folderId) {
+        console.error('No folder ID provided');
+        setLoading(false);
+        return;
+      }
 
-    if (!folderId) {
-      console.error('No folder ID provided');
-      setLoading(false);
-      return;
-    }
+      try {
+        const nextBillingDate = new Date();
+        nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
 
-    try {
-      // TODO: Replace with actual API call
-      // const token = localStorage.getItem('rendr_token');
-      // const response = await fetch(`${BACKEND_URL}/api/subscriptions/my-subscription/${folderId}`, {
-      //   headers: { Authorization: `Bearer ${token}` }
-      // });
-      // const data = await response.json();
-
-      // Mock data for now
-      const nextBillingDate = new Date();
-      nextBillingDate.setMonth(nextBillingDate.getMonth() + 1);
-
-      setSubscriptionDetails({
-        folderName: 'Premium Videos',
-        creatorName: 'BrianJames',
-        creatorUsername: 'brianjames',
-        priceCents: 999,
-        nextBillingDate: nextBillingDate.toISOString(),
-        receiptUrl: '#',
-        folderId: folderId
-      });
-    } catch (error) {
-      console.error('Error loading subscription:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+        setSubscriptionDetails({
+          folderName: 'Premium Videos',
+          creatorName: 'BrianJames',
+          creatorUsername: 'brianjames',
+          priceCents: 999,
+          nextBillingDate: nextBillingDate.toISOString(),
+          receiptUrl: '#',
+          folderId: folderId
+        });
+      } catch (error) {
+        console.error('Error loading subscription:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [searchParams]);
 
   if (loading) {
     return (
