@@ -33,7 +33,7 @@ function Showcase() {
     }
   };
 
-  const trackSocialClick = async (platform) => {
+  const trackSocialClick = useCallback(async (platform) => {
     try {
       const cleanUsername = username.replace(/^@/, '');
       await axios.post(`${BACKEND_URL}/api/analytics/track/social-click`, null, {
@@ -42,9 +42,9 @@ function Showcase() {
     } catch (err) {
       console.log('Analytics tracking failed');
     }
-  };
+  }, [username]);
 
-  const initializeShowcase = async () => {
+  const initializeShowcase = useCallback(async () => {
     try {
       setLoading(true);
       const cleanUsername = username.replace(/^@/, '');
