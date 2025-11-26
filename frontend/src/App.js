@@ -17,7 +17,12 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotificationSettings from "./pages/NotificationSettings";
 import InvestorAnalytics from "./pages/InvestorAnalytics";
+import HelpCenter from "./pages/HelpCenter";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
 import Logo from "./components/Logo";
+import CookieConsent from "./components/CookieConsent";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
