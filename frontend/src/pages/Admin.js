@@ -386,20 +386,36 @@ function Admin() {
               </h1>
               <p style={{ opacity: 0.8 }}>Full platform control & user management</p>
             </div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: '#667eea',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              Back to My Dashboard
-            </button>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button
+                onClick={() => navigate('/')}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#374151',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                🏠 Home
+              </button>
+              <button
+                onClick={handleCeoLogout}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#ef4444',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                🚪 Logout
+              </button>
+            </div>
           </div>
         </div>
       </div>
