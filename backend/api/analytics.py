@@ -27,11 +27,18 @@ async def get_public_analytics(db = Depends(get_db)):
         'created_at': {'$gte': start_of_month.isoformat()}
     })
     
-    # Count videos
+    # Count videos (public and private breakdown)
     total_videos = await db.videos.count_documents({})
+    public_videos = await db.videos.count_documents({'visibility': 'public'})
+    private_videos = await db.videos.count_documents({'visibility': 'private'})
     blockchain_verified = await db.videos.count_documents({'blockchain_signature': {'$exists': True}})
     bodycam_videos = await db.videos.count_documents({'source': 'bodycam'})
     studio_videos = await db.videos.count_documents({'source': 'studio'})
+    
+    # Count premium folders
+    total_premium_folders = await db.premium_folders.count_documents({})
+    public_premium_folders = await db.premium_folders.count_documents({'visibility': 'public'})
+    active_subscriptions = await db.subscriptions.count_documents({'status': 'active'})
     
     # Videos this month
     videos_this_month = await db.videos.count_documents({
