@@ -58,22 +58,26 @@ function Admin() {
     }
   };
 
-  const loadAdminData = async () => {
+  const loadAdminData = async (tokenToUse) => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Use CEO token, not regular user token
+      const authToken = tokenToUse || ceoToken;
       
       const [statsRes, usersRes, logsRes, interestedRes] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/stats`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 'X-CEO-Token': authToken }
         }),
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/users`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 'X-CEO-Token': authToken }
         }),
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/logs?limit=50`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 'X-CEO-Token': authToken }
         }),
         axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/interested-parties`, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { 'X-CEO-Token': authToken }
         })
       ]);
 
@@ -84,7 +88,11 @@ function Admin() {
       setLoading(false);
     } catch (err) {
       if (err.response?.status === 403) {
-        setError('Access Denied. CEO only.');
+        setError('Access Denied. CEO credentials required.');
+        // Clear authorization
+        setIsAuthorized(false);
+        sessionStorage.removeItem('ceo_authorized');
+        sessionStorage.removeItem('ceo_token');
       } else {
         setError(err.response?.data?.detail || 'Failed to load admin data');
       }
