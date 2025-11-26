@@ -443,9 +443,8 @@ async def get_categories(db = Depends(get_db)):
 
 
 @router.get("/api/explore/tags")
-async def get_tags():
+async def get_tags(db = Depends(get_db)):
     """Get list of all creator tags"""
-    db = await get_db()
     
     tags = await db.users.distinct("tags", {
         "showcase_settings.isPublic": True,
