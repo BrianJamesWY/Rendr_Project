@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://stripe-premium-2.preview.emergentagent.com"
+BASE_URL = "https://premium-content-46.preview.emergentagent.com"
 API_URL = f"{BASE_URL}/api"
 
 # Test URLs
