@@ -148,6 +148,7 @@ function App() {
           <Route path="/verify" element={<Verify />} />
           <Route path="/upload" element={<Upload />} />
           <Route path="/CreatorLogin" element={<CreatorLogin />} />
+          <Route path="/creator-login" element={<CreatorLogin />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/ceo-access-b7k9m2x" element={<Admin />} />
