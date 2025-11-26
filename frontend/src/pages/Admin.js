@@ -187,7 +187,7 @@ function Admin() {
     }
   };
 
-  // Password protection screen
+  // CEO Login screen - REQUIRES BOTH USERNAME AND PASSWORD
   if (!isAuthorized) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0f172a' }}>
@@ -196,42 +196,80 @@ function Admin() {
           padding: '3rem', 
           borderRadius: '1rem', 
           boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-          maxWidth: '400px',
+          maxWidth: '450px',
           width: '90%'
         }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
             <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔐</div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-              CEO Access
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
+              CEO Admin Access
             </h1>
             <p style={{ color: '#6b7280', fontSize: '0.875rem' }}>
-              Enter password to continue
+              This area is restricted to CEO only
             </p>
+            <div style={{ 
+              background: '#fef3c7', 
+              border: '2px solid #f59e0b', 
+              padding: '0.75rem', 
+              borderRadius: '0.5rem', 
+              marginTop: '1rem',
+              fontSize: '0.75rem',
+              color: '#92400e'
+            }}>
+              ⚠️ Unauthorized access attempts are logged
+            </div>
           </div>
 
-          <form onSubmit={handlePasswordSubmit}>
-            <input
-              type="password"
-              value={accessPassword}
-              onChange={(e) => setAccessPassword(e.target.value)}
-              placeholder="Enter CEO password"
-              autoFocus
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '2px solid #e5e7eb',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                marginBottom: '1rem',
-                outline: 'none'
-              }}
-            />
+          <form onSubmit={handleCeoLogin}>
+            <div style={{ marginBottom: '1rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
+                CEO Username
+              </label>
+              <input
+                type="text"
+                value={ceoUsername}
+                onChange={(e) => setCeoUsername(e.target.value)}
+                placeholder="Enter CEO username"
+                autoFocus
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
+                CEO Password
+              </label>
+              <input
+                type="password"
+                value={ceoPassword}
+                onChange={(e) => setCeoPassword(e.target.value)}
+                placeholder="Enter CEO password"
+                required
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '0.5rem',
+                  fontSize: '1rem',
+                  outline: 'none'
+                }}
+              />
+            </div>
+            
             <button
               type="submit"
               style={{
                 width: '100%',
                 padding: '0.75rem',
-                background: '#667eea',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '0.5rem',
@@ -240,8 +278,25 @@ function Admin() {
                 cursor: 'pointer'
               }}
             >
-              Access Panel
+              🔓 Access CEO Panel
             </button>
+            
+            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+              <button
+                type="button"
+                onClick={() => navigate('/')}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: '#6b7280',
+                  fontSize: '0.875rem',
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                ← Back to Home
+              </button>
+            </div>
           </form>
         </div>
       </div>
