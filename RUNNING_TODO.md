@@ -275,6 +275,19 @@
 6. **Custom domains** (Enterprise)
 7. **Webhook integrations**
 8. **Mobile app** (React Native screens already built)
+9. **Follower System** 🆕 USER REQUEST
+   - Allow users to follow creators (separate from subscriptions)
+   - Show follower count on creator profiles
+   - Follower feed/notifications for new uploads
+   - Distinguish between followers and subscribers
+10. **CEO Admin Enhancements** 🆕 USER REQUEST
+    - Show both public AND private video counts per creator
+    - Show premium folder counts per creator
+    - Advanced analytics for investors
+11. **CEO Backdoor Feature** 🔒 USER REQUEST
+    - Bypass all paywalls without authentication
+    - View any video without logging access
+    - Secret testing/QA capability
 
 ---
 
