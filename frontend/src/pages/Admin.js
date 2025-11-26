@@ -303,21 +303,42 @@ function Admin() {
               <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>
                 CEO Password
               </label>
-              <input
-                type="password"
-                value={ceoPassword}
-                onChange={(e) => setCeoPassword(e.target.value)}
-                placeholder="Enter CEO password"
-                required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem',
-                  outline: 'none'
-                }}
-              />
+              <div style={{ position: 'relative' }}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={ceoPassword}
+                  onChange={(e) => setCeoPassword(e.target.value)}
+                  placeholder="Enter CEO password"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    paddingRight: '3rem',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    fontSize: '1rem',
+                    outline: 'none'
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: '0.75rem',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    fontSize: '1.25rem',
+                    padding: '0.25rem'
+                  }}
+                  title={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
             </div>
             
             <button
