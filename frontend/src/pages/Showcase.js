@@ -34,21 +34,26 @@ function Showcase() {
       setLoading(true);
       const cleanUsername = username.replace(/^@/, '');
       
+      console.log('Loading showcase for:', cleanUsername);
+      
       // Fetch profile data
       const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
+      console.log('Profile loaded:', profileRes.data);
       setProfile(profileRes.data);
       
       // Fetch videos
       const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
+      console.log('Videos loaded:', videosRes.data?.length);
       setVideos(videosRes.data || []);
       
-      // Fetch premium folders
+      // Fetch premium folders - filter by username since _id not in response
       try {
         const foldersRes = await axios.get(`${BACKEND_URL}/api/premium-folders`);
-        const userFolders = foldersRes.data.filter(f => f.creator_id === profileRes.data._id);
+        const userFolders = foldersRes.data.filter(f => f.creator_username === cleanUsername);
+        console.log('Premium folders loaded:', userFolders.length);
         setPremiumFolders(userFolders || []);
       } catch (err) {
-        console.log('No premium folders');
+        console.log('No premium folders:', err.message);
         setPremiumFolders([]);
       }
       
@@ -57,6 +62,7 @@ function Showcase() {
       
       setLoading(false);
     } catch (err) {
+      console.error('Error loading showcase:', err);
       setError(err.response?.data?.detail || 'Creator not found');
       setLoading(false);
     }
