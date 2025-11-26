@@ -1906,3 +1906,105 @@ frontend:
       - All critical functionality working correctly
       
       OVERALL ASSESSMENT: The Rendr platform backend is production-ready and fully functional. All critical endpoints are working correctly with proper authentication, data validation, and JSON serialization. The comprehensive verification system, tiered storage, CEO admin features, and analytics are all operational. The platform successfully handles Enterprise tier features including unlimited storage, comprehensive hashing, and download functionality.
+#====================================================================================================
+# NEW TESTING TASK - STRIPE INTEGRATION
+#====================================================================================================
+
+backend:
+  - task: "Stripe Connect Integration for Creator Onboarding"
+    implemented: true
+    working: "NA"
+    file: "backend/api/stripe_integration.py, backend/services/stripe_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          STRIPE INTEGRATION JUST COMPLETED - READY FOR COMPREHENSIVE TESTING
+          
+          What was implemented:
+          - Stripe webhook endpoint configured at /api/stripe/webhook
+          - Webhook signing secret added to environment (whsec_BDwKRn8AqY5bpVI1sLmxJCrXNNPm1N1m)
+          - Listening to 4 events: checkout.session.completed, customer.subscription.updated, customer.subscription.deleted, invoice.payment_succeeded
+          - Fixed routing issue (added /api prefix to stripe_integration router)
+          - Verified webhook endpoint is accessible (HTTP 200)
+          
+          API Endpoints Available:
+          1. POST /api/stripe/connect/onboard - Start Stripe Connect onboarding for creators
+          2. GET /api/stripe/connect/status - Check creator's Stripe account status
+          3. POST /api/stripe/subscribe - Create subscription checkout session
+          4. GET /api/stripe/checkout/status/{session_id} - Check checkout status
+          5. POST /api/stripe/subscription/{subscription_id}/cancel - Cancel subscription
+          6. POST /api/stripe/webhook - Handle Stripe webhooks
+          
+          Prerequisites for Testing:
+          - Stripe API keys configured in backend/.env (test mode)
+          - Stripe publishable key in frontend/.env
+          - Test credentials: Username: BrianJames, Password: Brian123!
+          - BrianJames user has premium_tier: "enterprise" (eligible for Stripe Connect)
+          
+          What Needs Testing:
+          1. Creator Stripe Connect onboarding flow (requires Pro/Enterprise tier)
+          2. Subscription checkout session creation
+          3. Webhook event handling (simulated or actual)
+          4. Error handling for ineligible users, missing Stripe accounts, etc.
+          
+          Note: This is the foundation for Premium Folders monetization feature.
+
+metadata:
+  created_by: "main_agent"
+  version: "2.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Stripe Connect Integration for Creator Onboarding"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Testing Agent,
+      
+      I've just completed the Stripe webhook integration setup. The webhook is now configured and responding.
+      
+      CRITICAL: This is a NEW feature that has never been tested before.
+      
+      Please perform comprehensive testing of the Stripe integration:
+      
+      1. Test Stripe Connect onboarding endpoint:
+         - POST /api/stripe/connect/onboard with proper authentication
+         - Verify it checks for Pro/Enterprise tier requirement
+         - Verify it creates/returns Stripe account and onboarding URL
+      
+      2. Test subscription creation:
+         - First, we need a premium folder to exist (check /api/premium-folders endpoint)
+         - POST /api/stripe/subscribe to create checkout session
+         - Verify it handles missing Stripe accounts on creator side
+      
+      3. Test webhook endpoint:
+         - POST /api/stripe/webhook with test payload
+         - Verify it accepts the request and processes events
+      
+      4. Test error scenarios:
+         - Non-Pro/Enterprise users trying to onboard
+         - Subscribing to non-existent folders
+         - Invalid authentication
+      
+      Use credentials:
+      - Username: BrianJames
+      - Password: Brian123!
+      
+      Backend URL: https://premium-content-46.preview.emergentagent.com/api
+      
+      IMPORTANT: Since Stripe is in test mode, we won't be able to complete actual payments,
+      but we can verify all the API endpoints are working correctly and returning proper responses.
+      
+      Please create comprehensive test results including curl commands used, responses received,
+      and any issues found.
+
