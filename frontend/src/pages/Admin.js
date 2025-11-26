@@ -154,7 +154,7 @@ function Admin() {
       await axios.put(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/users/${userId}/interested?interested=${!currentState}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { 'X-CEO-Token': ceoToken } }
       );
       loadAdminData();
     } catch (err) {
