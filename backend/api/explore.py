@@ -214,9 +214,11 @@ async def get_creators(
 
 
 @router.get("/api/explore/featured")
-async def get_featured_creators(limit: int = Query(6, ge=1, le=20)):
+async def get_featured_creators(
+    limit: int = Query(6, ge=1, le=20),
+    db = Depends(get_db)
+):
     """Get featured creators for homepage/spotlight"""
-    db = await get_db()
     
     pipeline = [
         {
