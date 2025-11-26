@@ -176,7 +176,7 @@ function Admin() {
       const response = await axios.post(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/bulk-import`,
         emails,
-        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+        { headers: { 'X-CEO-Token': ceoToken, 'Content-Type': 'application/json' } }
       );
       
       alert(`Imported: ${response.data.imported}\nSkipped: ${response.data.skipped}${response.data.errors.length > 0 ? `\nErrors: ${response.data.errors.length}` : ''}`);
