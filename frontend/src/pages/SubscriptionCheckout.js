@@ -16,9 +16,36 @@ const SubscriptionCheckout = () => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
-    loadFolderDetails();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const loadData = async () => {
+      const folderId = searchParams.get('folder');
+      
+      if (!folderId) {
+        setError('No folder specified');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setFolderDetails({
+          id: folderId,
+          creatorName: 'BrianJames',
+          creatorTitle: 'Content Creator',
+          icon: '🔒',
+          name: 'Premium Videos',
+          description: 'Exclusive content with blockchain verification',
+          videoCount: 15,
+          subscriberCount: 47,
+          priceCents: 999
+        });
+      } catch (err) {
+        console.error('Error loading folder:', err);
+        setError('Failed to load folder details');
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, [searchParams]);
 
   const loadFolderDetails = async () => {
     const folderId = searchParams.get('folder');
