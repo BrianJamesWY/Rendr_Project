@@ -60,7 +60,7 @@ const LandingPage = () => {
             marginBottom: '1rem',
             opacity: 0.95
           }}>
-            Combat deepfakes and misinformation with Rendr's revolutionary video verification platform.
+            Combat deepfakes and misinformation with Rendr&apos;s revolutionary video verification platform.
           </p>
           <p style={{ 
             fontSize: '1.125rem', 
