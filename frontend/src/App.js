@@ -167,8 +167,13 @@ function App() {
           <Route path="/stripe-connect/return" element={<StripeConnectReturn />} />
           <Route path="/earnings" element={<Earnings />} />
           <Route path="/my-subscriptions" element={<MySubscriptions />} />
+          <Route path="/terms" element={<TermsOfService />} />
+          <Route path="/subscription-checkout" element={<SubscriptionCheckout />} />
+          <Route path="/subscription-success" element={<SubscriptionSuccess />} />
+          <Route path="/explore" element={<Explore />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <CookieConsent />
       </BrowserRouter>
