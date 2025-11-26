@@ -74,7 +74,7 @@ const Contact = () => {
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '4rem 0', marginBottom: '3rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', textAlign: 'center' }}>
-          <Logo size="small" />
+          <Logo size="large" />
           <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginTop: '2rem', marginBottom: '1rem' }}>
             Contact Us
           </h1>

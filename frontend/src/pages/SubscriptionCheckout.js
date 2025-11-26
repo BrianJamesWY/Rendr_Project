@@ -96,7 +96,7 @@ const SubscriptionCheckout = () => {
     <div style={{ minHeight: '100vh', background: '#f9fafb', padding: '2rem' }}>
       {/* Logo at top */}
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <Logo size="small" />
+        <Logo size="large" />
       </div>
 
       <div style={{ maxWidth: '900px', margin: '0 auto', display: 'grid', gridTemplateColumns: window.innerWidth > 768 ? '1fr 1fr' : '1fr', gap: '2rem' }}>

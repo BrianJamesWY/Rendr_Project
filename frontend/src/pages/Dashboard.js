@@ -401,7 +401,7 @@ function Dashboard() {
         marginBottom: '2rem'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', textAlign: 'center' }}>
-          <Logo size="small" />
+          <Logo size="medium" />
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', marginTop: '1rem' }}>
             Creator Dashboard
           </h1>

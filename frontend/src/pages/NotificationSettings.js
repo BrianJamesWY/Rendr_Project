@@ -95,7 +95,7 @@ function NotificationSettings() {
       {/* Header */}
       <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb', padding: '2rem 0' }}>
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1rem' }}>
-          <Logo size="small" />
+          <Logo size="medium" />
           <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', marginTop: '1rem' }}>
             Notification Settings
           </h1>

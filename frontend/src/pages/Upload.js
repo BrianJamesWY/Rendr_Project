@@ -280,7 +280,7 @@ function Upload() {
         
         {/* Logo and Header */}
         <div style={{ marginBottom: '2rem' }}>
-          <Logo size="small" />
+          <Logo size="medium" />
         </div>
         
         <div style={styles.header}>

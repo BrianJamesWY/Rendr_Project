@@ -53,7 +53,7 @@ const SubscriptionSuccess = () => {
       <div style={{ maxWidth: '600px', width: '100%', background: 'white', borderRadius: '16px', boxShadow: '0 8px 16px rgba(0,0,0,0.15)', padding: '3rem', textAlign: 'center' }}>
         
         {/* Logo */}
-        <Logo size="small" />
+        <Logo size="large" />
 
         {/* Success Icon */}
         <div style={{
