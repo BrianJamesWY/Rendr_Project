@@ -17,20 +17,25 @@ const StripeConnect = () => {
     try {
       const token = localStorage.getItem('rendr_token');
       if (!token) {
-        navigate('/CreatorLogin');
+        navigate('/creator-login');
         return;
       }
 
-      // TODO: Call backend to create Stripe Connect account link
+      const originUrl = window.location.origin;
+      
+      // Call backend to create Stripe Connect account link
       const response = await axios.post(
-        `${BACKEND_URL}/api/stripe/connect/create`,
-        {},
+        `${BACKEND_URL}/api/stripe/connect/onboard`,
+        {
+          return_url: `${originUrl}/stripe-connect/return`,
+          refresh_url: `${originUrl}/stripe-connect`
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (response.data.url) {
+      if (response.data.onboarding_url) {
         // Redirect to Stripe onboarding
-        window.location.href = response.data.url;
+        window.location.assign(response.data.onboarding_url);
       }
     } catch (err) {
       console.error('Stripe Connect error:', err);
