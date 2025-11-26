@@ -6,6 +6,10 @@ import stripe
 import os
 from datetime import datetime
 from typing import Dict, Optional
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Initialize Stripe
 stripe.api_key = os.getenv("STRIPE_API_KEY", "sk_test_emergent")
