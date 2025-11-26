@@ -406,9 +406,7 @@ async def stripe_webhook(
     
     # Handle different event types
     if event_type == "checkout.session.completed":
-        # Payment succeeded
-        session_id = event_data.get("id")
-        # Update handled by get_checkout_status polling
+        # Payment succeeded - handled by get_checkout_status polling
         pass
     
     elif event_type == "customer.subscription.updated":
