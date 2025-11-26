@@ -16,34 +16,31 @@ const StripeConnectReturn = () => {
       try {
         const token = localStorage.getItem('rendr_token');
         if (!token) {
-          navigate('/CreatorLogin');
+          navigate('/creator-login');
           return;
         }
 
-        // Check if Stripe Connect was successful
-        const code = searchParams.get('code');
-        const state = searchParams.get('state');
-
-        if (!code) {
-          setStatus('error');
-          setMessage('Connection was cancelled or failed.');
-          return;
-        }
-
-        // TODO: Verify connection with backend
-        const response = await axios.post(
-          `${BACKEND_URL}/api/stripe/connect/complete`,
-          { code, state },
+        // Check connection status from backend
+        const response = await axios.get(
+          `${BACKEND_URL}/api/stripe/connect/status`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        setStatus('success');
-        setMessage('Your Stripe account has been successfully connected!');
+        if (response.data.connected && response.data.details_submitted) {
+          setStatus('success');
+          setMessage('Your Stripe account has been successfully connected!');
 
-        // Redirect to earnings dashboard after 3 seconds
-        setTimeout(() => {
-          navigate('/earnings');
-        }, 3000);
+          // Redirect to earnings dashboard after 3 seconds
+          setTimeout(() => {
+            navigate('/earnings');
+          }, 3000);
+        } else if (response.data.connected && !response.data.details_submitted) {
+          setStatus('error');
+          setMessage('Stripe onboarding is incomplete. Please complete the setup process.');
+        } else {
+          setStatus('error');
+          setMessage('Connection was cancelled or failed.');
+        }
       } catch (err) {
         console.error('Stripe verification error:', err);
         setStatus('error');
