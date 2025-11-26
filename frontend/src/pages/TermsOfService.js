@@ -159,7 +159,7 @@ const TermsOfService = () => {
           <p>We may suspend or terminate your account if you violate these Terms. Upon termination, your access to the Platform will cease, and we may delete your content after 30 days.</p>
 
           <h2 style={{ fontSize: '1.75rem', color: '#667eea', marginTop: '2rem', marginBottom: '1rem', borderLeft: '4px solid #667eea', paddingLeft: '1rem' }}>9. Disclaimers</h2>
-          <p>THE PLATFORM IS PROVIDED "AS IS" WITHOUT WARRANTIES OF ANY KIND. We do not warrant that the Platform will be uninterrupted or error-free.</p>
+          <p>THE PLATFORM IS PROVIDED &quot;AS IS&quot; WITHOUT WARRANTIES OF ANY KIND. We do not warrant that the Platform will be uninterrupted or error-free.</p>
 
           <h2 style={{ fontSize: '1.75rem', color: '#667eea', marginTop: '2rem', marginBottom: '1rem', borderLeft: '4px solid #667eea', paddingLeft: '1rem' }}>10. Limitation of Liability</h2>
           <p>TO THE MAXIMUM EXTENT PERMITTED BY LAW, WE ARE NOT LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES. OUR TOTAL LIABILITY SHALL NOT EXCEED THE AMOUNT YOU PAID US IN THE PAST 12 MONTHS.</p>
