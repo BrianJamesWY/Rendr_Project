@@ -327,17 +327,17 @@ function Admin() {
         <div style={{ textAlign: 'center' }}>
           <h1 style={{ fontSize: '2rem', color: '#ef4444', marginBottom: '1rem' }}>🚫 {error}</h1>
           <button 
-            onClick={() => navigate('/dashboard')}
+            onClick={handleCeoLogout}
             style={{
               padding: '0.75rem 1.5rem',
-              background: '#667eea',
+              background: '#ef4444',
               color: 'white',
               border: 'none',
               borderRadius: '0.5rem',
               cursor: 'pointer'
             }}
           >
-            Back to Dashboard
+            Logout & Return Home
           </button>
         </div>
       </div>
