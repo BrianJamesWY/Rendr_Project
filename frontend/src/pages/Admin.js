@@ -120,21 +120,26 @@ function Admin() {
   const handleCeoLogin = async (e) => {
     e.preventDefault();
     
-    // CEO credentials check
-    const CEO_USERNAME = 'ceo_admin';
-    const CEO_PASSWORD = 'RendrCEO2025!';
-    
-    if (ceoUsername === CEO_USERNAME && ceoPassword === CEO_PASSWORD) {
-      // Create a special CEO token
-      const specialToken = `CEO_${Date.now()}_${Math.random().toString(36)}`;
+    try {
+      // Authenticate via regular login API
+      const response = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+        username: ceoUsername,
+        password: ceoPassword
+      });
+
+      const token = response.data.token;
+      const username = response.data.username;
       
+      // Store the token
       setIsAuthorized(true);
-      setCeoToken(specialToken);
+      setCeoToken(token);
       sessionStorage.setItem('ceo_authorized', 'true');
-      sessionStorage.setItem('ceo_token', specialToken);
-      loadAdminData(specialToken);
-    } else {
-      alert('❌ Invalid CEO credentials');
+      sessionStorage.setItem('ceo_token', token);
+      sessionStorage.setItem('ceo_username', username);
+      
+      loadAdminData(token);
+    } catch (err) {
+      alert('❌ Invalid CEO credentials or insufficient permissions');
       setCeoUsername('');
       setCeoPassword('');
     }
