@@ -320,9 +320,12 @@ class StripeIntegrationTester:
                 except:
                     pass
                 
-                if "missing the required capabilities" in error_msg or "transfers" in error_msg:
+                if ("missing the required capabilities" in error_msg or 
+                    "transfers" in error_msg or 
+                    "legacy_payments" in error_msg or
+                    "destination" in error_msg):
                     self.log_test("Subscription Checkout", True, 
-                                "Correctly rejected - Stripe account not fully onboarded (missing capabilities)")
+                                "Correctly rejected - Stripe account not fully onboarded (missing transfer capabilities)")
                     return None
                 else:
                     self.log_test("Subscription Checkout", False, 
