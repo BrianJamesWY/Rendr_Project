@@ -182,7 +182,7 @@ const Earnings = () => {
         </div>
 
         {/* Payouts */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
           <div style={{ background: 'white', borderRadius: '0.75rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#111827', marginBottom: '1.5rem' }}>Next Payout</h3>
             <div style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#10b981', marginBottom: '0.5rem' }}>
@@ -201,6 +201,74 @@ const Earnings = () => {
               <p style={{ color: '#9ca3af' }}>No payouts yet</p>
             )}
           </div>
+        </div>
+
+        {/* Transaction History */}
+        <div style={{ background: 'white', borderRadius: '0.75rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '1.5rem' }}>Transaction History</h2>
+          
+          {earnings?.transactions && earnings.transactions.length > 0 ? (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid #e5e7eb' }}>
+                    <th style={{ textAlign: 'left', padding: '1rem 0.5rem', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Date</th>
+                    <th style={{ textAlign: 'left', padding: '1rem 0.5rem', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Type</th>
+                    <th style={{ textAlign: 'left', padding: '1rem 0.5rem', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Description</th>
+                    <th style={{ textAlign: 'right', padding: '1rem 0.5rem', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Amount</th>
+                    <th style={{ textAlign: 'right', padding: '1rem 0.5rem', color: '#6b7280', fontWeight: '600', fontSize: '0.875rem' }}>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {earnings.transactions.map((transaction, idx) => (
+                    <tr key={idx} style={{ borderBottom: '1px solid #f3f4f6' }}>
+                      <td style={{ padding: '1rem 0.5rem', color: '#111827', fontSize: '0.875rem' }}>
+                        {new Date(transaction.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </td>
+                      <td style={{ padding: '1rem 0.5rem' }}>
+                        <span style={{ 
+                          display: 'inline-block',
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '9999px',
+                          fontSize: '0.75rem',
+                          fontWeight: '600',
+                          background: transaction.type === 'subscription' ? '#dbeafe' : '#fef3c7',
+                          color: transaction.type === 'subscription' ? '#1e40af' : '#92400e'
+                        }}>
+                          {transaction.type}
+                        </span>
+                      </td>
+                      <td style={{ padding: '1rem 0.5rem', color: '#6b7280', fontSize: '0.875rem' }}>
+                        {transaction.description}
+                      </td>
+                      <td style={{ padding: '1rem 0.5rem', color: '#10b981', fontSize: '0.875rem', fontWeight: '600', textAlign: 'right' }}>
+                        +${transaction.amount.toFixed(2)}
+                      </td>
+                      <td style={{ padding: '1rem 0.5rem', textAlign: 'right' }}>
+                        <span style={{
+                          display: 'inline-block',
+                          padding: '0.25rem 0.75rem',
+                          borderRadius: '9999px',
+                          fontSize: '0.75rem',
+                          fontWeight: '600',
+                          background: transaction.status === 'completed' ? '#d1fae5' : '#fef3c7',
+                          color: transaction.status === 'completed' ? '#065f46' : '#92400e'
+                        }}>
+                          {transaction.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div style={{ textAlign: 'center', padding: '3rem', color: '#9ca3af' }}>
+              <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📊</div>
+              <p style={{ fontSize: '1rem', marginBottom: '0.5rem', color: '#6b7280' }}>No transactions yet</p>
+              <p style={{ fontSize: '0.875rem' }}>Your transaction history will appear here once you start earning from premium subscriptions</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
