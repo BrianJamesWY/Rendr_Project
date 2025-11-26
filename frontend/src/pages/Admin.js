@@ -73,9 +73,48 @@ function Admin() {
     if (authorized && storedToken) {
       setIsAuthorized(true);
       setCeoToken(storedToken);
-      loadAdminData(storedToken);
+      
+      // Load admin data
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          setError(null);
+          
+          const [statsRes, usersRes, logsRes, interestedRes] = await Promise.all([
+            axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/stats`, {
+              headers: { 'X-CEO-Token': storedToken }
+            }),
+            axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/users`, {
+              headers: { 'X-CEO-Token': storedToken }
+            }),
+            axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/logs?limit=50`, {
+              headers: { 'X-CEO-Token': storedToken }
+            }),
+            axios.get(`${BACKEND_URL}/api/ceo-access-b7k9m2x/interested-parties`, {
+              headers: { 'X-CEO-Token': storedToken }
+            })
+          ]);
+
+          setStats(statsRes.data);
+          setUsers(usersRes.data);
+          setLogs(logsRes.data);
+          setInterestedParties(interestedRes.data);
+          setLoading(false);
+        } catch (err) {
+          if (err.response?.status === 403) {
+            setError('Access Denied. CEO credentials required.');
+            setIsAuthorized(false);
+            sessionStorage.removeItem('ceo_authorized');
+            sessionStorage.removeItem('ceo_token');
+          } else {
+            setError(err.response?.data?.detail || 'Failed to load admin data');
+          }
+          setLoading(false);
+        }
+      };
+      
+      fetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCeoLogin = async (e) => {
