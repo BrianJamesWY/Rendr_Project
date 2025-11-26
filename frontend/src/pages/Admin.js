@@ -65,6 +65,42 @@ function Admin() {
     }
   };
 
+  // DO NOT check for regular user token - CEO page is completely separate
+  useEffect(() => {
+    // Check if CEO is already authorized in this session
+    const authorized = sessionStorage.getItem('ceo_authorized') === 'true';
+    const storedToken = sessionStorage.getItem('ceo_token');
+    if (authorized && storedToken) {
+      setIsAuthorized(true);
+      setCeoToken(storedToken);
+      loadAdminData(storedToken);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleCeoLogin = async (e) => {
+    e.preventDefault();
+    
+    // CEO credentials check
+    const CEO_USERNAME = 'ceo_admin';
+    const CEO_PASSWORD = 'RendrCEO2025!';
+    
+    if (ceoUsername === CEO_USERNAME && ceoPassword === CEO_PASSWORD) {
+      // Create a special CEO token
+      const specialToken = `CEO_${Date.now()}_${Math.random().toString(36)}`;
+      
+      setIsAuthorized(true);
+      setCeoToken(specialToken);
+      sessionStorage.setItem('ceo_authorized', 'true');
+      sessionStorage.setItem('ceo_token', specialToken);
+      loadAdminData(specialToken);
+    } else {
+      alert('❌ Invalid CEO credentials');
+      setCeoUsername('');
+      setCeoPassword('');
+    }
+  };
+
   const upgradeTier = async (userId, tier) => {
     if (!window.confirm(`Upgrade user to ${tier}?`)) return;
 
