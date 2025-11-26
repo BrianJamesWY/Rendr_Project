@@ -200,7 +200,7 @@ class StripeService:
             # If connected account specified, set up revenue split
             if connected_account_id and application_fee_percent:
                 session_params["subscription_data"] = {
-                    "application_fee_percent": application_fee_percent * 100,  # Stripe wants percentage as 15, not 0.15
+                    "application_fee_percent": round(application_fee_percent * 100, 2),  # Stripe wants percentage as 15, not 0.15
                     "transfer_data": {
                         "destination": connected_account_id
                     }
