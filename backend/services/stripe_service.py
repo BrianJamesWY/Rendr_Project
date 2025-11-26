@@ -104,7 +104,7 @@ class StripeService:
                 "details_submitted": account.details_submitted,
                 "email": account.email
             }
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Failed to retrieve account: {str(e)}")
     
     @classmethod
