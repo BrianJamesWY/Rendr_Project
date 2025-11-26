@@ -26,6 +26,11 @@ import StripeConnectReturn from "./pages/StripeConnectReturn";
 import Earnings from "./pages/Earnings";
 import MySubscriptions from "./pages/MySubscriptions";
 import LandingPage from "./pages/LandingPage";
+import TermsOfService from "./pages/TermsOfService";
+import SubscriptionCheckout from "./pages/SubscriptionCheckout";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import NotFound from "./pages/NotFound";
+import Explore from "./pages/Explore";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
