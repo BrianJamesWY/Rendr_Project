@@ -162,6 +162,16 @@ function Admin() {
     }
   };
 
+  const handleCeoLogout = () => {
+    if (window.confirm('Logout from CEO panel?')) {
+      setIsAuthorized(false);
+      setCeoToken(null);
+      sessionStorage.removeItem('ceo_authorized');
+      sessionStorage.removeItem('ceo_token');
+      navigate('/');
+    }
+  };
+
   const bulkImport = async () => {
     if (!bulkEmails.trim()) {
       alert('Please enter email addresses');
