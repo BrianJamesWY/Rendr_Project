@@ -437,12 +437,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Enhanced Video Storage System Testing"
-    - "Video Upload with Tiered Storage"
-    - "Quota Enforcement Testing"
-    - "Notification Settings Page"
-    - "Download Functionality"
-    - "Expiration Badges on Videos"
+    - "New Rendr Pages Integration Testing Complete"
+    - "Help Center Page with Dynamic FAQs"
+    - "Contact Page with Form Submission"
+    - "Privacy Policy Page"
+    - "Refund Policy Page"
+    - "Cookie Consent Banner"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
