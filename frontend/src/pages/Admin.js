@@ -107,7 +107,7 @@ function Admin() {
       await axios.put(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/users/${userId}/tier?tier=${tier}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { 'X-CEO-Token': ceoToken } }
       );
       alert(`User upgraded to ${tier}!`);
       loadAdminData();
