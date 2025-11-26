@@ -272,7 +272,7 @@ class StripeService:
                 "cancel_at_period_end": subscription.cancel_at_period_end,
                 "customer_id": subscription.customer
             }
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Failed to retrieve subscription: {str(e)}")
     
     @classmethod
