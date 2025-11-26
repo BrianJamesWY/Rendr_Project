@@ -205,19 +205,20 @@ function Pricing() {
 
               {key === 'free' ? (
                 <button
+                  onClick={handleFreePlan}
                   style={{
                     width: '100%',
                     padding: '0.75rem',
-                    background: '#f3f4f6',
-                    color: '#374151',
+                    background: '#10b981',
+                    color: 'white',
                     border: 'none',
                     borderRadius: '0.5rem',
                     fontWeight: '600',
                     fontSize: '1rem',
-                    cursor: 'default'
+                    cursor: 'pointer'
                   }}
                 >
-                  Current Plan
+                  Get Started Free
                 </button>
               ) : (
                 <button
