@@ -81,6 +81,9 @@ async def login(credentials: UserLogin, db=Depends(get_db)):
     if not user or not verify_password(credentials.password, user["password_hash"]):
         raise HTTPException(401, "Invalid username or password")
     
+    # Debug: print actual user_id
+    print(f"DEBUG LOGIN: username={credentials.username}, _id={user['_id']}")
+    
     # Create token
     token = create_access_token({
         "user_id": user["_id"], 
