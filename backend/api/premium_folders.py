@@ -4,7 +4,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from database.mongodb import get_db
-from middleware.auth import get_current_user
+from utils.security import get_current_user
 from models.premium_folder import (
     PremiumFolder,
     CreatePremiumFolder,
