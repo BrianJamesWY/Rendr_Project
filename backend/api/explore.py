@@ -289,12 +289,14 @@ async def get_featured_creators(
 
 
 @router.get("/api/explore/trending")
-async def get_trending_creators(limit: int = Query(6, ge=1, le=20)):
+async def get_trending_creators(
+    limit: int = Query(6, ge=1, le=20),
+    db = Depends(get_db)
+):
     """
     Get trending creators.
     Trending = high activity in last 7 days (new videos, new subscribers)
     """
-    db = await get_db()
     seven_days_ago = datetime.utcnow() - timedelta(days=7)
     
     pipeline = [
