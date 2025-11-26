@@ -6,12 +6,14 @@ The CEO Admin panel has been completely overhauled with proper authentication.
 
 ---
 
-## ✅ NEW CEO Credentials
+## ✅ CEO Login Credentials
 
-**⚠️ THESE ARE THE ONLY CREDENTIALS THAT WORK**
+**⚠️ USE YOUR REGULAR ACCOUNT CREDENTIALS**
 
-**Username:** `ceo_admin`  
-**Password:** `RendrCEO2025!`
+**Username:** `BrianJames` (your regular account)  
+**Password:** `Brian123!` (your regular password)
+
+**Important:** The CEO panel uses your regular account login but checks if you have CEO access. Only accounts in the CEO list can access this panel.
 
 ---
 
