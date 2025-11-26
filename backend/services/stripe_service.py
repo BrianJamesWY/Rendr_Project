@@ -208,7 +208,7 @@ class StripeService:
                 "session_id": session.id,
                 "url": session.url
             }
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Checkout session creation failed: {str(e)}")
     
     @classmethod
