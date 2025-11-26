@@ -179,12 +179,29 @@ const subscriptionDetails = {
 
 ---
 
-### Files User Provided (Not Yet Processed):
-- `subscription-checkout.html` ✅ (described above)
-- `subscription-success.html` ✅ (described above)
-- `UI_CHANGES_REQUIRED.md` ✅ (read and documented below)
-- `BACKEND_INTEGRATION_PROMPT.md` 📄 (for Phase 2)
-- `PREMIUM_FOLDERS_COMPLETE_PACKAGE.md` 📄 (comprehensive guide)
+**User Provided HTML Files (Need Processing):**
+
+**HIGH PRIORITY (Monetization):**
+1. terms-of-service.html → TermsOfService.js (`/terms`) - REQUIRED before payments
+2. subscription-checkout.html → SubscriptionCheckout.js (`/subscribe/:folderId`)
+3. subscription-success.html → SubscriptionSuccess.js (`/subscription-success`)
+
+**MEDIUM PRIORITY (UI Updates):**
+4. signup.html → Signup.js (`/signup`) - NEW page with tier selection
+5. upload.html → Update Upload.js (`/upload`) - May have design improvements
+6. pricing.html → Update Plans.js/Pricing.js (`/pricing`) - May have design updates
+7. settings.html → Update ProfileSettings.js (`/settings`) - May have new sections
+
+**LOW PRIORITY (Existing Pages - Check if updates needed):**
+8. investor-analytics.html - Compare with existing InvestorAnalytics.js
+9. login.html - Compare with existing CreatorLogin.js
+10. ceo-admin.html - Compare with existing Admin.js
+11. forgot-password.html - Compare with existing ForgotPassword.js
+
+**Documentation Files (For Phase 2):**
+- UI_CHANGES_REQUIRED.md (already documented in this file)
+- BACKEND_INTEGRATION_PROMPT.md (use for Phase 2 backend)
+- PREMIUM_FOLDERS_COMPLETE_PACKAGE.md (comprehensive guide)
 
 ---
 
