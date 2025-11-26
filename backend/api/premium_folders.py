@@ -34,7 +34,7 @@ async def create_premium_folder(
     Create a new premium folder (Pro/Enterprise only)
     """
     # Check tier eligibility
-    user = await db.users.find_one({"user_id": current_user["user_id"]}, {"_id": 0})
+    user = await db.users.find_one({"_id": current_user["user_id"]}, {"_id": 0})
     if user.get("premium_tier") not in ["pro", "enterprise"]:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
