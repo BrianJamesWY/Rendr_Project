@@ -123,13 +123,13 @@ function Admin() {
       const response = await axios.post(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/impersonate/${userId}`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { headers: { 'X-CEO-Token': ceoToken } }
       );
 
       // Save impersonation token and flag
       localStorage.setItem('rendr_token', response.data.token);
       localStorage.setItem('rendr_impersonating', 'true');
-      localStorage.setItem('rendr_original_token', token);
+      localStorage.setItem('rendr_ceo_token', ceoToken);
       
       alert(`Now viewing as: ${response.data.user.username}`);
       navigate('/dashboard');
