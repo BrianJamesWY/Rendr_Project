@@ -171,8 +171,8 @@ function App() {
           <Route path="/subscription-checkout" element={<SubscriptionCheckout />} />
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/explore" element={<Explore />} />
+          <Route path="/refunds" element={<RefundPolicy />} />
           <Route path="/@:username" element={<Showcase />} />
-          <Route path="/:username" element={<Showcase />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <CookieConsent />
