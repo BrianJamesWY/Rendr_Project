@@ -152,7 +152,7 @@ function Admin() {
       await axios.put(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/users/${userId}/tier?tier=${tier}`,
         {},
-        { headers: { 'X-CEO-Token': ceoToken } }
+        { headers: { Authorization: `Bearer ${ceoToken}` } }
       );
       alert(`User upgraded to ${tier}!`);
       loadAdminData();
@@ -168,7 +168,7 @@ function Admin() {
       const response = await axios.post(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/impersonate/${userId}`,
         {},
-        { headers: { 'X-CEO-Token': ceoToken } }
+        { headers: { Authorization: `Bearer ${ceoToken}` } }
       );
 
       // Save impersonation token and flag
@@ -199,7 +199,7 @@ function Admin() {
       await axios.put(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/users/${userId}/interested?interested=${!currentState}`,
         {},
-        { headers: { 'X-CEO-Token': ceoToken } }
+        { headers: { Authorization: `Bearer ${ceoToken}` } }
       );
       loadAdminData();
     } catch (err) {
@@ -231,7 +231,7 @@ function Admin() {
       const response = await axios.post(
         `${BACKEND_URL}/api/ceo-access-b7k9m2x/bulk-import`,
         emails,
-        { headers: { 'X-CEO-Token': ceoToken, 'Content-Type': 'application/json' } }
+        { headers: { Authorization: `Bearer ${ceoToken}`, 'Content-Type': 'application/json' } }
       );
       
       alert(`Imported: ${response.data.imported}\nSkipped: ${response.data.skipped}${response.data.errors.length > 0 ? `\nErrors: ${response.data.errors.length}` : ''}`);
