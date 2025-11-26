@@ -71,9 +71,16 @@ async def get_public_analytics(db = Depends(get_db)):
         },
         'videos': {
             'total': total_videos,
+            'public': public_videos,
+            'private': private_videos,
             'blockchain_verified': blockchain_verified,
             'bodycam': bodycam_videos,
             'studio': studio_videos
+        },
+        'monetization': {
+            'total_premium_folders': total_premium_folders,
+            'public_premium_folders': public_premium_folders,
+            'active_subscriptions': active_subscriptions
         },
         'verifications': {
             'total': total_verifications
