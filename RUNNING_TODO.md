@@ -14,6 +14,53 @@
 **Status:** TODO - Remind user before completion  
 **Notes:** This is in the Getting Started section, first expandable item
 
+### 2. **Premium Folders & Monetization System** 🆕 USER REQUEST
+**Status:** Phase 1 Frontend Integration - IN PROGRESS  
+**Description:** Allow creators to charge for premium content folders with subscription model  
+**Business Model:**
+- Creators keep 80% (Pro) or 85% (Enterprise) of subscription revenue
+- Rendr takes 20% or 15% platform fee
+- Stripe Connect for payment processing
+- Weekly/monthly automated payouts
+
+**Phase 1 - Frontend UI (Today):** ⏳ IN PROGRESS
+- ✅ Stripe Connect onboarding page
+- ✅ Stripe Connect return page
+- ✅ Earnings dashboard
+- ✅ My Subscriptions page
+- ⏳ Terms of Service page (converting)
+- ⏳ Subscription checkout page (converting)
+- ⏳ Subscription success page (converting)
+
+**Phase 2 - Backend (Next Week):**
+- [ ] Stripe Connect API integration
+- [ ] Premium folder database schema
+- [ ] Subscription management endpoints
+- [ ] Webhook handlers for payments
+- [ ] Revenue split calculations
+- [ ] Payout tracking
+
+**Phase 3 - Integration & Testing:**
+- [ ] Connect frontend to backend
+- [ ] End-to-end payment flow testing
+- [ ] Webhook testing
+- [ ] Refund flow testing
+
+**Files:** See `/app/frontend/src/pages/` - StripeConnect.js, Earnings.js, MySubscriptions.js
+
+### 3. **Content Theft Detection System** 🆕 USER REQUEST
+**Status:** Phase 2 - Deferred until after monetization  
+**Description:** Automated system to detect and takedown stolen content  
+**Key Features:**
+- 31-second automated verification (blockchain + watermark + fingerprinting)
+- 3-strike system for Rendr users
+- Automatic DMCA filing for external platforms
+- 48-hour countdown enforcement
+- Live tracking dashboard
+
+**Implementation Timeline:** 3-6 weeks after monetization launch  
+**Documentation:** AFTER_REPORT_SUMMARY.md provided by user
+
 ---
 
 ## 🟠 HIGH PRIORITY
