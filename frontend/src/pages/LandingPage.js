@@ -26,8 +26,8 @@ const LandingPage = () => {
           <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
             <a href="#features" style={{ color: '#6b7280', textDecoration: 'none', fontWeight: '500' }}>Features</a>
             <a href="#how-it-works" style={{ color: '#6b7280', textDecoration: 'none', fontWeight: '500' }}>How It Works</a>
-            <Link to="/plans" style={{ color: '#6b7280', textDecoration: 'none', fontWeight: '500' }}>Pricing</Link>
-            <Link to="/CreatorLogin" style={{ 
+            <Link to="/pricing" style={{ color: '#6b7280', textDecoration: 'none', fontWeight: '500' }}>Pricing</Link>
+            <Link to="/creator-login" style={{ 
               padding: '0.625rem 1.5rem',
               background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
               color: 'white',
