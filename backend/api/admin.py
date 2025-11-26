@@ -11,7 +11,7 @@ router = APIRouter()
 
 # CEO user IDs (hardcoded for security)
 CEO_USER_IDS = [
-    "85da75de-0905-4ab6-b3c2-fd37e593b51e"  # BrianJames
+    "b9f7ba33-0672-4132-828d-4f2b01e68c75"  # BrianJames
 ]
 
 def verify_ceo(current_user):
