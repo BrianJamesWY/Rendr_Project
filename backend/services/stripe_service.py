@@ -226,7 +226,7 @@ class StripeService:
                 "currency": session.currency,
                 "metadata": session.metadata
             }
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Failed to retrieve session: {str(e)}")
     
     @classmethod
