@@ -56,10 +56,15 @@ function Pricing() {
     }
   };
 
+  const handleFreePlan = () => {
+    // Free tier goes to signup page
+    navigate('/creator-login');
+  };
+
   const handleSubscribe = async (planId) => {
     if (!token) {
-      alert('Please login first');
-      navigate('/CreatorLogin');
+      // For paid plans, go to signup with return url
+      navigate('/creator-login?redirect=pricing');
       return;
     }
 
