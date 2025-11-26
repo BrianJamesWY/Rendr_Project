@@ -60,7 +60,7 @@ class StripeService:
                 "country": country,
                 "created": datetime.utcnow().isoformat()
             }
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Stripe Connect account creation failed: {str(e)}")
     
     @classmethod
