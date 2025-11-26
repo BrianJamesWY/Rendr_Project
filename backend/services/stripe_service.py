@@ -256,7 +256,7 @@ class StripeService:
                 "cancel_at_period_end": subscription.cancel_at_period_end,
                 "current_period_end": subscription.current_period_end
             }
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Subscription cancellation failed: {str(e)}")
     
     @classmethod
