@@ -17,6 +17,7 @@ const SubscriptionCheckout = () => {
 
   useEffect(() => {
     loadFolderDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadFolderDetails = async () => {
