@@ -83,7 +83,7 @@ function Pricing() {
 
       // Redirect to Stripe Checkout
       if (response.data.url) {
-        window.location.href = response.data.url;
+        window.location.assign(response.data.url);
       }
     } catch (err) {
       alert('Failed to start checkout: ' + (err.response?.data?.detail || err.message));
