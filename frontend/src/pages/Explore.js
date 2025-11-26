@@ -39,7 +39,8 @@ const Explore = () => {
       {/* Header */}
       <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '3rem 0', marginBottom: '3rem' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', textAlign: 'center' }}>
-          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem' }}>
+          <Logo size="large" />
+          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem', marginTop: '2rem' }}>
             Explore Creators
           </h1>
           <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)' }}>
