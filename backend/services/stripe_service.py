@@ -84,7 +84,7 @@ class StripeService:
                 type="account_onboarding"
             )
             return account_link.url
-        except stripe.error.StripeError as e:
+        except Exception as e:
             raise Exception(f"Account link creation failed: {str(e)}")
     
     @classmethod
