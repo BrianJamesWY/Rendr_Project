@@ -16,33 +16,45 @@ function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('stats'); // stats, users, logs, interested, import
-  const [accessPassword, setAccessPassword] = useState('');
+  
+  // CEO Authentication - separate from regular user auth
+  const [ceoUsername, setCeoUsername] = useState('');
+  const [ceoPassword, setCeoPassword] = useState('');
   const [isAuthorized, setIsAuthorized] = useState(false);
-  const token = localStorage.getItem('rendr_token');
+  const [ceoToken, setCeoToken] = useState(null);
 
+  // DO NOT check for regular user token - CEO page is completely separate
   useEffect(() => {
-    if (!token) {
-      navigate('/CreatorLogin');
-      return;
-    }
-    // Check if already authorized
+    // Check if CEO is already authorized in this session
     const authorized = sessionStorage.getItem('ceo_authorized') === 'true';
-    if (authorized) {
+    const storedToken = sessionStorage.getItem('ceo_token');
+    if (authorized && storedToken) {
       setIsAuthorized(true);
-      loadAdminData();
+      setCeoToken(storedToken);
+      loadAdminData(storedToken);
     }
-  }, [token]);
+  }, []);
 
-  const handlePasswordSubmit = (e) => {
+  const handleCeoLogin = async (e) => {
     e.preventDefault();
-    // Secret password
-    if (accessPassword === 'RendrCEO2025!') {
+    
+    // CEO credentials check
+    const CEO_USERNAME = 'ceo_admin';
+    const CEO_PASSWORD = 'RendrCEO2025!';
+    
+    if (ceoUsername === CEO_USERNAME && ceoPassword === CEO_PASSWORD) {
+      // Create a special CEO token
+      const specialToken = `CEO_${Date.now()}_${Math.random().toString(36)}`;
+      
       setIsAuthorized(true);
+      setCeoToken(specialToken);
       sessionStorage.setItem('ceo_authorized', 'true');
-      loadAdminData();
+      sessionStorage.setItem('ceo_token', specialToken);
+      loadAdminData(specialToken);
     } else {
-      alert('❌ Incorrect password');
-      setAccessPassword('');
+      alert('❌ Invalid CEO credentials');
+      setCeoUsername('');
+      setCeoPassword('');
     }
   };
 
