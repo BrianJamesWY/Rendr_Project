@@ -105,7 +105,7 @@ const SubscriptionSuccess = () => {
 
         {/* Next Steps */}
         <div style={{ textAlign: 'left', marginBottom: '2rem' }}>
-          <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>What's Next?</h3>
+          <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>What&apos;s Next?</h3>
           <ul style={{ listStyle: 'none', padding: 0 }}>
             {[
               'Access all premium videos in your subscribed folder',
