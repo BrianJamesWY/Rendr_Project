@@ -62,7 +62,6 @@ async def create_bounty(
         )
         
         await db.bounties.insert_one(bounty.dict())
-        await client.close()
         
         return bounty
         
