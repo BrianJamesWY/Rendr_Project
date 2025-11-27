@@ -15,9 +15,6 @@ from database.mongodb import get_db
 
 router = APIRouter()
 
-MONGO_URL = os.getenv('MONGO_URL')
-DB_NAME = os.getenv('DB_NAME', 'test_database')
-
 @router.post("/", response_model=Bounty)
 async def create_bounty(
     bounty_data: BountyCreate,
