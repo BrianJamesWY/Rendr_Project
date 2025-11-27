@@ -525,15 +525,18 @@ backend:
 
   - task: "Subscription Management API"
     implemented: true
-    working: false
+    working: true
     file: "backend/api/subscriptions.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
         comment: "TESTED: Subscription management API failing. GET /api/subscriptions/my returns 500 error with 'object NoneType can't be used in await expression'. Database connection issue in subscriptions.py. POST /api/subscriptions/{id}/cancel properly validates non-existent subscriptions (returns 404). Core issue is AsyncIOMotorClient connection handling."
+      - working: true
+        agent: "testing"
+        comment: "RETESTED: Subscription Management API now working correctly. GET /api/subscriptions/my returns 200 OK with empty subscriptions list and stats for users with no subscriptions. The AsyncIOMotorClient error has been resolved. Backend logs confirm successful API calls. Fix confirmed working with BrianJames/Brian123! credentials."
 
 agent_communication:
   - agent: "main"
