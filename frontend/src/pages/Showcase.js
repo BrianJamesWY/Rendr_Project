@@ -197,8 +197,8 @@ function Showcase() {
                   <a
                     key={index}
                     href={link.url}
-                    target=\"_blank\"
-                    rel=\"noopener noreferrer\"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => trackSocialClick(link.platform)}
                     style={{ width: '66px', height: '66px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', transition: 'all 0.2s', border: '3px solid rgba(255, 255, 255, 0.3)', overflow: 'hidden', position: 'relative', background: 'rgba(255, 255, 255, 0.1)', fontSize: '30px' }}
                   >
