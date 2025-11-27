@@ -2367,6 +2367,73 @@ class RendrAPITester:
         else:
             print("  ✅ No critical failures detected")
 
+def test_fixed_components():
+    """Test the specific fixed components as requested in review"""
+    print("🔧 Testing FIXED Components - Subscription Management & Stripe Checkout")
+    print("=" * 70)
+    print("Testing User: BrianJames / Brian123!")
+    print("Backend URL: https://premium-content-47.preview.emergentagent.com")
+    print()
+    
+    tester = RendrAPITester()
+    
+    # Test 1: Basic API Health
+    if not tester.test_health_check():
+        print("❌ API is not responding. Exiting.")
+        return
+    
+    # Test 2: Authentication with BrianJames
+    if not tester.test_auth_login("brian"):
+        print("❌ Authentication failed. Exiting.")
+        return
+    
+    print("\n🔧 TESTING FIXED COMPONENT 1: Subscription Management API")
+    print("-" * 50)
+    # Test the fixed subscription management API
+    tester.test_subscription_management_api()
+    
+    print("\n🔧 TESTING FIXED COMPONENT 2: Stripe Subscription Checkout")
+    print("-" * 50)
+    # First, try to create a premium folder to test with
+    folder_id = tester.test_premium_folder_create()
+    
+    # Test the fixed Stripe subscription checkout
+    tester.test_stripe_subscription_checkout_fixed(folder_id)
+    
+    # Print summary
+    print("\n" + "=" * 70)
+    print("📊 FIXED COMPONENTS TEST SUMMARY")
+    print("=" * 70)
+    
+    total_tests = len(tester.test_results)
+    passed_tests = len([r for r in tester.test_results if r["success"]])
+    failed_tests = total_tests - passed_tests
+    
+    print(f"Total Tests: {total_tests}")
+    print(f"✅ Passed: {passed_tests}")
+    print(f"❌ Failed: {failed_tests}")
+    print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
+    
+    # Focus on the two key fixed components
+    key_tests = ["Subscription Management API", "Stripe Subscription Checkout (FIXED)"]
+    key_results = [r for r in tester.test_results if any(key in r["test"] for key in key_tests)]
+    
+    print(f"\n🎯 KEY FIXED COMPONENTS RESULTS:")
+    for result in key_results:
+        status = "✅ PASS" if result["success"] else "❌ FAIL"
+        print(f"  {status}: {result['test']}")
+        if result["message"]:
+            print(f"    {result['message']}")
+    
+    if failed_tests > 0:
+        print(f"\n❌ ALL FAILED TESTS:")
+        for result in tester.test_results:
+            if not result["success"]:
+                print(f"  - {result['test']}: {result['message']}")
+    
+    print(f"\n🔧 Fixed components testing completed!")
+    return tester.test_results
+
 def test_premium_folders_and_stripe_flow():
     """Test the complete Premium Folders and Stripe Connect flow"""
     print("🎯 Testing Premium Folders and Stripe Connect Flow")
