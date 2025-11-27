@@ -72,6 +72,9 @@ app.include_router(premium_folders.router, tags=["Premium Folders"])
 app.include_router(stripe_integration.router, prefix="/api", tags=["Stripe Integration"])
 app.include_router(subscriptions.router, prefix="/api/subscriptions", tags=["Subscriptions"])
 app.include_router(bounties.router, prefix="/api/bounties", tags=["Bounties"])
+app.include_router(community.router, prefix="/api", tags=["Community"])
+app.include_router(schedule.router, prefix="/api", tags=["Schedule"])
+app.include_router(store.router, prefix="/api", tags=["Store"])
 
 @app.get("/")
 async def root():
