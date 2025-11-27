@@ -173,7 +173,7 @@ function Showcase() {
           <div style={{ flexShrink: 0 }}>
             <img 
               src={profile?.profile_picture || 'https://via.placeholder.com/240/667eea/ffffff?text=Profile'} 
-              alt=\"Profile\" 
+              alt="Profile" 
               style={{ width: '240px', height: '240px', borderRadius: '50%', border: '6px solid white', background: 'white', objectFit: 'cover', boxShadow: '0 6px 30px rgba(0, 0, 0, 0.3)', display: 'block', aspectRatio: '1 / 1', flexShrink: 0 }}
             />
           </div>
