@@ -473,6 +473,66 @@ backend:
         agent: "testing"
         comment: "TESTED: Enhanced video upload logic with hash-first workflow fully functional. All requested features verified: 1) Login with BrianJames/Brian123! successful, user tier retrieved (enterprise), 2) Video upload includes all required response fields (verification_code: RND-RMSO5L, expires_at: None, storage_duration: unlimited, tier: enterprise), 3) Backend logs show all 10 workflow steps including '🎬 NEW VIDEO UPLOAD - Hash-First Workflow', 'STEP 1: Calculating original hash (pre-watermark)', 'STEP 2: Smart duplicate detection', through 'STEP 9: Saving to database' and '✅ UPLOAD COMPLETE', 4) Database records contain new hashes object (original, watermarked, center_region, audio, metadata) and storage object (tier, expires_at, uploaded_at), 5) Duplicate detection working perfectly - uploading same video twice returns existing verification code with status='duplicate', duplicate_detected=True, confidence_score=1.0, 6) Tier-based hashing working (Enterprise tier gets all hash types including center region and audio), 7) Quota enforcement working, 8) Storage expiration properly set (Enterprise = unlimited). Fixed database field access issues and response model validation. All critical workflow components operational."
 
+  - task: "Stripe Connect Onboarding API"
+    implemented: true
+    working: true
+    file: "backend/api/stripe_integration.py, backend/services/stripe_service.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Stripe Connect onboarding fully functional. GET /api/stripe/connect/status returns proper connection status (connected=true for BrianJames). POST /api/stripe/connect/onboard generates valid onboarding URLs with account IDs. Proper tier validation requires Pro/Enterprise. Authentication working correctly with BrianJames Enterprise account."
+
+  - task: "Premium Folders CRUD API"
+    implemented: true
+    working: true
+    file: "backend/api/premium_folders.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Premium folders CRUD operations fully functional. POST /api/premium-folders successfully creates folders with proper validation (tier requirements, Stripe Connect requirements). GET /api/premium-folders/{id} returns folder details. GET /api/premium-folders/my-folders lists user folders. Authentication and authorization working correctly."
+
+  - task: "Stripe Subscription Checkout API"
+    implemented: true
+    working: false
+    file: "backend/api/stripe_integration.py, backend/services/stripe_service.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "TESTED: Stripe subscription checkout failing with 500 error. Root cause identified: Stripe Connect account missing required capabilities (transfers/legacy_payments). Error: 'The account referenced in the destination parameter is missing the required capabilities'. API structure is correct but Stripe account configuration needs fixing."
+
+  - task: "Stripe Webhook Event Processing"
+    implemented: true
+    working: true
+    file: "backend/api/stripe_integration.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Stripe webhook endpoint functional. POST /api/stripe/webhook properly validates signatures (returns 400 for invalid signatures). Webhook processing structure implemented for checkout.session.completed, customer.subscription.created, customer.subscription.deleted events."
+
+  - task: "Subscription Management API"
+    implemented: true
+    working: false
+    file: "backend/api/subscriptions.py"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "TESTED: Subscription management API failing. GET /api/subscriptions/my returns 500 error with 'object NoneType can't be used in await expression'. Database connection issue in subscriptions.py. POST /api/subscriptions/{id}/cancel properly validates non-existent subscriptions (returns 404). Core issue is AsyncIOMotorClient connection handling."
+
 agent_communication:
   - agent: "main"
     message: |
