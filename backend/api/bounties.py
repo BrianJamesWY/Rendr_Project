@@ -74,20 +74,16 @@ async def create_bounty(
 async def list_bounties(
     status: Optional[str] = "active",
     skip: int = 0,
-    limit: int = 50
+    limit: int = 50,
+    db = Depends(get_db)
 ):
     """List all bounties (public endpoint)"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
-        
         query = {}
         if status:
             query["status"] = status
         
         bounties = await db.bounties.find(query, {"_id": 0}).sort("created_at", -1).skip(skip).limit(limit).to_list(limit)
-        await client.close()
         
         return bounties
         
