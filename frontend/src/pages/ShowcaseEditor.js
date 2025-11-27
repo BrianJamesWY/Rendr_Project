@@ -320,7 +320,7 @@ function ShowcaseEditor() {
                         {link.icon}
                       </span>
                       <input 
-                        type=\"text\" 
+                        type="text" 
                         value={link.url} 
                         onChange={(e) => updateSocialLink(index, 'url', e.target.value)}
                         placeholder={`${link.platform} URL`}
