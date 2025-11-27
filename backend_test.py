@@ -158,7 +158,10 @@ class BountySystemTester:
             else:
                 # Use the first video
                 video = videos[0]
-                video_id = video.get('video_id') or video.get('id') or video.get('verification_code')
+                if isinstance(video, dict):
+                    video_id = video.get('video_id') or video.get('id') or video.get('verification_code')
+                else:
+                    video_id = str(video)  # Fallback if video is not a dict
                 
                 bounty_data = {
                     "video_id": video_id,
