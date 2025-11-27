@@ -176,6 +176,9 @@ function App() {
           <Route path="/subscription-success" element={<SubscriptionSuccess />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/refunds" element={<RefundPolicy />} />
+          <Route path="/bounties" element={<Bounties />} />
+          <Route path="/bounties/post" element={<PostBounty />} />
+          <Route path="/bounties/:bountyId/claim" element={<ClaimBounty />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
           <Route path="*" element={<NotFound />} />
