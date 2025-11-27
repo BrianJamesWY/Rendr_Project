@@ -218,8 +218,6 @@ async def verify_claim(
             {"$set": update_data}
         )
         
-        await client.close()
-        
         return {
             "success": True,
             "message": "Claim verified successfully" if approved else "Claim rejected",
