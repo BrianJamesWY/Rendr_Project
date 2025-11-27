@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import './NewShowcase.css';
+import './Showcase.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
