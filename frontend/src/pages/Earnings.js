@@ -141,14 +141,17 @@ const Earnings = () => {
                 <p style={{ color: '#92400e', marginBottom: '1rem' }}>
                   To start earning from premium folders, you need to connect your Stripe account.
                 </p>
-                <Link
-                  to="/stripe-connect"
+                <button
+                  onClick={handleConnectStripe}
+                  disabled={connecting}
                   style={{
                     display: 'inline-block',
                     padding: '0.75rem 1.5rem',
-                    background: '#f59e0b',
+                    background: connecting ? '#d1d5db' : '#f59e0b',
                     color: 'white',
+                    border: 'none',
                     borderRadius: '0.5rem',
+                    cursor: connecting ? 'not-allowed' : 'pointer',
                     textDecoration: 'none',
                     fontWeight: '600'
                   }}
