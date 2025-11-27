@@ -146,7 +146,6 @@ class BountySystemTester:
         try:
             # First, get user's videos to create a bounty for
             videos = self.get_user_videos()
-            print(f"DEBUG: videos = {videos}, type = {type(videos)}")
             
             if not videos:
                 # Create a test bounty with a mock video_id
