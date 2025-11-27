@@ -1,0 +1,88 @@
+{
+  "timestamp": "2025-11-27T03:10:52.226765",
+  "total_checks": 18,
+  "errors": [
+    "Supervisor check failed: ",
+    "API endpoint returned: 404",
+    "Premium Folders: 405 Method Not Allowed",
+    "/stripe/connect/status: 405"
+  ],
+  "warnings": [
+    "Backend Errors: 6 warnings found",
+    "Frontend Errors: 24 warnings found"
+  ],
+  "results": [
+    {
+      "status": "success",
+      "message": "Backend root accessible: 200"
+    },
+    {
+      "status": "success",
+      "message": "MongoDB connection established"
+    },
+    {
+      "status": "success",
+      "message": "MONGO_URL is set"
+    },
+    {
+      "status": "success",
+      "message": "STRIPE_API_KEY is set"
+    },
+    {
+      "status": "success",
+      "message": "STRIPE_WEBHOOK_SECRET is set"
+    },
+    {
+      "status": "success",
+      "message": "REACT_APP_BACKEND_URL = https://premium-content-46.preview.emergentagent.com"
+    },
+    {
+      "status": "success",
+      "message": "REACT_APP_STRIPE_PUBLISHABLE_KEY = pk_test_51SXn3VPhcce6T6UocujdzKyKpqsuxGfFhkfZlMuTpay7WUNFXSUhjdBvdqk21ddnXrMpWPWZ4joN58FfURnUG9jC00CHo4xg5N"
+    },
+    {
+      "status": "success",
+      "message": "Creator Profile: 200 OK"
+    },
+    {
+      "status": "success",
+      "message": "Creator Videos: 200 OK"
+    },
+    {
+      "status": "success",
+      "message": "Explore: 200 OK"
+    },
+    {
+      "status": "success",
+      "message": "Frontend compiled successfully"
+    },
+    {
+      "status": "success",
+      "message": "/: Accessible"
+    },
+    {
+      "status": "success",
+      "message": "/creator-login: Accessible"
+    },
+    {
+      "status": "success",
+      "message": "/dashboard: Accessible"
+    },
+    {
+      "status": "success",
+      "message": "/verify: Accessible"
+    },
+    {
+      "status": "success",
+      "message": "/@BrianJames: Accessible"
+    },
+    {
+      "status": "success",
+      "message": "/explore: Accessible"
+    },
+    {
+      "status": "success",
+      "message": "/stripe/webhook: Endpoint accessible"
+    }
+  ]
+}
