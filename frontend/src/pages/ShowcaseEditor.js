@@ -223,7 +223,7 @@ function ShowcaseEditor() {
                   <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: '13px', fontWeight: '500', color: '#1f2937' }}>Show Creator Badge</span>
                     <input 
-                      type=\"checkbox\" 
+                      type="checkbox" 
                       checked={showCreatorBadge} 
                       onChange={(e) => { setShowCreatorBadge(e.target.checked); setHasUnsavedChanges(true); }}
                       style={{ width: '48px', height: '24px' }}
