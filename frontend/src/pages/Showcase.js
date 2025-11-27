@@ -136,7 +136,7 @@ function Showcase() {
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Creator Not Found</h2>
           <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>{error}</p>
-          <Link to=\"/explore\" style={{ color: '#667eea', textDecoration: 'underline' }}>Browse Creators</Link>
+          <Link to="/explore" style={{ color: '#667eea', textDecoration: 'underline' }}>Browse Creators</Link>
         </div>
       </div>
     );
