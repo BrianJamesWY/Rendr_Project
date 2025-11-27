@@ -11,7 +11,7 @@ import tempfile
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://premium-content-46.preview.emergentagent.com/api"
+BASE_URL = "https://premium-content-47.preview.emergentagent.com/api"
 
 # Test accounts
 TEST_ACCOUNTS = {

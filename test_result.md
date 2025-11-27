@@ -517,11 +517,11 @@ agent_communication:
       - API login endpoint responding properly - WORKING
       
       ✅ URL TESTING RESULTS (using both Python requests and curl):
-      - https://premium-content-46.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://premium-content-46.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
-      - https://premium-content-46.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://premium-content-46.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://premium-content-46.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://premium-content-47.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://premium-content-47.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
+      - https://premium-content-47.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://premium-content-47.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://premium-content-47.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
       
       ✅ VERIFICATION METHODS:
       - Python requests with authentication headers - WORKING
@@ -1484,7 +1484,7 @@ frontend:
       ✅ TEST 2: DASHBOARD CONTENT VERIFICATION
       - Dashboard header "Creator Dashboard" displays correctly - WORKING
       - Welcome message shows "Welcome back, Brian James!" - WORKING
-      - Page title and URL correct (https://premium-content-46.preview.emergentagent.com/dashboard) - WORKING
+      - Page title and URL correct (https://premium-content-47.preview.emergentagent.com/dashboard) - WORKING
       - Navigation bar with Dashboard, Upload, My Showcase, Verify buttons present - WORKING
       
       ✅ TEST 3: STATS SECTION LAYOUT VERIFICATION
@@ -2062,7 +2062,7 @@ agent_communication:
       - Username: BrianJames
       - Password: Brian123!
       
-      Backend URL: https://premium-content-46.preview.emergentagent.com/api
+      Backend URL: https://premium-content-47.preview.emergentagent.com/api
       
       IMPORTANT: Since Stripe is in test mode, we won't be able to complete actual payments,
       but we can verify all the API endpoints are working correctly and returning proper responses.
