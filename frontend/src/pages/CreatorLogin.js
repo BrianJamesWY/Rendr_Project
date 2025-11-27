@@ -28,7 +28,7 @@ function CreatorLogin() {
         password
       });
 
-      localStorage.setItem('rendr_token', response.data.token);
+      localStorage.setItem('token', response.data.token);
       localStorage.setItem('rendr_username', response.data.username);
       
       navigate('/dashboard');
@@ -64,7 +64,7 @@ function CreatorLogin() {
         username
       });
 
-      localStorage.setItem('rendr_token', response.data.token);
+      localStorage.setItem('token', response.data.token);
       localStorage.setItem('rendr_username', response.data.username);
       
       navigate('/dashboard');
