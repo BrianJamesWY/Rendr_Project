@@ -437,13 +437,12 @@ metadata:
 
 test_plan:
   current_focus:
-    - "New Rendr Pages Integration Testing Complete"
-    - "Help Center Page with Dynamic FAQs"
-    - "Contact Page with Form Submission"
-    - "Privacy Policy Page"
-    - "Refund Policy Page"
-    - "Cookie Consent Banner"
-  stuck_tasks: []
+    - "Premium Folders and Stripe Connect Flow Testing Complete"
+    - "Stripe Subscription Checkout API"
+    - "Subscription Management API"
+  stuck_tasks:
+    - "Stripe Subscription Checkout API"
+    - "Subscription Management API"
   test_all: false
   test_priority: "high_first"
 
