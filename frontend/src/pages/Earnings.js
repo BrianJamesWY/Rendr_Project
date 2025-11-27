@@ -12,20 +12,42 @@ const Earnings = () => {
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const token = localStorage.getItem('rendr_token');
-        if (!token) return;
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setLoading(false);
+          return;
+        }
 
-        // TODO: Fetch earnings data from backend
-        const response = await axios.get(
-          `${BACKEND_URL}/api/earnings`,
+        // Check Stripe Connect status
+        const stripeStatus = await axios.get(
+          `${BACKEND_URL}/api/stripe/connect/status`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
-        setEarnings(response.data);
-        setIsConnected(response.data.stripe_connected);
+        const connected = stripeStatus.data.charges_enabled && stripeStatus.data.payouts_enabled;
+        setIsConnected(connected);
+
+        // Fetch premium folders for earnings breakdown
+        const foldersRes = await axios.get(
+          `${BACKEND_URL}/api/premium-folders`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setEarnings({
+          stripe_connected: connected,
+          stripe_account_id: stripeStatus.data.account_id,
+          monthly_revenue: 0, // TODO: Calculate from subscriptions
+          active_subscribers: 0, // TODO: Calculate from subscriptions
+          creator_share: 0,
+          lifetime_earnings: 0,
+          premium_folders: foldersRes.data || [],
+          next_payout_amount: 0,
+          next_payout_date: null,
+          recent_payouts: []
+        });
       } catch (err) {
         console.error('Failed to fetch earnings:', err);
-        // Mock data for now
+        // Initialize with empty data
         setEarnings({
           stripe_connected: false,
           monthly_revenue: 0,
