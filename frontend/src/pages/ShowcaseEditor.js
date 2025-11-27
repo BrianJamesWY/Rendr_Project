@@ -149,7 +149,7 @@ function ShowcaseEditor() {
       {/* Top Navigation */}
       <nav style={{ height: '60px', background: 'white', borderBottom: '1px solid #e5e7eb', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 1000, boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-          <Logo size=\"medium\" />
+          <Logo size="medium" />
           <h1 style={{ fontSize: '20px', fontWeight: '700', background: 'linear-gradient(135deg, #667eea, #764ba2)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
             Showcase Editor
           </h1>
