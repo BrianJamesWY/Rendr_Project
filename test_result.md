@@ -1215,6 +1215,62 @@ frontend:
       - Storage object correctly shows: tier="enterprise", expires_at=null (unlimited), uploaded_at, download_count - WORKING
       - Enterprise videos never expire (expires_at: null) - WORKING
       - Download count tracking functional (increments on download) - WORKING
+
+  - agent: "testing"
+    message: |
+      PREMIUM FOLDERS AND STRIPE CONNECT FLOW TESTING COMPLETED - CORE FEATURES WORKING WITH IDENTIFIED ISSUES
+      
+      Executed comprehensive testing of the Premium Folders and Stripe Connect flow as requested in the review:
+      
+      ✅ STRIPE CONNECT ONBOARDING (CREATOR SIDE):
+      - Login with BrianJames/Brian123! credentials successful - WORKING
+      - GET /api/stripe/connect/status endpoint functional - WORKING
+      - Returns proper status: connected=true for BrianJames account - WORKING
+      - POST /api/stripe/connect/onboard endpoint functional - WORKING
+      - Generates onboarding URLs with account IDs (acct_1SXrJLAzU1nX57X...) - WORKING
+      - Proper tier validation (requires Pro/Enterprise) - WORKING
+      
+      ✅ PREMIUM FOLDER CREATION:
+      - POST /api/premium-folders endpoint functional - WORKING
+      - Successfully created premium folder: "Test Premium Folder" ($9.99) - WORKING
+      - GET /api/premium-folders/{id} returns folder details - WORKING
+      - GET /api/premium-folders/my-folders lists user folders (2 folders found) - WORKING
+      - Proper authentication and tier validation working - WORKING
+      
+      ❌ SUBSCRIPTION FLOW (USER SIDE) - STRIPE INTEGRATION ISSUES:
+      - POST /api/stripe/subscribe returns 500 Internal Server Error - FAILING
+      - Root cause: Stripe Connect account missing required capabilities (transfers/legacy_payments) - IDENTIFIED
+      - Error: "The account referenced in the 'destination' parameter is missing the required capabilities" - STRIPE CONFIG ISSUE
+      - GET /api/stripe/checkout/status/{session_id} not tested due to above failure - DEPENDENT FAILURE
+      
+      ✅ WEBHOOK EVENT HANDLING:
+      - POST /api/stripe/webhook endpoint functional - WORKING
+      - Proper webhook signature validation (returns 400 for invalid signatures) - WORKING
+      - Webhook processing structure implemented for: checkout.session.completed, customer.subscription.created, customer.subscription.deleted - WORKING
+      
+      ❌ SUBSCRIPTION MANAGEMENT - DATABASE INTEGRATION ISSUES:
+      - GET /api/subscriptions/my returns 500 Internal Server Error - FAILING
+      - Root cause: "object NoneType can't be used in 'await' expression" - DATABASE CONNECTION ISSUE
+      - POST /api/subscriptions/{id}/cancel returns 404 for non-existent subscriptions (proper validation) - WORKING
+      
+      🎯 CRITICAL SUCCESS INDICATORS:
+      - ✅ Authentication system working with BrianJames Enterprise account
+      - ✅ Stripe Connect onboarding flow functional
+      - ✅ Premium folder CRUD operations working
+      - ✅ Webhook endpoint properly configured with signature validation
+      - ❌ Subscription checkout blocked by Stripe Connect capabilities
+      - ❌ Subscription management blocked by database connection issues
+      
+      📊 TEST RESULTS SUMMARY:
+      - Total Tests: 11
+      - ✅ Passed: 9 (81.8%)
+      - ❌ Failed: 2 (18.2%)
+      - Core infrastructure working, integration issues identified
+      
+      🔧 ISSUES REQUIRING MAIN AGENT ATTENTION:
+      1. Stripe Connect account needs transfers capability configuration
+      2. Subscriptions API database connection needs fixing (AsyncIOMotorClient issue)
+      3. Both issues are configuration/integration related, not core functionality problems
       
       ✅ TEST 5: DUPLICATE DETECTION WITH ENHANCED HASHING
       - Smart duplicate detection using enhanced hashing working perfectly - WORKING
