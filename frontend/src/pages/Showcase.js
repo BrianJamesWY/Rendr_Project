@@ -23,9 +23,14 @@ function Showcase() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log('[Showcase] useEffect triggered');
+    console.log('[Showcase] Username:', username);
     if (username) {
+      console.log('[Showcase] Loading showcase for:', username);
       loadShowcase();
       trackPageView();
+    } else {
+      console.log('[Showcase] No username found!');
     }
   }, [username]);
 
