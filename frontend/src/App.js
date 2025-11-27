@@ -174,6 +174,7 @@ function App() {
           <Route path="/explore" element={<Explore />} />
           <Route path="/refunds" element={<RefundPolicy />} />
           <Route path="/@:username" element={<Showcase />} />
+          <Route path="/:username" element={<Showcase />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <CookieConsent />
