@@ -280,13 +280,13 @@ function ShowcaseEditor() {
                       <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#1f2937', marginBottom: '8px' }}>End Color</label>
                       <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                         <input 
-                          type=\"color\" 
+                          type="color" 
                           value={gradientEnd} 
                           onChange={(e) => { setGradientEnd(e.target.value); setHasUnsavedChanges(true); }}
                           style={{ width: '48px', height: '48px', border: '2px solid #e5e7eb', borderRadius: '8px', cursor: 'pointer', padding: '4px' }}
                         />
                         <input 
-                          type=\"text\" 
+                          type="text" 
                           value={gradientEnd} 
                           onChange={(e) => { setGradientEnd(e.target.value); setHasUnsavedChanges(true); }}
                           style={{ flex: 1, padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '14px' }}
