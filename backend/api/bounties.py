@@ -293,14 +293,11 @@ async def process_payout(
 @router.delete("/{bounty_id}")
 async def cancel_bounty(
     bounty_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db = Depends(get_db)
 ):
     """Cancel a bounty"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
-        
         user_id = current_user.get('id') or current_user.get('_id')
         
         bounty = await db.bounties.find_one({"bounty_id": bounty_id})
