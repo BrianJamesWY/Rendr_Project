@@ -110,15 +110,10 @@ async def get_my_bounties(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{bounty_id}", response_model=Bounty)
-async def get_bounty(bounty_id: str):
+async def get_bounty(bounty_id: str, db = Depends(get_db)):
     """Get single bounty details"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
-        
         bounty = await db.bounties.find_one({"bounty_id": bounty_id}, {"_id": 0})
-        await client.close()
         
         if not bounty:
             raise HTTPException(status_code=404, detail="Bounty not found")
