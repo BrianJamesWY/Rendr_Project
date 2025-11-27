@@ -404,4 +404,4 @@ function Showcase() {
   );
 }
 
-export default NewShowcase;
+export default Showcase;
