@@ -150,7 +150,7 @@ function Showcase() {
   };
 
   return (
-    <div style={{ margin: 0, padding: 0, boxSizing: 'border-box', fontFamily: '-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif', background: '#f8f9fa', color: '#030303', lineHeight: 1.5 }}>
+    <div style={{ margin: 0, padding: 0, boxSizing: 'border-box', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', background: '#f8f9fa', color: '#030303', lineHeight: 1.5 }}>
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
