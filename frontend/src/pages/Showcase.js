@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import './Showcase.css';
+import Logo from '../components/Logo';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -9,10 +9,10 @@ function Showcase() {
   const { username } = useParams();
   const navigate = useNavigate();
   
-  // State
   const [activeTab, setActiveTab] = useState('videos');
   const [profile, setProfile] = useState(null);
   const [videos, setVideos] = useState([]);
+  const [showcaseFolders, setShowcaseFolders] = useState([]);
   const [premiumFolders, setPremiumFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -28,20 +28,29 @@ function Showcase() {
       setLoading(true);
       const cleanUsername = username.replace(/^@/, '');
       
-      // Load profile
       const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
       setProfile(profileRes.data);
       
-      // Load videos
       const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
       setVideos(videosRes.data || []);
+
+      try {
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const showcaseRes = await axios.get(`${BACKEND_URL}/api/showcase-folders`, { 
+          headers,
+          params: { username: cleanUsername }
+        });
+        setShowcaseFolders(showcaseRes.data || []);
+      } catch (err) {
+        console.log('Showcase folders not available');
+        setShowcaseFolders([]);
+      }
       
-      // Load premium folders
       try {
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
         const foldersRes = await axios.get(`${BACKEND_URL}/api/premium-folders`, { headers });
-        // Filter by creator username
         const userFolders = foldersRes.data.filter(f => 
           f.creator_username === cleanUsername || f.creator_id === profileRes.data.id
         );
@@ -51,9 +60,7 @@ function Showcase() {
         setPremiumFolders([]);
       }
       
-      // Track page view
       trackPageView(cleanUsername);
-      
       setLoading(false);
     } catch (err) {
       setError(err.response?.data?.detail || 'Creator not found');
@@ -112,39 +119,25 @@ function Showcase() {
     navigate(`/verify?code=${verificationCode}`);
   };
 
-  const shareShowcase = async () => {
-    const url = window.location.href;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `${profile?.display_name || profile?.username}'s Showcase`,
-          url: url
-        });
-      } catch (err) {
-        console.log('Share cancelled');
-      }
-    } else {
-      navigator.clipboard.writeText(url);
-      alert('Link copied to clipboard!');
-    }
-  };
-
   if (loading) {
     return (
-      <div className="showcase-loading">
-        <div className="loading-spinner"></div>
-        <p>Loading showcase...</p>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa' }}>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ width: '48px', height: '48px', border: '4px solid #f3f3f3', borderTop: '4px solid #667eea', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 1rem' }}></div>
+          <p style={{ color: '#6b7280' }}>Loading showcase...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="showcase-error">
-        <h2>Creator Not Found</h2>
-        <p>{error}</p>
-        <Link to="/explore">Browse Creators</Link>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8f9fa' }}>
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1rem' }}>Creator Not Found</h2>
+          <p style={{ color: '#6b7280', marginBottom: '1.5rem' }}>{error}</p>
+          <Link to=\"/explore\" style={{ color: '#667eea', textDecoration: 'underline' }}>Browse Creators</Link>
+        </div>
       </div>
     );
   }
@@ -152,186 +145,223 @@ function Showcase() {
   const socialLinks = profile?.social_media_links || [];
   const stats = {
     videos: videos.length,
-    folders: premiumFolders.length,
+    folders: showcaseFolders.length,
     views: profile?.total_videos || 0
   };
 
   return (
-    <div className="new-showcase-container">
-      {/* Navbar */}
-      <nav className="showcase-nav">
-        <div className="nav-brand">
-          <span className="brand-icon">⭐</span>
-          <span className="brand-name">RENDR</span>
-        </div>
-        <div className="nav-actions">
-          <button className="btn-subscribe" onClick={() => alert('Subscribe feature coming soon!')}>
+    <div style={{ margin: 0, padding: 0, boxSizing: 'border-box', fontFamily: '-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif', background: '#f8f9fa', color: '#030303', lineHeight: 1.5 }}>
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
+      
+      {/* Navigation Bar */}
+      <nav style={{ background: 'white', padding: '12px 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Link to=\"/\" style={{ textDecoration: 'none' }}>
+          <Logo size=\"medium\" />
+        </Link>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <button style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', width: 'auto' }}>
             Subscribe
           </button>
         </div>
       </nav>
 
-      {/* Header/Hero Section */}
-      <header className="showcase-header">
-        <div className="header-content">
-          <div className="profile-section">
+      {/* Header Section with LARGE LEFT Profile */}
+      <header style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)', padding: '50px 24px', color: 'white', position: 'relative', minHeight: '300px' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '50px' }}>
+          <div style={{ flexShrink: 0 }}>
             <img 
-              src={profile?.profile_picture || '/default-avatar.png'} 
-              alt={profile?.display_name || profile?.username}
-              className="profile-pic"
+              src={profile?.profile_picture || 'https://via.placeholder.com/240/667eea/ffffff?text=Profile'} 
+              alt=\"Profile\" 
+              style={{ width: '240px', height: '240px', borderRadius: '50%', border: '6px solid white', background: 'white', objectFit: 'cover', boxShadow: '0 6px 30px rgba(0, 0, 0, 0.3)', display: 'block', aspectRatio: '1 / 1', flexShrink: 0 }}
             />
           </div>
-          <div className="profile-info">
-            <h1 className="display-name">
+          
+          <div style={{ flexGrow: 1, textAlign: 'center', paddingRight: '240px' }}>
+            <h1 style={{ fontSize: '42px', fontWeight: '700', marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
               {profile?.display_name || profile?.username}
-              <span className="verified-badge">✓ Creator</span>
+              <span style={{ background: 'rgba(255, 255, 255, 0.2)', padding: '2px 8px', borderRadius: '12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                ✓ Creator
+              </span>
             </h1>
-            <p className="username">@{profile?.username}</p>
-            <p className="bio">{profile?.bio || 'Content creator on RENDR'}</p>
-            
+            <div style={{ fontSize: '18px', opacity: 0.9, marginBottom: '16px' }}>@{profile?.username}</div>
+            <p style={{ fontSize: '16px', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 24px', opacity: 0.95' }}>
+              {profile?.bio || 'Content creator on RENDR'}
+            </p>
+
             {/* Social Links */}
             {socialLinks.length > 0 && (
-              <div className="social-links">
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', justifyContent: 'center' }}>
                 {socialLinks.map((link, index) => (
                   <a
                     key={index}
                     href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="social-link"
+                    target=\"_blank\"
+                    rel=\"noopener noreferrer\"
                     onClick={() => trackSocialClick(link.platform)}
+                    style={{ width: '66px', height: '66px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', transition: 'all 0.2s', border: '3px solid rgba(255, 255, 255, 0.3)', overflow: 'hidden', position: 'relative', background: 'rgba(255, 255, 255, 0.1)', fontSize: '30px' }}
                   >
                     {link.platform === 'instagram' && '📷'}
                     {link.platform === 'tiktok' && '🎵'}
                     {link.platform === 'youtube' && '▶️'}
                     {link.platform === 'twitter' && '🐦'}
                     {link.platform === 'facebook' && '👥'}
+                    {!['instagram', 'tiktok', 'youtube', 'twitter', 'facebook'].includes(link.platform) && '🔗'}
                   </a>
                 ))}
               </div>
             )}
 
-            {/* Stats */}
-            <div className="stats-row">
-              <div className="stat">
-                <div className="stat-value">{stats.videos}</div>
-                <div className="stat-label">Videos</div>
+            {/* Stats Row */}
+            <div style={{ display: 'flex', gap: '32px', fontSize: '14px', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontSize: '24px', fontWeight: '700' }}>{stats.videos}</span>
+                <span style={{ fontSize: '14px', opacity: 0.9 }}>Videos</span>
               </div>
-              <div className="stat">
-                <div className="stat-value">{stats.folders}</div>
-                <div className="stat-label">Premium</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontSize: '24px', fontWeight: '700' }}>{stats.folders}</span>
+                <span style={{ fontSize: '14px', opacity: 0.9 }}>Folders</span>
               </div>
-              <div className="stat">
-                <div className="stat-value">{stats.views}</div>
-                <div className="stat-label">Views</div>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontSize: '24px', fontWeight: '700' }}>{stats.views}</span>
+                <span style={{ fontSize: '14px', opacity: 0.9 }}>Views</span>
               </div>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Tab Navigation */}
-      <div className="tab-nav">
-        <div className="tabs">
-          <button
-            className={`tab ${activeTab === 'videos' ? 'active' : ''}`}
-            onClick={() => setActiveTab('videos')}
-          >
+      {/* Navigation Tabs */}
+      <div style={{ background: 'white', borderBottom: '1px solid #e5e5e5', position: 'sticky', top: '56px', zIndex: 100, boxShadow: '0 1px 0 rgba(0,0,0,0.05)' }}>
+        <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', padding: '0 24px', gap: '2px' }}>
+          <button onClick={() => setActiveTab('videos')} style={{ padding: '14px 18px', background: activeTab === 'videos' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'videos' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'videos' ? '3px solid #667eea' : 'none' }}>
             Videos
           </button>
-          <button
-            className={`tab ${activeTab === 'premium' ? 'active' : ''}`}
-            onClick={() => setActiveTab('premium')}
-          >
-            Premium
+          <button onClick={() => setActiveTab('premium')} style={{ padding: '14px 18px', background: activeTab === 'premium' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'premium' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'premium' ? '3px solid #667eea' : 'none' }}>
+            Premium Videos
           </button>
-          <button
-            className={`tab ${activeTab === 'about' ? 'active' : ''}`}
-            onClick={() => setActiveTab('about')}
-          >
-            About
-          </button>
-          <button
-            className={`tab ${activeTab === 'community' ? 'active' : ''}`}
-            onClick={() => setActiveTab('community')}
-          >
-            Community
-          </button>
-          <button
-            className={`tab ${activeTab === 'schedule' ? 'active' : ''}`}
-            onClick={() => setActiveTab('schedule')}
-          >
+          <button onClick={() => setActiveTab('schedule')} style={{ padding: '14px 18px', background: activeTab === 'schedule' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'schedule' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'schedule' ? '3px solid #667eea' : 'none' }}>
             Schedule
           </button>
-          <button
-            className={`tab ${activeTab === 'store' ? 'active' : ''}`}
-            onClick={() => setActiveTab('store')}
-          >
+          <button onClick={() => setActiveTab('community')} style={{ padding: '14px 18px', background: activeTab === 'community' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'community' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'community' ? '3px solid #667eea' : 'none' }}>
+            Community
+          </button>
+          <button onClick={() => setActiveTab('store')} style={{ padding: '14px 18px', background: activeTab === 'store' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'store' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'store' ? '3px solid #667eea' : 'none' }}>
             Store
+          </button>
+          <button onClick={() => setActiveTab('about')} style={{ padding: '14px 18px', background: activeTab === 'about' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'about' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'about' ? '3px solid #667eea' : 'none' }}>
+            About
+          </button>
+          <button onClick={() => setActiveTab('contact')} style={{ padding: '14px 18px', background: activeTab === 'contact' ? 'rgba(102, 126, 234, 0.1)' : 'none', border: 'none', fontSize: '14px', fontWeight: '500', color: activeTab === 'contact' ? '#667eea' : '#606060', cursor: 'pointer', position: 'relative', transition: 'all 0.2s', borderRadius: '8px 8px 0 0', borderBottom: activeTab === 'contact' ? '3px solid #667eea' : 'none' }}>
+            Contact
           </button>
         </div>
       </div>
 
-      {/* Content Area */}
-      <main className="showcase-content">
-        {/* Videos Tab */}
+      {/* Main Content */}
+      <main style={{ maxWidth: '1400px', margin: '0 auto', padding: '24px' }}>
+        {/* All Videos Tab */}
         {activeTab === 'videos' && (
-          <div className="tab-content">
-            <h2>All Videos ({videos.length})</h2>
-            <div className="videos-grid">
+          <div>
+            {/* Sorting Controls */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: '16px', background: 'white', borderRadius: '8px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <label style={{ fontSize: '14px', color: '#606060', fontWeight: '500' }}>Sort by:</label>
+                <select style={{ padding: '8px 12px', border: '1px solid #e5e5e5', borderRadius: '6px', fontSize: '14px', background: 'white', cursor: 'pointer', transition: 'border-color 0.2s' }}>
+                  <option value=\"recent\">Most Recent</option>
+                  <option value=\"views\">Most Views</option>
+                  <option value=\"oldest\">Oldest First</option>
+                </select>
+                
+                <label style={{ fontSize: '14px', color: '#606060', fontWeight: '500', marginLeft: '12px' }}>Platform:</label>
+                <select style={{ padding: '8px 12px', border: '1px solid #e5e5e5', borderRadius: '6px', fontSize: '14px', background: 'white', cursor: 'pointer', transition: 'border-color 0.2s' }}>
+                  <option value=\"all\">All Platforms</option>
+                  <option value=\"youtube\">YouTube</option>
+                  <option value=\"tiktok\">TikTok</option>
+                  <option value=\"instagram\">Instagram</option>
+                  <option value=\"twitter\">Twitter</option>
+                </select>
+              </div>
+              
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button style={{ padding: '8px 12px', background: '#667eea', color: 'white', border: '1px solid #667eea', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '14px' }}>Grid</button>
+                <button style={{ padding: '8px 12px', background: 'white', color: '#030303', border: '1px solid #e5e5e5', borderRadius: '6px', cursor: 'pointer', transition: 'all 0.2s', fontSize: '14px' }}>List</button>
+              </div>
+            </div>
+            
+            {/* Videos Grid - EXTREMELY COMPACT */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px', marginBottom: '32px' }}>
               {videos.map(video => (
-                <div
-                  key={video.video_id}
-                  className="video-card"
-                  onClick={() => handleVideoClick(video.verification_code)}
-                >
-                  <div className="thumbnail-wrapper">
-                    <img
-                      src={video.thumbnail_url || '/default-thumbnail.png'}
-                      alt={video.title || 'Video'}
-                      className="thumbnail"
+                <div key={video.video_id} style={{ cursor: 'pointer', transition: 'transform 0.2s' }} onClick={() => handleVideoClick(video.verification_code)}>
+                  <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#e5e5e5', borderRadius: '4px', overflow: 'hidden' }}>
+                    <img 
+                      src={video.thumbnail_url ? `${BACKEND_URL}${video.thumbnail_url}` : 'https://via.placeholder.com/320x180/667eea/ffffff?text=Video'}
+                      alt=\"Video\"
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
                     />
-                    <div className="play-overlay">
-                      <span className="play-icon">▶</span>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s' }}>
+                      <div style={{ width: '24px', height: '24px', background: 'rgba(0, 0, 0, 0.8)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transform: 'scale(0.8)', transition: 'all 0.3s', color: 'white', fontSize: '12px' }}>▶</div>
                     </div>
                   </div>
-                  <div className="video-info">
-                    <span className="rendr-code">{video.verification_code}</span>
+                  <div style={{ paddingTop: '6px' }}>
+                    <div style={{ fontSize: '11px', fontWeight: '500', color: '#030303', lineHeight: 1.2, marginBottom: '2px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                      {video.title || 'Video'}
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#606060', lineHeight: 1.2 }}>
+                      <div style={{ marginBottom: '1px' }}>{video.view_count || 0} views</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                        <span style={{ color: '#667eea', fontWeight: '600' }}>{video.verification_code}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
+
             {videos.length === 0 && (
-              <div className="empty-state">
+              <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px', color: '#6b7280' }}>
                 <p>No videos yet</p>
+              </div>
+            )}
+
+            {/* Load More */}
+            {videos.length > 0 && (
+              <div style={{ textAlign: 'center', marginTop: '32px' }}>
+                <button style={{ padding: '10px 32px', background: 'white', border: '2px solid #e5e5e5', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: '#030303', cursor: 'pointer', transition: 'all 0.2s' }}>
+                  Load More Videos
+                </button>
               </div>
             )}
           </div>
         )}
 
-        {/* Premium Tab */}
+        {/* Premium Videos Tab */}
         {activeTab === 'premium' && (
-          <div className="tab-content">
-            <h2>Premium Content</h2>
-            <div className="folders-grid">
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px', marginBottom: '32px' }}>
               {premiumFolders.map(folder => (
-                <div key={folder.folder_id} className="folder-card">
-                  <div className="folder-header">
-                    <span className="folder-icon">🔒</span>
+                <div key={folder.folder_id} style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', transition: 'all 0.3s', cursor: 'pointer' }}>
+                  <div style={{ padding: '24px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', height: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', position: 'relative' }}>
+                    <div style={{ fontSize: '40px', marginBottom: '8px' }}>🎬</div>
+                    <div style={{ fontSize: '19px', fontWeight: '700', marginBottom: '4px' }}>{folder.name}</div>
+                    <div style={{ fontSize: '13px', opacity: 0.95, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {folder.description}
+                    </div>
                   </div>
-                  <div className="folder-body">
-                    <h3>{folder.name}</h3>
-                    <p>{folder.description}</p>
-                    <div className="folder-price">
-                      ${(folder.price_cents / 100).toFixed(2)}/month
+                  <div style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
+                      <div style={{ fontSize: '24px', fontWeight: '700', color: '#030303' }}>
+                        ${(folder.price_cents / 100).toFixed(2)}/month
+                      </div>
                     </div>
-                    <div className="folder-stats">
-                      <span>{folder.video_count || 0} videos</span>
-                      <span>{folder.subscriber_count || 0} subscribers</span>
+                    <div style={{ fontSize: '12px', color: '#606060', marginBottom: '16px' }}>
+                      {folder.video_count || 0} videos · {folder.subscriber_count || 0} subscribers
                     </div>
-                    <button
-                      className="btn-subscribe-folder"
+                    
+                    <button 
                       onClick={() => handleSubscribeToFolder(folder.folder_id)}
+                      style={{ width: '100%', padding: '11px 20px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
                     >
                       Subscribe Now
                     </button>
@@ -339,8 +369,9 @@ function Showcase() {
                 </div>
               ))}
             </div>
+            
             {premiumFolders.length === 0 && (
-              <div className="empty-state">
+              <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px', color: '#6b7280' }}>
                 <p>No premium content available yet</p>
               </div>
             )}
@@ -349,22 +380,15 @@ function Showcase() {
 
         {/* About Tab */}
         {activeTab === 'about' && (
-          <div className="tab-content">
-            <div className="about-grid">
-              <div className="about-main">
-                <h2>About {profile?.display_name || profile?.username}</h2>
-                <p className="about-bio">{profile?.bio || 'Content creator on RENDR'}</p>
-              </div>
-              <div className="about-sidebar">
-                <div className="sidebar-card">
-                  <h4>✓ Verified Creator</h4>
-                  <p>Verified on RENDR</p>
-                </div>
-                <div className="sidebar-card">
-                  <button className="btn-share" onClick={shareShowcase}>
-                    Share Profile
-                  </button>
-                </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '65% 35%', gap: '32px', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ background: 'white', padding: '28px', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '16px', color: '#030303' }}>About {profile?.display_name || profile?.username}</h2>
+              <p style={{ fontSize: '16px', lineHeight: 1.6, color: '#606060' }}>{profile?.bio || 'Content creator on RENDR'}</p>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <div style={{ background: 'white', padding: '24px', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)' }}>
+                <h4 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '8px' }}>✓ Verified Creator</h4>
+                <p style={{ fontSize: '14px', color: '#606060' }}>Verified on RENDR</p>
               </div>
             </div>
           </div>
@@ -372,30 +396,48 @@ function Showcase() {
 
         {/* Community Tab */}
         {activeTab === 'community' && (
-          <div className="tab-content">
-            <h2>Community</h2>
-            <div className="empty-state">
-              <p>Community features coming soon!</p>
-            </div>
+          <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '16px' }}>Community</h2>
+            <p style={{ color: '#6b7280' }}>Community features coming soon!</p>
           </div>
         )}
 
         {/* Schedule Tab */}
         {activeTab === 'schedule' && (
-          <div className="tab-content">
-            <h2>Upcoming Schedule</h2>
-            <div className="empty-state">
-              <p>No scheduled events yet</p>
-            </div>
+          <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '16px' }}>Upcoming Schedule</h2>
+            <p style={{ color: '#6b7280' }}>No scheduled events yet</p>
           </div>
         )}
 
         {/* Store Tab */}
         {activeTab === 'store' && (
-          <div className="tab-content">
-            <h2>Store</h2>
-            <div className="empty-state">
-              <p>Store coming soon!</p>
+          <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '16px' }}>Store</h2>
+            <p style={{ color: '#6b7280' }}>Store coming soon!</p>
+          </div>
+        )}
+
+        {/* Contact Tab */}
+        {activeTab === 'contact' && (
+          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+            <div style={{ background: 'white', padding: '32px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
+              <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px' }}>Get in Touch</h2>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#030303' }}>Your Name</label>
+                <input type=\"text\" placeholder=\"Enter your name\" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }} />
+              </div>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#030303' }}>Your Email</label>
+                <input type=\"email\" placeholder=\"your@email.com\" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }} />
+              </div>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#030303' }}>Message</label>
+                <textarea placeholder=\"Your message...\" rows=\"5\" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px', resize: 'vertical', minHeight: '120px' }}></textarea>
+              </div>
+              <button style={{ padding: '12px 32px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}>
+                Send Message
+              </button>
             </div>
           </div>
         )}
