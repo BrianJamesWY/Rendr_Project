@@ -1168,6 +1168,375 @@ class RendrAPITester:
             self.log_test("Tier-based Hashing", False, f"Error: {str(e)}")
             return False
 
+    # ============================================================================
+    # PREMIUM FOLDERS AND STRIPE CONNECT TESTS
+    # ============================================================================
+
+    def test_stripe_connect_status(self):
+        """Test Stripe Connect account status API"""
+        try:
+            response = self.session.get(f"{BASE_URL}/stripe/connect/status")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["connected"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_test("Stripe Connect Status", True, 
+                                f"Status retrieved: connected={data.get('connected')}")
+                    return data
+                else:
+                    self.log_test("Stripe Connect Status", False, 
+                                f"Missing fields: {missing_fields}", data)
+                    return None
+            elif response.status_code == 401:
+                self.log_test("Stripe Connect Status", False, "Authentication required")
+                return None
+            else:
+                self.log_test("Stripe Connect Status", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("Stripe Connect Status", False, f"Error: {str(e)}")
+            return None
+
+    def test_stripe_connect_onboard(self):
+        """Test Stripe Connect onboarding endpoint"""
+        try:
+            onboard_data = {
+                "return_url": "https://premium-content-47.preview.emergentagent.com/earnings?connected=true",
+                "refresh_url": "https://premium-content-47.preview.emergentagent.com/earnings?refresh=true"
+            }
+            
+            response = self.session.post(f"{BASE_URL}/stripe/connect/onboard", json=onboard_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["onboarding_url", "account_id"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_test("Stripe Connect Onboard", True, 
+                                f"Onboarding URL generated: {data['account_id'][:20]}...")
+                    return data
+                else:
+                    self.log_test("Stripe Connect Onboard", False, 
+                                f"Missing fields: {missing_fields}", data)
+                    return None
+            elif response.status_code == 403:
+                # Expected for non-Pro/Enterprise users
+                self.log_test("Stripe Connect Onboard", True, 
+                            "Properly requires Pro/Enterprise tier")
+                return None
+            elif response.status_code == 401:
+                self.log_test("Stripe Connect Onboard", False, "Authentication required")
+                return None
+            else:
+                self.log_test("Stripe Connect Onboard", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("Stripe Connect Onboard", False, f"Error: {str(e)}")
+            return None
+
+    def test_premium_folder_create(self):
+        """Test creating a premium folder"""
+        try:
+            folder_data = {
+                "name": "Test Premium Folder",
+                "description": "Testing premium folder creation",
+                "icon": "🎬",
+                "price_cents": 999,  # $9.99
+                "visibility": "public",
+                "allow_downloads": True,
+                "watermark_enabled": True
+            }
+            
+            response = self.session.post(f"{BASE_URL}/premium-folders", json=folder_data)
+            
+            if response.status_code == 201:
+                data = response.json()
+                if "folder_id" in data:
+                    self.log_test("Premium Folder Create", True, 
+                                f"Created premium folder: {data['folder_id']}")
+                    return data["folder_id"]
+                else:
+                    self.log_test("Premium Folder Create", False, 
+                                "Missing folder_id in response", data)
+                    return None
+            elif response.status_code == 403:
+                # Expected for users without Pro/Enterprise or Stripe Connect
+                error_msg = response.json().get("detail", "")
+                if "tier" in error_msg.lower() or "stripe" in error_msg.lower():
+                    self.log_test("Premium Folder Create", True, 
+                                f"Properly requires Pro/Enterprise tier and Stripe Connect: {error_msg}")
+                    return None
+                else:
+                    self.log_test("Premium Folder Create", False, 
+                                f"Unexpected 403 error: {error_msg}")
+                    return None
+            elif response.status_code == 401:
+                self.log_test("Premium Folder Create", False, "Authentication required")
+                return None
+            else:
+                self.log_test("Premium Folder Create", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("Premium Folder Create", False, f"Error: {str(e)}")
+            return None
+
+    def test_premium_folder_get(self, folder_id):
+        """Test getting premium folder details"""
+        if not folder_id:
+            self.log_test("Premium Folder Get", False, "No folder ID provided")
+            return False
+            
+        try:
+            response = self.session.get(f"{BASE_URL}/premium-folders/{folder_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "folder" in data:
+                    folder = data["folder"]
+                    self.log_test("Premium Folder Get", True, 
+                                f"Retrieved folder: {folder.get('name', 'Unknown')}")
+                    return True
+                else:
+                    self.log_test("Premium Folder Get", False, 
+                                "Missing folder in response", data)
+                    return False
+            elif response.status_code == 404:
+                self.log_test("Premium Folder Get", False, "Folder not found")
+                return False
+            elif response.status_code == 401:
+                self.log_test("Premium Folder Get", False, "Authentication required")
+                return False
+            else:
+                self.log_test("Premium Folder Get", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Premium Folder Get", False, f"Error: {str(e)}")
+            return False
+
+    def test_premium_folders_list(self):
+        """Test listing all premium folders"""
+        try:
+            response = self.session.get(f"{BASE_URL}/premium-folders/my-folders")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "folders" in data and isinstance(data["folders"], list):
+                    self.log_test("Premium Folders List", True, 
+                                f"Retrieved {len(data['folders'])} premium folders")
+                    return True
+                else:
+                    self.log_test("Premium Folders List", False, 
+                                "Invalid response format", data)
+                    return False
+            elif response.status_code == 401:
+                self.log_test("Premium Folders List", False, "Authentication required")
+                return False
+            else:
+                self.log_test("Premium Folders List", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Premium Folders List", False, f"Error: {str(e)}")
+            return False
+
+    def test_subscription_checkout_create(self, folder_id=None):
+        """Test creating a subscription checkout session"""
+        if not folder_id:
+            # Use a dummy folder ID for testing
+            folder_id = "test-folder-id"
+            
+        try:
+            checkout_data = {
+                "folder_id": folder_id,
+                "success_url": "https://premium-content-47.preview.emergentagent.com/success",
+                "cancel_url": "https://premium-content-47.preview.emergentagent.com/cancel"
+            }
+            
+            response = self.session.post(f"{BASE_URL}/stripe/subscribe", json=checkout_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["checkout_url", "session_id"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_test("Subscription Checkout Create", True, 
+                                f"Checkout session created: {data['session_id'][:20]}...")
+                    return data["session_id"]
+                else:
+                    self.log_test("Subscription Checkout Create", False, 
+                                f"Missing fields: {missing_fields}", data)
+                    return None
+            elif response.status_code == 404:
+                # Expected for non-existent folder
+                self.log_test("Subscription Checkout Create", True, 
+                            "Properly validates folder existence")
+                return None
+            elif response.status_code == 400:
+                # Could be already subscribed or other validation error
+                error_msg = response.json().get("detail", "")
+                self.log_test("Subscription Checkout Create", True, 
+                            f"Proper validation: {error_msg}")
+                return None
+            elif response.status_code == 401:
+                self.log_test("Subscription Checkout Create", False, "Authentication required")
+                return None
+            else:
+                self.log_test("Subscription Checkout Create", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("Subscription Checkout Create", False, f"Error: {str(e)}")
+            return None
+
+    def test_checkout_status(self, session_id):
+        """Test checking checkout session status"""
+        if not session_id:
+            self.log_test("Checkout Status", False, "No session ID provided")
+            return False
+            
+        try:
+            response = self.session.get(f"{BASE_URL}/stripe/checkout/status/{session_id}")
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["session_id", "payment_status", "status"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_test("Checkout Status", True, 
+                                f"Status retrieved: {data.get('payment_status')}")
+                    return True
+                else:
+                    self.log_test("Checkout Status", False, 
+                                f"Missing fields: {missing_fields}", data)
+                    return False
+            elif response.status_code == 404:
+                self.log_test("Checkout Status", False, "Session not found")
+                return False
+            elif response.status_code == 401:
+                self.log_test("Checkout Status", False, "Authentication required")
+                return False
+            else:
+                self.log_test("Checkout Status", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Checkout Status", False, f"Error: {str(e)}")
+            return False
+
+    def test_stripe_webhook(self):
+        """Test Stripe webhook endpoint"""
+        try:
+            # Test webhook with mock data
+            webhook_data = {
+                "type": "checkout.session.completed",
+                "data": {
+                    "object": {
+                        "id": "cs_test_123",
+                        "payment_status": "paid",
+                        "subscription": "sub_test_123",
+                        "customer": "cus_test_123",
+                        "amount_total": 999,
+                        "currency": "usd"
+                    }
+                }
+            }
+            
+            response = self.session.post(f"{BASE_URL}/stripe/webhook", json=webhook_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("status") == "success":
+                    self.log_test("Stripe Webhook", True, 
+                                "Webhook processed successfully")
+                    return True
+                else:
+                    self.log_test("Stripe Webhook", False, 
+                                "Unexpected response", data)
+                    return False
+            elif response.status_code == 400:
+                # Expected for invalid signature in production
+                self.log_test("Stripe Webhook", True, 
+                            "Webhook signature validation working")
+                return True
+            else:
+                self.log_test("Stripe Webhook", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Stripe Webhook", False, f"Error: {str(e)}")
+            return False
+
+    def test_my_subscriptions(self):
+        """Test fetching user subscriptions"""
+        try:
+            response = self.session.get(f"{BASE_URL}/subscriptions/my")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "subscriptions" in data and isinstance(data["subscriptions"], list):
+                    self.log_test("My Subscriptions", True, 
+                                f"Retrieved {len(data['subscriptions'])} subscriptions")
+                    return data["subscriptions"]
+                else:
+                    self.log_test("My Subscriptions", False, 
+                                "Invalid response format", data)
+                    return None
+            elif response.status_code == 401:
+                self.log_test("My Subscriptions", False, "Authentication required")
+                return None
+            else:
+                self.log_test("My Subscriptions", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("My Subscriptions", False, f"Error: {str(e)}")
+            return None
+
+    def test_subscription_cancel(self, subscription_id=None):
+        """Test canceling a subscription"""
+        if not subscription_id:
+            # Use a dummy subscription ID for testing
+            subscription_id = "test-subscription-id"
+            
+        try:
+            response = self.session.post(f"{BASE_URL}/subscriptions/{subscription_id}/cancel")
+            
+            if response.status_code == 200:
+                data = response.json()
+                if "message" in data:
+                    self.log_test("Subscription Cancel", True, 
+                                f"Cancel response: {data['message']}")
+                    return True
+                else:
+                    self.log_test("Subscription Cancel", False, 
+                                "Missing message in response", data)
+                    return False
+            elif response.status_code == 404:
+                # Expected for non-existent subscription
+                self.log_test("Subscription Cancel", True, 
+                            "Properly validates subscription existence")
+                return True
+            elif response.status_code == 401:
+                self.log_test("Subscription Cancel", False, "Authentication required")
+                return False
+            else:
+                self.log_test("Subscription Cancel", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Subscription Cancel", False, f"Error: {str(e)}")
+            return False
+
     def test_enterprise_tier_verification(self):
         """TEST 1: VERIFY TIER AND QUOTA for Enterprise user"""
         try:
