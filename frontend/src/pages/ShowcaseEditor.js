@@ -251,8 +251,8 @@ function ShowcaseEditor() {
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#1f2937', marginBottom: '8px' }}>Banner Background</label>
                   <select value={bannerType} onChange={(e) => { setBannerType(e.target.value); setHasUnsavedChanges(true); }} style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '14px', background: 'white' }}>
-                    <option value=\"gradient\">Gradient</option>
-                    <option value=\"image\">Custom Image</option>
+                    <option value="gradient">Gradient</option>
+                    <option value="image">Custom Image</option>
                   </select>
                 </div>
 
