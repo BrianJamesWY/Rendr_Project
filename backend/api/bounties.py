@@ -21,13 +21,11 @@ DB_NAME = os.getenv('DB_NAME', 'test_database')
 @router.post("/", response_model=Bounty)
 async def create_bounty(
     bounty_data: BountyCreate,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db = Depends(get_db)
 ):
     """Create a new bounty for stolen content"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
         
         user_id = current_user.get('id') or current_user.get('_id')
         username = current_user.get('username')
