@@ -129,14 +129,11 @@ async def get_bounty(bounty_id: str, db = Depends(get_db)):
 async def claim_bounty(
     bounty_id: str,
     claim: BountyClaim,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db = Depends(get_db)
 ):
     """Claim a bounty by providing evidence"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
-        
         user_id = current_user.get('id') or current_user.get('_id')
         
         # Get bounty
@@ -163,8 +160,6 @@ async def claim_bounty(
                 "claim_details": claim.details
             }}
         )
-        
-        await client.close()
         
         return {
             "success": True,
