@@ -157,8 +157,8 @@ function Showcase() {
       
       {/* Navigation Bar */}
       <nav style={{ background: 'white', padding: '12px 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <Link to=\"/\" style={{ textDecoration: 'none' }}>
-          <Logo size=\"medium\" />
+        <Link to="/" style={{ textDecoration: 'none' }}>
+          <Logo size="medium" />
         </Link>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
           <button style={{ padding: '8px 20px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', width: 'auto' }}>
