@@ -22,18 +22,29 @@ function CreatorLogin() {
     setLoading(true);
     setError(null);
 
+    console.log('🔐 Login attempt starting...', { username, backend: BACKEND_URL });
+
     try {
       const response = await axios.post(`${BACKEND_URL}/api/auth/login`, {
         username,
         password
       });
 
+      console.log('✅ Login response received:', { username: response.data.username });
+
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('rendr_username', response.data.username);
       
+      console.log('✅ Token stored, navigating to dashboard...');
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.detail || 'Login failed');
+      console.error('❌ Login failed:', err);
+      console.error('Error details:', {
+        message: err.message,
+        response: err.response?.data,
+        status: err.response?.status
+      });
+      setError(err.response?.data?.detail || err.message || 'Login failed');
     } finally {
       setLoading(false);
     }
