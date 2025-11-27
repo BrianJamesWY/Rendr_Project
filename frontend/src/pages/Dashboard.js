@@ -545,11 +545,6 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* Quota Indicator */}
-      <div style={{ maxWidth: '1200px', margin: '1.5rem auto 0', padding: '0 1rem' }}>
-        <QuotaIndicator user={user} />
-      </div>
-
       {/* Analytics Section */}
       {analytics && (
         <div style={{ maxWidth: '1200px', margin: '2rem auto 3rem', padding: '0 1rem' }}>
