@@ -2517,5 +2517,5 @@ def test_premium_folders_and_stripe_flow():
 
 
 if __name__ == "__main__":
-    # Run the specific Premium Folders and Stripe Connect tests as requested
-    test_premium_folders_and_stripe_flow()
+    # Run the specific fixed components tests as requested in review
+    test_fixed_components()
