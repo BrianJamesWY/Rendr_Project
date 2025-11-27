@@ -232,17 +232,14 @@ async def verify_claim(
 @router.post("/{bounty_id}/payout")
 async def process_payout(
     bounty_id: str,
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db = Depends(get_db)
 ):
     """Process payout for verified bounty"""
     try:
         import stripe
-        from motor.motor_asyncio import AsyncIOMotorClient
         
         stripe.api_key = os.getenv('STRIPE_API_KEY')
-        
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
         
         user_id = current_user.get('id') or current_user.get('_id')
         
