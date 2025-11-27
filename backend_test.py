@@ -88,7 +88,7 @@ class BountySystemTester:
     def test_browse_bounties(self) -> bool:
         """Test GET /api/bounties (list all active bounties)"""
         try:
-            response = self.session.get(f"{API_BASE}/bounties")
+            response = self.session.get(f"{API_BASE}/bounties/")
             
             if response.status_code == 200:
                 bounties = response.json()
