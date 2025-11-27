@@ -191,9 +191,7 @@ class BountySystemTester:
                     return None
                 
         except Exception as e:
-            import traceback
             self.log_test("Create Bounty", False, f"Error: {str(e)}")
-            print(f"DEBUG: Full traceback: {traceback.format_exc()}")
             return None
     
     def test_view_bounty_details(self, bounty_id: str) -> bool:
