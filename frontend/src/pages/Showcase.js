@@ -433,7 +433,7 @@ function Showcase() {
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#030303' }}>Message</label>
-                <textarea placeholder=\"Your message...\" rows=\"5\" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px', resize: 'vertical', minHeight: '120px' }}></textarea>
+                <textarea placeholder="Your message..." rows="5" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px', resize: 'vertical', minHeight: '120px' }}></textarea>
               </div>
               <button style={{ padding: '12px 32px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}>
                 Send Message
