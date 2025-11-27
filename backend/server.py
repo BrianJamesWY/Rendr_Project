@@ -70,6 +70,7 @@ app.include_router(password_reset.router, prefix="/api/password", tags=["Passwor
 app.include_router(explore.router, tags=["Explore"])
 app.include_router(premium_folders.router, tags=["Premium Folders"])
 app.include_router(stripe_integration.router, prefix="/api", tags=["Stripe Integration"])
+app.include_router(subscriptions.router, prefix="/api/subscriptions", tags=["Subscriptions"])
 
 @app.get("/")
 async def root():
