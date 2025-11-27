@@ -11,6 +11,7 @@ from uuid import uuid4
 
 from api.auth import get_current_user
 from models.bounty import Bounty, BountyCreate, BountyClaim
+from database.mongodb import get_db
 
 router = APIRouter()
 
