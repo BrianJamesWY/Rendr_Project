@@ -2261,6 +2261,88 @@ class RendrAPITester:
         else:
             print("  ✅ No critical failures detected")
 
-if __name__ == "__main__":
+def test_premium_folders_and_stripe_flow():
+    """Test the complete Premium Folders and Stripe Connect flow"""
+    print("🎯 Testing Premium Folders and Stripe Connect Flow")
+    print("=" * 60)
+    
     tester = RendrAPITester()
-    tester.run_all_tests()
+    
+    # Test 1: Basic API Health
+    if not tester.test_health_check():
+        print("❌ API is not responding. Exiting.")
+        return
+    
+    # Test 2: Authentication with BrianJames
+    if not tester.test_auth_login("brian"):
+        print("❌ Authentication failed. Exiting.")
+        return
+    
+    print("\n🔗 Testing Stripe Connect Onboarding (Creator Side)...")
+    # Test 3: Stripe Connect Status
+    connect_status = tester.test_stripe_connect_status()
+    
+    # Test 4: Stripe Connect Onboarding
+    onboard_result = tester.test_stripe_connect_onboard()
+    
+    print("\n📁 Testing Premium Folder Creation...")
+    # Test 5: Create Premium Folder
+    folder_id = tester.test_premium_folder_create()
+    
+    # Test 6: Get Premium Folder Details
+    if folder_id:
+        tester.test_premium_folder_get(folder_id)
+    
+    # Test 7: List Premium Folders
+    tester.test_premium_folders_list()
+    
+    print("\n💳 Testing Subscription Flow (User Side)...")
+    # Test 8: Create Subscription Checkout
+    session_id = tester.test_subscription_checkout_create(folder_id)
+    
+    # Test 9: Check Checkout Status
+    if session_id:
+        tester.test_checkout_status(session_id)
+    
+    print("\n🔔 Testing Webhook Event Handling...")
+    # Test 10: Stripe Webhook
+    tester.test_stripe_webhook()
+    
+    print("\n📋 Testing Subscription Management...")
+    # Test 11: Get My Subscriptions
+    subscriptions = tester.test_my_subscriptions()
+    
+    # Test 12: Cancel Subscription
+    if subscriptions and len(subscriptions) > 0:
+        subscription_id = subscriptions[0].get("subscription_id")
+        tester.test_subscription_cancel(subscription_id)
+    else:
+        tester.test_subscription_cancel()  # Test with dummy ID
+    
+    # Print summary
+    print("\n" + "=" * 60)
+    print("📊 PREMIUM FOLDERS & STRIPE CONNECT TEST SUMMARY")
+    print("=" * 60)
+    
+    total_tests = len(tester.test_results)
+    passed_tests = len([r for r in tester.test_results if r["success"]])
+    failed_tests = total_tests - passed_tests
+    
+    print(f"Total Tests: {total_tests}")
+    print(f"✅ Passed: {passed_tests}")
+    print(f"❌ Failed: {failed_tests}")
+    print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
+    
+    if failed_tests > 0:
+        print("\n❌ FAILED TESTS:")
+        for result in tester.test_results:
+            if not result["success"]:
+                print(f"  - {result['test']}: {result['message']}")
+    
+    print("\n🎯 Premium Folders and Stripe Connect testing completed!")
+    return tester.test_results
+
+
+if __name__ == "__main__":
+    # Run the specific Premium Folders and Stripe Connect tests as requested
+    test_premium_folders_and_stripe_flow()
