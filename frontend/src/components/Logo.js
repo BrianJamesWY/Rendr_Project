@@ -1,84 +1,40 @@
 import React from 'react';
 
-const Logo = ({ size = 'large' }) => {
+const Logo = ({ size = 'medium', style = {} }) => {
   const sizes = {
-    small: {
-      container: '60px',
-      star: '40px',
-      text: '1.5rem',
-      tagline: '0.75rem'
-    },
-    medium: {
-      container: '80px',
-      star: '60px',
-      text: '2rem',
-      tagline: '0.875rem'
-    },
-    large: {
-      container: '100px',
-      star: '80px',
-      text: '2.5rem',
-      tagline: '1rem'
-    }
+    small: { width: '48px', height: '48px', fontSize: '12px' },
+    medium: { width: '64px', height: '64px', fontSize: '16px' },
+    large: { width: '96px', height: '96px', fontSize: '24px' }
   };
 
-  const s = sizes[size] || sizes.large;
+  const currentSize = sizes[size] || sizes.medium;
 
   return (
-    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-      {/* Checkstar Logo */}
-      <div style={{
-        width: s.container,
-        height: s.container,
-        margin: '0 auto 1rem',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
+    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', ...style }}>
+      <svg 
+        viewBox="0 0 32 32" 
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ width: currentSize.width, height: currentSize.height }}
+      >
+        <defs>
+          <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style={{ stopColor: '#667eea', stopOpacity: 1 }} />
+            <stop offset="100%" style={{ stopColor: '#764ba2', stopOpacity: 1 }} />
+          </linearGradient>
+        </defs>
+        <path d="M16 2 L19.5 12 L30 12 L21.5 19 L25 29 L16 22 L7 29 L10.5 19 L2 12 L12.5 12 Z" fill="url(#starGradient)"/>
+        <path d="M12 16 L15 19 L21 13" stroke="white" strokeWidth="2.5" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      <span style={{ 
+        fontSize: currentSize.fontSize, 
+        fontWeight: '700',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
       }}>
-        <svg 
-          viewBox="0 0 24 24" 
-          style={{
-            width: s.star,
-            height: s.star,
-            fill: '#667eea'
-          }}
-        >
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-        <div style={{
-          position: 'absolute',
-          fontSize: `calc(${s.star} * 0.5)`,
-          fontWeight: 'bold',
-          color: 'white',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
-        }}>
-          ✓
-        </div>
-      </div>
-
-      {/* Rendr Text */}
-      <div style={{
-        fontSize: s.text,
-        fontWeight: 'bold',
-        color: '#667eea',
-        marginBottom: '0.5rem',
-        letterSpacing: '-0.02em'
-      }}>
-        Rendr
-      </div>
-
-      {/* Tagline */}
-      <div style={{
-        fontSize: s.tagline,
-        color: '#6b7280',
-        fontWeight: '500',
-        fontStyle: 'italic'
-      }}>
-        Bringing Truth Back to Content
-      </div>
+        RENDR
+      </span>
     </div>
   );
 };
