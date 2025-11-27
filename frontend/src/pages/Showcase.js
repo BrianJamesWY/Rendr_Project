@@ -276,11 +276,11 @@ function Showcase() {
                 
                 <label style={{ fontSize: '14px', color: '#606060', fontWeight: '500', marginLeft: '12px' }}>Platform:</label>
                 <select style={{ padding: '8px 12px', border: '1px solid #e5e5e5', borderRadius: '6px', fontSize: '14px', background: 'white', cursor: 'pointer', transition: 'border-color 0.2s' }}>
-                  <option value=\"all\">All Platforms</option>
-                  <option value=\"youtube\">YouTube</option>
-                  <option value=\"tiktok\">TikTok</option>
-                  <option value=\"instagram\">Instagram</option>
-                  <option value=\"twitter\">Twitter</option>
+                  <option value="all">All Platforms</option>
+                  <option value="youtube">YouTube</option>
+                  <option value="tiktok">TikTok</option>
+                  <option value="instagram">Instagram</option>
+                  <option value="twitter">Twitter</option>
                 </select>
               </div>
               
