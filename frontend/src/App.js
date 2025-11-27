@@ -31,6 +31,9 @@ import SubscriptionCheckout from "./pages/SubscriptionCheckout";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import NotFound from "./pages/NotFound";
 import Explore from "./pages/Explore";
+import Bounties from "./pages/Bounties";
+import PostBounty from "./pages/PostBounty";
+import ClaimBounty from "./pages/ClaimBounty";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
