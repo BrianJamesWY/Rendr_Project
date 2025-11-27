@@ -91,13 +91,12 @@ async def list_bounties(
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/my", response_model=List[Bounty])
-async def get_my_bounties(current_user: dict = Depends(get_current_user)):
+async def get_my_bounties(
+    current_user: dict = Depends(get_current_user),
+    db = Depends(get_db)
+):
     """Get bounties created by current user"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
-        
         user_id = current_user.get('id') or current_user.get('_id')
         
         bounties = await db.bounties.find(
@@ -105,7 +104,6 @@ async def get_my_bounties(current_user: dict = Depends(get_current_user)):
             {"_id": 0}
         ).sort("created_at", -1).to_list(100)
         
-        await client.close()
         return bounties
         
     except Exception as e:
