@@ -371,7 +371,7 @@ function ShowcaseEditor() {
               <iframe 
                 src={`/@${username}`} 
                 style={{ width: '100%', height: '100%', border: 'none' }}
-                title=\"Showcase Preview\"
+                title="Showcase Preview"
               />
             </div>
           </div>
