@@ -152,12 +152,11 @@ const Earnings = () => {
                     border: 'none',
                     borderRadius: '0.5rem',
                     cursor: connecting ? 'not-allowed' : 'pointer',
-                    textDecoration: 'none',
                     fontWeight: '600'
                   }}
                 >
-                  Connect Now →
-                </Link>
+                  {connecting ? 'Connecting...' : 'Connect Now →'}
+                </button>
               </div>
             </div>
           </div>
