@@ -25,16 +25,19 @@ async def get_my_subscriptions(current_user: dict = Depends(get_current_user)):
         
         user_id = current_user.get('id') or current_user.get('_id')
         
-        # TODO: Query subscriptions collection when it exists
-        # For now, return empty state
-        subscriptions = []
+        # Query subscriptions collection
+        subscriptions_cursor = db.subscriptions.find(
+            {"user_id": user_id},
+            {"_id": 0}
+        )
+        subscriptions = await subscriptions_cursor.to_list(length=100)
         
         # Calculate stats
         active_count = len([s for s in subscriptions if s.get('status') == 'active'])
         monthly_total = sum([s.get('amount', 0) / 100 for s in subscriptions if s.get('status') == 'active'])
         videos_accessible = 0  # TODO: Count videos in subscribed folders
         
-        await client.close()
+        client.close()
         
         return {
             "subscriptions": subscriptions,
