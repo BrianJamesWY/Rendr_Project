@@ -1,6 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Logo = ({ size = 'large', style = {}, onClick }) => {
+  const navigate = useNavigate();
+  
   const sizes = {
     small: { width: '32px', height: '32px', fontSize: '14px' },
     medium: { width: '48px', height: '48px', fontSize: '18px' },
@@ -10,14 +13,24 @@ const Logo = ({ size = 'large', style = {}, onClick }) => {
 
   const currentSize = sizes[size] || sizes.large;
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick();
+    } else {
+      // Default behavior: go to dashboard if logged in, otherwise home
+      const token = localStorage.getItem('token');
+      navigate(token ? '/dashboard' : '/');
+    }
+  };
+
   return (
     <div 
-      onClick={onClick}
+      onClick={handleClick}
       style={{ 
         display: 'flex', 
         alignItems: 'center', 
         gap: '12px', 
-        cursor: onClick ? 'pointer' : 'default',
+        cursor: 'pointer',
         ...style 
       }}
     >
