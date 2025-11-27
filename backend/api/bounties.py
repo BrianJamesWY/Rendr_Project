@@ -176,14 +176,11 @@ async def verify_claim(
     bounty_id: str,
     approved: bool,
     notes: str = "",
-    current_user: dict = Depends(get_current_user)
+    current_user: dict = Depends(get_current_user),
+    db = Depends(get_db)
 ):
     """Admin endpoint to verify a claim"""
     try:
-        from motor.motor_asyncio import AsyncIOMotorClient
-        client = AsyncIOMotorClient(MONGO_URL)
-        db = client[DB_NAME]
-        
         user_id = current_user.get('id') or current_user.get('_id')
         
         # Check if user is admin (you can add proper admin check here)
