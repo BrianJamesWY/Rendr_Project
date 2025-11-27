@@ -14,7 +14,7 @@ const StripeConnectReturn = () => {
   useEffect(() => {
     const verifyConnection = async () => {
       try {
-        const token = localStorage.getItem('rendr_token');
+        const token = localStorage.getItem('token');
         if (!token) {
           navigate('/creator-login');
           return;

@@ -12,7 +12,7 @@ function InvestorAnalytics() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
-  const token = localStorage.getItem('rendr_token');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (!token) {

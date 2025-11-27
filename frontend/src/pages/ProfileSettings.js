@@ -25,7 +25,7 @@ function ProfileSettings() {
   const [customPlatforms, setCustomPlatforms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const token = localStorage.getItem('rendr_token');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (!token) {

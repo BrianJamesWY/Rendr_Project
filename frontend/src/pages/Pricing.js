@@ -9,7 +9,7 @@ function Pricing() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState('');
   const [billingInterval, setBillingInterval] = useState('monthly');
-  const token = localStorage.getItem('rendr_token');
+  const token = localStorage.getItem('token');
 
   const plans = {
     free: {

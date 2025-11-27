@@ -173,7 +173,7 @@ function Admin() {
       );
 
       // Save impersonation token and flag
-      localStorage.setItem('rendr_token', response.data.token);
+      localStorage.setItem('token', response.data.token);
       localStorage.setItem('rendr_impersonating', 'true');
       localStorage.setItem('rendr_ceo_token', ceoToken);
       
@@ -187,7 +187,7 @@ function Admin() {
   const exitImpersonation = () => {
     const originalToken = localStorage.getItem('rendr_original_token');
     if (originalToken) {
-      localStorage.setItem('rendr_token', originalToken);
+      localStorage.setItem('token', originalToken);
       localStorage.removeItem('rendr_impersonating');
       localStorage.removeItem('rendr_original_token');
       navigate('/admin');

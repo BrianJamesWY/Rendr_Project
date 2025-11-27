@@ -11,7 +11,7 @@ function PaymentSuccess() {
   const [status, setStatus] = useState('checking');
   const [paymentInfo, setPaymentInfo] = useState(null);
   const [error, setError] = useState('');
-  const token = localStorage.getItem('rendr_token');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     const sessionId = searchParams.get('session_id');

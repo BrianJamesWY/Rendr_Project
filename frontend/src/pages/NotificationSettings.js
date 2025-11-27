@@ -18,7 +18,7 @@ function NotificationSettings() {
   const [smsOptedIn, setSmsOptedIn] = useState(true);
   const [videoLengthThreshold, setVideoLengthThreshold] = useState(30);
 
-  const token = localStorage.getItem('rendr_token');
+  const token = localStorage.getItem('token');
 
   useEffect(() => {
     if (!token) {

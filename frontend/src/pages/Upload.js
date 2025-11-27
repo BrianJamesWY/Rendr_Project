@@ -162,7 +162,7 @@ function Upload() {
   const [progress, setProgress] = useState(0);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('rendr_token'));
+  const [token, setToken] = useState(localStorage.getItem('token'));
 
   // Load folders when token is available
   React.useEffect(() => {
@@ -265,7 +265,7 @@ function Upload() {
       });
       const newToken = response.data.token;
       setToken(newToken);
-      localStorage.setItem('rendr_token', newToken);
+      localStorage.setItem('token', newToken);
       setError(null);
     } catch (err) {
       setError('Login failed. Please register first.');
