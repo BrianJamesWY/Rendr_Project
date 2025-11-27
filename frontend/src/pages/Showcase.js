@@ -425,7 +425,7 @@ function Showcase() {
               <h2 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '24px' }}>Get in Touch</h2>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#030303' }}>Your Name</label>
-                <input type=\"text\" placeholder=\"Enter your name\" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }} />
+                <input type="text" placeholder="Enter your name" style={{ width: '100%', padding: '12px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }} />
               </div>
               <div style={{ marginBottom: '20px' }}>
                 <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', marginBottom: '8px', color: '#030303' }}>Your Email</label>
