@@ -199,12 +199,28 @@ class StripeService:
             
             # If connected account specified, set up revenue split
             if connected_account_id and application_fee_percent:
-                session_params["subscription_data"] = {
-                    "application_fee_percent": round(application_fee_percent * 100, 2),  # Stripe wants percentage as 15, not 0.15
-                    "transfer_data": {
-                        "destination": connected_account_id
-                    }
-                }
+                try:
+                    # Check if account has transfers capability enabled
+                    account = stripe.Account.retrieve(connected_account_id)
+                    has_transfers = (
+                        account.capabilities and 
+                        account.capabilities.get('transfers') == 'active'
+                    )
+                    
+                    if has_transfers:
+                        session_params["subscription_data"] = {
+                            "application_fee_percent": round(application_fee_percent * 100, 2),
+                            "transfer_data": {
+                                "destination": connected_account_id
+                            }
+                        }
+                    else:
+                        # Account doesn't have transfers enabled yet - create session without transfer
+                        # The platform will handle payouts manually until account is fully onboarded
+                        print(f"⚠️ Connected account {connected_account_id} doesn't have transfers capability yet")
+                except Exception as e:
+                    print(f"⚠️ Could not verify account capabilities: {e}")
+                    # Create session without transfer data as fallback
             
             session = stripe.checkout.Session.create(**session_params)
             
