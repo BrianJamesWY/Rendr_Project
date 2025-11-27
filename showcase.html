@@ -1,0 +1,2510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@brianjames - RENDR Creator Showcase</title>
+    <style>
+        :root {
+            /* Primary Brand */
+            --purple-gradient-start: #667eea;
+            --purple-gradient-end: #764ba2;
+            
+            /* Folder Color Presets */
+            --green: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --purple: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            --gold: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            --blue: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --red: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            
+            /* Text Colors */
+            --text-primary: #030303;
+            --text-secondary: #606060;
+            --text-light: #999;
+            
+            /* Spacing - COMPACT */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            
+            /* Shadows */
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.1);
+            --shadow-lg: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8f9fa;
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            background: white;
+            padding: 12px 24px;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        /* Header Section - LARGE LEFT PROFILE */
+        .header-section {
+            background: linear-gradient(135deg, var(--purple-gradient-start), var(--purple-gradient-end));
+            padding: 50px 24px;
+            color: white;
+            position: relative;
+            min-height: 300px;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .profile-left-section {
+            flex-shrink: 0;
+        }
+
+        .profile-pic {
+            width: 240px; /* LARGE - 3x+ the social links */
+            height: 240px;
+            border-radius: 50%; /* PERFECTLY ROUND */
+            border: 6px solid white;
+            background: white;
+            object-fit: cover;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.3);
+            display: block;
+            aspect-ratio: 1 / 1; /* Force square aspect ratio */
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex-grow: 1;
+            text-align: center;
+            padding-right: 240px; /* Balance the layout */
+        }
+
+        .display-name {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .verified-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .username {
+            font-size: 18px;
+            opacity: 0.9;
+            margin-bottom: 16px;
+        }
+
+        .bio {
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 24px;
+            opacity: 0.95;
+        }
+
+        /* Social Links - with custom profile images */
+        .social-links {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 66px; /* Balanced size */
+            height: 66px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-link img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .social-link .social-icon-default {
+            width: 30px;
+            height: 30px;
+            color: white;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px) scale(1.05);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 32px;
+            font-size: 14px;
+        }
+
+        .stat {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Navigation Tabs - Sticky */
+        .nav-tabs {
+            background: white;
+            border-bottom: 1px solid #e5e5e5;
+            position: sticky;
+            top: 56px;
+            z-index: 100;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+        }
+
+        .tabs-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            padding: 0 24px;
+            gap: 2px;
+        }
+
+        .tab {
+            padding: 14px 18px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .tab.active {
+            color: var(--purple-gradient-start);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--purple-gradient-start), var(--purple-gradient-end));
+        }
+
+        /* Custom tab styling */
+        .tab.custom-tab {
+            /* BACKEND: Apply creator's custom colors */
+        }
+
+        .tab-title {
+            /* Allow for custom font styles */
+        }
+
+        /* Main Content Area */
+        .content-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .tab-content {
+            display: none;
+            /* BACKEND: Each tab can have custom background-color */
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tab Content Customization Classes */
+        .tab-content.custom-bg {
+            /* BACKEND: Apply creator's custom background color/gradient */
+            background: var(--custom-tab-bg);
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        /* Sorting Controls */
+        .video-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .sort-options {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .sort-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .sort-select {
+            padding: 8px 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .sort-select:hover {
+            border-color: var(--purple-gradient-start);
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--purple-gradient-start);
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .view-btn {
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #e5e5e5;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .view-btn.active {
+            background: var(--purple-gradient-start);
+            color: white;
+            border-color: var(--purple-gradient-start);
+        }
+
+        /* Video Grid - EXTREMELY COMPACT */
+        .videos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Ultra-small thumbnails */
+            gap: 10px;
+            margin-bottom: 32px;
+        }
+
+        .video-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .video-thumbnail-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            background: #e5e5e5;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .video-card:hover .video-thumbnail {
+            transform: scale(1.05);
+        }
+
+        /* Video Overlay */
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .video-card:hover .video-overlay {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .play-icon {
+            width: 24px;
+            height: 24px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s;
+        }
+
+        .video-card:hover .play-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Video Info - EXTREMELY COMPACT */
+        .video-info {
+            padding-top: 6px;
+        }
+
+        .video-title {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.2;
+            margin-bottom: 2px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .video-meta {
+            font-size: 10px;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+
+        .video-views {
+            margin-bottom: 1px;
+        }
+
+        .video-time-code {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .rendr-code {
+            color: var(--purple-gradient-start);
+            font-weight: 600;
+        }
+
+        /* Premium Folders Grid - Enhanced Customization */
+        .folders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .folder-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .folder-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .folder-header {
+            padding: 24px;
+            background: var(--green);
+            color: white;
+            height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .folder-header.has-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 1;
+        }
+
+        .folder-header > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .folder-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        .folder-name {
+            font-size: 19px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .folder-description {
+            font-size: 13px;
+            opacity: 0.95;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .folder-body {
+            padding: 20px;
+        }
+
+        .folder-price-input {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .folder-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .custom-price-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .folder-stats {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Thumbnail Preview Grid - Customizable blocks */
+        .thumbnail-preview {
+            display: grid;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .thumbnail-preview.grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .thumbnail-preview.grid-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .thumbnail-preview.grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .preview-thumb {
+            padding-bottom: 56.25%;
+            background: #e5e5e5;
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-thumb img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* About Tab Content - Fully Customizable */
+        .about-content {
+            display: grid;
+            grid-template-columns: 65% 35%;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-block {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .about-block.custom-styled {
+            /* These will be applied via inline styles for customization */
+        }
+
+        .block-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .block-title.editable {
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        .block-title.editable:hover {
+            border-bottom-color: var(--purple-gradient-start);
+        }
+
+        /* Contact Tab Styles */
+        .contact-section {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .message-form {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--purple-gradient-start);
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .send-btn {
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--purple-gradient-start), var(--purple-gradient-end));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Analytics Tab */
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .stat-card-title {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .stat-card-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-card-change {
+            font-size: 13px;
+            color: #10b981;
+        }
+
+        .stat-card-change.negative {
+            color: #ef4444;
+        }
+
+        /* Schedule Tab */
+        .schedule-calendar {
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .schedule-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .upcoming-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .upcoming-item {
+            padding: 16px;
+            background: #f9fafb;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Community Tab */
+        .community-feed {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #e5e5e5;
+        }
+
+        .post-author {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 24px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .post-action {
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .post-action:hover {
+            color: var(--purple-gradient-start);
+        }
+
+        /* Live Streaming Styles */
+        .live-status {
+            position: relative;
+        }
+
+        .live-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #ef4444;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+            }
+        }
+
+        /* Store Product Cards */
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .store-grid {
+            margin-bottom: 40px;
+        }
+
+        /* Store Section */
+        .store-section {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Subscribe Button */
+        .subscribe-btn {
+            width: 100%;
+            padding: 11px 20px;
+            background: linear-gradient(135deg, var(--purple-gradient-start), var(--purple-gradient-end));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .subscribe-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* About Tab Content */
+        .about-content {
+            display: grid;
+            grid-template-columns: 65% 35%;
+            gap: 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-main {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .about-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .content-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            background: #f3f4f6;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        /* Verification Card */
+        .verification-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .verification-icon {
+            width: 32px;
+            height: 32px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Load More Button */
+        .load-more {
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .load-more-btn {
+            padding: 10px 32px;
+            background: white;
+            border: 2px solid #e5e5e5;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .load-more-btn:hover {
+            border-color: var(--purple-gradient-start);
+            color: var(--purple-gradient-start);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                align-items: center;
+                gap: 30px;
+            }
+
+            .profile-pic {
+                width: 200px;
+                height: 200px;
+            }
+
+            .profile-info {
+                padding-right: 0;
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+
+            .stats-row {
+                justify-content: center;
+            }
+
+            .videos-grid {
+                grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            }
+            
+            .folders-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs-container {
+                overflow-x: auto;
+                display: flex;
+                gap: 0;
+            }
+
+            .tab {
+                flex-shrink: 0;
+                padding: 14px 16px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-section {
+                padding: 32px 20px 40px;
+            }
+
+            .profile-pic {
+                width: 180px;
+                height: 180px;
+            }
+
+            .profile-info {
+                text-align: center;
+                padding-right: 0;
+            }
+
+            .display-name {
+                font-size: 28px;
+            }
+
+            .stats-row {
+                gap: 16px;
+                flex-wrap: wrap;
+            }
+
+            .stat-value {
+                font-size: 18px;
+            }
+
+            .social-link {
+                width: 50px;
+                height: 50px;
+            }
+
+            .social-links {
+                justify-content: center;
+                gap: 10px;
+            }
+
+            .videos-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+            }
+
+            .folders-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content-wrapper {
+                padding: 16px;
+            }
+
+            .video-controls {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .sort-options {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .sort-select {
+                flex: 1;
+            }
+
+            .tabs-container {
+                padding: 0 10px;
+            }
+
+            .tab {
+                font-size: 12px;
+                padding: 12px 10px;
+            }
+        }
+
+        /* Widget System Placeholder */
+        .widget-section {
+            margin-bottom: 40px;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .widget-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .widget-more {
+            font-size: 14px;
+            color: var(--purple-gradient-start);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .widget-more:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <!-- RENDR Logo -->
+            <svg class="logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="starGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M16 2 L19.5 12 L30 12 L21.5 19 L25 29 L16 22 L7 29 L10.5 19 L2 12 L12.5 12 Z" fill="url(#starGradient)"/>
+                <path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>RENDR</span>
+        </a>
+        <div class="nav-actions">
+            <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                <!-- BACKEND: Trigger subscription flow -->
+                Subscribe
+            </button>
+        </div>
+    </nav>
+
+    <!-- Header Section with LARGE LEFT Profile -->
+    <header class="header-section">
+        <!-- BACKEND: Load from GET /api/showcase/@username -->
+        <div class="header-content">
+            <div class="profile-left-section">
+                <img src="https://via.placeholder.com/240/667eea/ffffff?text=Profile" alt="Profile" class="profile-pic">
+                <!-- BACKEND: profile.profile_image_url -->
+            </div>
+            
+            <div class="profile-info">
+                <h1 class="display-name">
+                    Brian James
+                    <!-- BACKEND: profile.display_name -->
+                    <span class="verified-badge">
+                        ✓ Creator
+                        <!-- BACKEND: Show creator badge -->
+                    </span>
+                </h1>
+                
+                <div class="username">@brianjames</div>
+                <!-- BACKEND: profile.username -->
+                
+                <p class="bio">
+                    Creator & CEO of RENDR. Building the future of content verification with blockchain technology and steganographic watermarking.
+                    <!-- BACKEND: profile.bio -->
+                </p>
+
+                <!-- Social Links - LARGER with custom profile images -->
+                <div class="social-links">
+                    <!-- BACKEND: Loop through social_links object -->
+                    <a href="#" class="social-link" title="YouTube">
+                        <!-- BACKEND: If custom_avatar_url exists, use it, otherwise use default icon -->
+                        <img src="https://via.placeholder.com/72/ff0000/ffffff?text=YT" alt="YouTube Profile">
+                        <!-- BACKEND: social_links.youtube.custom_avatar_url -->
+                    </a>
+                    <a href="#" class="social-link" title="TikTok">
+                        <img src="https://via.placeholder.com/72/000000/ffffff?text=TT" alt="TikTok Profile">
+                        <!-- BACKEND: social_links.tiktok.custom_avatar_url -->
+                    </a>
+                    <a href="#" class="social-link" title="Instagram">
+                        <img src="https://via.placeholder.com/72/e4405f/ffffff?text=IG" alt="Instagram Profile">
+                        <!-- BACKEND: social_links.instagram.custom_avatar_url -->
+                    </a>
+                    <a href="#" class="social-link" title="Twitter">
+                        <!-- Using default icon for this one -->
+                        <svg class="social-icon-default" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link" title="LinkedIn">
+                        <img src="https://via.placeholder.com/72/0077b5/ffffff?text=LI" alt="LinkedIn Profile">
+                        <!-- BACKEND: social_links.linkedin.custom_avatar_url -->
+                    </a>
+                </div>
+
+                <!-- Stats Row -->
+                <div class="stats-row">
+                    <div class="stat">
+                        <span class="stat-value">127</span>
+                        <span class="stat-label">Videos</span>
+                        <!-- BACKEND: stats.total_videos -->
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">3</span>
+                        <span class="stat-label">Folders</span>
+                        <!-- BACKEND: stats.premium_folders_count -->
+                    </div>
+                    <div class="stat">
+                        <span class="stat-value">284K</span>
+                        <span class="stat-label">Views</span>
+                        <!-- BACKEND: stats.total_views -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs with Customization -->
+    <div class="nav-tabs">
+        <div class="tabs-container">
+            <button class="tab active" data-tab="videos">Videos</button>
+            <button class="tab" data-tab="premium">Premium Videos</button>
+            <button class="tab" data-tab="schedule" data-custom-title="true">
+                <span class="tab-title">Schedule</span>
+                <!-- BACKEND: creators can customize this title -->
+            </button>
+            <button class="tab" data-tab="community" data-custom-title="true">
+                <span class="tab-title">Community</span>
+                <!-- BACKEND: creators can customize this title -->
+            </button>
+            <button class="tab" data-tab="store" data-custom-title="true">
+                <span class="tab-title">Store</span>
+                <!-- BACKEND: creators can customize this title -->
+            </button>
+            <button class="tab" data-tab="about" data-custom-title="true">
+                <span class="tab-title">About</span>
+                <!-- BACKEND: creators can customize this title -->
+            </button>
+            <button class="tab" data-tab="contact" data-custom-title="true">
+                <span class="tab-title">Contact</span>
+                <!-- BACKEND: e.g. "Holler at me" -->
+            </button>
+            <button class="tab custom-tab" data-tab="custom1" data-custom-title="true" 
+                    style="background-color: rgba(139, 92, 246, 0.1);">
+                <span class="tab-title">Custom Tab 1</span>
+                <!-- BACKEND: creator defines title and content -->
+            </button>
+            <button class="tab custom-tab" data-tab="custom2" data-custom-title="true"
+                    style="background-color: rgba(16, 185, 129, 0.1);">
+                <span class="tab-title">Custom Tab 2</span>
+                <!-- BACKEND: creator defines title and content -->
+            </button>
+            <button class="tab custom-tab" data-tab="custom3" data-custom-title="true"
+                    style="background-color: rgba(245, 158, 11, 0.1);">
+                <span class="tab-title">Custom Tab 3</span>
+                <!-- BACKEND: creator defines title and content -->
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <!-- All Videos Tab -->
+        <div class="tab-content active" id="videos">
+            <!-- Sorting and Filter Controls -->
+            <div class="video-controls">
+                <div class="sort-options">
+                    <label class="sort-label">Sort by:</label>
+                    <select class="sort-select" id="sortBy">
+                        <option value="recent">Most Recent</option>
+                        <option value="views">Most Views</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                    
+                    <label class="sort-label">Platform:</label>
+                    <select class="sort-select" id="filterPlatform">
+                        <option value="all">All Platforms</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="tiktok">TikTok</option>
+                        <option value="instagram">Instagram</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="rendr">RENDR Only</option>
+                    </select>
+                </div>
+                
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid">Grid</button>
+                    <button class="view-btn" data-view="list">List</button>
+                </div>
+            </div>
+            
+            <!-- Widget System - Recent Videos -->
+            <div class="widget-section">
+                <div class="videos-grid">
+                    <!-- BACKEND: Loop through public_videos array -->
+                    <!-- Video Cards with RENDR Codes -->
+                    <div class="video-card" data-video-id="vid_001">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/667eea/ffffff?text=Video+1" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Building the Future of Content Verification</h3>
+                            <!-- BACKEND: video.title -->
+                            <div class="video-meta">
+                                38.7K views • 2 days ago
+                                <br><span class="rendr-code">RN4X-8K2L</span>
+                                <!-- BACKEND: video.rendr_code -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_002">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/10b981/ffffff?text=Video+2" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">DCT Watermarking Technology</h3>
+                            <div class="video-meta">
+                                24.3K views • 5 days ago
+                                <br><span class="rendr-code">RN7B-3M9P</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_003">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/f59e0b/ffffff?text=Video+3" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Blockchain Authentication</h3>
+                            <div class="video-meta">
+                                19.8K views • 1 week ago
+                                <br><span class="rendr-code">RN2Q-5K7R</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_004">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/3b82f6/ffffff?text=Video+4" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Fighting Deepfakes</h3>
+                            <div class="video-meta">
+                                45.2K views • 2 weeks ago
+                                <br><span class="rendr-code">RN9L-1A4C</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_005">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/ef4444/ffffff?text=Video+5" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Platform Architecture</h3>
+                            <div class="video-meta">
+                                12.1K views • 2 weeks ago
+                                <br><span class="rendr-code">RN6W-7P2Q</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_006">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/8b5cf6/ffffff?text=Video+6" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Creator Monetization</h3>
+                            <div class="video-meta">
+                                8.9K views • 3 weeks ago
+                                <br><span class="rendr-code">RN3F-8N5T</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Continue with more video cards... -->
+                    <div class="video-card" data-video-id="vid_007">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/10b981/ffffff?text=Video+7" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Why Verification Matters</h3>
+                            <div class="video-meta">
+                                31.4K views • 3 weeks ago
+                                <br><span class="rendr-code">RN8J-4M6B</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_008">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/f59e0b/ffffff?text=Video+8" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Patent Filing Journey</h3>
+                            <div class="video-meta">
+                                5.6K views • 1 month ago
+                                <br><span class="rendr-code">RN5D-9K3X</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_009">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/3b82f6/ffffff?text=Video+9" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">API Integration Guide</h3>
+                            <div class="video-meta">
+                                7.2K views • 1 month ago
+                                <br><span class="rendr-code">RN1H-6L8W</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_010">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/ef4444/ffffff?text=Video+10" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Q&A Session</h3>
+                            <div class="video-meta">
+                                15.8K views • 1 month ago
+                                <br><span class="rendr-code">RN4G-2J7N</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_011">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/8b5cf6/ffffff?text=Video+11" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Future of Media</h3>
+                            <div class="video-meta">
+                                22.3K views • 2 months ago
+                                <br><span class="rendr-code">RN7K-5R9M</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_012">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/10b981/ffffff?text=Video+12" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Steganography Deep Dive</h3>
+                            <div class="video-meta">
+                                9.1K views • 2 months ago
+                                <br><span class="rendr-code">RN2V-8T4P</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional videos to show more on screen -->
+                    <div class="video-card" data-video-id="vid_013">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/667eea/ffffff?text=Video+13" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Security Features</h3>
+                            <div class="video-meta">
+                                14.2K views • 2 months ago
+                                <br><span class="rendr-code">RN9S-3W6L</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_014">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/f59e0b/ffffff?text=Video+14" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Beta Testing Results</h3>
+                            <div class="video-meta">
+                                18.5K views • 3 months ago
+                                <br><span class="rendr-code">RN6E-7Q2A</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_015">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/3b82f6/ffffff?text=Video+15" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">User Dashboard Tour</h3>
+                            <div class="video-meta">
+                                11.7K views • 3 months ago
+                                <br><span class="rendr-code">RN3N-1F8Z</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="video-card" data-video-id="vid_016">
+                        <div class="video-thumbnail-wrapper">
+                            <img src="https://via.placeholder.com/320x180/ef4444/ffffff?text=Video+16" 
+                                 alt="Video thumbnail" class="video-thumbnail">
+                            <div class="video-overlay">
+                                <div class="play-icon">
+                                    <svg width="16" height="16" fill="white" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">Investment Pitch</h3>
+                            <div class="video-meta">
+                                26.9K views • 3 months ago
+                                <br><span class="rendr-code">RN8U-4Y5K</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Load More -->
+                <div class="load-more">
+                    <button class="load-more-btn">
+                        Load More Videos
+                        <!-- BACKEND: Implement pagination -->
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Premium Videos Tab -->
+        <div class="tab-content" id="premium">
+            <div class="folders-grid">
+                <!-- BACKEND: Loop through premium_folders array -->
+                <!-- Folder Card 1 - Fully Customizable -->
+                <div class="folder-card" data-folder-id="fld_001">
+                    <div class="folder-header has-image" 
+                         style="background: linear-gradient(135deg, #10b981, #059669); 
+                                background-image: url('https://via.placeholder.com/400x120/10b981/ffffff?text=Custom+Banner');">
+                        <!-- BACKEND: folder.custom_gradient OR folder.banner_image -->
+                        <div class="folder-icon">🎬</div>
+                        <!-- BACKEND: folder.custom_icon -->
+                        <div class="folder-name">Exclusive Content</div>
+                        <!-- BACKEND: folder.name -->
+                        <div class="folder-description">
+                            Behind-the-scenes footage and technical deep dives
+                            <!-- BACKEND: folder.description -->
+                        </div>
+                    </div>
+                    <div class="folder-body">
+                        <div class="folder-price-input">
+                            <div class="folder-price">$9.99/month</div>
+                            <span class="custom-price-label">(Creator sets price)</span>
+                        </div>
+                        <!-- BACKEND: folder.custom_price -->
+                        <div class="folder-stats">24 videos • 89 subscribers</div>
+                        <!-- BACKEND: folder.video_count, folder.subscriber_count -->
+                        
+                        <div class="thumbnail-preview grid-4">
+                            <!-- BACKEND: folder.preview_grid_size (2, 3, or 4) -->
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/667eea/ffffff" alt="Preview">
+                            </div>
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/10b981/ffffff" alt="Preview">
+                            </div>
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/f59e0b/ffffff" alt="Preview">
+                            </div>
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/3b82f6/ffffff" alt="Preview">
+                            </div>
+                        </div>
+                        
+                        <button class="subscribe-btn" onclick="subscribeToFolder('fld_001')">
+                            Subscribe Now
+                            <!-- BACKEND: Trigger Stripe Connect subscription flow -->
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Folder Card 2 -->
+                <div class="folder-card" data-folder-id="fld_002">
+                    <div class="folder-header" 
+                         style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+                        <div class="folder-icon">⭐</div>
+                        <div class="folder-name">Premium Tutorials</div>
+                        <div class="folder-description">
+                            Advanced implementation guides and code walkthroughs
+                        </div>
+                    </div>
+                    <div class="folder-body">
+                        <div class="folder-price-input">
+                            <div class="folder-price">$19.99/month</div>
+                            <span class="custom-price-label">(Creator sets price)</span>
+                        </div>
+                        <div class="folder-stats">42 videos • 156 subscribers</div>
+                        
+                        <div class="thumbnail-preview grid-3">
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/8b5cf6/ffffff" alt="Preview">
+                            </div>
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/ef4444/ffffff" alt="Preview">
+                            </div>
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/10b981/ffffff" alt="Preview">
+                            </div>
+                        </div>
+                        
+                        <button class="subscribe-btn" onclick="subscribeToFolder('fld_002')">
+                            Subscribe Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Folder Card 3 -->
+                <div class="folder-card" data-folder-id="fld_003">
+                    <div class="folder-header" 
+                         style="background: linear-gradient(135deg, #f59e0b, #d97706);">
+                        <div class="folder-icon">🏆</div>
+                        <div class="folder-name">Gold Tier Access</div>
+                        <div class="folder-description">
+                            Early access to features and direct support
+                        </div>
+                    </div>
+                    <div class="folder-body">
+                        <div class="folder-price-input">
+                            <div class="folder-price">$49.99/month</div>
+                            <span class="custom-price-label">(Creator sets price)</span>
+                        </div>
+                        <div class="folder-stats">8 videos • 23 subscribers</div>
+                        
+                        <div class="thumbnail-preview grid-2">
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/f59e0b/ffffff" alt="Preview">
+                            </div>
+                            <div class="preview-thumb">
+                                <img src="https://via.placeholder.com/140x80/3b82f6/ffffff" alt="Preview">
+                            </div>
+                        </div>
+                        
+                        <button class="subscribe-btn" onclick="subscribeToFolder('fld_003')">
+                            Subscribe Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Tab -->
+        <div class="tab-content" id="about">
+            <div class="about-content">
+                <div class="about-main">
+                    <h2 class="section-title">About Brian James</h2>
+                    <p style="margin-bottom: 20px; line-height: 1.6;">
+                        As the solo developer and CEO of RENDR, I'm building the future of content verification. 
+                        With a filed patent for DCT-domain steganographic watermarking technology, RENDR aims to 
+                        combat deepfakes and misinformation through blockchain-secured video authentication.
+                    </p>
+                    
+                    <p style="margin-bottom: 20px; line-height: 1.6;">
+                        My journey started with recognizing the growing threat of synthetic media and the need 
+                        for trustworthy content verification. RENDR represents a comprehensive solution that 
+                        combines cutting-edge technology with practical monetization strategies for content creators.
+                    </p>
+                    
+                    <h3 style="font-size: 18px; font-weight: 600; margin: 24px 0 12px;">Content Focus</h3>
+                    <div class="content-tags">
+                        <span class="tag">Blockchain</span>
+                        <span class="tag">Video Verification</span>
+                        <span class="tag">Steganography</span>
+                        <span class="tag">Content Authentication</span>
+                        <span class="tag">Deepfake Detection</span>
+                        <span class="tag">Creator Economy</span>
+                    </div>
+                    
+                    <h3 style="font-size: 18px; font-weight: 600; margin: 24px 0 12px;">Equipment & Setup</h3>
+                    <p style="line-height: 1.6;">
+                        Recording with professional equipment to ensure the highest quality verified content. 
+                        All videos are watermarked using RENDR's proprietary technology.
+                    </p>
+                </div>
+                
+                <div class="about-sidebar">
+                    <div class="sidebar-card">
+                        <h3 class="section-title">Verification</h3>
+                        <div class="verification-status">
+                            <div class="verification-icon">
+                                <svg width="20" height="20" fill="white" viewBox="0 0 24 24">
+                                    <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600;">Verified Creator</div>
+                                <div style="font-size: 13px; color: var(--text-secondary);">
+                                    Since November 2024
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-top: 16px; padding: 12px; background: #f9fafb; border-radius: 8px;">
+                            <div style="font-size: 14px; font-weight: 600; margin-bottom: 4px;">Pro Tier</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">
+                                Advanced verification features enabled
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-card">
+                        <h3 class="section-title">Contact</h3>
+                        <div style="font-size: 14px; line-height: 1.8;">
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 500; margin-bottom: 4px;">Business Inquiries</div>
+                                <a href="/cdn-cgi/l/email-protection#e88a9d9b81868d9b9ba89a8d868c9ac68187" style="color: var(--purple-gradient-start); text-decoration: none;">
+                                    <span class="__cf_email__" data-cfemail="096b7c7a60676c7a7a497b6c676d7b276066">[email&#160;protected]</span>
+                                </a>
+                            </div>
+                            
+                            <div style="margin-bottom: 12px;">
+                                <div style="font-weight: 500; margin-bottom: 4px;">Location</div>
+                                <div style="color: var(--text-secondary);">Basin, Wyoming, US</div>
+                            </div>
+                            
+                            <div>
+                                <div style="font-weight: 500; margin-bottom: 4px;">Member Since</div>
+                                <div style="color: var(--text-secondary);">November 2024</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Community Tab -->
+        <div class="tab-content" id="community">
+            <div class="community-feed">
+                <!-- Post Card -->
+                <div class="post-card">
+                    <div class="post-header">
+                        <img src="https://via.placeholder.com/40" alt="Avatar" class="post-avatar">
+                        <div>
+                            <div class="post-author">Brian James</div>
+                            <div class="post-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        Just finished implementing the new content theft detection system! 
+                        It can automatically identify when your verified content has been stolen and reposted. 
+                        This is a game-changer for creator protection. 🚀
+                    </div>
+                    <div class="post-actions">
+                        <span class="post-action">👍 124 Likes</span>
+                        <span class="post-action">💬 23 Comments</span>
+                        <span class="post-action">🔄 Share</span>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-header">
+                        <img src="https://via.placeholder.com/40" alt="Avatar" class="post-avatar">
+                        <div>
+                            <div class="post-author">Sarah Chen</div>
+                            <div class="post-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        Thanks for the tutorial on DCT watermarking! Finally understand how it works. 
+                        Question: Can this be applied to live streams as well?
+                    </div>
+                    <div class="post-actions">
+                        <span class="post-action">👍 45 Likes</span>
+                        <span class="post-action">💬 8 Comments</span>
+                        <span class="post-action">🔄 Share</span>
+                    </div>
+                </div>
+                
+                <!-- Post Input -->
+                <div class="post-card" style="margin-top: 32px;">
+                    <textarea class="form-textarea" placeholder="Share an update with your community..." 
+                              style="margin-bottom: 16px;"></textarea>
+                    <button class="send-btn">Post Update</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Schedule Tab -->
+        <div class="tab-content" id="schedule">
+            <div class="schedule-calendar">
+                <div class="schedule-header">
+                    <h2 class="section-title">Upcoming Content</h2>
+                    <button class="subscribe-btn" style="width: auto;">
+                        + Schedule New
+                    </button>
+                </div>
+                
+                <div class="upcoming-list">
+                    <div class="upcoming-item">
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 4px;">
+                                Live Q&A: Patent Process & Funding
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">
+                                Thursday, Nov 28 at 3:00 PM EST
+                            </div>
+                        </div>
+                        <span class="tag">Live Stream</span>
+                    </div>
+                    
+                    <div class="upcoming-item">
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 4px;">
+                                Tutorial: Implementing Blockchain Verification
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">
+                                Saturday, Nov 30 at 12:00 PM EST
+                            </div>
+                        </div>
+                        <span class="tag">Premium</span>
+                    </div>
+                    
+                    <div class="upcoming-item">
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 4px;">
+                                RENDR Platform Demo
+                            </div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">
+                                Monday, Dec 2 at 2:00 PM EST
+                            </div>
+                        </div>
+                        <span class="tag">Public</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Store/Merch Tab -->
+        <div class="tab-content" id="store">
+            <div class="store-section" style="background: #ffffff;">
+                <!-- BACKEND: customizable background color -->
+                <div style="background: linear-gradient(135deg, #667eea, #764ba2); padding: 32px; 
+                        border-radius: 12px; margin-bottom: 32px; color: white; text-align: center;">
+                    <!-- BACKEND: customizable banner gradient/image -->
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Official Merch Store</h2>
+                    <p style="font-size: 16px; opacity: 0.9;">Support the channel with exclusive branded merchandise</p>
+                </div>
+                
+                <div class="store-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+                        gap: 24px; margin-bottom: 32px;">
+                    
+                    <!-- Merch Product 1 -->
+                    <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; 
+                            box-shadow: var(--shadow-md); transition: all 0.3s; cursor: pointer;">
+                        <div style="height: 250px; background: url('https://via.placeholder.com/300x250/667eea/ffffff?text=T-Shirt') center/cover;">
+                            <!-- BACKEND: product.image_url -->
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                RENDR Logo T-Shirt
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                Premium cotton blend • Sizes S-3XL
+                            </p>
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <span style="width: 24px; height: 24px; background: #000; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #fff; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #667eea; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700;">$29.99</span>
+                                <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Merch Product 2 -->
+                    <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; 
+                            box-shadow: var(--shadow-md); transition: all 0.3s; cursor: pointer;">
+                        <div style="height: 250px; background: url('https://via.placeholder.com/300x250/10b981/ffffff?text=Hoodie') center/cover;">
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                Verified Creator Hoodie
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                Heavyweight fleece • Embroidered logo
+                            </p>
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <span style="width: 24px; height: 24px; background: #1f2937; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #667eea; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700;">$49.99</span>
+                                <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Merch Product 3 -->
+                    <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; 
+                            box-shadow: var(--shadow-md); transition: all 0.3s; cursor: pointer;">
+                        <div style="height: 250px; background: url('https://via.placeholder.com/300x250/f59e0b/ffffff?text=Mug') center/cover;">
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                RENDR Coffee Mug
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                Ceramic 15oz • Dishwasher safe
+                            </p>
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <span style="width: 24px; height: 24px; background: #fff; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #000; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700;">$19.99</span>
+                                <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Merch Product 4 -->
+                    <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; 
+                            box-shadow: var(--shadow-md); transition: all 0.3s; cursor: pointer;">
+                        <div style="height: 250px; background: url('https://via.placeholder.com/300x250/8b5cf6/ffffff?text=Cap') center/cover;">
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                Snapback Cap
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                Adjustable • Embroidered logo
+                            </p>
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <span style="width: 24px; height: 24px; background: #000; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #667eea; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #ef4444; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700;">$24.99</span>
+                                <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Merch Product 5 - Stickers -->
+                    <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; 
+                            box-shadow: var(--shadow-md); transition: all 0.3s; cursor: pointer;">
+                        <div style="height: 250px; background: url('https://via.placeholder.com/300x250/3b82f6/ffffff?text=Sticker+Pack') center/cover;">
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                Sticker Pack
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                10 vinyl stickers • Weatherproof
+                            </p>
+                            <div style="margin-bottom: 16px; font-size: 12px; color: var(--purple-gradient-start);">
+                                ✓ Free shipping on orders over $50
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700;">$9.99</span>
+                                <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Merch Product 6 - Phone Case -->
+                    <div class="product-card" style="background: white; border-radius: 12px; overflow: hidden; 
+                            box-shadow: var(--shadow-md); transition: all 0.3s; cursor: pointer;">
+                        <div style="height: 250px; background: url('https://via.placeholder.com/300x250/ef4444/ffffff?text=Phone+Case') center/cover;">
+                        </div>
+                        <div style="padding: 20px;">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                Phone Case
+                            </h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                                Available for all models • Protective
+                            </p>
+                            <div style="display: flex; gap: 6px; margin-bottom: 16px;">
+                                <span style="width: 24px; height: 24px; background: #000; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                                <span style="width: 24px; height: 24px; background: #667eea; border-radius: 50%; border: 2px solid #e5e5e5;"></span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 24px; font-weight: 700;">$34.99</span>
+                                <button class="subscribe-btn" style="width: auto; padding: 8px 20px;">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Shopping Cart Summary -->
+                <div style="background: #f9fafb; padding: 24px; border-radius: 12px; max-width: 400px; margin: 0 auto;">
+                    <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px;">Shopping Cart</h3>
+                    <div style="font-size: 14px; color: var(--text-secondary); margin-bottom: 20px;">
+                        0 items in cart
+                    </div>
+                    <button class="subscribe-btn" style="width: 100%; background: #10b981;">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Tab 1 -->
+        <div class="tab-content" id="custom1">
+            <div class="custom-tab-container" style="background: #ffffff; padding: 32px; border-radius: 12px;">
+                <!-- BACKEND: Creator can fully customize this content -->
+                <div style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); padding: 40px; 
+                        border-radius: 12px; margin-bottom: 32px; color: white; text-align: center;">
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 16px;">
+                        Custom Section 1
+                        <!-- BACKEND: creator.custom_tabs[0].title -->
+                    </h2>
+                    <p style="font-size: 16px; opacity: 0.9;">
+                        This tab can be anything you want - a blog, gallery, FAQ, testimonials, etc.
+                    </p>
+                </div>
+                
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <!-- BACKEND: creator.custom_tabs[0].content -->
+                    <p style="font-size: 16px; line-height: 1.8; margin-bottom: 20px;">
+                        Creators can add any content here: text, images, videos, embedded widgets, forms, etc. 
+                        The background colors, fonts, and layout are all customizable.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Tab 2 -->
+        <div class="tab-content" id="custom2">
+            <div class="custom-tab-container" style="background: #f0fdf4; padding: 32px; border-radius: 12px;">
+                <div style="background: linear-gradient(135deg, #10b981, #059669); padding: 40px; 
+                        border-radius: 12px; margin-bottom: 32px; color: white; text-align: center;">
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 16px;">
+                        Custom Section 2
+                        <!-- BACKEND: creator.custom_tabs[1].title -->
+                    </h2>
+                    <p style="font-size: 16px; opacity: 0.9;">
+                        Another fully customizable section for creators
+                    </p>
+                </div>
+                
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <!-- BACKEND: creator.custom_tabs[1].content -->
+                    <p style="font-size: 16px; line-height: 1.8;">
+                        This could be a portfolio, testimonials, FAQ section, or anything else.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Tab 3 -->
+        <div class="tab-content" id="custom3">
+            <div class="custom-tab-container" style="background: #fffbeb; padding: 32px; border-radius: 12px;">
+                <div style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 40px; 
+                        border-radius: 12px; margin-bottom: 32px; color: white; text-align: center;">
+                    <h2 style="font-size: 32px; font-weight: 700; margin-bottom: 16px;">
+                        Custom Section 3
+                        <!-- BACKEND: creator.custom_tabs[2].title -->
+                    </h2>
+                    <p style="font-size: 16px; opacity: 0.9;">
+                        A third custom section with unique styling
+                    </p>
+                </div>
+                
+                <div style="max-width: 800px; margin: 0 auto;">
+                    <!-- BACKEND: creator.custom_tabs[2].content -->
+                    <p style="font-size: 16px; line-height: 1.8;">
+                        Fully customizable content area with color themes.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Tab -->
+        <div class="tab-content" id="contact">
+            <div class="contact-section">
+                <div class="message-form" style="background: white;">
+                    <!-- BACKEND: Customizable background color -->
+                    <h2 class="section-title">Send a Message</h2>
+                    <!-- BACKEND: Tab title can be "Holler at me", "Get in Touch", "Hit me up", etc. -->
+                    <p style="margin-bottom: 24px; color: var(--text-secondary);">
+                        Connect directly with Brian James. Messages are typically responded to within 24-48 hours.
+                    </p>
+                    
+                    <form onsubmit="sendMessage(event)">
+                        <div class="form-group">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" class="form-input" required placeholder="Enter your name">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" required placeholder="your@email.com">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Subject</label>
+                            <select class="form-input">
+                                <option>Business Inquiry</option>
+                                <option>Technical Question</option>
+                                <option>Collaboration</option>
+                                <option>General Message</option>
+                                <option>Report an Issue</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Message</label>
+                            <textarea class="form-textarea" required 
+                                      placeholder="Write your message here..."></textarea>
+                        </div>
+                        
+                        <button type="submit" class="send-btn">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+        // Tab Navigation
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update active content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+
+        // BACKEND INTEGRATION FUNCTIONS
+        
+        // Initialize showcase with data from API
+        async function initializeShowcase(username) {
+            try {
+                // BACKEND: Fetch showcase data
+                const response = await fetch(`/api/showcase/@${username}`);
+                const data = await response.json();
+                
+                // BACKEND: Populate all dynamic content
+                // updateProfile(data.profile);
+                // updateSocialLinks(data.social_links);
+                // updateStats(data.stats);
+                // applyCustomization(data.showcase_settings);
+                // renderVideos(data.public_videos);
+                // renderFolders(data.premium_folders);
+                
+                console.log('Showcase data loaded:', data);
+            } catch (error) {
+                console.error('Failed to load showcase:', error);
+            }
+        }
+
+        // Subscribe to premium folder
+        async function subscribeToFolder(folderId) {
+            // BACKEND: Initiate Stripe Connect subscription flow
+            try {
+                const response = await fetch('/api/subscribe', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        folder_id: folderId,
+                        creator_username: 'brianjames' // From URL parameter
+                    })
+                });
+                
+                const { checkout_url } = await response.json();
+                
+                // BACKEND: Redirect to Stripe checkout
+                // window.location.href = checkout_url;
+                
+                console.log('Subscribe to folder:', folderId);
+            } catch (error) {
+                console.error('Subscription failed:', error);
+            }
+        }
+
+        // Load more videos (pagination)
+        document.querySelector('.load-more-btn')?.addEventListener('click', async function() {
+            // BACKEND: Fetch next page of videos
+            console.log('Loading more videos...');
+            // const nextPage = await fetchMoreVideos(currentPage + 1);
+            // appendVideosToGrid(nextPage.videos);
+        });
+
+        // Video click handler
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const videoId = this.getAttribute('data-video-id');
+                // BACKEND: Navigate to video player or modal
+                console.log('Play video:', videoId);
+                // window.location.href = `/video/${videoId}`;
+            });
+        });
+
+        // Apply customization from showcase settings
+        function applyCustomization(settings) {
+            if (settings.header_style === 'gradient') {
+                document.querySelector('.header-section').style.background = 
+                    `linear-gradient(135deg, ${settings.header_gradient_start}, ${settings.header_gradient_end})`;
+            } else if (settings.header_style === 'image' && settings.header_image_url) {
+                document.querySelector('.header-section').style.backgroundImage = 
+                    `url(${settings.header_image_url})`;
+            }
+            
+            // BACKEND: Apply grid columns preference
+            if (settings.grid_columns === 5) {
+                document.querySelector('.videos-grid').style.gridTemplateColumns = 
+                    'repeat(auto-fill, minmax(180px, 1fr))';
+            }
+        }
+
+        // Widget system placeholder
+        function initializeWidgets(widgets) {
+            // BACKEND: Render widgets based on layout_widgets array
+            widgets.forEach(widget => {
+                console.log('Rendering widget:', widget.type, 'Order:', widget.order);
+                // renderWidget(widget);
+            });
+        }
+
+        // Social share functionality
+        function shareShowcase() {
+            const url = window.location.href;
+            const title = document.querySelector('.display-name').textContent;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: title,
+                    url: url
+                });
+            } else {
+                // Fallback to clipboard
+                navigator.clipboard.writeText(url);
+                alert('Link copied to clipboard!');
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update all play icon sizes to match smaller thumbnails
+            document.querySelectorAll('.play-icon svg').forEach(svg => {
+                svg.setAttribute('width', '12');
+                svg.setAttribute('height', '12');
+            });
+            
+            // Initialize showcase (uncomment when backend is ready)
+            // initializeShowcase('brianjames');
+        });
+
+        // Send message function for Contact tab
+        async function sendMessage(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const messageData = {
+                name: form.querySelector('input[type="text"]').value,
+                email: form.querySelector('input[type="email"]').value,
+                subject: form.querySelector('select').value,
+                message: form.querySelector('textarea').value,
+                to_username: 'brianjames' // From URL
+            };
+            
+            try {
+                const response = await fetch('/api/messages/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(messageData)
+                });
+                
+                if (response.ok) {
+                    alert('Message sent successfully!');
+                    form.reset();
+                } else {
+                    alert('Failed to send message. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error sending message:', error);
+                alert('Failed to send message. Please try again.');
+            }
+        }
+
+        // Post update to community
+        function postUpdate() {
+            const textarea = document.querySelector('.community-feed textarea');
+            const content = textarea.value;
+            
+            if (content.trim()) {
+                // BACKEND: POST /api/community/post
+                console.log('Posting update:', content);
+                textarea.value = '';
+                
+                // Add optimistic UI update
+                const newPost = document.createElement('div');
+                newPost.className = 'post-card';
+                newPost.innerHTML = `
+                    <div class="post-header">
+                        <img src="https://via.placeholder.com/40" alt="Avatar" class="post-avatar">
+                        <div>
+                            <div class="post-author">You</div>
+                            <div class="post-time">Just now</div>
+                        </div>
+                    </div>
+                    <div class="post-content">${content}</div>
+                    <div class="post-actions">
+                        <span class="post-action">👍 0 Likes</span>
+                        <span class="post-action">💬 0 Comments</span>
+                        <span class="post-action">🔄 Share</span>
+                    </div>
+                `;
+                
+                const feed = document.querySelector('.community-feed');
+                feed.insertBefore(newPost, feed.children[0]);
+            }
+        }
+    </script>
+</body>
+</html>

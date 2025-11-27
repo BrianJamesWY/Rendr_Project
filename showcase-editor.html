@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Showcase Editor - RENDR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple-primary: #667eea;
+            --purple-secondary: #764ba2;
+            --green-primary: #10b981;
+            --amber-primary: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Top Navigation Bar */
+        .top-nav {
+            height: 60px;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            fill: url(#logoGradient);
+        }
+
+        .editor-title {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Main Container */
+        .main-container {
+            display: flex;
+            height: calc(100vh - 60px);
+            margin-top: 60px;
+        }
+
+        /* Editor Panel (Left) */
+        .editor-panel {
+            width: 420px;
+            background: white;
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        /* Editor Sections */
+        .editor-section {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            padding: 16px 20px;
+            background: var(--bg-tertiary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .section-header:hover {
+            background: #e5e7eb;
+        }
+
+        .section-header.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            color: white;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+
+        .section-toggle {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.2s;
+        }
+
+        .section-header.active .section-toggle {
+            transform: rotate(90deg);
+        }
+
+        .section-content {
+            padding: 20px;
+            display: none;
+        }
+
+        .section-content.active {
+            display: block;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--purple-primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .form-helper {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+        }
+
+        /* Image Upload */
+        .image-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border: 2px dashed var(--border-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0 auto 16px;
+            overflow: hidden;
+        }
+
+        .image-upload:hover {
+            border-color: var(--purple-primary);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .image-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .image-upload-placeholder {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        /* Color Picker */
+        .color-picker-group {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .color-input {
+            width: 48px;
+            height: 48px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .color-hex {
+            flex: 1;
+        }
+
+        /* Social Links */
+        .social-links-editor {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .social-link-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .social-link-input {
+            flex: 1;
+        }
+
+        .remove-btn {
+            color: #ef4444;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        /* Tab Editor */
+        .tab-editor {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .tab-editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .tab-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .tab-locked {
+            background: #fbbf24;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* Premium Folders */
+        .folder-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .folder-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .folder-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .folder-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Preview Panel (Right) */
+        .preview-panel {
+            flex: 1;
+            background: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .preview-header {
+            height: 48px;
+            background: var(--bg-tertiary);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            padding: 0 24px;
+        }
+
+        .device-selector {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 4px;
+            border-radius: 8px;
+        }
+
+        .device-btn {
+            padding: 6px 12px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .device-btn.active {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+            color: white;
+        }
+
+        .preview-url {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+        }
+
+        .preview-frame-container {
+            height: calc(100% - 48px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f1f5f9;
+            padding: 24px;
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .preview-frame.tablet {
+            max-width: 768px;
+            max-height: 1024px;
+        }
+
+        .preview-frame.mobile {
+            max-width: 375px;
+            max-height: 667px;
+        }
+
+        .preview-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--purple-primary), var(--purple-secondary));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Add Button */
+        .add-btn {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            background: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            border-color: var(--purple-primary);
+            color: var(--purple-primary);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        /* Grid Options */
+        .grid-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .grid-option {
+            flex: 1;
+            padding: 8px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .grid-option.active {
+            border-color: var(--purple-primary);
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--purple-primary);
+        }
+
+        /* Rich Text Editor Toolbar */
+        .editor-toolbar {
+            display: flex;
+            gap: 4px;
+            padding: 8px;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--purple-primary);
+            color: white;
+        }
+
+        .toolbar-btn.active {
+            background: var(--purple-primary);
+            color: white;
+        }
+
+        .content-editor {
+            min-height: 200px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 8px 8px;
+            background: white;
+            outline: none;
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-color);
+            border-top-color: var(--purple-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .editor-panel {
+                width: 360px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .editor-panel {
+                width: 100%;
+                height: 50vh;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .preview-panel {
+                height: calc(50vh - 60px);
+            }
+
+            .device-selector {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="top-nav">
+        <div class="nav-left">
+            <svg class="logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <path d="M16 2 L19.5 12 L30 12 L21.5 19 L25 29 L16 22 L7 29 L10.5 19 L2 12 L12.5 12 Z" fill="url(#logoGradient)"/>
+                <path d="M12 16 L15 19 L21 13" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <h1 class="editor-title">Showcase Editor</h1>
+        </div>
+        <div class="nav-right">
+            <button class="btn btn-secondary" onclick="exitEditor()">
+                ← Back to Dashboard
+            </button>
+            <button class="btn btn-secondary" onclick="previewShowcase()">
+                <span>👁️</span> Preview
+            </button>
+            <button class="btn btn-primary" onclick="saveChanges()">
+                <span>💾</span> Save Changes
+                <!-- BACKEND: POST /api/showcase/save -->
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Editor Panel -->
+        <div class="editor-panel">
+            <!-- Profile Section -->
+            <div class="editor-section">
+                <div class="section-header active" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">👤</span>
+                        Profile Information
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content active">
+                    <!-- Profile Picture Upload -->
+                    <div class="form-group">
+                        <label class="form-label">Profile Picture</label>
+                        <div class="image-upload" onclick="uploadProfilePicture()">
+                            <img id="profilePreview" src="https://via.placeholder.com/240" alt="Profile" style="display: none;">
+                            <div class="image-upload-placeholder" id="profilePlaceholder">
+                                <div class="upload-icon">📷</div>
+                                <div style="font-size: 12px;">Upload Image</div>
+                            </div>
+                        </div>
+                        <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                        <!-- BACKEND: profile.profile_image_url -->
+                    </div>
+
+                    <!-- Display Name -->
+                    <div class="form-group">
+                        <label class="form-label">Display Name</label>
+                        <input type="text" class="form-input" id="displayName" value="Brian James" 
+                               oninput="updatePreview('displayName', this.value)">
+                        <!-- BACKEND: profile.display_name -->
+                    </div>
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label class="form-label">Username</label>
+                        <input type="text" class="form-input" id="username" value="brianjames" 
+                               oninput="updatePreview('username', this.value)">
+                        <div class="form-helper">rendr.io/@brianjames</div>
+                        <!-- BACKEND: profile.username -->
+                    </div>
+
+                    <!-- Bio -->
+                    <div class="form-group">
+                        <label class="form-label">Bio</label>
+                        <textarea class="form-textarea" id="bio" rows="3" 
+                                  oninput="updatePreview('bio', this.value)">Creator & CEO of RENDR. Building the future of content verification with blockchain technology and steganographic watermarking.</textarea>
+                        <!-- BACKEND: profile.bio -->
+                    </div>
+
+                    <!-- Verified Creator Badge -->
+                    <div class="form-group">
+                        <label class="toggle-switch">
+                            <span class="form-label" style="margin: 0;">Show Creator Badge</span>
+                            <label class="switch">
+                                <input type="checkbox" id="creatorBadge" checked onchange="updatePreview('badge', this.checked)">
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <!-- BACKEND: profile.verified_creator -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Customization -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">🎨</span>
+                        Header Design
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <!-- Banner Background -->
+                    <div class="form-group">
+                        <label class="form-label">Banner Background</label>
+                        <select class="form-select" id="bannerType" onchange="updateBannerType(this.value)">
+                            <option value="gradient">Gradient</option>
+                            <option value="image">Custom Image</option>
+                        </select>
+                        <!-- BACKEND: showcase_settings.banner_type -->
+                    </div>
+
+                    <!-- Gradient Colors -->
+                    <div id="gradientOptions">
+                        <div class="form-group">
+                            <label class="form-label">Start Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" class="color-input" id="gradientStart" value="#667eea" 
+                                       onchange="updatePreview('gradientStart', this.value)">
+                                <input type="text" class="form-input color-hex" value="#667eea" 
+                                       oninput="updateColorInput('gradientStart', this.value)">
+                            </div>
+                            <!-- BACKEND: showcase_settings.gradient_start -->
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">End Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" class="color-input" id="gradientEnd" value="#764ba2" 
+                                       onchange="updatePreview('gradientEnd', this.value)">
+                                <input type="text" class="form-input color-hex" value="#764ba2" 
+                                       oninput="updateColorInput('gradientEnd', this.value)">
+                            </div>
+                            <!-- BACKEND: showcase_settings.gradient_end -->
+                        </div>
+                    </div>
+
+                    <!-- Banner Image -->
+                    <div id="imageOptions" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Banner Image URL</label>
+                            <input type="text" class="form-input" placeholder="https://example.com/banner.jpg" 
+                                   oninput="updatePreview('bannerImage', this.value)">
+                            <div class="form-helper">Recommended size: 1400x300px</div>
+                            <!-- BACKEND: showcase_settings.banner_image_url -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Social Links -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">🔗</span>
+                        Social Links
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <div class="social-links-editor" id="socialLinksContainer">
+                        <!-- YouTube -->
+                        <div class="social-link-item">
+                            <span class="social-icon">📹</span>
+                            <input type="text" class="form-input social-link-input" 
+                                   placeholder="YouTube channel URL" value="https://youtube.com/@brianjames">
+                            <span class="remove-btn" onclick="removeSocialLink(this)">✕</span>
+                        </div>
+                        <!-- TikTok -->
+                        <div class="social-link-item">
+                            <span class="social-icon">🎵</span>
+                            <input type="text" class="form-input social-link-input" 
+                                   placeholder="TikTok profile URL" value="https://tiktok.com/@brianjames">
+                            <span class="remove-btn" onclick="removeSocialLink(this)">✕</span>
+                        </div>
+                        <!-- Instagram -->
+                        <div class="social-link-item">
+                            <span class="social-icon">📷</span>
+                            <input type="text" class="form-input social-link-input" 
+                                   placeholder="Instagram profile URL" value="https://instagram.com/brianjames">
+                            <span class="remove-btn" onclick="removeSocialLink(this)">✕</span>
+                        </div>
+                        <!-- Twitter -->
+                        <div class="social-link-item">
+                            <span class="social-icon">🐦</span>
+                            <input type="text" class="form-input social-link-input" 
+                                   placeholder="Twitter/X profile URL" value="https://x.com/brianjames">
+                            <span class="remove-btn" onclick="removeSocialLink(this)">✕</span>
+                        </div>
+                        <!-- LinkedIn -->
+                        <div class="social-link-item">
+                            <span class="social-icon">💼</span>
+                            <input type="text" class="form-input social-link-input" 
+                                   placeholder="LinkedIn profile URL" value="https://linkedin.com/in/brianjames">
+                            <span class="remove-btn" onclick="removeSocialLink(this)">✕</span>
+                        </div>
+                    </div>
+                    <!-- BACKEND: social_links array -->
+                    
+                    <button class="add-btn" onclick="addSocialLink()">
+                        <span>+</span> Add Social Link
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab Management -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">📑</span>
+                        Tab Settings
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <!-- Fixed Tabs -->
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Videos</span>
+                            <span class="tab-locked">LOCKED</span>
+                        </div>
+                        <div class="form-helper">This tab title cannot be changed</div>
+                    </div>
+
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Premium Videos</span>
+                            <span class="tab-locked">LOCKED</span>
+                        </div>
+                        <div class="form-helper">This tab title cannot be changed</div>
+                    </div>
+
+                    <!-- Customizable Tabs -->
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Schedule</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Custom Title</label>
+                            <input type="text" class="form-input" value="Schedule" 
+                                   placeholder="e.g., Upcoming Streams">
+                            <!-- BACKEND: tabs.schedule.title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Show Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: tabs.schedule.enabled -->
+                        </div>
+                    </div>
+
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Community</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Custom Title</label>
+                            <input type="text" class="form-input" value="Community" 
+                                   placeholder="e.g., Updates">
+                            <!-- BACKEND: tabs.community.title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Show Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: tabs.community.enabled -->
+                        </div>
+                    </div>
+
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Store</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Custom Title</label>
+                            <input type="text" class="form-input" value="Store" 
+                                   placeholder="e.g., Get My Merch">
+                            <!-- BACKEND: tabs.store.title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Show Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: tabs.store.enabled -->
+                        </div>
+                    </div>
+
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">About</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Custom Title</label>
+                            <input type="text" class="form-input" value="About" 
+                                   placeholder="e.g., My Story">
+                            <!-- BACKEND: tabs.about.title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Show Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: tabs.about.enabled -->
+                        </div>
+                    </div>
+
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Contact</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Custom Title</label>
+                            <input type="text" class="form-input" value="Contact" 
+                                   placeholder="e.g., Holler at me">
+                            <!-- BACKEND: tabs.contact.title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Show Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox" checked>
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: tabs.contact.enabled -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Tabs -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">➕</span>
+                        Custom Tabs
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <!-- Custom Tab 1 -->
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Custom Tab 1</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tab Title</label>
+                            <input type="text" class="form-input" placeholder="e.g., Blog, Gallery, FAQ">
+                            <!-- BACKEND: custom_tabs[0].title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Background Color</label>
+                            <div class="color-picker-group">
+                                <input type="color" class="color-input" value="#ffffff">
+                                <input type="text" class="form-input color-hex" value="#ffffff">
+                            </div>
+                            <!-- BACKEND: custom_tabs[0].bg_color -->
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Content</label>
+                            <div class="editor-toolbar">
+                                <button class="toolbar-btn" onclick="formatText('bold')"><b>B</b></button>
+                                <button class="toolbar-btn" onclick="formatText('italic')"><i>I</i></button>
+                                <button class="toolbar-btn" onclick="formatText('underline')"><u>U</u></button>
+                                <button class="toolbar-btn" onclick="formatText('link')">🔗</button>
+                                <button class="toolbar-btn" onclick="formatText('image')">🖼️</button>
+                                <button class="toolbar-btn" onclick="formatText('video')">🎥</button>
+                            </div>
+                            <div class="content-editor" contenteditable="true" id="customTab1Content">
+                                Enter your custom content here...
+                            </div>
+                            <!-- BACKEND: custom_tabs[0].content -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Enable Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: custom_tabs[0].enabled -->
+                        </div>
+                    </div>
+
+                    <!-- Custom Tab 2 -->
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Custom Tab 2</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tab Title</label>
+                            <input type="text" class="form-input" placeholder="e.g., Portfolio, Services">
+                            <!-- BACKEND: custom_tabs[1].title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Enable Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: custom_tabs[1].enabled -->
+                        </div>
+                    </div>
+
+                    <!-- Custom Tab 3 -->
+                    <div class="tab-editor">
+                        <div class="tab-editor-header">
+                            <span class="tab-name">Custom Tab 3</span>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tab Title</label>
+                            <input type="text" class="form-input" placeholder="e.g., Resources, Links">
+                            <!-- BACKEND: custom_tabs[2].title -->
+                        </div>
+                        <div class="form-group">
+                            <label class="toggle-switch">
+                                <span class="form-label" style="margin: 0;">Enable Tab</span>
+                                <label class="switch">
+                                    <input type="checkbox">
+                                    <span class="slider"></span>
+                                </label>
+                            </label>
+                            <!-- BACKEND: custom_tabs[2].enabled -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Folders -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">💎</span>
+                        Premium Folders
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <div id="premiumFoldersContainer">
+                        <!-- Folder 1 -->
+                        <div class="folder-card">
+                            <div class="folder-header">
+                                <span class="folder-title">Exclusive Content</span>
+                                <div class="folder-actions">
+                                    <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">Edit</button>
+                                    <span class="remove-btn">✕</span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Folder Name</label>
+                                <input type="text" class="form-input" value="Exclusive Content">
+                                <!-- BACKEND: premium_folders[0].name -->
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea class="form-textarea" rows="2">Behind-the-scenes content and tutorials</textarea>
+                                <!-- BACKEND: premium_folders[0].description -->
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Custom Price</label>
+                                <input type="number" class="form-input" value="9.99" step="0.01">
+                                <!-- BACKEND: premium_folders[0].custom_price -->
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Preview Grid</label>
+                                <div class="grid-options">
+                                    <div class="grid-option">2 Videos</div>
+                                    <div class="grid-option active">3 Videos</div>
+                                    <div class="grid-option">4 Videos</div>
+                                </div>
+                                <!-- BACKEND: premium_folders[0].preview_grid_size -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="add-btn" onclick="addPremiumFolder()">
+                        <span>+</span> Add Premium Folder
+                    </button>
+                </div>
+            </div>
+
+            <!-- Store/Merch -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">🛍️</span>
+                        Store & Merchandise
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label class="toggle-switch">
+                            <span class="form-label" style="margin: 0;">Enable Store</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <!-- BACKEND: store.enabled -->
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Store Banner Title</label>
+                        <input type="text" class="form-input" value="Official Merch Store">
+                        <!-- BACKEND: store.banner_title -->
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Store Description</label>
+                        <textarea class="form-textarea" rows="2">Support the channel with exclusive branded merchandise</textarea>
+                        <!-- BACKEND: store.description -->
+                    </div>
+
+                    <button class="btn btn-primary" style="width: 100%;" onclick="openProductManager()">
+                        Manage Products
+                    </button>
+                    <!-- BACKEND: Opens product management interface -->
+                </div>
+            </div>
+
+            <!-- Videos Display Settings -->
+            <div class="editor-section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <div class="section-title">
+                        <span class="section-icon">🎬</span>
+                        Video Display
+                    </div>
+                    <span class="section-toggle">▶</span>
+                </div>
+                <div class="section-content">
+                    <div class="form-group">
+                        <label class="form-label">Grid Layout</label>
+                        <div class="grid-options">
+                            <div class="grid-option">Ultra Compact</div>
+                            <div class="grid-option active">Compact</div>
+                            <div class="grid-option">Standard</div>
+                            <div class="grid-option">Large</div>
+                        </div>
+                        <!-- BACKEND: video_display.grid_size -->
+                    </div>
+
+                    <div class="form-group">
+                        <label class="toggle-switch">
+                            <span class="form-label" style="margin: 0;">Show RENDR Codes</span>
+                            <label class="switch">
+                                <input type="checkbox" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </label>
+                        <!-- BACKEND: video_display.show_rendr_codes -->
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Default Sort</label>
+                        <select class="form-select">
+                            <option value="recent">Most Recent</option>
+                            <option value="views">Most Views</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
+                        <!-- BACKEND: video_display.default_sort -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Panel -->
+        <div class="preview-panel">
+            <div class="preview-header">
+                <div class="device-selector">
+                    <button class="device-btn active" onclick="setPreviewDevice('desktop')">
+                        💻 Desktop
+                    </button>
+                    <button class="device-btn" onclick="setPreviewDevice('tablet')">
+                        📱 Tablet
+                    </button>
+                    <button class="device-btn" onclick="setPreviewDevice('mobile')">
+                        📲 Mobile
+                    </button>
+                </div>
+                <div class="preview-url">rendr.io/@brianjames</div>
+            </div>
+            <div class="preview-frame-container">
+                <div class="preview-frame" id="previewFrame">
+                    <iframe src="showcase.html" class="preview-iframe" id="previewIframe"></iframe>
+                    <!-- BACKEND: Load actual showcase page in iframe for real-time preview -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Section
+        function toggleSection(header) {
+            header.classList.toggle('active');
+            const content = header.nextElementSibling;
+            content.classList.toggle('active');
+        }
+
+        // Update Preview
+        function updatePreview(field, value) {
+            // BACKEND: Send update to preview iframe
+            const iframe = document.getElementById('previewIframe');
+            iframe.contentWindow.postMessage({
+                action: 'update',
+                field: field,
+                value: value
+            }, '*');
+            
+            // Mark as unsaved
+            markUnsaved();
+        }
+
+        // Mark Unsaved Changes
+        function markUnsaved() {
+            const saveBtn = document.querySelector('.btn-primary');
+            if (!saveBtn.textContent.includes('*')) {
+                saveBtn.innerHTML = '<span>💾</span> Save Changes*';
+            }
+        }
+
+        // Profile Picture Upload
+        function uploadProfilePicture() {
+            document.getElementById('profileImageInput').click();
+        }
+
+        document.getElementById('profileImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // BACKEND: Upload to /api/upload/profile
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                    document.getElementById('profilePreview').style.display = 'block';
+                    document.getElementById('profilePlaceholder').style.display = 'none';
+                    updatePreview('profileImage', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Banner Type Toggle
+        function updateBannerType(type) {
+            document.getElementById('gradientOptions').style.display = type === 'gradient' ? 'block' : 'none';
+            document.getElementById('imageOptions').style.display = type === 'image' ? 'block' : 'none';
+            updatePreview('bannerType', type);
+        }
+
+        // Color Input Sync
+        function updateColorInput(field, hex) {
+            document.getElementById(field).value = hex;
+            updatePreview(field, hex);
+        }
+
+        // Social Links
+        function addSocialLink() {
+            const container = document.getElementById('socialLinksContainer');
+            const newLink = document.createElement('div');
+            newLink.className = 'social-link-item';
+            newLink.innerHTML = `
+                <span class="social-icon">🔗</span>
+                <input type="text" class="form-input social-link-input" placeholder="Enter social media URL">
+                <span class="remove-btn" onclick="removeSocialLink(this)">✕</span>
+            `;
+            container.appendChild(newLink);
+            markUnsaved();
+        }
+
+        function removeSocialLink(btn) {
+            btn.parentElement.remove();
+            markUnsaved();
+        }
+
+        // Premium Folders
+        function addPremiumFolder() {
+            const container = document.getElementById('premiumFoldersContainer');
+            const folderCount = container.children.length + 1;
+            const newFolder = document.createElement('div');
+            newFolder.className = 'folder-card';
+            newFolder.innerHTML = `
+                <div class="folder-header">
+                    <span class="folder-title">New Folder ${folderCount}</span>
+                    <div class="folder-actions">
+                        <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 12px;">Edit</button>
+                        <span class="remove-btn" onclick="this.parentElement.parentElement.parentElement.remove()">✕</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Folder Name</label>
+                    <input type="text" class="form-input" value="New Folder ${folderCount}">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" rows="2">Folder description</textarea>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Custom Price</label>
+                    <input type="number" class="form-input" value="9.99" step="0.01">
+                </div>
+            `;
+            container.appendChild(newFolder);
+            markUnsaved();
+        }
+
+        // Device Preview
+        function setPreviewDevice(device) {
+            const frame = document.getElementById('previewFrame');
+            const buttons = document.querySelectorAll('.device-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            frame.className = 'preview-frame';
+            if (device !== 'desktop') {
+                frame.classList.add(device);
+            }
+        }
+
+        // Save Changes
+        async function saveChanges() {
+            // BACKEND: Collect all form data and POST to /api/showcase/save
+            const saveBtn = document.querySelector('.btn-primary');
+            saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
+            saveBtn.disabled = true;
+
+            // Simulate save
+            setTimeout(() => {
+                saveBtn.innerHTML = '<span>✓</span> Saved!';
+                saveBtn.disabled = false;
+                setTimeout(() => {
+                    saveBtn.innerHTML = '<span>💾</span> Save Changes';
+                }, 2000);
+            }, 1500);
+        }
+
+        // Preview in New Tab
+        function previewShowcase() {
+            // BACKEND: Open /showcase/@username in new tab with current settings
+            window.open('/showcase/@brianjames', '_blank');
+        }
+
+        // Exit Editor
+        function exitEditor() {
+            if (document.querySelector('.btn-primary').textContent.includes('*')) {
+                if (confirm('You have unsaved changes. Are you sure you want to exit?')) {
+                    // BACKEND: Navigate to /dashboard
+                    window.location.href = '/dashboard';
+                }
+            } else {
+                window.location.href = '/dashboard';
+            }
+        }
+
+        // Product Manager
+        function openProductManager() {
+            // BACKEND: Open product management modal or page
+            alert('Product Manager: This would open a interface to add/edit store products');
+        }
+
+        // Rich Text Editor
+        function formatText(command) {
+            // Basic text formatting for content editor
+            document.execCommand(command, false, null);
+            markUnsaved();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // BACKEND: Load current showcase settings via GET /api/showcase/settings
+            console.log('Loading showcase settings...');
+            
+            // Setup real-time preview communication
+            window.addEventListener('message', function(e) {
+                if (e.data.action === 'previewReady') {
+                    console.log('Preview iframe ready');
+                }
+            });
+        });
+
+        // Auto-save Draft
+        let autoSaveTimer;
+        document.addEventListener('input', function() {
+            clearTimeout(autoSaveTimer);
+            autoSaveTimer = setTimeout(() => {
+                // BACKEND: POST /api/showcase/draft
+                console.log('Auto-saving draft...');
+            }, 3000);
+        });
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveChanges();
+            }
+        });
+    </script>
+</body>
+</html>
