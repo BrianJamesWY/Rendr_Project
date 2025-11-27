@@ -5,7 +5,7 @@ import './Showcase.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-function NewShowcase() {
+function Showcase() {
   const { username } = useParams();
   const navigate = useNavigate();
   
