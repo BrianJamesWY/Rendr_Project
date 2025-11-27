@@ -174,7 +174,6 @@ class BountySystemTester:
             
             if response.status_code == 200 or response.status_code == 201:
                 bounty = response.json()
-                print(f"DEBUG: bounty response = {bounty}, type = {type(bounty)}")
                 if isinstance(bounty, dict):
                     bounty_id = bounty.get("bounty_id")
                     self.log_test("Create Bounty", True, f"Created bounty with ID: {bounty_id}", bounty)
