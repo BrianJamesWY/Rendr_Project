@@ -1347,6 +1347,112 @@ class RendrAPITester:
             self.log_test("Premium Folders List", False, f"Error: {str(e)}")
             return False
 
+    def test_subscription_management_api(self):
+        """Test GET /api/subscriptions/my endpoint (FIXED - should no longer throw AsyncIOMotorClient error)"""
+        try:
+            response = self.session.get(f"{BASE_URL}/subscriptions/my")
+            
+            if response.status_code == 200:
+                data = response.json()
+                # Should return empty subscriptions list with stats for users with no subscriptions
+                if "subscriptions" in data and isinstance(data["subscriptions"], list):
+                    self.log_test("Subscription Management API", True, 
+                                f"API working correctly - returned {len(data['subscriptions'])} subscriptions")
+                    return True
+                else:
+                    self.log_test("Subscription Management API", False, 
+                                "Invalid response format - missing subscriptions list", data)
+                    return False
+            elif response.status_code == 401:
+                self.log_test("Subscription Management API", False, "Authentication required")
+                return False
+            elif response.status_code == 500:
+                # This was the previous error - should be fixed now
+                error_msg = response.text
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", error_msg)
+                except:
+                    pass
+                self.log_test("Subscription Management API", False, 
+                            f"500 error still occurring: {error_msg}")
+                return False
+            else:
+                self.log_test("Subscription Management API", False, 
+                            f"Status: {response.status_code}", response.text)
+                return False
+        except Exception as e:
+            self.log_test("Subscription Management API", False, f"Error: {str(e)}")
+            return False
+
+    def test_stripe_subscription_checkout_fixed(self, folder_id=None):
+        """Test POST /api/stripe/subscribe (FIXED - should handle accounts without transfers capability gracefully)"""
+        if not folder_id:
+            # Use a dummy folder ID for testing
+            folder_id = "test-folder-id"
+            
+        try:
+            checkout_data = {
+                "folder_id": folder_id,
+                "success_url": "https://premium-content-47.preview.emergentagent.com/success",
+                "cancel_url": "https://premium-content-47.preview.emergentagent.com/cancel"
+            }
+            
+            response = self.session.post(f"{BASE_URL}/stripe/subscribe", json=checkout_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                required_fields = ["checkout_url", "session_id"]
+                missing_fields = [field for field in required_fields if field not in data]
+                
+                if not missing_fields:
+                    self.log_test("Stripe Subscription Checkout (FIXED)", True, 
+                                f"Checkout session created successfully: {data['session_id'][:20]}...")
+                    return data["session_id"]
+                else:
+                    self.log_test("Stripe Subscription Checkout (FIXED)", False, 
+                                f"Missing fields: {missing_fields}", data)
+                    return None
+            elif response.status_code == 404:
+                # Expected for non-existent folder
+                self.log_test("Stripe Subscription Checkout (FIXED)", True, 
+                            "Properly validates folder existence")
+                return None
+            elif response.status_code == 400:
+                # Could be already subscribed or other validation error - this is acceptable
+                error_msg = response.json().get("detail", "")
+                self.log_test("Stripe Subscription Checkout (FIXED)", True, 
+                            f"Proper validation (graceful handling): {error_msg}")
+                return None
+            elif response.status_code == 500:
+                # This was the previous error with transfers capability - should be fixed now
+                error_msg = response.text
+                try:
+                    error_data = response.json()
+                    error_msg = error_data.get("detail", error_msg)
+                except:
+                    pass
+                
+                # Check if it's still the old transfers capability error
+                if "transfers" in error_msg.lower() or "capabilities" in error_msg.lower():
+                    self.log_test("Stripe Subscription Checkout (FIXED)", False, 
+                                f"Still failing with transfers capability error: {error_msg}")
+                    return None
+                else:
+                    self.log_test("Stripe Subscription Checkout (FIXED)", False, 
+                                f"Different 500 error: {error_msg}")
+                    return None
+            elif response.status_code == 401:
+                self.log_test("Stripe Subscription Checkout (FIXED)", False, "Authentication required")
+                return None
+            else:
+                self.log_test("Stripe Subscription Checkout (FIXED)", False, 
+                            f"Status: {response.status_code}", response.text)
+                return None
+        except Exception as e:
+            self.log_test("Stripe Subscription Checkout (FIXED)", False, f"Error: {str(e)}")
+            return None
+
     def test_subscription_checkout_create(self, folder_id=None):
         """Test creating a subscription checkout session"""
         if not folder_id:
