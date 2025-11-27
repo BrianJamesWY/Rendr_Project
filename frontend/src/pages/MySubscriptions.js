@@ -16,8 +16,11 @@ const MySubscriptions = () => {
   useEffect(() => {
     const fetchSubscriptions = async () => {
       try {
-        const token = localStorage.getItem('rendr_token');
-        if (!token) return;
+        const token = localStorage.getItem('token');
+        if (!token) {
+          setLoading(false);
+          return;
+        }
 
         // TODO: Fetch subscriptions from backend
         const response = await axios.get(
