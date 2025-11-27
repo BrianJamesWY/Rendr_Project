@@ -278,8 +278,6 @@ async def process_payout(
             }}
         )
         
-        await client.close()
-        
         return {
             "success": True,
             "message": "Payout processed successfully",
