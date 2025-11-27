@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import List, Dict
 import os
 
-from auth import get_current_user
+from api.auth import get_current_user
 
 router = APIRouter()
 
