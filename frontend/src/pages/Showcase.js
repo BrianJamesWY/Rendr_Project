@@ -54,14 +54,21 @@ function Showcase() {
 
   const loadShowcase = async () => {
     try {
+      console.log('[Showcase] Starting to load showcase...');
+      console.log('[Showcase] Username from params:', username);
       setLoading(true);
       
       const cleanUsername = username.replace(/^@/, '');
+      console.log('[Showcase] Clean username:', cleanUsername);
       
+      console.log('[Showcase] Fetching profile...');
       const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
+      console.log('[Showcase] Profile loaded:', profileRes.data);
       setProfile(profileRes.data);
       
+      console.log('[Showcase] Fetching videos...');
       const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
+      console.log('[Showcase] Videos loaded:', videosRes.data?.length);
       setVideos(videosRes.data);
       
       // Load showcase folders for this user
