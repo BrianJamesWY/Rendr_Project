@@ -171,7 +171,7 @@ class BountySystemTester:
                     "reward_amount": 50.0
                 }
             
-            response = self.session.post(f"{API_BASE}/bounties", json=bounty_data)
+            response = self.session.post(f"{API_BASE}/bounties/", json=bounty_data)
             
             if response.status_code == 200 or response.status_code == 201:
                 bounty = response.json()
