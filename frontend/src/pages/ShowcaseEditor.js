@@ -200,7 +200,7 @@ function ShowcaseEditor() {
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#1f2937', marginBottom: '8px' }}>Username</label>
                   <input 
-                    type=\"text\" 
+                    type="text" 
                     value={username} 
                     disabled
                     style={{ width: '100%', padding: '10px 12px', border: '1px solid #e5e7eb', borderRadius: '8px', fontSize: '14px', background: '#f9fafb', color: '#6b7280' }}
