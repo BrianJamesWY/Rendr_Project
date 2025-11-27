@@ -186,7 +186,7 @@ function Showcase() {
               </span>
             </h1>
             <div style={{ fontSize: '18px', opacity: 0.9, marginBottom: '16px' }}>@{profile?.username}</div>
-            <p style={{ fontSize: '16px', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 24px', opacity: 0.95' }}>
+            <p style={{ fontSize: '16px', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 24px', opacity: 0.95 }}>
               {profile?.bio || 'Content creator on RENDR'}
             </p>
 
