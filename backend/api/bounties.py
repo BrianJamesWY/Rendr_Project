@@ -315,8 +315,6 @@ async def cancel_bounty(
             {"$set": {"status": "cancelled"}}
         )
         
-        await client.close()
-        
         return {"success": True, "message": "Bounty cancelled successfully"}
         
     except HTTPException:
