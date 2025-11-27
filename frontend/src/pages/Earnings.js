@@ -7,7 +7,28 @@ const Earnings = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [earnings, setEarnings] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [connecting, setConnecting] = useState(false);
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  const handleConnectStripe = async () => {
+    try {
+      setConnecting(true);
+      const token = localStorage.getItem('token');
+      
+      const response = await axios.post(
+        `${BACKEND_URL}/api/stripe/connect/onboard`,
+        { refresh_url: window.location.href, return_url: window.location.href },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      if (response.data.url) {
+        window.location.href = response.data.url;
+      }
+    } catch (err) {
+      alert(err.response?.data?.detail || 'Failed to start Stripe Connect');
+      setConnecting(false);
+    }
+  };
 
   useEffect(() => {
     const fetchEarnings = async () => {
