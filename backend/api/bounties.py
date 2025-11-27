@@ -262,9 +262,22 @@ async def process_payout(
         # Create payout (transfer to connected account)
         amount_cents = int(bounty.get('reward_amount', 0) * 100)
         
-        # TODO: Implement actual Stripe payout
-        # For now, just mark as paid
-        payout_id = f"po_{uuid4().hex[:24]}"
+        # Create Stripe Transfer to hunter's connected account
+        try:
+            transfer = stripe.Transfer.create(
+                amount=amount_cents,
+                currency="usd",
+                destination=hunter.get('stripe_account_id'),
+                description=f"Bounty reward: {bounty_id}",
+                metadata={
+                    "bounty_id": bounty_id,
+                    "hunter_id": hunter_id,
+                    "creator_id": bounty.get('creator_id')
+                }
+            )
+            payout_id = transfer.id  # Real Stripe transfer ID (e.g., tr_...)
+        except stripe.error.StripeError as e:
+            raise HTTPException(status_code=400, detail=f"Stripe payout failed: {str(e)}")
         
         await db.bounties.update_one(
             {"bounty_id": bounty_id},
