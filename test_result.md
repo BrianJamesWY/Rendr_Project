@@ -498,15 +498,18 @@ backend:
 
   - task: "Stripe Subscription Checkout API"
     implemented: true
-    working: false
+    working: true
     file: "backend/api/stripe_integration.py, backend/services/stripe_service.py"
     stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "testing"
         comment: "TESTED: Stripe subscription checkout failing with 500 error. Root cause identified: Stripe Connect account missing required capabilities (transfers/legacy_payments). Error: 'The account referenced in the destination parameter is missing the required capabilities'. API structure is correct but Stripe account configuration needs fixing."
+      - working: true
+        agent: "testing"
+        comment: "RETESTED: Stripe subscription checkout API now working correctly. POST /api/stripe/subscribe successfully creates checkout sessions (cs_test_a11h614Dg26Z...). The API now handles accounts without transfers capability gracefully with warning message '⚠️ Connected account doesn't have transfers capability yet' instead of throwing 500 errors. Fix confirmed working with BrianJames/Brian123! credentials."
 
   - task: "Stripe Webhook Event Processing"
     implemented: true
