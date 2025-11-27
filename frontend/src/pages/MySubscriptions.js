@@ -53,7 +53,7 @@ const MySubscriptions = () => {
     }
 
     try {
-      const token = localStorage.getItem('rendr_token');
+      const token = localStorage.getItem('token');
       await axios.post(
         `${BACKEND_URL}/api/subscriptions/${subscriptionId}/cancel`,
         {},
