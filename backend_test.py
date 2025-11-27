@@ -1,29 +1,22 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for Rendr Creator Profile and Showcase Features
-Tests all critical endpoints for the creator profile system
+Comprehensive Backend Test for Bounty Hunter System
+Tests all bounty-related endpoints and workflows
 """
 
 import requests
 import json
-import os
-import tempfile
-from datetime import datetime
+import time
+from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://premium-content-47.preview.emergentagent.com/api"
+BASE_URL = "https://premium-content-47.preview.emergentagent.com"
+API_BASE = f"{BASE_URL}/api"
 
-# Test accounts
-TEST_ACCOUNTS = {
-    "brian": {
-        "username": "BrianJames",
-        "password": "Brian123!"
-    },
-    "test": {
-        "email": "test@rendr.com", 
-        "password": "Test123!",
-        "username": "test"
-    }
+# Test credentials
+TEST_USER = {
+    "username": "BrianJames",
+    "password": "Brian123!"
 }
 
 class RendrAPITester:
