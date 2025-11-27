@@ -7,8 +7,9 @@ db = None
 async def connect_db():
     global client, db
     mongodb_url = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+    db_name = os.getenv("DB_NAME", "test_database")
     client = AsyncIOMotorClient(mongodb_url)
-    db = client.rendr_db
+    db = client[db_name]
     
     # Create indexes
     await db.users.create_index("email", unique=True)
