@@ -82,7 +82,7 @@ function MyVideos() {
     try {
       await axios.put(
         `${BACKEND_URL}/api/folders/${currentFolder.folder_id}`,
-        { name: newFolderName },
+        { folder_name: newFolderName },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
