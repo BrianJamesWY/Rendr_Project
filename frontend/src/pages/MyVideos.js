@@ -48,7 +48,7 @@ function MyVideos() {
         axios.get(`${BACKEND_URL}/api/videos/user/list`, {
           headers: { Authorization: `Bearer ${token}` }
         }),
-        axios.get(`${BACKEND_URL}/api/folders`, {
+        axios.get(`${BACKEND_URL}/api/folders/`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ]);
