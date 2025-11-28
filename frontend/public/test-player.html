@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Player Test</title>
+</head>
+<body style="margin: 0; padding: 20px; background: #1a1a1a;">
+    <h1 style="color: white; text-align: center;">Video Player Test</h1>
+    
+    <video 
+        id="testVideo"
+        controls 
+        autoplay
+        style="width: 100%; max-width: 1200px; display: block; margin: 20px auto;"
+    >
+        <source src="https://rendr-revamp.preview.emergentagent.com/api/videos/watch/964519ff-9e88-442e-b6b0-3c5e4eb3a3a8" type="video/mp4">
+        Your browser doesn't support video playback.
+    </video>
+    
+    <div id="status" style="color: white; text-align: center; margin-top: 20px; font-family: monospace;"></div>
+    
+    <script>
+        const video = document.getElementById('testVideo');
+        const status = document.getElementById('status');
+        
+        function updateStatus() {
+            status.innerHTML = `
+                Ready State: ${video.readyState} (${['HAVE_NOTHING', 'HAVE_METADATA', 'HAVE_CURRENT_DATA', 'HAVE_FUTURE_DATA', 'HAVE_ENOUGH_DATA'][video.readyState]})<br>
+                Network State: ${video.networkState} (${['EMPTY', 'IDLE', 'LOADING', 'NO_SOURCE'][video.networkState]})<br>
+                Duration: ${Math.round(video.duration) || 'Loading...'} seconds<br>
+                Current Time: ${Math.round(video.currentTime)} seconds<br>
+                Buffered: ${video.buffered.length > 0 ? video.buffered.end(0) + 's' : '0s'}<br>
+                Error: ${video.error ? video.error.message : 'None'}
+            `;
+        }
+        
+        video.addEventListener('loadedmetadata', () => {
+            console.log('✅ Metadata loaded');
+            updateStatus();
+        });
+        
+        video.addEventListener('loadeddata', () => {
+            console.log('✅ Data loaded');
+            updateStatus();
+        });
+        
+        video.addEventListener('canplay', () => {
+            console.log('✅ Can play');
+            updateStatus();
+        });
+        
+        video.addEventListener('playing', () => {
+            console.log('✅ Playing');
+            updateStatus();
+        });
+        
+        video.addEventListener('error', (e) => {
+            console.error('❌ Video error:', e, video.error);
+            updateStatus();
+        });
+        
+        setInterval(updateStatus, 1000);
+        updateStatus();
+    </script>
+</body>
+</html>
