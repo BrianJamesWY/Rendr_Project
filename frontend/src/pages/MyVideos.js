@@ -170,9 +170,9 @@ function MyVideos() {
                   onClick={() => setSelectedFolder(folder.folder_id)}
                   style={{ padding: '10px 12px', borderRadius: '6px', cursor: 'pointer', background: selectedFolder === folder.folder_id ? 'rgba(102, 126, 234, 0.1)' : 'transparent', color: selectedFolder === folder.folder_id ? '#667eea' : '#374151', fontWeight: selectedFolder === folder.folder_id ? '600' : '400', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', transition: 'all 0.2s' }}
                 >
-                  <span>📁 {folder.name}</span>
+                  <span>📁 {folder.folder_name}</span>
                   <div style={{ display: 'flex', gap: '4px' }}>
-                    <button onClick={(e) => { e.stopPropagation(); setCurrentFolder(folder); setNewFolderName(folder.name); setShowRenameFolderModal(true); }} style={{ padding: '2px 6px', background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', fontSize: '12px' }}>✏️</button>
+                    <button onClick={(e) => { e.stopPropagation(); setCurrentFolder(folder); setNewFolderName(folder.folder_name); setShowRenameFolderModal(true); }} style={{ padding: '2px 6px', background: 'none', border: 'none', color: '#667eea', cursor: 'pointer', fontSize: '12px' }}>✏️</button>
                     <button onClick={(e) => { e.stopPropagation(); handleDeleteFolder(folder.folder_id); }} style={{ padding: '2px 6px', background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', fontSize: '12px' }}>🗑️</button>
                   </div>
                 </div>
