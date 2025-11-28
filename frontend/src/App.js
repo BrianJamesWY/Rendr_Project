@@ -34,6 +34,7 @@ import Explore from "./pages/Explore";
 import Bounties from "./pages/Bounties";
 import PostBounty from "./pages/PostBounty";
 import ClaimBounty from "./pages/ClaimBounty";
+import MyVideos from "./pages/MyVideos";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
