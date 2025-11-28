@@ -16,101 +16,113 @@ from fastapi.responses import FileResponse
 
 router = APIRouter()
 
-# Video streaming endpoint
+# Public video streaming (for showcase videos) - NO AUTH REQUIRED
+@router.get("/watch/{video_id}")
+async def watch_video_public(
+    video_id: str,
+    db = Depends(get_db)
+):
+    """Stream video file for public viewing (showcase videos only)"""
+    print(f"\n🎬 PUBLIC WATCH REQUEST for video: {video_id}")
+    
+    # Find video - check both id fields
+    video = await db.videos.find_one({"id": video_id}, {"_id": 0})
+    if not video:
+        video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
+    
+    print(f"   Video found: {video is not None}")
+    
+    if not video:
+        print(f"   ❌ Video not found in database")
+        raise HTTPException(404, "Video not found")
+    
+    print(f"   on_showcase: {video.get('on_showcase')}")
+    print(f"   is_public: {video.get('is_public')}")
+    
+    # Must be on showcase OR is_public
+    is_public = video.get("on_showcase", False) or video.get("is_public", False)
+    
+    if not is_public:
+        print(f"   ❌ Video is private")
+        raise HTTPException(403, "Video is private")
+    
+    # Get video path - use standard path format
+    video_id_final = video.get("id") or video.get("_id")
+    video_path = f"/app/backend/uploads/videos/{video_id_final}.mp4"
+    
+    print(f"   Video path: {video_path}")
+    print(f"   File exists: {os.path.exists(video_path)}")
+    
+    if not os.path.exists(video_path):
+        print(f"   ❌ Video file does not exist on disk")
+        raise HTTPException(404, "Video file not found on disk")
+    
+    # Increment view count
+    id_field = "id" if video.get("id") else "_id"
+    await db.videos.update_one(
+        {id_field: video_id},
+        {"$inc": {"storage.download_count": 1}}
+    )
+    
+    print(f"   ✅ Streaming video...\n")
+    
+    return FileResponse(
+        video_path,
+        media_type="video/mp4",
+        headers={
+            "Accept-Ranges": "bytes",
+            "Cache-Control": "no-cache"
+        }
+    )
+
+
+# Authenticated video streaming endpoint
 @router.get("/{video_id}/stream")
 async def stream_video(
     video_id: str,
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Stream video file for viewing"""
+    """Stream video file for authenticated users (owner or public videos)"""
+    print(f"\n🎬 AUTHENTICATED STREAM REQUEST for video: {video_id}")
+    
     # Find video
-    video = await db.videos.find_one({"_id": video_id})
+    video = await db.videos.find_one({"id": video_id}, {"_id": 0})
     if not video:
-        video = await db.videos.find_one({"id": video_id})
+        video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
     
     if not video:
         raise HTTPException(404, "Video not found")
     
-    # Check access: owner or video is on showcase
+    # Check access: owner or video is public
     is_owner = video.get("user_id") == current_user["user_id"]
-    is_public = video.get("on_showcase", False)
+    is_public = video.get("on_showcase", False) or video.get("is_public", False)
     
     if not is_owner and not is_public:
         raise HTTPException(403, "Access denied")
     
     # Get video path
-    video_path = video.get("storage", {}).get("video_path")
-    if not video_path:
-        raise HTTPException(404, "Video file not found")
+    video_id_final = video.get("id") or video.get("_id")
+    video_path = f"/app/backend/uploads/videos/{video_id_final}.mp4"
     
-    full_path = f"/app/backend{video_path}"
-    if not os.path.exists(full_path):
+    if not os.path.exists(video_path):
         raise HTTPException(404, "Video file does not exist on disk")
     
     # Increment view count
+    id_field = "id" if video.get("id") else "_id"
     await db.videos.update_one(
-        {"_id": video_id},
+        {id_field: video_id},
         {"$inc": {"storage.download_count": 1}}
     )
     
-    # Detect file extension
-
-
-# Public video streaming (for showcase videos)
-@router.get("/{video_id}/watch")
-async def watch_video_public(
-    video_id: str,
-    db = Depends(get_db)
-):
-    """Stream video file for public viewing (showcase videos only)"""
-    # Find video
-    video = await db.videos.find_one({"_id": video_id})
-    if not video:
-        video = await db.videos.find_one({"id": video_id})
-    
-    if not video:
-        raise HTTPException(404, "Video not found")
-    
-    # Must be on showcase OR have valid token
-    is_public = video.get("on_showcase", False)
-    
-    if not is_public:
-        raise HTTPException(403, "Video is private")
-    
-    # Get video path
-    video_path = video.get("storage", {}).get("video_path")
-    if not video_path:
-        raise HTTPException(404, "Video file not found")
-    
-    full_path = f"/app/backend{video_path}"
-    if not os.path.exists(full_path):
-        raise HTTPException(404, "Video file does not exist on disk")
-    
-    # Detect file extension
-    file_ext = video_path.split('.')[-1].lower()
-    media_types = {
-        'mp4': 'video/mp4',
-        'mov': 'video/quicktime',
-        'avi': 'video/x-msvideo',
-        'mkv': 'video/x-matroska',
-        'webm': 'video/webm'
-    }
-    media_type = media_types.get(file_ext, 'video/mp4')
-    
-    return FileResponse(full_path, media_type=media_type, filename=f"{video_id}.{file_ext}")
-
-    file_ext = video_path.split('.')[-1].lower()
-    media_types = {
-        'mp4': 'video/mp4',
-        'mov': 'video/quicktime',
-        'avi': 'video/x-msvideo',
-        'mkv': 'video/x-matroska',
-        'webm': 'video/webm'
-    }
-    media_type = media_types.get(file_ext, 'video/mp4')
-    
-    return FileResponse(full_path, media_type=media_type, filename=f"{video_id}.{file_ext}")
+    return FileResponse(
+        video_path,
+        media_type="video/mp4",
+        headers={
+            "Accept-Ranges": "bytes",
+            "Cache-Control": "no-cache"
+        }
+    )
 
 
 # Tier management (for testing)
