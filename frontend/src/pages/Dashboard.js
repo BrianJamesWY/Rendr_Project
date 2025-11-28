@@ -455,6 +455,30 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
     setSocialLinks(updated);
   };
 
+  const handleCreateInlineFolder = async () => {
+    if (!inlineFolderName.trim()) return;
+    
+    try {
+      const response = await axios.post(
+        `${BACKEND_URL}/api/folders/`,
+        { folder_name: inlineFolderName, description: '' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Add new folder to local list
+      const newFolder = { 
+        folder_id: response.data.folder_id || response.data.id,
+        folder_name: inlineFolderName 
+      };
+      setLocalFolders([...localFolders, newFolder]);
+      setFolderId(newFolder.folder_id);
+      setShowInlineFolderCreate(false);
+      setInlineFolderName('');
+    } catch (err) {
+      alert('Failed to create folder: ' + (err.response?.data?.detail || err.message));
+    }
+  };
+
   const handleSave = async () => {
     try {
       setSaving(true);
