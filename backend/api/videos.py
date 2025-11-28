@@ -57,6 +57,30 @@ async def stream_video(
     return FileResponse(full_path, media_type="video/mp4", filename=f"{video_id}.mp4")
 
 
+# Tier management (for testing)
+@router.post("/admin/set-tier")
+async def set_user_tier(
+    username: str = Form(...),
+    tier: str = Form(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Set user tier (for testing purposes)"""
+    if tier not in ["free", "pro", "enterprise"]:
+        raise HTTPException(400, "Invalid tier. Must be: free, pro, or enterprise")
+    
+    result = await db.users.update_one(
+        {"username": username},
+        {"$set": {"premium_tier": tier}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(404, "User not found")
+    
+    return {"message": f"User {username} tier set to {tier}", "tier": tier}
+
+
+
 class VideoUploadResponse(BaseModel):
     video_id: str
     verification_code: str
