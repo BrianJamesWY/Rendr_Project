@@ -56,6 +56,11 @@ class VideoInfo(BaseModel):
     has_blockchain: Optional[bool] = False
     source: Optional[str] = None
     folder_video_order: Optional[int] = None
+    # Social media fields
+    social_folders: Optional[List[str]] = []
+    social_links: Optional[List[Dict]] = []
+    on_showcase: Optional[bool] = False
+    title: Optional[str] = None
 
 class VideoUpdate(BaseModel):
     """For updating video metadata"""
