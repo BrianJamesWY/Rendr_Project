@@ -12,7 +12,7 @@ from services.enhanced_video_processor import enhanced_processor
 from services.notification_service import notification_service
 from pydantic import BaseModel
 from typing import Optional
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 router = APIRouter()
 
