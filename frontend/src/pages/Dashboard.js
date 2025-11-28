@@ -47,6 +47,17 @@ function Dashboard() {
       });
       setVideos(Array.isArray(videosRes.data) ? videosRes.data : videosRes.data.videos || []);
 
+      // Load folders for the edit modal
+      try {
+        const foldersRes = await axios.get(`${BACKEND_URL}/api/folders`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setFolders(Array.isArray(foldersRes.data) ? foldersRes.data : foldersRes.data.folders || []);
+      } catch (foldersErr) {
+        console.error('Failed to load folders:', foldersErr);
+        setFolders([]);
+      }
+
       try {
         const analyticsRes = await axios.get(`${BACKEND_URL}/api/analytics/dashboard?days=30`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -63,6 +74,11 @@ function Dashboard() {
       setError(err.response?.data?.detail || 'Failed to load dashboard');
       setLoading(false);
     }
+  };
+
+  const handleEditVideo = (video) => {
+    setCurrentVideo(video);
+    setShowEditVideoModal(true);
   };
 
   const handleLogout = async () => {
