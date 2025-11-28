@@ -61,7 +61,7 @@ function ProfileSettings() {
     setSaving(true);
     try {
       await axios.put(
-        `${BACKEND_URL}/api/@/profile`,
+        `${BACKEND_URL}/api/profile`,
         {
           display_name: displayName,
           bio: bio,
