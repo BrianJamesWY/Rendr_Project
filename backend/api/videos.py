@@ -437,17 +437,19 @@ async def update_video(
             folder_name = platform_names.get(platform, platform.capitalize())
             
             # Check if folder exists
+            print(f"DEBUG: Looking for folder '{folder_name}' for user {current_user['user_id']}")
             existing_folder = await db.folders.find_one({
                 "user_id": current_user["user_id"],
                 "folder_name": folder_name
             })
             
             if existing_folder:
+                print(f"DEBUG: Found existing folder: {existing_folder['folder_id']}")
                 folder_ids.append(existing_folder["folder_id"])
             else:
                 # Create new folder
-                import uuid
                 new_folder_id = str(uuid.uuid4())
+                print(f"DEBUG: Creating new folder '{folder_name}' with ID {new_folder_id}")
                 await db.folders.insert_one({
                     "folder_id": new_folder_id,
                     "user_id": current_user["user_id"],
@@ -456,6 +458,7 @@ async def update_video(
                     "order": 0,
                     "created_at": datetime.now(timezone.utc).isoformat()
                 })
+                print(f"DEBUG: Folder created successfully")
                 folder_ids.append(new_folder_id)
         
         # Assign video to the first social folder if folder_id not explicitly set
