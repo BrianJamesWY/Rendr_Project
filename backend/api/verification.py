@@ -165,11 +165,12 @@ async def deep_verification(
         
         return VerificationResult(
             result=comparison['result'],
-            similarity_score=comparison['similarity_score'],
+            similarity_score=similarity_score,
             confidence_level=comparison['confidence_level'],
-            frame_comparison=comparison['frame_comparison'],
+            frame_comparison=[],  # Not using frame-by-frame for multi-hash
             analysis=analysis,
-            metadata=metadata
+            metadata=metadata,
+            hash_matches=hash_matches
         )
         
     except Exception as e:
