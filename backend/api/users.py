@@ -43,9 +43,10 @@ async def get_creator_profile(
 @router.get("/{username}/videos", response_model=List[VideoInfo])
 async def get_creator_videos(
     username: str,
+    platform: str = None,
     db = Depends(get_db)
 ):
-    """Get all videos for a creator's showcase"""
+    """Get all videos for a creator's showcase, optionally filtered by social media platform"""
     # Remove @ if present
     username = username.lstrip('@')
     user = await db.users.find_one({"username": username})
@@ -53,11 +54,18 @@ async def get_creator_videos(
     if not user:
         raise HTTPException(404, f"Creator @{username} not found")
     
-    # Get all videos for this creator that are marked for showcase
-    cursor = db.videos.find({
+    # Build query filter
+    query = {
         "username": username,
         "on_showcase": True  # Only show videos marked for showcase
-    }).sort("captured_at", -1)
+    }
+    
+    # If platform filter is specified, only show videos in that social folder
+    if platform and platform != 'all':
+        query["social_folders"] = platform
+    
+    # Get all videos for this creator that match the filters
+    cursor = db.videos.find(query).sort("captured_at", -1)
     videos = await cursor.to_list(length=1000)
     
     # Get folders for this user
