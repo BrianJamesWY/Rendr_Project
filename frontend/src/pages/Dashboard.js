@@ -483,22 +483,28 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
     try {
       setSaving(true);
       
+      const updateData = {
+        title,
+        description,
+        folder_id: folderId || null,
+        on_showcase: onShowcase,
+        social_folders: socialFolders,
+        social_links: socialLinks.filter(l => l.url)
+      };
+      
+      console.log('Saving video with data:', updateData);
+      
       await axios.put(
         `${BACKEND_URL}/api/videos/${video.video_id}`,
-        {
-          title,
-          description,
-          folder_id: folderId || null,
-          on_showcase: onShowcase,
-          social_folders: socialFolders,
-          social_links: socialLinks.filter(l => l.url)
-        },
+        updateData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      console.log('Video saved successfully');
       onSave();
       onClose();
     } catch (err) {
+      console.error('Save failed:', err);
       alert('Failed to save: ' + (err.response?.data?.detail || err.message));
       setSaving(false);
     }
