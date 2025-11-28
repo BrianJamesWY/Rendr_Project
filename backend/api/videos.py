@@ -365,7 +365,12 @@ async def list_user_videos(
             "has_blockchain": v.get('blockchain_signature') is not None,
             "verification_status": v.get('verification_status', 'pending'),
             "storage": v.get('storage'),
-            "hashes": v.get('hashes')
+            "hashes": v.get('hashes'),
+            "title": v.get('title'),
+            "description": v.get('description'),
+            "on_showcase": v.get('on_showcase', False),
+            "social_folders": v.get('social_folders', []),
+            "social_links": v.get('social_links', [])
         })
     
     # Sort by showcase folder, then by order
