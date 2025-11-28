@@ -20,41 +20,29 @@ router = APIRouter()
 @router.get("/watch/{video_id}")
 async def watch_video_public(
     video_id: str,
+    request: Request,
     db = Depends(get_db)
 ):
-    """Stream video file for public viewing (showcase videos only)"""
-    print(f"\n🎬 PUBLIC WATCH REQUEST for video: {video_id}")
-    
+    """Stream video file for public viewing with range request support"""
     # Find video - check both id fields
     video = await db.videos.find_one({"id": video_id}, {"_id": 0})
     if not video:
         video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
     
-    print(f"   Video found: {video is not None}")
-    
     if not video:
-        print(f"   ❌ Video not found in database")
         raise HTTPException(404, "Video not found")
-    
-    print(f"   on_showcase: {video.get('on_showcase')}")
-    print(f"   is_public: {video.get('is_public')}")
     
     # Must be on showcase OR is_public
     is_public = video.get("on_showcase", False) or video.get("is_public", False)
     
     if not is_public:
-        print(f"   ❌ Video is private")
         raise HTTPException(403, "Video is private")
     
-    # Get video path - use standard path format
+    # Get video path
     video_id_final = video.get("id") or video.get("_id")
     video_path = f"/app/backend/uploads/videos/{video_id_final}.mp4"
     
-    print(f"   Video path: {video_path}")
-    print(f"   File exists: {os.path.exists(video_path)}")
-    
     if not os.path.exists(video_path):
-        print(f"   ❌ Video file does not exist on disk")
         raise HTTPException(404, "Video file not found on disk")
     
     # Increment view count
@@ -64,13 +52,45 @@ async def watch_video_public(
         {"$inc": {"storage.download_count": 1}}
     )
     
-    print(f"   ✅ Streaming video...\n")
+    # Get file stats
+    file_size = os.path.getsize(video_path)
     
-    # Use FileResponse - it handles range requests automatically
+    # Handle range requests
+    range_header = request.headers.get("range")
+    
+    if range_header:
+        # Parse range header
+        range_match = range_header.replace("bytes=", "").split("-")
+        start = int(range_match[0]) if range_match[0] else 0
+        end = int(range_match[1]) if len(range_match) > 1 and range_match[1] else file_size - 1
+        
+        # Read the requested chunk
+        def iterfile():
+            with open(video_path, mode="rb") as video_file:
+                video_file.seek(start)
+                remaining = end - start + 1
+                while remaining > 0:
+                    chunk_size = min(8192, remaining)
+                    data = video_file.read(chunk_size)
+                    if not data:
+                        break
+                    remaining -= len(data)
+                    yield data
+        
+        headers = {
+            "Content-Range": f"bytes {start}-{end}/{file_size}",
+            "Accept-Ranges": "bytes",
+            "Content-Length": str(end - start + 1),
+            "Content-Type": "video/mp4",
+        }
+        
+        return StreamingResponse(iterfile(), status_code=206, headers=headers)
+    
+    # No range request - serve full file
     return FileResponse(
         video_path,
         media_type="video/mp4",
-        filename=f"{video_id}.mp4"
+        headers={"Accept-Ranges": "bytes"}
     )
 
 
