@@ -310,7 +310,7 @@ function Showcase() {
             {/* Videos Grid - EXTREMELY COMPACT */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '10px', marginBottom: '32px' }}>
               {videos.map(video => (
-                <div key={video.video_id} style={{ cursor: 'pointer', transition: 'transform 0.2s' }} onClick={() => handleVideoClick(video.verification_code)}>
+                <div key={video.video_id} style={{ cursor: 'pointer', transition: 'transform 0.2s' }} onClick={() => { setSelectedVideo(video); setShowVideoModal(true); }}>
                   <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#e5e5e5', borderRadius: '4px', overflow: 'hidden' }}>
                     <img 
                       src={video.thumbnail_url ? `${BACKEND_URL}${video.thumbnail_url}` : 'https://via.placeholder.com/320x180/667eea/ffffff?text=Video'}
