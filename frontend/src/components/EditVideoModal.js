@@ -194,6 +194,7 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
         </div>
       </div>
     </div>
+    </>
   );
 }
 
