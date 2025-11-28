@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../components/Logo';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
 function Admin() {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
 // Social media platform icons and colors
 const SOCIAL_PLATFORMS = {

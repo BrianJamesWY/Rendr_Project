@@ -38,7 +38,7 @@ import MyVideos from "./pages/MyVideos";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 const API = `${BACKEND_URL}/api`;
 
 const Home = () => {

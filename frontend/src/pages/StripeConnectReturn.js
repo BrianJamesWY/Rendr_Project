@@ -9,7 +9,7 @@ const StripeConnectReturn = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState('loading'); // 'loading' | 'success' | 'error'
   const [message, setMessage] = useState('');
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
   useEffect(() => {
     const verifyConnection = async () => {

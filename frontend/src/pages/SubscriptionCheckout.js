@@ -13,7 +13,7 @@ const SubscriptionCheckout = () => {
     email: '',
     name: ''
   });
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
   useEffect(() => {
     const loadData = async () => {

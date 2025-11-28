@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
 function PaymentSuccess() {
   const navigate = useNavigate();
