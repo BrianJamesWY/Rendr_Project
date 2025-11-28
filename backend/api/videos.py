@@ -94,16 +94,15 @@ async def watch_video_public(
     )
 
 
-# Authenticated video streaming endpoint
+# Authenticated video streaming endpoint with range support
 @router.get("/{video_id}/stream")
 async def stream_video(
     video_id: str,
+    request: Request,
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Stream video file for authenticated users (owner or public videos)"""
-    print(f"\n🎬 AUTHENTICATED STREAM REQUEST for video: {video_id}")
-    
+    """Stream video file for authenticated users with range request support"""
     # Find video
     video = await db.videos.find_one({"id": video_id}, {"_id": 0})
     if not video:
@@ -133,13 +132,45 @@ async def stream_video(
         {"$inc": {"storage.download_count": 1}}
     )
     
+    # Get file stats
+    file_size = os.path.getsize(video_path)
+    
+    # Handle range requests
+    range_header = request.headers.get("range")
+    
+    if range_header:
+        # Parse range header
+        range_match = range_header.replace("bytes=", "").split("-")
+        start = int(range_match[0]) if range_match[0] else 0
+        end = int(range_match[1]) if len(range_match) > 1 and range_match[1] else file_size - 1
+        
+        # Read the requested chunk
+        def iterfile():
+            with open(video_path, mode="rb") as video_file:
+                video_file.seek(start)
+                remaining = end - start + 1
+                while remaining > 0:
+                    chunk_size = min(8192, remaining)
+                    data = video_file.read(chunk_size)
+                    if not data:
+                        break
+                    remaining -= len(data)
+                    yield data
+        
+        headers = {
+            "Content-Range": f"bytes {start}-{end}/{file_size}",
+            "Accept-Ranges": "bytes",
+            "Content-Length": str(end - start + 1),
+            "Content-Type": "video/mp4",
+        }
+        
+        return StreamingResponse(iterfile(), status_code=206, headers=headers)
+    
+    # No range request - serve full file
     return FileResponse(
         video_path,
         media_type="video/mp4",
-        headers={
-            "Accept-Ranges": "bytes",
-            "Cache-Control": "no-cache"
-        }
+        headers={"Accept-Ranges": "bytes"}
     )
 
 
