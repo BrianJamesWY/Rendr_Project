@@ -178,12 +178,12 @@ class WatermarkProcessor:
                 output_video_path
             ]
             
-            # Run ffmpeg
+            # Run ffmpeg (increased timeout for large videos)
             result = subprocess.run(
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                timeout=120
+                timeout=300  # 5 minutes for large enterprise videos
             )
             
             if result.returncode == 0:
