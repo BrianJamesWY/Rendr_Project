@@ -224,6 +224,10 @@ async def upload_video(
                     )
                     print(f"   ✅ Storage extended to: {new_expiration}")
             
+            upload_date = matching_video.get('uploaded_at')
+            if isinstance(upload_date, datetime):
+                upload_date = upload_date.isoformat()
+            
             return {
                 "video_id": matching_video['id'],
                 "verification_code": matching_video['verification_code'],
@@ -231,7 +235,7 @@ async def upload_video(
                 "message": "This video was already uploaded. Returning existing verification code.",
                 "duplicate_detected": True,
                 "confidence_score": confidence,
-                "original_upload_date": matching_video.get('uploaded_at')
+                "original_upload_date": upload_date
             }
         
         # STEP 3: NEW VIDEO - Generate verification code
