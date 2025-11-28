@@ -681,6 +681,7 @@ function VisitorVideoModal({ video, socialPlatforms, onClose }) {
         )}
       </div>
     </div>
+    </>
   );
 }
 
