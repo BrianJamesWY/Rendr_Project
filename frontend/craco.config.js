@@ -35,6 +35,13 @@ const webpackConfig = {
       '@': path.resolve(__dirname, 'src'),
     },
     configure: (webpackConfig) => {
+      // Force REACT_APP_BACKEND_URL to HTTPS
+      const webpack = require('webpack');
+      webpackConfig.plugins.push(
+        new webpack.DefinePlugin({
+          'process.env.REACT_APP_BACKEND_URL': JSON.stringify('https://video-management-2.preview.emergentagent.com')
+        })
+      );
 
       // Disable hot reload completely if environment variable is set
       if (config.disableHotReload) {
