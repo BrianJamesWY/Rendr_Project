@@ -132,25 +132,16 @@ async def deep_verification(
             comparison = {"result": "tampered", "confidence_level": "low"}
             analysis = f"Significant modifications detected. Video may be fake ({similarity_score}% match)."
         
-        # Generate analysis
-        if comparison['result'] == "authentic":
-            if comparison['similarity_score'] >= 95:
-                analysis = f"Perfect match. Video matches original with {comparison['similarity_score']:.1f}% similarity."
-            else:
-                analysis = f"Video matches original with {comparison['similarity_score']:.1f}% similarity. Minor compression artifacts detected."
-        else:
-            tampered_frames = [f['frame'] for f in comparison['frame_comparison'] if f['similarity'] < 70]
-            analysis = f"Significant differences in {len(tampered_frames)} frames. Video appears edited."
         
-        # Log attempt
+        # Log attempt with multi-hash results
         await db.verification_attempts.insert_one({
             "_id": str(uuid.uuid4()),
             "video_id": original_video['_id'],
             "verification_code": verification_code,
-            "verification_type": "deep",
-            "uploaded_file_hash": new_hash['combined_hash'],
-            "similarity_score": comparison['similarity_score'],
-            "frame_comparison": comparison['frame_comparison'],
+            "verification_type": "deep_multihash",
+            "uploaded_file_hashes": uploaded_hashes,
+            "hash_matches": hash_matches,
+            "similarity_score": similarity_score,
             "result": comparison['result'],
             "confidence_level": comparison['confidence_level'],
             "timestamp": datetime.now().isoformat()
