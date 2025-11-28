@@ -180,6 +180,7 @@ function App() {
           <Route path="/bounties" element={<Bounties />} />
           <Route path="/bounties/post" element={<PostBounty />} />
           <Route path="/bounties/:bountyId/claim" element={<ClaimBounty />} />
+          <Route path="/my-videos" element={<MyVideos />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
           <Route path="*" element={<NotFound />} />
