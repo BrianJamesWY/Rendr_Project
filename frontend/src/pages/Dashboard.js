@@ -429,6 +429,9 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
   const [socialFolders, setSocialFolders] = useState(video.social_folders || []);
   const [socialLinks, setSocialLinks] = useState(video.social_links || [{ platform: '', url: '' }]);
   const [saving, setSaving] = useState(false);
+  const [showInlineFolderCreate, setShowInlineFolderCreate] = useState(false);
+  const [inlineFolderName, setInlineFolderName] = useState('');
+  const [localFolders, setLocalFolders] = useState(folders);
 
   const handleToggleSocialFolder = (platformId) => {
     if (socialFolders.includes(platformId)) {
