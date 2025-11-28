@@ -437,9 +437,9 @@ async def update_video(
             folder_name = platform_names.get(platform, platform.capitalize())
             
             # Check if folder exists
-            print(f"DEBUG: Looking for folder '{folder_name}' for user {current_user['user_id']}")
+            print(f"DEBUG: Looking for folder '{folder_name}' for user {current_user.get('username')}")
             existing_folder = await db.folders.find_one({
-                "user_id": current_user["user_id"],
+                "username": current_user.get("username"),
                 "folder_name": folder_name
             })
             
