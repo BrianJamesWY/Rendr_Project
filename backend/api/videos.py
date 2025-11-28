@@ -421,7 +421,6 @@ async def update_video(
     
     # Auto-create folders for social media platforms and assign video to primary folder
     if video_data.social_folders and len(video_data.social_folders) > 0:
-        print(f"DEBUG: Creating folders for platforms: {video_data.social_folders}")
         # Platform name mapping
         platform_names = {
             'youtube': 'YouTube',
@@ -433,23 +432,19 @@ async def update_video(
         
         folder_ids = []
         for platform in video_data.social_folders:
-            print(f"DEBUG: Processing platform: {platform}")
             folder_name = platform_names.get(platform, platform.capitalize())
             
             # Check if folder exists
-            print(f"DEBUG: Looking for folder '{folder_name}' for user {current_user.get('username')}")
             existing_folder = await db.folders.find_one({
                 "username": current_user.get("username"),
                 "folder_name": folder_name
             })
             
             if existing_folder:
-                print(f"DEBUG: Found existing folder: {existing_folder['folder_id']}")
                 folder_ids.append(existing_folder["folder_id"])
             else:
                 # Create new folder
                 new_folder_id = str(uuid.uuid4())
-                print(f"DEBUG: Creating new folder '{folder_name}' with ID {new_folder_id}")
                 await db.folders.insert_one({
                     "_id": new_folder_id,
                     "folder_id": new_folder_id,
@@ -460,7 +455,6 @@ async def update_video(
                     "order": 0,
                     "created_at": datetime.now(timezone.utc).isoformat()
                 })
-                print(f"DEBUG: Folder created successfully")
                 folder_ids.append(new_folder_id)
         
         # Assign video to the first social folder if folder_id not explicitly set
