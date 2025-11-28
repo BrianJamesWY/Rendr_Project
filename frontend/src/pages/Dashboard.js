@@ -295,25 +295,61 @@ function Dashboard() {
           </div>
           
           {/* Right Column */}
-          <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
-            <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>Quick Stats</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
-                <span style={{ fontSize: '13px', color: '#606060' }}>Premium Subscribers</span>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>0</span>
+          <div>
+            {/* Quick Stats */}
+            <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>Quick Stats</h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '13px', color: '#606060' }}>Premium Subscribers</span>
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>0</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '13px', color: '#606060' }}>Premium Folders</span>
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>0</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '13px', color: '#606060' }}>Followers</span>
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>0</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
+                  <span style={{ fontSize: '13px', color: '#606060' }}>Storage Used</span>
+                  <span style={{ fontSize: '14px', fontWeight: '600' }}>{videos.length} videos</span>
+                </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
-                <span style={{ fontSize: '13px', color: '#606060' }}>Premium Folders</span>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>0</span>
+            </div>
+
+            {/* Folders Widget */}
+            <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Folders</h2>
+                <button onClick={() => setShowNewFolderModal(true)} style={{ padding: '6px 12px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: '500' }}>+ New</button>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
-                <span style={{ fontSize: '13px', color: '#606060' }}>Followers</span>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>0</span>
-              </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', background: '#f9f9f9', borderRadius: '6px' }}>
-                <span style={{ fontSize: '13px', color: '#606060' }}>Storage Used</span>
-                <span style={{ fontSize: '14px', fontWeight: '600' }}>{videos.length} videos</span>
-              </div>
+              
+              {folders.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '250px', overflowY: 'auto' }}>
+                  {folders.slice(0, 5).map(folder => {
+                    const folderVideos = videos.filter(v => v.folder_id === folder.folder_id);
+                    return (
+                      <div key={folder.folder_id} style={{ padding: '10px', background: '#f9f9f9', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s' }} onClick={() => navigate('/my-videos', { state: { selectedFolder: folder.folder_id } })}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ fontSize: '16px' }}>📁</span>
+                            <span style={{ fontSize: '13px', fontWeight: '500' }}>{folder.folder_name}</span>
+                          </div>
+                          <span style={{ fontSize: '12px', color: '#667eea', fontWeight: '600' }}>{folderVideos.length}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '20px', color: '#909090', fontSize: '13px' }}>
+                  No folders yet. Create one to organize your videos!
+                </div>
+              )}
+              
+              <Link to="/my-videos" style={{ display: 'block', marginTop: '12px', fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500', textAlign: 'center' }}>View All →</Link>
             </div>
           </div>
         </div>
