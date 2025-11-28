@@ -16,12 +16,24 @@ function Showcase() {
   const [premiumFolders, setPremiumFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedPlatform, setSelectedPlatform] = useState('all');
+  const [showVideoModal, setShowVideoModal] = useState(false);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const socialPlatforms = [
+    { id: 'all', name: 'All', icon: '🎬' },
+    { id: 'youtube', name: 'YouTube', icon: '▶️' },
+    { id: 'tiktok', name: 'TikTok', icon: '🎵' },
+    { id: 'instagram', name: 'Instagram', icon: '📷' },
+    { id: 'twitter', name: 'Twitter', icon: '🐦' },
+    { id: 'facebook', name: 'Facebook', icon: '👥' }
+  ];
 
   useEffect(() => {
     if (username) {
       loadShowcase();
     }
-  }, [username]);
+  }, [username, selectedPlatform]);
 
   const loadShowcase = async () => {
     try {
@@ -31,7 +43,9 @@ function Showcase() {
       const profileRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}`);
       setProfile(profileRes.data);
       
-      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`);
+      const videosRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/videos`, {
+        params: selectedPlatform !== 'all' ? { platform: selectedPlatform } : {}
+      });
       setVideos(videosRes.data || []);
 
       try {
