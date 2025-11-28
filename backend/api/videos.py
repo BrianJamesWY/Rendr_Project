@@ -35,6 +35,9 @@ class VideoUpdateData(BaseModel):
     is_public: Optional[bool] = None
     showcase_folder_id: Optional[str] = None
     folder_id: Optional[str] = None
+    on_showcase: Optional[bool] = None
+    social_folders: Optional[list] = None
+    social_links: Optional[list] = None
 
 @router.post("/upload", response_model=VideoUploadResponse)
 async def upload_video(
