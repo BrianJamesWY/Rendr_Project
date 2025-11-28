@@ -421,6 +421,7 @@ async def update_video(
     
     # Auto-create folders for social media platforms and assign video to primary folder
     if video_data.social_folders and len(video_data.social_folders) > 0:
+        print(f"DEBUG: Creating folders for platforms: {video_data.social_folders}")
         # Platform name mapping
         platform_names = {
             'youtube': 'YouTube',
@@ -432,6 +433,7 @@ async def update_video(
         
         folder_ids = []
         for platform in video_data.social_folders:
+            print(f"DEBUG: Processing platform: {platform}")
             folder_name = platform_names.get(platform, platform.capitalize())
             
             # Check if folder exists
