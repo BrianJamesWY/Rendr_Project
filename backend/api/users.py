@@ -103,6 +103,68 @@ async def get_creator_videos(
     
     return result
 
+@router.get("/{username}/premium-videos", response_model=List[VideoInfo])
+async def get_creator_premium_videos(
+    username: str,
+    db = Depends(get_db)
+):
+    """Get premium videos for a creator (Pro/Enterprise tier videos marked as stored/on showcase)"""
+    # Remove @ if present
+    username = username.lstrip('@')
+    user = await db.users.find_one({"username": username})
+    
+    if not user:
+        raise HTTPException(404, f"Creator @{username} not found")
+    
+    # Get user's tier
+    user_tier = user.get("premium_tier", "free")
+    
+    # Only show premium videos for Pro/Enterprise users
+    if user_tier not in ["pro", "enterprise"]:
+        return []
+    
+    # Query for videos that are:
+    # 1. Owned by this user
+    # 2. Marked as on_showcase or is_public
+    # 3. Have storage tier pro or enterprise
+    query = {
+        "user_id": user["_id"],
+        "$or": [
+            {"on_showcase": True},
+            {"is_public": True}
+        ],
+        "storage.tier": {"$in": ["pro", "enterprise"]}
+    }
+    
+    cursor = db.videos.find(query, {"_id": 0}).sort("uploaded_at", -1)
+    videos = await cursor.to_list(length=1000)
+    
+    result = []
+    for video in videos:
+        thumbnail_url = f"/api/thumbnails/{video.get('id', video.get('_id'))}.jpg" if video.get("thumbnail_path") else None
+        
+        result.append(VideoInfo(
+            video_id=video.get("id") or video.get("_id"),
+            verification_code=video.get("verification_code", ""),
+            thumbnail_url=thumbnail_url or "",
+            captured_at=video.get("captured_at") or video.get("uploaded_at", ""),
+            folder_name=None,
+            folder_id=video.get("folder_id"),
+            showcase_folder_id=video.get("showcase_folder_id"),
+            description=video.get("description"),
+            external_link=video.get("external_link"),
+            platform=video.get("platform"),
+            tags=video.get("tags", ["Rendr"]),
+            social_folders=video.get("social_folders", []),
+            social_links=video.get("social_links", []),
+            on_showcase=video.get("on_showcase", False),
+            title=video.get("title"),
+            storage=video.get("storage"),
+            uploaded_at=video.get("uploaded_at")
+        ))
+    
+    return result
+
 @router.put("/profile")
 async def update_creator_profile(
     profile_data: UpdateProfile,
