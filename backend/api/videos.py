@@ -55,6 +55,51 @@ async def stream_video(
     )
     
     # Detect file extension
+
+
+# Public video streaming (for showcase videos)
+@router.get("/{video_id}/watch")
+async def watch_video_public(
+    video_id: str,
+    db = Depends(get_db)
+):
+    """Stream video file for public viewing (showcase videos only)"""
+    # Find video
+    video = await db.videos.find_one({"_id": video_id})
+    if not video:
+        video = await db.videos.find_one({"id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    # Must be on showcase OR have valid token
+    is_public = video.get("on_showcase", False)
+    
+    if not is_public:
+        raise HTTPException(403, "Video is private")
+    
+    # Get video path
+    video_path = video.get("storage", {}).get("video_path")
+    if not video_path:
+        raise HTTPException(404, "Video file not found")
+    
+    full_path = f"/app/backend{video_path}"
+    if not os.path.exists(full_path):
+        raise HTTPException(404, "Video file does not exist on disk")
+    
+    # Detect file extension
+    file_ext = video_path.split('.')[-1].lower()
+    media_types = {
+        'mp4': 'video/mp4',
+        'mov': 'video/quicktime',
+        'avi': 'video/x-msvideo',
+        'mkv': 'video/x-matroska',
+        'webm': 'video/webm'
+    }
+    media_type = media_types.get(file_ext, 'video/mp4')
+    
+    return FileResponse(full_path, media_type=media_type, filename=f"{video_id}.{file_ext}")
+
     file_ext = video_path.split('.')[-1].lower()
     media_types = {
         'mp4': 'video/mp4',
