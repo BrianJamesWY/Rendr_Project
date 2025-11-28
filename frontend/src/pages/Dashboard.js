@@ -507,12 +507,37 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
 
         <div style={{ marginBottom: '16px' }}>
           <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Folder</label>
-          <select value={folderId} onChange={(e) => setFolderId(e.target.value)} style={{ width: '100%', padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}>
-            <option value="">No Folder</option>
-            {folders.map(f => (
-              <option key={f.folder_id} value={f.folder_id}>{f.folder_name}</option>
-            ))}
-          </select>
+          {!showInlineFolderCreate ? (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <select value={folderId} onChange={(e) => {
+                if (e.target.value === '__create_new__') {
+                  setShowInlineFolderCreate(true);
+                  setInlineFolderName('');
+                } else {
+                  setFolderId(e.target.value);
+                }
+              }} style={{ flex: 1, padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}>
+                <option value="">No Folder</option>
+                {folders.map(f => (
+                  <option key={f.folder_id} value={f.folder_id}>{f.folder_name}</option>
+                ))}
+                <option value="__create_new__" style={{ color: '#667eea', fontWeight: '500' }}>+ Create New Folder</option>
+              </select>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+              <input 
+                type="text" 
+                value={inlineFolderName}
+                onChange={(e) => setInlineFolderName(e.target.value)}
+                placeholder="Enter folder name"
+                autoFocus
+                style={{ flex: 1, padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}
+              />
+              <button onClick={handleCreateInlineFolder} style={{ padding: '10px 16px', background: '#667eea', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>Create</button>
+              <button onClick={() => setShowInlineFolderCreate(false)} style={{ padding: '10px 16px', background: '#e5e5e5', color: '#666', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '13px' }}>Cancel</button>
+            </div>
+          )}
         </div>
 
         <div style={{ marginBottom: '16px' }}>
