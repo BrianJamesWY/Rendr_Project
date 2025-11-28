@@ -16,6 +16,47 @@ from fastapi.responses import FileResponse
 
 router = APIRouter()
 
+# Video streaming endpoint
+@router.get("/{video_id}/stream")
+async def stream_video(
+    video_id: str,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Stream video file for viewing"""
+    # Find video
+    video = await db.videos.find_one({"_id": video_id})
+    if not video:
+        video = await db.videos.find_one({"id": video_id})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    # Check access: owner or video is on showcase
+    is_owner = video.get("user_id") == current_user["user_id"]
+    is_public = video.get("on_showcase", False)
+    
+    if not is_owner and not is_public:
+        raise HTTPException(403, "Access denied")
+    
+    # Get video path
+    video_path = video.get("storage", {}).get("video_path")
+    if not video_path:
+        raise HTTPException(404, "Video file not found")
+    
+    full_path = f"/app/backend{video_path}"
+    if not os.path.exists(full_path):
+        raise HTTPException(404, "Video file does not exist on disk")
+    
+    # Increment view count
+    await db.videos.update_one(
+        {"_id": video_id},
+        {"$inc": {"storage.download_count": 1}}
+    )
+    
+    return FileResponse(full_path, media_type="video/mp4", filename=f"{video_id}.mp4")
+
+
 class VideoUploadResponse(BaseModel):
     video_id: str
     verification_code: str
