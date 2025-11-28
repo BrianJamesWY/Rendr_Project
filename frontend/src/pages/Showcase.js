@@ -164,12 +164,26 @@ function Showcase() {
   };
 
   return (
-    <div style={{ margin: 0, padding: 0, boxSizing: 'border-box', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', background: '#f8f9fa', color: '#030303', lineHeight: 1.5 }}>
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
+    <>
+      {showVideoModal && selectedVideo && (
+        <VideoPlayer
+          videoId={selectedVideo.video_id}
+          thumbnail={selectedVideo.thumbnail_url}
+          title={selectedVideo.title}
+          onClose={() => {
+            setShowVideoModal(false);
+            setSelectedVideo(null);
+          }}
+          isAuthenticated={false}
+        />
+      )}
       
-      {/* Navigation Bar */}
+      <div style={{ margin: 0, padding: 0, boxSizing: 'border-box', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif', background: '#f8f9fa', color: '#030303', lineHeight: 1.5 }}>
+        <style>{`
+          @keyframes spin { to { transform: rotate(360deg); } }
+        `}</style>
+        
+        {/* Navigation Bar */}
       <nav style={{ background: 'white', padding: '12px 24px', boxShadow: '0 1px 3px rgba(0,0,0,0.08)', position: 'sticky', top: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <Link to="/dashboard" style={{ textDecoration: 'none', cursor: 'pointer' }}>
           <Logo size="medium" />
