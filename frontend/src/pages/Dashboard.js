@@ -50,7 +50,7 @@ function Dashboard() {
 
       // Load folders for the edit modal
       try {
-        const foldersRes = await axios.get(`${BACKEND_URL}/api/folders`, {
+        const foldersRes = await axios.get(`${BACKEND_URL}/api/folders/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFolders(Array.isArray(foldersRes.data) ? foldersRes.data : foldersRes.data.folders || []);
