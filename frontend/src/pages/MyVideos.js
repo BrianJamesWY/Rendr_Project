@@ -41,6 +41,9 @@ function MyVideos() {
     try {
       setLoading(true);
       
+      console.log('Loading videos from:', `${BACKEND_URL}/api/videos/user/list`);
+      console.log('Loading folders from:', `${BACKEND_URL}/api/folders`);
+      
       const [videosRes, foldersRes] = await Promise.all([
         axios.get(`${BACKEND_URL}/api/videos/user/list`, {
           headers: { Authorization: `Bearer ${token}` }
