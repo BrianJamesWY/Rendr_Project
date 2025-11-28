@@ -84,6 +84,24 @@ function Dashboard() {
     setShowEditVideoModal(true);
   };
 
+  const handleCreateFolder = async () => {
+    if (!newFolderName.trim()) return;
+    
+    try {
+      await axios.post(
+        `${BACKEND_URL}/api/folders/`,
+        { folder_name: newFolderName, description: '' },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      setNewFolderName('');
+      setShowNewFolderModal(false);
+      loadDashboard();
+    } catch (err) {
+      alert('Failed to create folder: ' + (err.response?.data?.detail || err.message));
+    }
+  };
+
   const handleLogout = async () => {
     if (window.confirm('Are you sure you want to logout?')) {
       localStorage.removeItem('token');
