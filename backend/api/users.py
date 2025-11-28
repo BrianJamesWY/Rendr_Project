@@ -169,7 +169,7 @@ async def get_creator_premium_videos(
             on_showcase=video.get("on_showcase", False),
             title=video.get("title"),
             storage=video.get("storage"),
-            uploaded_at=video.get("uploaded_at")
+            uploaded_at=str(uploaded_at)
         ))
     
     return result
