@@ -479,6 +479,11 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
       setFolderId(newFolder.folder_id);
       setShowInlineFolderCreate(false);
       setInlineFolderName('');
+      
+      // Notify parent Dashboard to refresh folders
+      if (onFolderCreated) {
+        onFolderCreated();
+      }
     } catch (err) {
       alert('Failed to create folder: ' + (err.response?.data?.detail || err.message));
     }
