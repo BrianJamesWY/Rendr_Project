@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import Logo from './Logo';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
 function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, token }) {
   const [title, setTitle] = useState(video.title || '');
