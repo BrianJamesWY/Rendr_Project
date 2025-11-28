@@ -54,7 +54,18 @@ async def stream_video(
         {"$inc": {"storage.download_count": 1}}
     )
     
-    return FileResponse(full_path, media_type="video/mp4", filename=f"{video_id}.mp4")
+    # Detect file extension
+    file_ext = video_path.split('.')[-1].lower()
+    media_types = {
+        'mp4': 'video/mp4',
+        'mov': 'video/quicktime',
+        'avi': 'video/x-msvideo',
+        'mkv': 'video/x-matroska',
+        'webm': 'video/webm'
+    }
+    media_type = media_types.get(file_ext, 'video/mp4')
+    
+    return FileResponse(full_path, media_type=media_type, filename=f"{video_id}.{file_ext}")
 
 
 # Tier management (for testing)
