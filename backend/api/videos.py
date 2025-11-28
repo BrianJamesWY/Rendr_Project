@@ -451,8 +451,10 @@ async def update_video(
                 new_folder_id = str(uuid.uuid4())
                 print(f"DEBUG: Creating new folder '{folder_name}' with ID {new_folder_id}")
                 await db.folders.insert_one({
+                    "_id": new_folder_id,
                     "folder_id": new_folder_id,
                     "user_id": current_user["user_id"],
+                    "username": current_user.get("username"),
                     "folder_name": folder_name,
                     "description": f"Videos for {folder_name}",
                     "order": 0,
