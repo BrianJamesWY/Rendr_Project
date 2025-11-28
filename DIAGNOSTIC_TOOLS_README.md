@@ -205,7 +205,7 @@ sudo supervisorctl status
 
 4. Test webhook manually:
    ```bash
-   curl -X POST https://premium-content-47.preview.emergentagent.com/api/stripe/webhook \
+   curl -X POST https://video-management-2.preview.emergentagent.com/api/stripe/webhook \
      -H "Content-Type: application/json" \
      -d '{"type": "test"}'
    ```
@@ -292,11 +292,11 @@ python3 /app/backend/debug_routes.py
 ### Manual API Testing
 ```bash
 # Test endpoint
-curl -v https://premium-content-47.preview.emergentagent.com/api/@/BrianJames
+curl -v https://video-management-2.preview.emergentagent.com/api/@/BrianJames
 
 # Test with auth
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-     https://premium-content-47.preview.emergentagent.com/api/auth/me
+     https://video-management-2.preview.emergentagent.com/api/auth/me
 ```
 
 ### Check Environment Variables

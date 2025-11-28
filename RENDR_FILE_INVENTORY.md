@@ -186,7 +186,7 @@ BACKUP FILES:
 ### Frontend Environment
 **File:** `/app/frontend/.env`
 ```
-REACT_APP_BACKEND_URL=https://premium-content-47.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://video-management-2.preview.emergentagent.com
 REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 

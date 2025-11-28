@@ -46,7 +46,7 @@ WEEKS 12-13: LAUNCH PREP                              ❌ NOT STARTED
 
 ### ✅ **Backend API** - Fully Functional
 **Location:** `/app/backend/`
-**Running at:** `https://premium-content-47.preview.emergentagent.com/api`
+**Running at:** `https://video-management-2.preview.emergentagent.com/api`
 
 ```
 API ENDPOINTS BUILT:
@@ -62,7 +62,7 @@ API ENDPOINTS BUILT:
 
 ### ✅ **Frontend Verify Portal** - Partially Working
 **Location:** `/app/frontend/src/pages/Verify.js`
-**Running at:** `https://premium-content-47.preview.emergentagent.com/verify`
+**Running at:** `https://video-management-2.preview.emergentagent.com/verify`
 
 **Features:**
 - Two verification modes (code + deep)
@@ -238,26 +238,26 @@ API ENDPOINTS BUILT:
 ### **Test 1: Backend API**
 ```bash
 # Register user
-curl -X POST https://premium-content-47.preview.emergentagent.com/api/auth/register \
+curl -X POST https://video-management-2.preview.emergentagent.com/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email":"test@test.com","password":"Test123!","display_name":"Tester"}'
 
 # Save the token from response
 
 # Upload video (need to have video file)
-curl -X POST https://premium-content-47.preview.emergentagent.com/api/videos/upload \
+curl -X POST https://video-management-2.preview.emergentagent.com/api/videos/upload \
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \
   -F "video_file=@/path/to/video.mp4" \
   -F "source=bodycam"
 
 # Verify by code
-curl -X POST https://premium-content-47.preview.emergentagent.com/api/verify/code \
+curl -X POST https://video-management-2.preview.emergentagent.com/api/verify/code \
   -H "Content-Type: application/json" \
   -d '{"verification_code":"RND-TEST01"}'
 ```
 
 ### **Test 2: Frontend Verify Portal**
-1. Go to: `https://premium-content-47.preview.emergentagent.com/verify`
+1. Go to: `https://video-management-2.preview.emergentagent.com/verify`
 2. Enter code: `RND-TEST01`
 3. Click "Verify Code"
 4. Should see success message
@@ -293,7 +293,7 @@ curl -X POST https://premium-content-47.preview.emergentagent.com/api/verify/cod
    - Share: `rendrtruth.com/rsvp.html`
 
 2. **Test the verify page**
-   - Visit: `https://premium-content-47.preview.emergentagent.com/verify`
+   - Visit: `https://video-management-2.preview.emergentagent.com/verify`
    - Try code: `RND-TEST01`
    - Report any issues
 
@@ -425,8 +425,8 @@ LEGEND:
 - Mobile app (not started)
 
 ### **Key URLs:**
-- Verify Portal: `https://premium-content-47.preview.emergentagent.com/verify`
-- Backend API: `https://premium-content-47.preview.emergentagent.com/api`
+- Verify Portal: `https://video-management-2.preview.emergentagent.com/verify`
+- Backend API: `https://video-management-2.preview.emergentagent.com/api`
 - Your Site: `rendrtruth.com`
 - RSVP Page: Upload to `rendrtruth.com/rsvp.html`
 

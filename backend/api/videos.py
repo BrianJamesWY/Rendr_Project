@@ -297,7 +297,7 @@ async def upload_video(
         if should_notify:
             print(f"   📧 Video length ({original_hashes['duration']}s) exceeds threshold - sending notification")
             
-            download_url = f"https://premium-content-47.preview.emergentagent.com/dashboard?video={video_id}"
+            download_url = f"https://video-management-2.preview.emergentagent.com/dashboard?video={video_id}"
             
             notification_results = await notification_service.send_video_ready_notification(
                 user=user,
