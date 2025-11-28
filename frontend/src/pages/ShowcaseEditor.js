@@ -93,7 +93,7 @@ function ShowcaseEditor() {
     try {
       // Save showcase settings
       await axios.put(
-        `${BACKEND_URL}/api/users/profile`,
+        `${BACKEND_URL}/api/profile`,
         {
           display_name: displayName,
           bio: bio,
