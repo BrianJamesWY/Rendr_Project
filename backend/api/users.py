@@ -53,8 +53,11 @@ async def get_creator_videos(
     if not user:
         raise HTTPException(404, f"Creator @{username} not found")
     
-    # Get all videos for this creator
-    cursor = db.videos.find({"username": username}).sort("captured_at", -1)
+    # Get all videos for this creator that are marked for showcase
+    cursor = db.videos.find({
+        "username": username,
+        "on_showcase": True  # Only show videos marked for showcase
+    }).sort("captured_at", -1)
     videos = await cursor.to_list(length=1000)
     
     # Get folders for this user
