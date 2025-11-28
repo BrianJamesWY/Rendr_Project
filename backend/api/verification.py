@@ -76,7 +76,9 @@ async def deep_verification(
     verification_code: str = Form(...),
     db = Depends(get_db)
 ):
-    """Deep verification by file upload"""
+    """Deep verification by file upload using multi-hash system"""
+    from services.enhanced_video_processor import enhanced_processor
+    
     original_video = await db.videos.find_one({"verification_code": verification_code})
     
     if not original_video:
@@ -93,13 +95,42 @@ async def deep_verification(
         shutil.copyfileobj(video_file.file, buffer)
     
     try:
-        # Process uploaded video
-        frames, _ = video_processor.extract_frames(file_path)
-        new_hash = video_processor.calculate_perceptual_hash(frames)
+        # Calculate all hashes for uploaded video
+        tier = original_video.get("storage", {}).get("tier", "free")
+        uploaded_hashes = enhanced_processor.calculate_all_hashes(file_path, tier)
         
-        # Compare with original
-        original_hash = original_video['perceptual_hash']
-        comparison = video_processor.compare_hashes(original_hash, new_hash)
+        # Compare with stored hashes
+        stored_hashes = original_video.get("hashes", {})
+        
+        hash_matches = {
+            "original": stored_hashes.get("original") == uploaded_hashes["original_hash"],
+            "watermarked": stored_hashes.get("watermarked") == uploaded_hashes["original_hash"],
+            "center_region": stored_hashes.get("center_region") == uploaded_hashes.get("center_region_hash") if uploaded_hashes.get("center_region_hash") else None,
+            "audio": stored_hashes.get("audio") == uploaded_hashes.get("audio_hash") if uploaded_hashes.get("audio_hash") else None,
+            "metadata": stored_hashes.get("metadata") == uploaded_hashes["metadata_hash"]
+        }
+        
+        # Remove None values
+        hash_matches = {k: v for k, v in hash_matches.items() if v is not None}
+        
+        # Calculate confidence
+        matches = sum([1 for v in hash_matches.values() if v])
+        total = len(hash_matches)
+        similarity_score = int((matches / total) * 100) if total > 0 else 0
+        
+        # Determine result
+        if hash_matches.get("original"):
+            comparison = {"result": "authentic", "confidence_level": "very_high"}
+            analysis = f"Perfect match. Video is original and unmodified ({similarity_score}% match)."
+        elif hash_matches.get("watermarked"):
+            comparison = {"result": "authentic", "confidence_level": "very_high"}
+            analysis = f"Watermarked version detected. Video is authentic ({similarity_score}% match)."
+        elif hash_matches.get("center_region") and similarity_score >= 70:
+            comparison = {"result": "modified", "confidence_level": "medium"}
+            analysis = f"Video appears modified (cropped/edited) but center content intact ({similarity_score}% match)."
+        else:
+            comparison = {"result": "tampered", "confidence_level": "low"}
+            analysis = f"Significant modifications detected. Video may be fake ({similarity_score}% match)."
         
         # Generate analysis
         if comparison['result'] == "authentic":
