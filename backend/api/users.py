@@ -84,10 +84,10 @@ async def get_creator_videos(
         thumbnail_url = f"/api/thumbnails/{video['_id']}.jpg" if video.get("thumbnail_path") else None
         
         result.append(VideoInfo(
-            video_id=video["_id"],
-            verification_code=video["verification_code"],
+            video_id=video.get("_id") or video.get("id"),
+            verification_code=video.get("verification_code", ""),
             thumbnail_url=thumbnail_url or "",
-            captured_at=video["captured_at"],
+            captured_at=video.get("captured_at", ""),
             folder_name=folder_name,
             folder_id=video.get("folder_id"),
             showcase_folder_id=video.get("showcase_folder_id"),
