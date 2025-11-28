@@ -347,7 +347,7 @@ function Dashboard() {
             {/* Folders Widget */}
             <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Folders</h2>
+                <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Folders {console.log('Rendering folders widget, count:', folders.length)}</h2>
                 <button onClick={() => setShowNewFolderModal(true)} style={{ padding: '6px 12px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '6px', fontSize: '12px', cursor: 'pointer', fontWeight: '500' }}>+ New</button>
               </div>
               
