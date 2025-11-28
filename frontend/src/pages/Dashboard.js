@@ -229,19 +229,15 @@ function Dashboard() {
               <div style={{ height: '200px', background: '#f9f9f9', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#909090', fontSize: '13px' }}>Views & Verifications Chart</div>
             </div>
             
-            {/* Top Videos */}
+            {/* Recent Videos */}
             <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Top Videos</h2>
-                <select style={{ padding: '6px 10px', border: '1px solid #d0d0d0', borderRadius: '4px', fontSize: '13px', background: 'white', cursor: 'pointer' }}>
-                  <option>Today</option>
-                  <option>This Week</option>
-                  <option>This Month</option>
-                </select>
+                <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Recent Videos</h2>
+                <Link to={`/@${user?.username}`} style={{ fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>View All →</Link>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {topVideos.slice(0, 3).map((video, index) => (
-                  <div key={video.video_id} style={{ display: 'flex', gap: '12px', padding: '10px', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s' }}>
+                {videos.slice(0, 5).map((video, index) => (
+                  <div key={video.video_id} style={{ display: 'flex', gap: '12px', padding: '10px', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s', ':hover': { background: '#f9f9f9' } }} onClick={() => navigate(`/verify?code=${video.verification_code}`)}>
                     <div style={{ width: '120px', height: '68px', background: '#e5e5e5', borderRadius: '4px', flexShrink: 0, overflow: 'hidden' }}>
                       {video.thumbnail_url ? (
                         <img src={`${BACKEND_URL}${video.thumbnail_url}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -250,17 +246,20 @@ function Dashboard() {
                       )}
                     </div>
                     <div style={{ flex: 1 }}>
-                      <div style={{ fontFamily: '"Courier New", monospace', fontSize: '13px', fontWeight: '600', color: '#667eea', marginBottom: '4px' }}>{video.verification_code}</div>
-                      <div style={{ fontSize: '12px', color: '#606060', marginBottom: '6px' }}>YouTube</div>
-                      <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: '#606060' }}>
-                        <span>{video.view_count || 0} views</span>
-                        <span>{video.view_count || 0} verifications</span>
+                      <div style={{ fontSize: '13px', fontWeight: '600', color: '#030303', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{video.title || 'Untitled Video'}</div>
+                      <div style={{ fontFamily: '"Courier New", monospace', fontSize: '12px', fontWeight: '600', color: '#667eea', marginBottom: '4px' }}>{video.verification_code}</div>
+                      <div style={{ display: 'flex', gap: '12px', fontSize: '11px', color: '#606060' }}>
+                        <span>{video.folder_id ? '📁 In Folder' : '📂 No Folder'}</span>
+                        <span>Uploaded {new Date(video.captured_at).toLocaleDateString()}</span>
                       </div>
                     </div>
                   </div>
                 ))}
-                {topVideos.length === 0 && (
-                  <div style={{ textAlign: 'center', padding: '2rem', color: '#909090', fontSize: '14px' }}>No video data yet</div>
+                {videos.length === 0 && (
+                  <div style={{ textAlign: 'center', padding: '2rem', color: '#909090', fontSize: '14px' }}>
+                    <p style={{ marginBottom: '12px' }}>No videos uploaded yet</p>
+                    <Link to="/upload" style={{ color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>Upload your first video →</Link>
+                  </div>
                 )}
               </div>
             </div>
