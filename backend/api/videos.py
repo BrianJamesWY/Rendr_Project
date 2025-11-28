@@ -66,11 +66,22 @@ async def watch_video_public(
     
     print(f"   ✅ Streaming video...\n")
     
-    return FileResponse(
-        video_path,
+    # Use StreamingResponse for better video streaming support
+    from fastapi.responses import StreamingResponse
+    import mimetypes
+    
+    def iterfile():
+        with open(video_path, mode="rb") as file:
+            yield from file
+    
+    file_size = os.path.getsize(video_path)
+    
+    return StreamingResponse(
+        iterfile(),
         media_type="video/mp4",
         headers={
             "Accept-Ranges": "bytes",
+            "Content-Length": str(file_size),
             "Cache-Control": "no-cache"
         }
     )
