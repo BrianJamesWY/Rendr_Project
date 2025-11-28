@@ -233,7 +233,7 @@ function Dashboard() {
             <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Recent Videos</h2>
-                <Link to={`/@${user?.username}`} style={{ fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>View All →</Link>
+                <Link to="/my-videos" style={{ fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>View All →</Link>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {videos.slice(0, 5).map((video, index) => (
