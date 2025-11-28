@@ -64,7 +64,7 @@ function MyVideos() {
     try {
       await axios.post(
         `${BACKEND_URL}/api/folders`,
-        { name: newFolderName, description: '' },
+        { folder_name: newFolderName, description: '' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
