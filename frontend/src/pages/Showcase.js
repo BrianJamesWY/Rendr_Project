@@ -294,12 +294,10 @@ function Showcase() {
                 </select>
                 
                 <label style={{ fontSize: '14px', color: '#606060', fontWeight: '500', marginLeft: '12px' }}>Platform:</label>
-                <select style={{ padding: '8px 12px', border: '1px solid #e5e5e5', borderRadius: '6px', fontSize: '14px', background: 'white', cursor: 'pointer', transition: 'border-color 0.2s' }}>
-                  <option value="all">All Platforms</option>
-                  <option value="youtube">YouTube</option>
-                  <option value="tiktok">TikTok</option>
-                  <option value="instagram">Instagram</option>
-                  <option value="twitter">Twitter</option>
+                <select value={selectedPlatform} onChange={(e) => setSelectedPlatform(e.target.value)} style={{ padding: '8px 12px', border: '1px solid #e5e5e5', borderRadius: '6px', fontSize: '14px', background: 'white', cursor: 'pointer', transition: 'border-color 0.2s' }}>
+                  {socialPlatforms.map(platform => (
+                    <option key={platform.id} value={platform.id}>{platform.icon} {platform.name}</option>
+                  ))}
                 </select>
               </div>
               
