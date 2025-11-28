@@ -356,40 +356,151 @@ function Showcase() {
         {/* Premium Videos Tab */}
         {activeTab === 'premium' && (
           <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-              {premiumFolders.map(folder => (
-                <div key={folder.folder_id} style={{ background: 'white', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', transition: 'all 0.3s', cursor: 'pointer' }}>
-                  <div style={{ padding: '24px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', height: '120px', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center', position: 'relative' }}>
-                    <div style={{ fontSize: '40px', marginBottom: '8px' }}>🎬</div>
-                    <div style={{ fontSize: '19px', fontWeight: '700', marginBottom: '4px' }}>{folder.name}</div>
-                    <div style={{ fontSize: '13px', opacity: 0.95, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {folder.description}
-                    </div>
-                  </div>
-                  <div style={{ padding: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', marginBottom: '4px' }}>
-                      <div style={{ fontSize: '24px', fontWeight: '700', color: '#030303' }}>
-                        ${(folder.price_cents / 100).toFixed(2)}/month
+            <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#1f2937' }}>
+              Premium Content
+            </h3>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+              {premiumVideos.map(video => (
+                <div 
+                  key={video.video_id} 
+                  style={{ 
+                    background: 'white', 
+                    borderRadius: '12px', 
+                    overflow: 'hidden', 
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)', 
+                    cursor: 'pointer',
+                    transition: 'transform 0.2s, box-shadow 0.2s'
+                  }}
+                  onClick={() => {
+                    setSelectedVideo(video);
+                    setShowVideoModal(true);
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+                  }}
+                >
+                  <div style={{ 
+                    position: 'relative', 
+                    paddingBottom: '56.25%', 
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                  }}>
+                    {video.thumbnail_url ? (
+                      <img 
+                        src={video.thumbnail_url} 
+                        alt={video.title}
+                        style={{ 
+                          position: 'absolute', 
+                          top: 0, 
+                          left: 0, 
+                          width: '100%', 
+                          height: '100%', 
+                          objectFit: 'cover' 
+                        }}
+                      />
+                    ) : (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: 'white',
+                        fontSize: '48px'
+                      }}>
+                        🎥
                       </div>
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#606060', marginBottom: '16px' }}>
-                      {folder.video_count || 0} videos · {folder.subscriber_count || 0} subscribers
+                    )}
+                    
+                    <div style={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: '60px',
+                      height: '60px',
+                      borderRadius: '50%',
+                      background: 'rgba(255, 255, 255, 0.9)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '24px'
+                    }}>
+                      ▶️
                     </div>
                     
-                    <button 
-                      onClick={() => handleSubscribeToFolder(folder.folder_id)}
-                      style={{ width: '100%', padding: '11px 20px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}
-                    >
-                      Subscribe Now
-                    </button>
+                    {video.verification_code && (
+                      <div style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        background: 'rgba(0, 0, 0, 0.7)',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px',
+                        fontWeight: '500'
+                      }}>
+                        {video.verification_code}
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div style={{ padding: '16px' }}>
+                    <h4 style={{ 
+                      fontSize: '15px', 
+                      fontWeight: '600', 
+                      marginBottom: '8px',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}>
+                      {video.title || 'Untitled Video'}
+                    </h4>
+                    
+                    {video.description && (
+                      <p style={{
+                        fontSize: '13px',
+                        color: '#6b7280',
+                        marginBottom: '12px',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical'
+                      }}>
+                        {video.description}
+                      </p>
+                    )}
+                    
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      fontSize: '12px',
+                      color: '#9ca3af'
+                    }}>
+                      <span>{video.storage?.tier || 'free'}</span>
+                      <span>{new Date(video.uploaded_at).toLocaleDateString()}</span>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
             
-            {premiumFolders.length === 0 && (
+            {premiumVideos.length === 0 && (
               <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px', color: '#6b7280' }}>
-                <p>No premium content available yet</p>
+                <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎬</div>
+                <p style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px' }}>No Premium Content Yet</p>
+                <p style={{ fontSize: '14px' }}>This creator hasn't uploaded any premium videos</p>
               </div>
             )}
           </div>
