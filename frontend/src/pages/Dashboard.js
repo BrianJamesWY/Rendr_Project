@@ -386,6 +386,36 @@ function Dashboard() {
           token={token}
         />
       )}
+
+      {/* New Folder Modal */}
+      {showNewFolderModal && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'white', borderRadius: '12px', padding: '24px', width: '90%', maxWidth: '400px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
+              <Logo size="small" />
+              <h3 style={{ fontSize: '18px', fontWeight: '600', marginLeft: '12px' }}>Create New Folder</h3>
+            </div>
+
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Folder Name</label>
+              <input 
+                type="text" 
+                value={newFolderName}
+                onChange={(e) => setNewFolderName(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleCreateFolder()}
+                placeholder="Enter folder name"
+                autoFocus
+                style={{ width: '100%', padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}
+              />
+            </div>
+
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+              <button onClick={() => { setShowNewFolderModal(false); setNewFolderName(''); }} style={{ padding: '10px 20px', background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', cursor: 'pointer' }}>Cancel</button>
+              <button onClick={handleCreateFolder} style={{ padding: '10px 20px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '500' }}>Create</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
