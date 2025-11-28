@@ -65,8 +65,10 @@ async def get_creator_videos(
         query["social_folders"] = platform
     
     # Get all videos for this creator that match the filters
+    print(f"DEBUG: Showcase query for {username}: {query}")
     cursor = db.videos.find(query).sort("captured_at", -1)
     videos = await cursor.to_list(length=1000)
+    print(f"DEBUG: Found {len(videos)} videos for showcase")
     
     # Get folders for this user
     folders_cursor = db.folders.find({"username": username})
