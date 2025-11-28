@@ -65,9 +65,9 @@ function MyVideos() {
   const handleCreateFolder = async () => {
     if (!newFolderName.trim()) return;
     
-    try {
+    try:
       await axios.post(
-        `${BACKEND_URL}/api/folders`,
+        `${BACKEND_URL}/api/folders/`,
         { folder_name: newFolderName, description: '' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
