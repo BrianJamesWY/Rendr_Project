@@ -426,7 +426,7 @@ function Dashboard() {
 }
 
 // Edit Video Modal Component
-function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, token }) {
+function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, token, onFolderCreated }) {
   const [title, setTitle] = useState(video.title || '');
   const [description, setDescription] = useState(video.description || '');
   const [folderId, setFolderId] = useState(video.folder_id || '');
