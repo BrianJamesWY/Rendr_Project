@@ -545,7 +545,7 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
                 }
               }} style={{ flex: 1, padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}>
                 <option value="">No Folder</option>
-                {folders.map(f => (
+                {localFolders.map(f => (
                   <option key={f.folder_id} value={f.folder_id}>{f.folder_name}</option>
                 ))}
                 <option value="__create_new__" style={{ color: '#667eea', fontWeight: '500' }}>+ Create New Folder</option>
