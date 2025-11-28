@@ -159,10 +159,11 @@
         </span>
         
         <div style="margin: 30px 0;">
-            <video controls id="videoPlayer">
-                <source src="https://video-management-2.preview.emergentagent.com/api/videos/ea9bca2b-fb67-40e0-a598-22173f2aea40/watch" type="video/mp4">
+            <video controls id="videoPlayer" style="width: 100%; max-width: 800px;">
+                <source id="videoSource" src="" type="video/mp4">
                 Your browser doesn't support video playback.
             </video>
+            <div id="videoError" style="display: none; color: red; margin-top: 10px;"></div>
         </div>
         
         <div class="info-grid">
