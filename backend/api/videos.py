@@ -707,29 +707,3 @@ async def download_video(
         media_type="video/mp4",
         filename=f"{video['verification_code']}.mp4"
     )
-
-
-@router.get("/{video_id}/stream")
-async def stream_video(
-    video_id: str,
-    db = Depends(get_db)
-):
-    """Stream video file (public access if video is public)"""
-    # Check both 'id' and '_id' fields for compatibility with old videos
-    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
-    
-    if not video:
-        raise HTTPException(404, "Video not found")
-    
-    if not video.get('is_public', False):
-        raise HTTPException(403, "Video is private")
-    
-    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
-    
-    if not os.path.exists(video_path):
-        raise HTTPException(404, "Video file not found")
-    
-    return FileResponse(
-        video_path,
-        media_type="video/mp4"
-    )
