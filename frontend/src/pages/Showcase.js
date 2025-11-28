@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../components/Logo';
+import VideoPlayer from '../components/VideoPlayer';
 
 const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
@@ -14,6 +15,7 @@ function Showcase() {
   const [videos, setVideos] = useState([]);
   const [showcaseFolders, setShowcaseFolders] = useState([]);
   const [premiumFolders, setPremiumFolders] = useState([]);
+  const [premiumVideos, setPremiumVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedPlatform, setSelectedPlatform] = useState('all');
