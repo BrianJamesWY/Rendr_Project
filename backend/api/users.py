@@ -143,11 +143,20 @@ async def get_creator_premium_videos(
     for video in videos:
         thumbnail_url = f"/api/thumbnails/{video.get('id', video.get('_id'))}.jpg" if video.get("thumbnail_path") else None
         
+        # Convert datetime to string
+        captured_at = video.get("captured_at") or video.get("uploaded_at", "")
+        if hasattr(captured_at, 'isoformat'):
+            captured_at = captured_at.isoformat()
+        
+        uploaded_at = video.get("uploaded_at", "")
+        if hasattr(uploaded_at, 'isoformat'):
+            uploaded_at = uploaded_at.isoformat()
+        
         result.append(VideoInfo(
             video_id=video.get("id") or video.get("_id"),
             verification_code=video.get("verification_code", ""),
             thumbnail_url=thumbnail_url or "",
-            captured_at=video.get("captured_at") or video.get("uploaded_at", ""),
+            captured_at=str(captured_at),
             folder_name=None,
             folder_id=video.get("folder_id"),
             showcase_folder_id=video.get("showcase_folder_id"),
