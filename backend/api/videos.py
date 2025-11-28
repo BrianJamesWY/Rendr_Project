@@ -114,11 +114,11 @@ async def upload_video(
         # STEP 2: Smart Duplicate Detection
         print("\n🔍 STEP 2: Smart duplicate detection...")
         
-        # Get all user's existing videos
+        # Get ALL existing videos across entire platform to prevent duplicates
         existing_videos = await db.videos.find(
-            {"user_id": current_user["user_id"]},
+            {},
             {"_id": 0}
-        ).to_list(length=1000)
+        ).to_list(length=10000)
         
         is_duplicate, matching_video, confidence = enhanced_processor.smart_duplicate_detection(
             new_hashes=original_hashes,
