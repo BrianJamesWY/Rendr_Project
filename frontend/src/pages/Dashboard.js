@@ -8,11 +8,22 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 function Dashboard() {
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
+  const [folders, setFolders] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showEditVideoModal, setShowEditVideoModal] = useState(false);
+  const [currentVideo, setCurrentVideo] = useState(null);
   const token = localStorage.getItem('token');
+
+  const socialPlatforms = [
+    { id: 'youtube', name: 'YouTube', icon: '▶️', color: '#FF0000' },
+    { id: 'tiktok', name: 'TikTok', icon: '🎵', color: '#000000' },
+    { id: 'instagram', name: 'Instagram', icon: '📷', color: '#E4405F' },
+    { id: 'twitter', name: 'Twitter', icon: '🐦', color: '#1DA1F2' },
+    { id: 'facebook', name: 'Facebook', icon: '👥', color: '#1877F2' }
+  ];
 
   useEffect(() => {
     if (!token) {
