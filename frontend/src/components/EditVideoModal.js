@@ -63,22 +63,53 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
-      <div style={{ background: 'white', borderRadius: '12px', padding: '24px', width: '90%', maxWidth: '600px', maxHeight: '90vh', overflow: 'auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-          <Logo size="small" />
-          <h3 style={{ fontSize: '18px', fontWeight: '600', marginLeft: '12px' }}>Edit Video Details</h3>
-        </div>
+    <>
+      {showVideoPlayer && (
+        <VideoPlayer
+          videoId={video.video_id}
+          thumbnail={video.thumbnail_url}
+          title={title || video.title}
+          onClose={() => setShowVideoPlayer(false)}
+          isAuthenticated={true}
+        />
+      )}
+      
+      <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }}>
+        <div style={{ background: 'white', borderRadius: '12px', padding: '24px', width: '90%', maxWidth: '600px', maxHeight: '90vh', overflow: 'auto' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <Logo size="small" />
+              <h3 style={{ fontSize: '18px', fontWeight: '600', marginLeft: '12px' }}>Edit Video Details</h3>
+            </div>
+            <button
+              onClick={() => setShowVideoPlayer(true)}
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                fontSize: '14px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              ▶️ Play Video
+            </button>
+          </div>
 
-        <div style={{ marginBottom: '16px' }}>
-          <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Title</label>
-          <input 
-            type="text" 
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            style={{ width: '100%', padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}
-          />
-        </div>
+          <div style={{ marginBottom: '16px' }}>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Title</label>
+            <input 
+              type="text" 
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              style={{ width: '100%', padding: '10px', border: '1px solid #e5e5e5', borderRadius: '8px', fontSize: '14px' }}
+            />
+          </div>
 
         <div style={{ marginBottom: '16px' }}>
           <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', marginBottom: '8px' }}>Description</label>
