@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import Logo from './Logo';
+import VideoPlayer from './VideoPlayer';
 
 const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
 
@@ -12,6 +13,7 @@ function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, toke
   const [socialFolders, setSocialFolders] = useState(video.social_folders || []);
   const [socialLinks, setSocialLinks] = useState(video.social_links || [{ platform: '', url: '' }]);
   const [saving, setSaving] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
 
   const handleToggleSocialFolder = (platformId) => {
     if (socialFolders.includes(platformId)) {
