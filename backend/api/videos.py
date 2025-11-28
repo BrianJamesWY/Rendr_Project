@@ -407,6 +407,12 @@ async def update_video(
         update_fields['folder_id'] = video_data.folder_id
         # Also update showcase_folder_id to match
         update_fields['showcase_folder_id'] = video_data.folder_id
+    if video_data.on_showcase is not None:
+        update_fields['on_showcase'] = video_data.on_showcase
+    if video_data.social_folders is not None:
+        update_fields['social_folders'] = video_data.social_folders
+    if video_data.social_links is not None:
+        update_fields['social_links'] = video_data.social_links
     
     if update_fields:
         # Use whichever ID field exists in the video
