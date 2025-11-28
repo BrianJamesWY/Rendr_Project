@@ -92,7 +92,11 @@ async def get_creator_videos(
             description=video.get("description"),
             external_link=video.get("external_link"),
             platform=video.get("platform"),
-            tags=video.get("tags", ["Rendr"])
+            tags=video.get("tags", ["Rendr"]),
+            social_folders=video.get("social_folders", []),
+            social_links=video.get("social_links", []),
+            on_showcase=video.get("on_showcase", False),
+            title=video.get("title")
         ))
     
     return result
