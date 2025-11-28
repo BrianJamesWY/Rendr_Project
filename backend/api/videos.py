@@ -419,48 +419,6 @@ async def update_video(
     if video_data.social_links is not None:
         update_fields['social_links'] = video_data.social_links
     
-    # Auto-create folders for social media platforms and assign video to primary folder
-    if video_data.social_folders and len(video_data.social_folders) > 0:
-        # Platform name mapping
-        platform_names = {
-            'youtube': 'YouTube',
-            'tiktok': 'TikTok',
-            'instagram': 'Instagram',
-            'twitter': 'Twitter',
-            'facebook': 'Facebook'
-        }
-        
-        folder_ids = []
-        for platform in video_data.social_folders:
-            folder_name = platform_names.get(platform, platform.capitalize())
-            
-            # Check if folder exists
-            existing_folder = await db.folders.find_one({
-                "username": current_user.get("username"),
-                "folder_name": folder_name
-            })
-            
-            if existing_folder:
-                folder_ids.append(existing_folder["folder_id"])
-            else:
-                # Create new folder
-                new_folder_id = str(uuid.uuid4())
-                await db.folders.insert_one({
-                    "_id": new_folder_id,
-                    "folder_id": new_folder_id,
-                    "user_id": current_user["user_id"],
-                    "username": current_user.get("username"),
-                    "folder_name": folder_name,
-                    "description": f"Videos for {folder_name}",
-                    "order": 0,
-                    "created_at": datetime.now(timezone.utc).isoformat()
-                })
-                folder_ids.append(new_folder_id)
-        
-        # Assign video to the first social folder if folder_id not explicitly set
-        if not video_data.folder_id and folder_ids:
-            update_fields['folder_id'] = folder_ids[0]
-    
     if update_fields:
         # Use whichever ID field exists in the video
         id_field = "id" if video.get("id") else "_id"
