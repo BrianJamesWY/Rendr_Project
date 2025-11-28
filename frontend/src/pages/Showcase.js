@@ -459,6 +459,102 @@ function Showcase() {
           </div>
         )}
       </main>
+
+      {/* Visitor Video Details Modal */}
+      {showVideoModal && selectedVideo && (
+        <VisitorVideoModal 
+          video={selectedVideo}
+          socialPlatforms={socialPlatforms}
+          onClose={() => { setShowVideoModal(false); setSelectedVideo(null); }}
+        />
+      )}
+    </div>
+  );
+}
+
+// Visitor Video Modal Component
+function VisitorVideoModal({ video, socialPlatforms, onClose }) {
+  const getPlatformInfo = (platformId) => {
+    return socialPlatforms.find(p => p.id === platformId) || { name: platformId, icon: '🔗' };
+  };
+
+  return (
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '20px' }} onClick={onClose}>
+      <div style={{ background: 'white', borderRadius: '12px', padding: '24px', width: '90%', maxWidth: '600px', maxHeight: '90vh', overflow: 'auto' }} onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Logo size="small" />
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginLeft: '12px' }}>Video Details</h3>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#6b7280' }}>×</button>
+        </div>
+
+        {/* Video Thumbnail */}
+        <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#e5e5e5', borderRadius: '8px', overflow: 'hidden', marginBottom: '16px' }}>
+          {video.thumbnail_url ? (
+            <img src={`${BACKEND_URL}${video.thumbnail_url}`} alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🎬</div>
+          )}
+        </div>
+
+        {/* Video Info */}
+        <div style={{ marginBottom: '16px' }}>
+          <h4 style={{ fontSize: '16px', fontWeight: '600', color: '#111827', marginBottom: '8px' }}>{video.title || 'Untitled Video'}</h4>
+          <div style={{ fontFamily: '"Courier New", monospace', fontSize: '12px', fontWeight: '600', color: '#667eea', marginBottom: '8px' }}>
+            Verification: {video.verification_code}
+          </div>
+          {video.description && (
+            <p style={{ fontSize: '14px', color: '#4b5563', lineHeight: '1.6', marginBottom: '16px' }}>{video.description}</p>
+          )}
+          <div style={{ fontSize: '12px', color: '#6b7280' }}>
+            Uploaded {new Date(video.captured_at).toLocaleDateString()}
+          </div>
+        </div>
+
+        {/* Social Media Links */}
+        {video.social_links && video.social_links.length > 0 && (
+          <div style={{ marginTop: '20px' }}>
+            <h5 style={{ fontSize: '14px', fontWeight: '600', color: '#111827', marginBottom: '12px' }}>Watch this video on:</h5>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {video.social_links.filter(link => link.url).map((link, index) => {
+                const platformInfo = getPlatformInfo(link.platform);
+                return (
+                  <a 
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px', 
+                      padding: '12px 16px', 
+                      background: 'linear-gradient(135deg, #667eea, #764ba2)', 
+                      color: 'white', 
+                      borderRadius: '8px', 
+                      textDecoration: 'none',
+                      transition: 'all 0.2s',
+                      fontWeight: '500',
+                      fontSize: '14px'
+                    }}
+                  >
+                    <span style={{ fontSize: '20px' }}>{platformInfo.icon}</span>
+                    <span style={{ flex: 1 }}>Take me to {platformInfo.name}</span>
+                    <span>→</span>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {(!video.social_links || video.social_links.length === 0) && (
+          <div style={{ textAlign: 'center', padding: '20px', background: '#f9fafb', borderRadius: '8px', color: '#6b7280', fontSize: '14px' }}>
+            No social media links available for this video
+          </div>
+        )}
+      </div>
     </div>
   );
 }
