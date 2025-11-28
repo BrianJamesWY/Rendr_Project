@@ -63,17 +63,15 @@ function Showcase() {
         setShowcaseFolders([]);
       }
       
+      // Load premium videos (pro/enterprise tier only)
       try {
         const token = localStorage.getItem('token');
         const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const foldersRes = await axios.get(`${BACKEND_URL}/api/premium-folders`, { headers });
-        const userFolders = foldersRes.data.filter(f => 
-          f.creator_username === cleanUsername || f.creator_id === profileRes.data.id
-        );
-        setPremiumFolders(userFolders || []);
+        const premiumRes = await axios.get(`${BACKEND_URL}/api/@/${cleanUsername}/premium-videos`, { headers });
+        setPremiumVideos(premiumRes.data || []);
       } catch (err) {
-        console.log('Premium folders not available');
-        setPremiumFolders([]);
+        console.log('Premium content not available');
+        setPremiumVideos([]);
       }
       
       trackPageView(cleanUsername);
