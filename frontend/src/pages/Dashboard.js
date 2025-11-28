@@ -388,6 +388,7 @@ function Dashboard() {
           socialPlatforms={socialPlatforms}
           onClose={() => { setShowEditVideoModal(false); setCurrentVideo(null); }}
           onSave={loadDashboard}
+          onFolderCreated={loadDashboard}
           token={token}
         />
       )}
