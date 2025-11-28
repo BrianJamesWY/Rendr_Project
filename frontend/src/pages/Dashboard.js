@@ -264,7 +264,7 @@ function Dashboard() {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {videos.slice(0, 5).map((video, index) => (
-                  <div key={video.video_id} style={{ display: 'flex', gap: '12px', padding: '10px', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s', ':hover': { background: '#f9f9f9' } }} onClick={() => navigate(`/my-videos`)}>
+                  <div key={video.video_id} style={{ display: 'flex', gap: '12px', padding: '10px', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s', ':hover': { background: '#f9f9f9' } }} onClick={() => handleEditVideo(video)}>
                     <div style={{ width: '120px', height: '68px', background: '#e5e5e5', borderRadius: '4px', flexShrink: 0, overflow: 'hidden' }}>
                       {video.thumbnail_url ? (
                         <img src={`${BACKEND_URL}${video.thumbnail_url}`} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
