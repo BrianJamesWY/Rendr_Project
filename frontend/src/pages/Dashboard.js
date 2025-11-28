@@ -52,12 +52,17 @@ function Dashboard() {
 
       // Load folders for the edit modal
       try {
+        console.log('Loading folders from:', `${BACKEND_URL}/api/folders/`);
         const foldersRes = await axios.get(`${BACKEND_URL}/api/folders/`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        setFolders(Array.isArray(foldersRes.data) ? foldersRes.data : foldersRes.data.folders || []);
+        console.log('Folders API response:', foldersRes.data);
+        const foldersList = Array.isArray(foldersRes.data) ? foldersRes.data : foldersRes.data.folders || [];
+        console.log('Folders loaded:', foldersList.length, foldersList);
+        setFolders(foldersList);
       } catch (foldersErr) {
         console.error('Failed to load folders:', foldersErr);
+        console.error('Error details:', foldersErr.response?.data);
         setFolders([]);
       }
 
