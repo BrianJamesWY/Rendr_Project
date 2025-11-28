@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://video-management-2.preview.emergentagent.com/api"
+BASE_URL = "https://rendr-revamp.preview.emergentagent.com/api"
 
 # Test credentials from review request
 CREDENTIALS = {
