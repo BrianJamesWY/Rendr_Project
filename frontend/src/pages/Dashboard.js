@@ -384,6 +384,100 @@ function Dashboard() {
               
               <Link to="/my-videos" style={{ display: 'block', marginTop: '12px', fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500', textAlign: 'center' }}>View All →</Link>
             </div>
+
+            {/* Premium Content Widget */}
+            {(user?.premium_tier === 'pro' || user?.premium_tier === 'enterprise') && (
+              <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px' }}>💎</span>
+                    <h2 style={{ fontSize: '16px', fontWeight: '600' }}>Premium Content</h2>
+                  </div>
+                  <span style={{ fontSize: '12px', padding: '4px 8px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', borderRadius: '12px', fontWeight: '600' }}>
+                    {user.premium_tier.toUpperCase()}
+                  </span>
+                </div>
+                
+                {premiumVideos.length > 0 ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '300px', overflowY: 'auto' }}>
+                    {premiumVideos.slice(0, 5).map(video => (
+                      <div 
+                        key={video.video_id} 
+                        style={{ 
+                          padding: '12px', 
+                          background: '#f9f9f9', 
+                          borderRadius: '8px', 
+                          cursor: 'pointer',
+                          border: '1px solid #e5e5e5',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#f0f0f0';
+                          e.currentTarget.style.borderColor = '#667eea';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = '#f9f9f9';
+                          e.currentTarget.style.borderColor = '#e5e5e5';
+                        }}
+                        onClick={() => handleEditVideo(video)}
+                      >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '13px', fontWeight: '600', marginBottom: '4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {video.title || 'Untitled Video'}
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: '#606060' }}>
+                              <span style={{ 
+                                padding: '2px 6px', 
+                                background: video.verification_code ? '#10b981' : '#6b7280', 
+                                color: 'white', 
+                                borderRadius: '4px',
+                                fontWeight: '500'
+                              }}>
+                                {video.verification_code || 'NO CODE'}
+                              </span>
+                              <span>{video.storage?.tier?.toUpperCase()}</span>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#909090' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <span>👁️ {video.storage?.download_count || 0} views</span>
+                            <span>{new Date(video.uploaded_at).toLocaleDateString()}</span>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <div 
+                              style={{ 
+                                width: '8px', 
+                                height: '8px', 
+                                borderRadius: '50%', 
+                                background: video.on_showcase ? '#10b981' : '#ef4444' 
+                              }}
+                            />
+                            <span style={{ fontSize: '11px', fontWeight: '500', color: video.on_showcase ? '#10b981' : '#ef4444' }}>
+                              {video.on_showcase ? 'Public' : 'Private'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '30px 20px', color: '#909090', fontSize: '13px' }}>
+                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>🎬</div>
+                    <div style={{ fontWeight: '500', marginBottom: '4px' }}>No Premium Content Yet</div>
+                    <div style={{ fontSize: '12px' }}>Upload videos to showcase your premium content</div>
+                  </div>
+                )}
+                
+                {premiumVideos.length > 5 && (
+                  <Link to="/my-videos" style={{ display: 'block', marginTop: '12px', fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500', textAlign: 'center' }}>
+                    View All {premiumVideos.length} Premium Videos →
+                  </Link>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>
