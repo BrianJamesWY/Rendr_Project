@@ -454,24 +454,36 @@ function Dashboard() {
                           </div>
                         </div>
                         
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#909090' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: '#909090', marginTop: '8px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <span>👁️ {video.storage?.download_count || 0} views</span>
                             <span>{new Date(video.uploaded_at).toLocaleDateString()}</span>
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <div 
-                              style={{ 
-                                width: '8px', 
-                                height: '8px', 
-                                borderRadius: '50%', 
-                                background: video.on_showcase ? '#10b981' : '#ef4444' 
-                              }}
-                            />
-                            <span style={{ fontSize: '11px', fontWeight: '500', color: video.on_showcase ? '#10b981' : '#ef4444' }}>
-                              {video.on_showcase ? 'Public' : 'Private'}
-                            </span>
-                          </div>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleShowcase(video.video_id, video.on_showcase);
+                            }}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              padding: '4px 8px',
+                              background: video.on_showcase ? '#10b981' : '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              borderRadius: '4px',
+                              fontSize: '10px',
+                              fontWeight: '600',
+                              cursor: 'pointer',
+                              transition: 'opacity 0.2s'
+                            }}
+                            onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                            onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                          >
+                            <span style={{ fontSize: '10px' }}>{video.on_showcase ? '👁️' : '🔒'}</span>
+                            {video.on_showcase ? 'PUBLIC' : 'PRIVATE'}
+                          </button>
                         </div>
                       </div>
                     ))}
