@@ -115,6 +115,19 @@ function Dashboard() {
     }
   };
 
+  const handleToggleShowcase = async (videoId, currentStatus) => {
+    try {
+      await axios.put(
+        `${BACKEND_URL}/api/videos/${videoId}`,
+        { on_showcase: !currentStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      loadDashboard();
+    } catch (err) {
+      alert('Failed to update video: ' + (err.response?.data?.detail || err.message));
+    }
+  };
+
   const handleLogout = async () => {
     if (window.confirm('Are you sure you want to logout?')) {
       localStorage.removeItem('token');
