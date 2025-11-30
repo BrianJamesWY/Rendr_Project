@@ -51,6 +51,13 @@ function Dashboard() {
       });
       setVideos(Array.isArray(videosRes.data) ? videosRes.data : videosRes.data.videos || []);
 
+      // Load premium videos (pro/enterprise tier only)
+      const allVideos = Array.isArray(videosRes.data) ? videosRes.data : videosRes.data.videos || [];
+      const premiumTierVideos = allVideos.filter(v => 
+        v.storage?.tier === 'pro' || v.storage?.tier === 'enterprise'
+      );
+      setPremiumVideos(premiumTierVideos);
+
       // Load folders for the edit modal
       try {
         console.log('Loading folders from:', `${BACKEND_URL}/api/folders/`);
