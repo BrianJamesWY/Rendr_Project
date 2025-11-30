@@ -10,6 +10,7 @@ function Dashboard() {
   const navigate = useNavigate();
   const [videos, setVideos] = useState([]);
   const [folders, setFolders] = useState([]);
+  const [premiumVideos, setPremiumVideos] = useState([]);
   const [analytics, setAnalytics] = useState(null);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
