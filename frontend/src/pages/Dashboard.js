@@ -395,6 +395,65 @@ function Dashboard() {
               </div>
             </div>
 
+            {/* Verify Video Widget */}
+            <div style={{ background: 'linear-gradient(135deg, #10b981, #059669)', borderRadius: '8px', padding: '20px', marginBottom: '16px', color: 'white', boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <div style={{ width: '48px', height: '48px', background: 'rgba(255, 255, 255, 0.2)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
+                  ✓
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0 }}>Verify Videos</h3>
+                  <p style={{ fontSize: '13px', margin: 0, opacity: 0.9 }}>Check authenticity instantly</p>
+                </div>
+              </div>
+              
+              <p style={{ fontSize: '13px', lineHeight: '1.6', marginBottom: '16px', opacity: 0.95 }}>
+                Verify any video using its verification code or upload a file to check if it's been modified or stolen.
+              </p>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <Link 
+                  to="/verify" 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px',
+                    padding: '12px',
+                    background: 'white',
+                    color: '#059669',
+                    borderRadius: '8px',
+                    textDecoration: 'none',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    transition: 'all 0.2s'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
+                  }}
+                >
+                  <span style={{ fontSize: '18px' }}>🔍</span>
+                  Go to Verify Page
+                </Link>
+                
+                <div style={{ display: 'flex', gap: '8px', fontSize: '12px', opacity: 0.9' }}>
+                  <div style={{ flex: 1, background: 'rgba(255, 255, 255, 0.15)', padding: '8px', borderRadius: '6px', textAlign: 'center' }}>
+                    <div style={{ fontWeight: '600', marginBottom: '2px' }}>{videos.length}</div>
+                    <div>Videos Protected</div>
+                  </div>
+                  <div style={{ flex: 1, background: 'rgba(255, 255, 255, 0.15)', padding: '8px', borderRadius: '6px', textAlign: 'center' }}>
+                    <div style={{ fontWeight: '600', marginBottom: '2px' }}>5</div>
+                    <div>Hash Methods</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* Folders Widget */}
             <div style={{ background: 'white', border: '1px solid #e5e5e5', borderRadius: '8px', padding: '16px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
