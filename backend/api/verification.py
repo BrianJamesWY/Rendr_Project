@@ -27,13 +27,18 @@ async def verify_by_code(
     
     # Get creator info
     creator_info = None
-    if video.get('username'):
-        user = await db.users.find_one({"username": video['username']})
+    user_id = video.get('user_id') or video.get('username')
+    if user_id:
+        # Try to find by _id first, then by username
+        user = await db.users.find_one({"_id": user_id})
+        if not user:
+            user = await db.users.find_one({"username": user_id})
+        
         if user:
             creator_info = {
-                "username": user['username'],
-                "display_name": user.get('display_name', user['username']),
-                "profile_url": f"/@{user['username']}"
+                "username": user.get('username', 'Unknown'),
+                "display_name": user.get('display_name', user.get('username', 'Unknown')),
+                "profile_url": f"/@{user.get('username', 'unknown')}"
             }
     
     # Log attempt
