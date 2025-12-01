@@ -151,8 +151,8 @@ async def deep_verification(
         os.remove(file_path)
         
         metadata = {
-            "captured_at": original_video['captured_at'],
-            "verified_at": original_video['verified_at']
+            "captured_at": original_video.get('captured_at') or original_video.get('uploaded_at', ''),
+            "verified_at": original_video.get('verified_at') or original_video.get('uploaded_at', '')
         }
         
         # Add blockchain proof if available
