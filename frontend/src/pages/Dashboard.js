@@ -441,7 +441,7 @@ function Dashboard() {
                   Go to Verify Page
                 </Link>
                 
-                <div style={{ display: 'flex', gap: '8px', fontSize: '12px', opacity: 0.9' }}>
+                <div style={{ display: 'flex', gap: '8px', fontSize: '12px', opacity: '0.9' }}>
                   <div style={{ flex: 1, background: 'rgba(255, 255, 255, 0.15)', padding: '8px', borderRadius: '6px', textAlign: 'center' }}>
                     <div style={{ fontWeight: '600', marginBottom: '2px' }}>{videos.length}</div>
                     <div>Videos Protected</div>
