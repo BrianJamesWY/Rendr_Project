@@ -190,6 +190,36 @@ function Dashboard() {
         </div>
         
         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <Link 
+            to="/verify" 
+            style={{ 
+              padding: '8px 14px', 
+              fontSize: '14px', 
+              fontWeight: '600', 
+              borderRadius: '18px', 
+              border: 'none', 
+              cursor: 'pointer', 
+              textDecoration: 'none', 
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              transition: 'all 0.2s', 
+              background: 'linear-gradient(135deg, #10b981, #059669)', 
+              color: 'white',
+              boxShadow: '0 2px 8px rgba(16, 185, 129, 0.3)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(16, 185, 129, 0.3)';
+            }}
+          >
+            <span style={{ fontSize: '16px' }}>✓</span>
+            Verify Video
+          </Link>
           <Link to={`/@${user?.username}`} style={{ padding: '8px 14px', fontSize: '14px', fontWeight: '500', borderRadius: '18px', border: '1px solid #d0d0d0', cursor: 'pointer', textDecoration: 'none', display: 'inline-block', transition: 'all 0.2s', background: 'white', color: '#667eea' }}>View Showcase</Link>
           <Link to="/upload" style={{ padding: '8px 14px', fontSize: '14px', fontWeight: '500', borderRadius: '18px', border: 'none', cursor: 'pointer', textDecoration: 'none', display: 'inline-block', transition: 'all 0.2s', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white' }}>Upload Video</Link>
         </div>
