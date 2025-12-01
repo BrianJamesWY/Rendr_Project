@@ -47,10 +47,10 @@ async def verify_by_code(
     })
     
     metadata = {
-        "captured_at": video['captured_at'],
-        "verified_at": video['verified_at'],
-        "duration_seconds": video['duration_seconds'],
-        "source": video['source']
+        "captured_at": video.get('captured_at') or video.get('uploaded_at', ''),
+        "verified_at": video.get('verified_at') or video.get('uploaded_at', ''),
+        "duration_seconds": video.get('duration_seconds') or video.get('video_metadata', {}).get('duration', 0),
+        "source": video.get('source', 'studio')
     }
     
     # Add blockchain proof if available
