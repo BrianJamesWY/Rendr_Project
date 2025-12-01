@@ -44,7 +44,7 @@ async def verify_by_code(
     # Log attempt
     await db.verification_attempts.insert_one({
         "_id": str(uuid.uuid4()),
-        "video_id": video['_id'],
+        "video_id": video.get('id') or video.get('_id') or video.get('video_id'),
         "verification_code": request.verification_code,
         "verification_type": "code",
         "result": "authentic",
