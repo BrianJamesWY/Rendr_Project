@@ -69,8 +69,8 @@ async def verify_by_code(
     
     return VerificationResult(
         result="authentic",
-        video_id=video['_id'],
-        verification_code=video['verification_code'],
+        video_id=video.get('id') or video.get('_id') or video.get('video_id'),
+        verification_code=video.get('verification_code', ''),
         metadata=metadata,
         creator=creator_info
     )
