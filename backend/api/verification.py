@@ -141,7 +141,7 @@ async def deep_verification(
         # Log attempt with multi-hash results
         await db.verification_attempts.insert_one({
             "_id": str(uuid.uuid4()),
-            "video_id": original_video['_id'],
+            "video_id": original_video.get('id') or original_video.get('_id') or original_video.get('video_id'),
             "verification_code": verification_code,
             "verification_type": "deep_multihash",
             "uploaded_file_hashes": uploaded_hashes,
