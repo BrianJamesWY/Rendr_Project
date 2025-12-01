@@ -101,6 +101,33 @@ const Navigation = ({ currentPage = '' }) => {
               >
                 Bounties
               </Link>
+              <Link 
+                to="/verify" 
+                style={{ 
+                  padding: '0.5rem 1rem',
+                  background: 'linear-gradient(135deg, #10b981, #059669)',
+                  color: 'white',
+                  textDecoration: 'none',
+                  fontWeight: '600',
+                  borderRadius: '0.5rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  boxShadow: currentPage === 'verify' ? '0 4px 12px rgba(16, 185, 129, 0.4)' : 'none',
+                  transition: 'all 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = currentPage === 'verify' ? '0 4px 12px rgba(16, 185, 129, 0.4)' : 'none';
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>✓</span>
+                Verify Video
+              </Link>
               {user && (
                 <Link 
                   to={`/@${user.username}`}
