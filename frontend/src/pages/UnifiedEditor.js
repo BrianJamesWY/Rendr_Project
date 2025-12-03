@@ -132,16 +132,15 @@ function UnifiedEditor() {
   const handleSaveProfile = async () => {
     try {
       const token = localStorage.getItem('token');
-      const username = localStorage.getItem('username');
       
-      await axios.put(`${BACKEND_URL}/api/users/${username}/profile`, {
+      const response = await axios.put(`${BACKEND_URL}/api/users/profile`, {
         profile_picture: profilePic,
         profile_shape: profileShape,
         profile_effect: profileEffect,
         profile_border: profileBorder,
         border_color: borderColor,
         banner_image: bannerImage,
-        social_links: socialLinks,
+        social_media_links: socialLinks,
         bio: bioText
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -150,7 +149,7 @@ function UnifiedEditor() {
       alert('Profile saved successfully! Check your showcase page.');
     } catch (err) {
       console.error('Error saving profile:', err);
-      alert('Profile settings saved locally. Backend integration pending.');
+      alert(`Error: ${err.response?.data?.detail || 'Failed to save profile'}`);
     }
   };
 
