@@ -1246,15 +1246,18 @@ frontend:
 
   - task: "CEO Admin Analytics Tab"
     implemented: true
-    working: "NA"
+    working: false
     file: "frontend/src/pages/Admin.js"
-    stuck_count: 0
+    stuck_count: 1
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "UPDATED: Added new Analytics tab to CEO Admin page. Should now have 6 tabs: Stats, Analytics, Users, Interested, Import, Logs. Analytics tab shows full platform analytics with key metrics cards, user distribution by tier, and video sources."
+      - working: false
+        agent: "testing"
+        comment: "TESTED: CEO Admin Analytics tab implementation has authorization issues. Login form displays correctly and accepts BrianJames/Brian123! credentials, but after successful authentication (200 OK in backend logs), all CEO admin endpoints return 403 Forbidden errors. Backend logs show: 'GET /api/ceo-access-b7k9m2x/stats HTTP/1.1 403 Forbidden'. The Analytics tab and other admin tabs are not accessible due to this authorization issue. Frontend code appears correct but backend CEO access control needs investigation."
 
   - task: "Navigation Editor Link"
     implemented: true
