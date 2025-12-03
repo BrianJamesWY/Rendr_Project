@@ -119,7 +119,7 @@ class EmailService:
             <div style="background: #f9fafb; padding: 20px; text-align: center; font-size: 12px; color: #6b7280;">
                 <p>© 2025 Rendr. All rights reserved.</p>
                 <p style="margin: 5px 0 0 0;">
-                    <a href="https://rendr-revamp.preview.emergentagent.com/settings" style="color: #667eea;">Notification Settings</a>
+                    <a href="https://vidauth-app.preview.emergentagent.com/settings" style="color: #667eea;">Notification Settings</a>
                 </p>
             </div>
         </body>
@@ -182,7 +182,7 @@ class EmailService:
                     <p style="margin: 0 0 10px 0;"><strong>💎 Want to keep your videos longer?</strong></p>
                     <p style="margin: 0;">Upgrade to Pro ($9.99/mo) for 7-day storage or Enterprise ($49.99/mo) for unlimited storage.</p>
                     <p style="margin: 10px 0 0 0;">
-                        <a href="https://rendr-revamp.preview.emergentagent.com/pricing" style="color: #667eea; font-weight: bold;">View Plans</a>
+                        <a href="https://vidauth-app.preview.emergentagent.com/pricing" style="color: #667eea; font-weight: bold;">View Plans</a>
                     </p>
                 </div>
             </div>

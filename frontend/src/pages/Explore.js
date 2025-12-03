@@ -10,7 +10,7 @@ const Explore = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTier, setFilterTier] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
-  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+  const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
   useEffect(() => {
     const fetchCreators = async () => {

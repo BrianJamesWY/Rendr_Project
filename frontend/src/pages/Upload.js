@@ -3,7 +3,7 @@ import axios from 'axios';
 import Logo from '../components/Logo';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
 // ============================================
 // STYLES - Easy to change colors/fonts/spacing

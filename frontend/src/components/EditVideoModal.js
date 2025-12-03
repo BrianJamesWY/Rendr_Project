@@ -3,7 +3,7 @@ import axios from 'axios';
 import Logo from './Logo';
 import VideoPlayer from './VideoPlayer';
 
-const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
 function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, token }) {
   const [title, setTitle] = useState(video.title || '');

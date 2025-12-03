@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
 // Google Fonts list for free tier
 const FREE_FONTS = [

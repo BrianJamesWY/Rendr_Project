@@ -8,7 +8,7 @@ const StripeConnect = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+  const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
   const handleConnect = async () => {
     setIsLoading(true);

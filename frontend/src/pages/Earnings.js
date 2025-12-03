@@ -8,7 +8,7 @@ const Earnings = () => {
   const [earnings, setEarnings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
-  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+  const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
   const handleConnectStripe = async () => {
     try {

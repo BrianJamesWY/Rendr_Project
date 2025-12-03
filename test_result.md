@@ -668,16 +668,16 @@ agent_communication:
     message: |
       LOGIN FUNCTIONALITY TESTING COMPLETED - CRITICAL CORS ISSUE IDENTIFIED AND RESOLVED
       
-      Executed comprehensive testing of the login functionality at https://rendr-revamp.preview.emergentagent.com/creator-login as requested:
+      Executed comprehensive testing of the login functionality at https://vidauth-app.preview.emergentagent.com/creator-login as requested:
       
       ❌ INITIAL ISSUE IDENTIFIED:
       - Login failing due to CORS (Cross-Origin Resource Sharing) error
-      - Frontend attempting to connect to wrong backend URL: https://video-management-2.preview.emergentagent.com
-      - Expected backend URL: https://rendr-revamp.preview.emergentagent.com
+      - Frontend attempting to connect to wrong backend URL: https://vidauth-app.preview.emergentagent.com
+      - Expected backend URL: https://vidauth-app.preview.emergentagent.com
       - Error: "Access to XMLHttpRequest blocked by CORS policy: No 'Access-Control-Allow-Origin' header"
       
       🔧 ROOT CAUSE ANALYSIS:
-      - Environment variable REACT_APP_BACKEND_URL correctly set to https://rendr-revamp.preview.emergentagent.com
+      - Environment variable REACT_APP_BACKEND_URL correctly set to https://vidauth-app.preview.emergentagent.com
       - Webpack DefinePlugin in craco.config.js correctly hardcoding the URL
       - Built JavaScript files contain correct URL
       - Issue: Runtime environment variable not being read properly by React components
@@ -830,11 +830,11 @@ agent_communication:
       - API login endpoint responding properly - WORKING
       
       ✅ URL TESTING RESULTS (using both Python requests and curl):
-      - https://rendr-revamp.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://rendr-revamp.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
-      - https://rendr-revamp.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://rendr-revamp.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
-      - https://rendr-revamp.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://vidauth-app.preview.emergentagent.com/dashboard - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://vidauth-app.preview.emergentagent.com/settings - HTTP 200, HTML content (9180 chars) - WORKING  
+      - https://vidauth-app.preview.emergentagent.com/pricing - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://vidauth-app.preview.emergentagent.com/showcase-editor - HTTP 200, HTML content (9180 chars) - WORKING
+      - https://vidauth-app.preview.emergentagent.com/@BrianJames - HTTP 200, HTML content (9180 chars) - WORKING
       
       ✅ VERIFICATION METHODS:
       - Python requests with authentication headers - WORKING
@@ -1062,7 +1062,7 @@ agent_communication:
       Executed comprehensive testing of the showcase page premium video functionality and My Videos page as requested:
       
       ✅ SHOWCASE PAGE PREMIUM TAB TESTING:
-      - Successfully navigated to https://rendr-revamp.preview.emergentagent.com/@BrianJames
+      - Successfully navigated to https://vidauth-app.preview.emergentagent.com/@BrianJames
       - Premium Videos tab found and clickable
       - Premium content section displays correctly with "Premium Content" header
       - Found 2 premium videos displayed in grid layout (280px minmax grid)
@@ -1707,7 +1707,7 @@ frontend:
       - Database queries working correctly with proper error handling - WORKING
       
       ✅ BACKEND URL CONFIGURATION:
-      - All tests performed against production URL: https://rendr-revamp.preview.emergentagent.com - WORKING
+      - All tests performed against production URL: https://vidauth-app.preview.emergentagent.com - WORKING
       - API endpoints properly prefixed with /api/bounties - WORKING
       - Trailing slash routing issues resolved - WORKING
       
@@ -2000,7 +2000,7 @@ frontend:
       ✅ TEST 2: DASHBOARD CONTENT VERIFICATION
       - Dashboard header "Creator Dashboard" displays correctly - WORKING
       - Welcome message shows "Welcome back, Brian James!" - WORKING
-      - Page title and URL correct (https://rendr-revamp.preview.emergentagent.com/dashboard) - WORKING
+      - Page title and URL correct (https://vidauth-app.preview.emergentagent.com/dashboard) - WORKING
       - Navigation bar with Dashboard, Upload, My Showcase, Verify buttons present - WORKING
       
       ✅ TEST 3: STATS SECTION LAYOUT VERIFICATION
@@ -2578,7 +2578,7 @@ agent_communication:
       - Username: BrianJames
       - Password: Brian123!
       
-      Backend URL: https://rendr-revamp.preview.emergentagent.com/api
+      Backend URL: https://vidauth-app.preview.emergentagent.com/api
       
       IMPORTANT: Since Stripe is in test mode, we won't be able to complete actual payments,
       but we can verify all the API endpoints are working correctly and returning proper responses.
@@ -2723,7 +2723,7 @@ agent_communication:
       🎯 TEST CREDENTIALS USED:
       - Username: BrianJames
       - Password: Brian123!
-      - Backend URL: https://rendr-revamp.preview.emergentagent.com
+      - Backend URL: https://vidauth-app.preview.emergentagent.com
       
       📊 TEST RESULTS SUMMARY:
       - Total Tests: 5

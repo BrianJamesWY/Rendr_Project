@@ -6,7 +6,7 @@ const Navigation = ({ currentPage = '' }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+  const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
   useEffect(() => {
     if (token) {

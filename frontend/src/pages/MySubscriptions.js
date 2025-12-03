@@ -11,7 +11,7 @@ const MySubscriptions = () => {
     monthly_total: 0,
     videos_accessible: 0
   });
-  const BACKEND_URL = 'https://rendr-revamp.preview.emergentagent.com';
+  const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
   useEffect(() => {
     const fetchSubscriptions = async () => {

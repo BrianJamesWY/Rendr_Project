@@ -154,7 +154,7 @@ async def send_expiration_warnings():
         expires_at = video['storage']['expires_at']
         hours_remaining = (expires_at - now).total_seconds() / 3600
         
-        download_url = f"https://rendr-revamp.preview.emergentagent.com/dashboard?video={video['_id']}"
+        download_url = f"https://vidauth-app.preview.emergentagent.com/dashboard?video={video['_id']}"
         
         await notification_service.send_expiration_warning(
             user=user,
