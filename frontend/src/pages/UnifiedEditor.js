@@ -32,7 +32,7 @@ function UnifiedEditor() {
   const [bioText, setBioText] = useState('');
 
   // Load existing profile data
-  React.useEffect(() => {
+  useEffect(() => {
     loadProfile();
   }, []);
 
