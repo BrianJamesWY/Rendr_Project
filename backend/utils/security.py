@@ -53,10 +53,13 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
     
     return payload
 
-async def get_current_user_optional(credentials: HTTPAuthorizationCredentials = Depends(security)):
-    """Dependency to get current user, returns None if not authenticated (for public endpoints with optional auth)"""
+async def get_current_user_optional(authorization: Optional[str] = Header(None)):
+    """Get current user if token provided, otherwise return None (for public endpoints)"""
+    if not authorization:
+        return None
+    
     try:
-        token = credentials.credentials
+        token = authorization.replace("Bearer ", "")
         payload = decode_token(token)
         return payload if payload else None
     except Exception:
