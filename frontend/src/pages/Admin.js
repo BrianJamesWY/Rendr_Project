@@ -565,13 +565,13 @@ function Admin() {
               <div style={{ background: 'linear-gradient(135deg, #10b981, #059669)', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: 'white' }}>
                 <div style={{ fontSize: '0.875rem', marginBottom: '0.5rem', opacity: 0.9, fontWeight: '600' }}>TOTAL VIDEOS</div>
                 <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{stats.videos.total}</div>
-                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9' }}>Videos verified</div>
+                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9 }}>Videos verified</div>
               </div>
 
               <div style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: 'white' }}>
                 <div style={{ fontSize: '0.875rem', marginBottom: '0.5rem', opacity: 0.9, fontWeight: '600' }}>BLOCKCHAIN VERIFIED</div>
                 <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{stats.videos.blockchain_verified}</div>
-                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9' }}>
+                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9 }}>
                   {stats.videos.total ? Math.round((stats.videos.blockchain_verified / stats.videos.total) * 100) : 0}% of total
                 </div>
               </div>
