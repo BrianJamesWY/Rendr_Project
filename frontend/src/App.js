@@ -9,7 +9,7 @@ import CreatorLogin from "./pages/CreatorLogin";
 import Dashboard from "./pages/Dashboard";
 import Plans from "./pages/Plans";
 import Admin from "./pages/Admin";
-import ShowcaseEditor from "./pages/ShowcaseEditor";
+import UnifiedEditor from "./pages/UnifiedEditor";
 import ProfileSettings from "./pages/ProfileSettings";
 import Pricing from "./pages/Pricing";
 import PaymentSuccess from "./pages/PaymentSuccess";
