@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
-from typing import List
+from typing import List, Optional
 from datetime import datetime, timezone
 from uuid import uuid4
 from database.mongodb import get_db
-from api.auth import get_current_user
+from api.auth import get_current_user, get_current_user_optional
 
 router = APIRouter(prefix="/api/showcase-folders", tags=["Showcase Folders"])
 
