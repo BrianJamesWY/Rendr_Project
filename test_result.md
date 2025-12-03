@@ -1261,15 +1261,18 @@ frontend:
 
   - task: "Navigation Editor Link"
     implemented: true
-    working: "NA"
+    working: false
     file: "frontend/src/components/Navigation.js"
     stuck_count: 0
-    priority: "high"
-    needs_retesting: true
+    priority: "medium"
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "UPDATED: Added Editor link in main navigation between Dashboard and Earnings. Navigation component updated to include /editor route."
+      - working: false
+        agent: "testing"
+        comment: "TESTED: Navigation Editor link implementation has visibility issues. Code review shows Editor link is properly implemented in Navigation.js (line 84-93) between Dashboard and Earnings links. However, during testing, navigation links are not visible on the Editor page, suggesting authentication or rendering issues. Direct navigation to /editor works correctly, but the navigation component may not be rendering properly due to authentication state. The Editor link code is correct but navigation component visibility needs investigation."
 
   - task: "Verify Button Implementation on Dashboard"
     implemented: true
