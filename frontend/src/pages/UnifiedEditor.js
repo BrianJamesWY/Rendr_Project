@@ -39,21 +39,34 @@ function UnifiedEditor() {
   const loadProfile = async () => {
     try {
       const username = localStorage.getItem('rendr_username');
+      console.log('[EDITOR] Checking username:', username);
+      
       if (!username) {
-        console.error('No username in localStorage');
+        console.error('[EDITOR] No username in localStorage');
         setLoading(false);
         return;
       }
       
+      console.log('[EDITOR] Fetching profile for:', username);
       const response = await axios.get(`${BACKEND_URL}/api/@/${username}`);
       const profile = response.data;
       
-      console.log('Loaded profile:', profile);
+      console.log('[EDITOR] Loaded profile data:', profile);
+      console.log('[EDITOR] Profile shape from API:', profile.profile_shape);
       
       // Load existing data
-      if (profile.profile_picture) setProfilePic(profile.profile_picture);
-      if (profile.banner_image) setBannerImage(profile.banner_image);
-      if (profile.profile_shape) setProfileShape(profile.profile_shape);
+      if (profile.profile_picture) {
+        console.log('[EDITOR] Setting profile pic:', profile.profile_picture);
+        setProfilePic(profile.profile_picture);
+      }
+      if (profile.banner_image) {
+        console.log('[EDITOR] Setting banner:', profile.banner_image);
+        setBannerImage(profile.banner_image);
+      }
+      if (profile.profile_shape) {
+        console.log('[EDITOR] Setting shape to:', profile.profile_shape);
+        setProfileShape(profile.profile_shape);
+      }
       if (profile.profile_effect) setProfileEffect(profile.profile_effect);
       if (profile.profile_border) setProfileBorder(profile.profile_border);
       if (profile.border_color) setBorderColor(profile.border_color);
@@ -62,9 +75,10 @@ function UnifiedEditor() {
         setSocialLinks(profile.social_media_links);
       }
       
+      console.log('[EDITOR] All data loaded, profileShape state is now:', profile.profile_shape);
       setLoading(false);
     } catch (err) {
-      console.error('Error loading profile:', err);
+      console.error('[EDITOR] Error loading profile:', err);
       setLoading(false);
     }
   };
