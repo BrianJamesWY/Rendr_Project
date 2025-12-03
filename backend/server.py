@@ -57,9 +57,10 @@ from fastapi import APIRouter
 users_api_router = APIRouter()
 
 # Import the specific endpoints we need
-from api.users import get_user_quota, update_notification_settings
+from api.users import get_user_quota, update_notification_settings, update_creator_profile
 users_api_router.add_api_route("/quota", get_user_quota, methods=["GET"])
 users_api_router.add_api_route("/notification-settings", update_notification_settings, methods=["PUT"])
+users_api_router.add_api_route("/profile", update_creator_profile, methods=["PUT"])
 
 app.include_router(users_api_router, prefix="/api/users", tags=["User Settings"])
 app.include_router(admin.router, prefix="/api/ceo-access-b7k9m2x", tags=["Admin"])
