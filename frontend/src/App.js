@@ -156,7 +156,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/ceo-access-b7k9m2x" element={<Admin />} />
-          <Route path="/showcase-editor" element={<ShowcaseEditor />} />
+          <Route path="/editor" element={<UnifiedEditor />} />
           <Route path="/settings" element={<ProfileSettings />} />
           <Route path="/notification-settings" element={<NotificationSettings />} />
           <Route path="/analytics" element={<InvestorAnalytics />} />
