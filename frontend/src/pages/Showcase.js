@@ -201,13 +201,39 @@ function Showcase() {
       </nav>
 
       {/* Header Section with LARGE LEFT Profile */}
-      <header style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)', padding: '50px 24px', color: 'white', position: 'relative', minHeight: '300px' }}>
+      <header style={{ 
+        background: profile?.banner_image ? `url(${profile.banner_image})` : 'linear-gradient(135deg, #667eea, #764ba2)', 
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        padding: '50px 24px', 
+        color: 'white', 
+        position: 'relative', 
+        minHeight: '300px' 
+      }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '50px' }}>
           <div style={{ flexShrink: 0 }}>
             <img 
               src={profile?.profile_picture || 'https://via.placeholder.com/240/667eea/ffffff?text=Profile'} 
               alt="Profile" 
-              style={{ width: '240px', height: '240px', borderRadius: '50%', border: '6px solid white', background: 'white', objectFit: 'cover', boxShadow: '0 6px 30px rgba(0, 0, 0, 0.3)', display: 'block', aspectRatio: '1 / 1', flexShrink: 0 }}
+              style={{ 
+                width: '240px', 
+                height: '240px', 
+                borderRadius: profile?.profile_shape === 'circle' ? '50%' : 
+                             profile?.profile_shape === 'square' ? '0' : 
+                             profile?.profile_shape === 'rounded' ? '24px' : '50%',
+                clipPath: profile?.profile_shape === 'hexagon' ? 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' :
+                         profile?.profile_shape === 'diamond' ? 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' : 'none',
+                border: `${profile?.profile_border || '6'}px solid ${profile?.border_color || 'white'}`, 
+                background: 'white', 
+                objectFit: 'cover', 
+                boxShadow: profile?.profile_effect === 'shadow-lg' ? '0 10px 40px rgba(0, 0, 0, 0.4)' :
+                          profile?.profile_effect === 'shadow-sm' ? '0 4px 8px rgba(0, 0, 0, 0.2)' :
+                          profile?.profile_effect === 'glow' ? `0 0 30px ${profile?.border_color || '#667eea'}` :
+                          '0 6px 30px rgba(0, 0, 0, 0.3)',
+                display: 'block', 
+                aspectRatio: '1 / 1', 
+                flexShrink: 0 
+              }}
             />
           </div>
           
