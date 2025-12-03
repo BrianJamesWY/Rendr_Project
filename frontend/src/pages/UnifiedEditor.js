@@ -38,7 +38,7 @@ function UnifiedEditor() {
 
   const loadProfile = async () => {
     try {
-      const username = localStorage.getItem('username');
+      const username = localStorage.getItem('rendr_username');
       if (!username) {
         console.error('No username in localStorage');
         setLoading(false);
