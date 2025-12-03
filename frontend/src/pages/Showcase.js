@@ -641,13 +641,16 @@ function VisitorVideoModal({ video, socialPlatforms, onClose }) {
           <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '24px', cursor: 'pointer', color: '#6b7280' }}>×</button>
         </div>
 
-        {/* Video Thumbnail */}
-        <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#e5e5e5', borderRadius: '8px', overflow: 'hidden', marginBottom: '16px' }}>
-          {video.thumbnail_url ? (
-            <img src={`${BACKEND_URL}${video.thumbnail_url}`} alt="" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
-          ) : (
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>🎬</div>
-          )}
+        {/* Video Player */}
+        <div style={{ position: 'relative', paddingBottom: '56.25%', background: '#000', borderRadius: '8px', overflow: 'hidden', marginBottom: '16px' }}>
+          <video 
+            controls
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'contain' }}
+            poster={video.thumbnail_url ? `${BACKEND_URL}${video.thumbnail_url}` : undefined}
+          >
+            <source src={`${BACKEND_URL}/api/videos/watch/${video.video_id}`} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         </div>
 
         {/* Video Info */}
