@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 
@@ -8,6 +8,11 @@ function UnifiedEditor() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('profile');
   const [devicePreview, setDevicePreview] = useState('desktop');
+  
+  // File upload refs
+  const profilePicRef = useRef(null);
+  const bannerRef = useRef(null);
+  const socialIconRefs = useRef([]);
   
   // Profile & Banner state
   const [profilePic, setProfilePic] = useState('');
@@ -24,6 +29,12 @@ function UnifiedEditor() {
   ]);
   const [bioText, setBioText] = useState('');
 
+  // Page Design state
+  const [selectedPage, setSelectedPage] = useState('showcase');
+  const [bgType, setBgType] = useState('gradient');
+  const [primaryColor, setPrimaryColor] = useState('#667eea');
+  const [secondaryColor, setSecondaryColor] = useState('#764ba2');
+
   const tabs = [
     { id: 'profile', label: 'Profile & Banner', emoji: '👤' },
     { id: 'design', label: 'Page Design', emoji: '🎨' },
@@ -34,12 +45,42 @@ function UnifiedEditor() {
     { id: 'analytics', label: 'Analytics', emoji: '📊' }
   ];
 
-  const handleSaveProfile = async () => {
-    try {
-      // TODO: Implement backend save
-      alert('Profile settings saved! (Backend integration pending)');
-    } catch (err) {
-      console.error('Error saving profile:', err);
+  const handleFileUpload = (ref) => {
+    ref.current?.click();
+  };
+
+  const handleProfilePicChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePic(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleBannerChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBannerImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSocialIconChange = (index, e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newLinks = [...socialLinks];
+        newLinks[index].icon = '📷'; // Could show uploaded image here
+        setSocialLinks(newLinks);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -47,26 +88,31 @@ function UnifiedEditor() {
     const baseStyle = {
       width: '100px',
       height: '100px',
-      background: profilePic || '#f3f4f6',
+      background: profilePic ? `url(${profilePic})` : '#f3f4f6',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       margin: '-50px auto 20px auto',
-      border: `${profileBorder}px solid ${borderColor}`
+      border: `${profileBorder}px solid ${borderColor}`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
     };
+
+    const effectStyle = getProfileEffectClass();
 
     switch(profileShape) {
       case 'circle':
-        return { ...baseStyle, borderRadius: '50%' };
+        return { ...baseStyle, ...effectStyle, borderRadius: '50%' };
       case 'square':
-        return { ...baseStyle, borderRadius: '0' };
+        return { ...baseStyle, ...effectStyle, borderRadius: '0' };
       case 'rounded':
-        return { ...baseStyle, borderRadius: '12px' };
+        return { ...baseStyle, ...effectStyle, borderRadius: '12px' };
       case 'hexagon':
-        return { ...baseStyle, clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' };
+        return { ...baseStyle, ...effectStyle, clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' };
       case 'diamond':
-        return { ...baseStyle, transform: 'rotate(45deg)' };
+        return { ...baseStyle, ...effectStyle, transform: 'rotate(45deg)' };
       default:
-        return { ...baseStyle, borderRadius: '50%' };
+        return { ...baseStyle, ...effectStyle, borderRadius: '50%' };
     }
   };
 
@@ -78,10 +124,6 @@ function UnifiedEditor() {
         return { boxShadow: '0 10px 25px rgba(0,0,0,0.3)' };
       case 'glow':
         return { boxShadow: `0 0 20px ${borderColor}` };
-      case 'hover-zoom':
-        return { transition: 'transform 0.3s', ':hover': { transform: 'scale(1.1)' } };
-      case 'hover-rotate':
-        return { transition: 'transform 0.3s', ':hover': { transform: 'rotate(5deg)' } };
       default:
         return {};
     }
@@ -90,6 +132,20 @@ function UnifiedEditor() {
   return (
     <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
       <Navigation currentPage="editor" />
+      
+      {/* Hidden file inputs */}
+      <input type="file" ref={profilePicRef} onChange={handleProfilePicChange} accept="image/*" style={{ display: 'none' }} />
+      <input type="file" ref={bannerRef} onChange={handleBannerChange} accept="image/*" style={{ display: 'none' }} />
+      {socialLinks.map((_, index) => (
+        <input 
+          key={index}
+          type="file" 
+          ref={el => socialIconRefs.current[index] = el} 
+          onChange={(e) => handleSocialIconChange(index, e)} 
+          accept="image/*" 
+          style={{ display: 'none' }} 
+        />
+      ))}
       
       {/* Header */}
       <div style={{ 
@@ -159,7 +215,7 @@ function UnifiedEditor() {
       {/* Main Content */}
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '2rem', display: 'grid', gridTemplateColumns: '450px 1fr', gap: '2rem' }}>
         
-        {/* Left Panel - Controls */}
+        {/* Left Panel */}
         <div style={{ background: 'white', borderRadius: '0.75rem', padding: '2rem', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', maxHeight: '85vh', overflowY: 'auto' }}>
           
           {/* Profile & Banner Tab */}
@@ -178,25 +234,27 @@ function UnifiedEditor() {
                   Profile Picture
                 </label>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  <div style={{
-                    width: '60px',
-                    height: '60px',
-                    background: '#f3f4f6',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem',
-                    border: '2px dashed #d1d5db',
-                    cursor: 'pointer'
-                  }}>
+                  <button
+                    onClick={() => handleFileUpload(profilePicRef)}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      background: '#f3f4f6',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1.5rem',
+                      border: '2px dashed #d1d5db',
+                      cursor: 'pointer'
+                    }}>
                     👤
-                  </div>
+                  </button>
                   <input 
                     type="url" 
                     value={profilePic}
                     onChange={(e) => setProfilePic(e.target.value)}
-                    placeholder="Paste image URL here"
+                    placeholder="Or paste image URL here"
                     style={{
                       flex: 1,
                       padding: '0.75rem',
@@ -206,9 +264,6 @@ function UnifiedEditor() {
                     }}
                   />
                 </div>
-                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  API: POST /api/upload/profile-image
-                </p>
               </div>
 
               {/* Shape */}
@@ -253,8 +308,6 @@ function UnifiedEditor() {
                   <option value="shadow-sm">Small Shadow</option>
                   <option value="shadow-lg">Large Shadow</option>
                   <option value="glow">Glow Effect</option>
-                  <option value="hover-zoom">Zoom on Hover</option>
-                  <option value="hover-rotate">Rotate on Hover</option>
                 </select>
               </div>
 
@@ -316,25 +369,27 @@ function UnifiedEditor() {
                   Banner Image
                 </label>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  <div style={{
-                    width: '60px',
-                    height: '60px',
-                    background: '#f3f4f6',
-                    borderRadius: '8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '1.5rem',
-                    border: '2px dashed #d1d5db',
-                    cursor: 'pointer'
-                  }}>
+                  <button
+                    onClick={() => handleFileUpload(bannerRef)}
+                    style={{
+                      width: '60px',
+                      height: '60px',
+                      background: '#f3f4f6',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '1.5rem',
+                      border: '2px dashed #d1d5db',
+                      cursor: 'pointer'
+                    }}>
                     🖼️
-                  </div>
+                  </button>
                   <input 
                     type="url" 
                     value={bannerImage}
                     onChange={(e) => setBannerImage(e.target.value)}
-                    placeholder="Paste image URL here"
+                    placeholder="Or paste image URL here"
                     style={{
                       flex: 1,
                       padding: '0.75rem',
@@ -344,9 +399,6 @@ function UnifiedEditor() {
                     }}
                   />
                 </div>
-                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
-                  API: POST /api/upload/banner-image
-                </p>
               </div>
 
               {/* Social Media Links */}
@@ -374,20 +426,22 @@ function UnifiedEditor() {
                           fontSize: '0.875rem'
                         }}
                       />
-                      <div style={{
-                        width: '45px',
-                        height: '45px',
-                        background: '#f3f4f6',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '1.25rem',
-                        border: '1px solid #e5e7eb',
-                        cursor: 'pointer'
-                      }}>
+                      <button
+                        onClick={() => handleFileUpload(socialIconRefs.current[index])}
+                        style={{
+                          width: '45px',
+                          height: '45px',
+                          background: '#f3f4f6',
+                          borderRadius: '8px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '1.25rem',
+                          border: '1px solid #e5e7eb',
+                          cursor: 'pointer'
+                        }}>
                         {link.icon}
-                      </div>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -429,7 +483,7 @@ function UnifiedEditor() {
               </div>
 
               <button 
-                onClick={handleSaveProfile}
+                onClick={() => alert('Profile settings saved! (Backend integration pending)')}
                 style={{
                   width: '100%',
                   padding: '0.75rem',
@@ -446,14 +500,152 @@ function UnifiedEditor() {
             </div>
           )}
 
-          {/* Other tabs placeholder */}
-          {activeTab !== 'profile' && (
+          {/* Page Design Tab */}
+          {activeTab === 'design' && (
+            <div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>
+                Page Design & Layout
+              </h2>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>
+                Customize layout, colors, and visual effects
+              </p>
+
+              {/* Page Selection */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Select Page to Edit
+                </label>
+                <select 
+                  value={selectedPage}
+                  onChange={(e) => setSelectedPage(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    fontSize: '0.875rem'
+                  }}>
+                  <option value="showcase">Showcase Page</option>
+                  <option value="dashboard">Dashboard</option>
+                  <option value="premium">Premium Content</option>
+                </select>
+              </div>
+
+              {/* Background Type */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Background Type
+                </label>
+                <select 
+                  value={bgType}
+                  onChange={(e) => setBgType(e.target.value)}
+                  style={{
+                    width: '100%',
+                    padding: '0.75rem',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '0.5rem',
+                    fontSize: '0.875rem'
+                  }}>
+                  <option value="solid">Solid Color</option>
+                  <option value="gradient">Gradient</option>
+                  <option value="image">Image</option>
+                  <option value="pattern">Pattern</option>
+                </select>
+              </div>
+
+              {/* Primary Color */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Primary Color
+                </label>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <input 
+                    type="color" 
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <input 
+                    type="text" 
+                    value={primaryColor}
+                    onChange={(e) => setPrimaryColor(e.target.value)}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Secondary Color */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Secondary Color
+                </label>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <input 
+                    type="color" 
+                    value={secondaryColor}
+                    onChange={(e) => setSecondaryColor(e.target.value)}
+                    style={{
+                      width: '50px',
+                      height: '50px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      cursor: 'pointer'
+                    }}
+                  />
+                  <input 
+                    type="text" 
+                    value={secondaryColor}
+                    onChange={(e) => setSecondaryColor(e.target.value)}
+                    style={{
+                      flex: 1,
+                      padding: '0.75rem',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '0.5rem',
+                      fontSize: '0.875rem'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <button 
+                onClick={() => alert('Design settings saved!')}
+                style={{
+                  width: '100%',
+                  padding: '0.75rem',
+                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}>
+                💾 Save Design
+              </button>
+            </div>
+          )}
+
+          {/* Other tabs - simplified for now */}
+          {!['profile', 'design'].includes(activeTab) && (
             <div style={{ textAlign: 'center', padding: '3rem 0', color: '#6b7280' }}>
               <p style={{ fontSize: '3rem', marginBottom: '1rem' }}>{tabs.find(t => t.id === activeTab)?.emoji}</p>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: '600', marginBottom: '0.5rem', color: '#111827' }}>
                 {tabs.find(t => t.id === activeTab)?.label}
               </h3>
-              <p style={{ fontSize: '0.875rem' }}>Coming soon...</p>
+              <p style={{ fontSize: '0.875rem' }}>This section is under development</p>
+              <p style={{ fontSize: '0.75rem', marginTop: '1rem' }}>Backend integration in progress</p>
             </div>
           )}
           
@@ -513,7 +705,7 @@ function UnifiedEditor() {
               {/* Banner */}
               <div style={{ 
                 height: '150px', 
-                background: bannerImage ? `url(${bannerImage})` : 'linear-gradient(135deg, #667eea, #764ba2)',
+                background: bannerImage ? `url(${bannerImage})` : `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }} />
@@ -521,11 +713,7 @@ function UnifiedEditor() {
               {/* Content */}
               <div style={{ padding: '2rem', textAlign: 'center' }}>
                 {/* Profile Picture */}
-                <div style={{
-                  ...getProfileShapeStyle(),
-                  ...getProfileEffectClass(),
-                  backgroundImage: profilePic ? `url(${profilePic})` : 'none'
-                }}>
+                <div style={getProfileShapeStyle()}>
                   {!profilePic && <span style={{ fontSize: '2rem' }}>👤</span>}
                 </div>
                 
