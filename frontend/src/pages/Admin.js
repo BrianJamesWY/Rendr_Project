@@ -547,6 +547,115 @@ function Admin() {
           </div>
         )}
 
+        {/* Analytics Tab - Full Platform Analytics */}
+        {activeTab === 'analytics' && stats && (
+          <div>
+            <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: '#111827', marginBottom: '1.5rem' }}>
+              📊 Full Platform Analytics
+            </h2>
+            
+            {/* Key Metrics */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ background: 'linear-gradient(135deg, #667eea, #764ba2)', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: 'white' }}>
+                <div style={{ fontSize: '0.875rem', marginBottom: '0.5rem', opacity: 0.9, fontWeight: '600' }}>TOTAL USERS</div>
+                <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{stats.users.total}</div>
+                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9 }}>Platform registered users</div>
+              </div>
+
+              <div style={{ background: 'linear-gradient(135deg, #10b981, #059669)', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: 'white' }}>
+                <div style={{ fontSize: '0.875rem', marginBottom: '0.5rem', opacity: 0.9, fontWeight: '600' }}>TOTAL VIDEOS</div>
+                <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{stats.videos.total}</div>
+                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9' }}>Videos verified</div>
+              </div>
+
+              <div style={{ background: 'linear-gradient(135deg, #f59e0b, #d97706)', padding: '2rem', borderRadius: '0.75rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', color: 'white' }}>
+                <div style={{ fontSize: '0.875rem', marginBottom: '0.5rem', opacity: 0.9, fontWeight: '600' }}>BLOCKCHAIN VERIFIED</div>
+                <div style={{ fontSize: '3rem', fontWeight: 'bold' }}>{stats.videos.blockchain_verified}</div>
+                <div style={{ fontSize: '0.875rem', marginTop: '0.5rem', opacity: 0.9' }}>
+                  {stats.videos.total ? Math.round((stats.videos.blockchain_verified / stats.videos.total) * 100) : 0}% of total
+                </div>
+              </div>
+            </div>
+
+            {/* User Distribution */}
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>
+                User Distribution by Tier
+              </h3>
+              
+              <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ color: '#6b7280', fontWeight: '600' }}>Free Tier</span>
+                  <span style={{ fontWeight: 'bold', color: '#10b981' }}>{stats.users.free}</span>
+                </div>
+                <div style={{ background: '#e5e7eb', borderRadius: '9999px', height: '12px', overflow: 'hidden' }}>
+                  <div style={{
+                    background: '#10b981',
+                    height: '100%',
+                    width: `${stats.users.total ? (stats.users.free / stats.users.total) * 100 : 0}%`,
+                    transition: 'width 0.3s'
+                  }} />
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ color: '#6b7280', fontWeight: '600' }}>Pro Tier</span>
+                  <span style={{ fontWeight: 'bold', color: '#f59e0b' }}>{stats.users.pro}</span>
+                </div>
+                <div style={{ background: '#e5e7eb', borderRadius: '9999px', height: '12px', overflow: 'hidden' }}>
+                  <div style={{
+                    background: '#f59e0b',
+                    height: '100%',
+                    width: `${stats.users.total ? (stats.users.pro / stats.users.total) * 100 : 0}%`,
+                    transition: 'width 0.3s'
+                  }} />
+                </div>
+              </div>
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ color: '#6b7280', fontWeight: '600' }}>Enterprise</span>
+                  <span style={{ fontWeight: 'bold', color: '#8b5cf6' }}>{stats.users.enterprise}</span>
+                </div>
+                <div style={{ background: '#e5e7eb', borderRadius: '9999px', height: '12px', overflow: 'hidden' }}>
+                  <div style={{
+                    background: '#8b5cf6',
+                    height: '100%',
+                    width: `${stats.users.total ? (stats.users.enterprise / stats.users.total) * 100 : 0}%`,
+                    transition: 'width 0.3s'
+                  }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Video Sources */}
+            <div style={{ background: 'white', borderRadius: '0.75rem', padding: '2rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+              <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem', color: '#111827' }}>
+                Video Sources
+              </h3>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>📱</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#667eea', marginBottom: '0.25rem' }}>
+                    {stats.videos.bodycam || 0}
+                  </div>
+                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Rendr Bodycam</div>
+                </div>
+                
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>💻</div>
+                  <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#10b981', marginBottom: '0.25rem' }}>
+                    {stats.videos.studio || 0}
+                  </div>
+                  <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>Rendr Studio</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Users Tab */}
         {activeTab === 'users' && (
           <div>
