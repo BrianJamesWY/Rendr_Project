@@ -437,9 +437,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Premium Folders and Stripe Connect Flow Testing Complete"
-    - "Stripe Subscription Checkout API"
-    - "Subscription Management API"
+    - "Unified Editor Implementation Testing"
+    - "CEO Admin Analytics Tab Testing"
+    - "Navigation Editor Link Testing"
+    - "Device Preview Functionality Testing"
+    - "Form Interactions Testing"
   stuck_tasks:
     - "Stripe Subscription Checkout API"
     - "Subscription Management API"
