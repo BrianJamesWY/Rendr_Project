@@ -41,6 +41,11 @@ class CreatorProfile(BaseModel):
     bio: Optional[str] = None
     profile_picture: Optional[str] = None
     banner_image: Optional[str] = None
+    profile_shape: Optional[str] = "circle"
+    profile_effect: Optional[str] = "none"
+    profile_border: Optional[str] = "0"
+    border_color: Optional[str] = "#667eea"
+    page_design: Optional[Dict] = None
     joined_at: str
     total_videos: int
     showcase_settings: Optional[Dict] = None
