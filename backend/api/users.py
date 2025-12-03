@@ -189,6 +189,27 @@ async def update_creator_profile(
     if profile_data.bio is not None:
         update_fields["bio"] = profile_data.bio
     
+    if profile_data.profile_picture is not None:
+        update_fields["profile_picture"] = profile_data.profile_picture
+    
+    if profile_data.banner_image is not None:
+        update_fields["banner_image"] = profile_data.banner_image
+    
+    if profile_data.profile_shape is not None:
+        update_fields["profile_shape"] = profile_data.profile_shape
+    
+    if profile_data.profile_effect is not None:
+        update_fields["profile_effect"] = profile_data.profile_effect
+    
+    if profile_data.profile_border is not None:
+        update_fields["profile_border"] = profile_data.profile_border
+    
+    if profile_data.border_color is not None:
+        update_fields["border_color"] = profile_data.border_color
+    
+    if profile_data.page_design is not None:
+        update_fields["page_design"] = profile_data.page_design
+    
     if profile_data.showcase_settings is not None:
         update_fields["showcase_settings"] = profile_data.showcase_settings
     
