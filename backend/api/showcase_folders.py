@@ -9,11 +9,22 @@ router = APIRouter(prefix="/api/showcase-folders", tags=["Showcase Folders"])
 
 @router.get("")
 async def get_showcase_folders(
+    username: str = None,
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Get all showcase folders for current user (with nested structure support)"""
-    cursor = db.showcase_folders.find({"user_id": current_user["user_id"]})
+    """Get all showcase folders for current user or specified public username"""
+    # If username provided, get public folders for that user
+    if username:
+        user = await db.users.find_one({"username": username})
+        if not user:
+            return []
+        user_id = user["_id"]
+        cursor = db.showcase_folders.find({"user_id": user_id, "is_public": True})
+    else:
+        # Current user's folders (all, including private)
+        cursor = db.showcase_folders.find({"user_id": current_user["user_id"]})
+    
     folders = await cursor.to_list(length=100)
     
     result = []
