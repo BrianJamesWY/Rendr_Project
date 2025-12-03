@@ -699,23 +699,6 @@ function UnifiedEditor() {
                     <div style={{ fontSize: '0.875rem', color: '#6b7280', marginTop: '0.25rem' }}>Revenue</div>
                   </div>
                 </div>
-
-                <button 
-                  onClick={() => navigate('/analytics')}
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    fontSize: '1rem'
-                  }}
-                >
-                  📊 View Full Analytics →
-                </button>
               </div>
             )}
 
