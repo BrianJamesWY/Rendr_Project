@@ -490,7 +490,7 @@ function Admin() {
       {/* Tabs */}
       <div style={{ background: 'white', borderBottom: '1px solid #e5e7eb' }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem', display: 'flex', gap: '2rem' }}>
-          {['stats', 'users', 'interested', 'import', 'logs'].map(tab => (
+          {['stats', 'analytics', 'users', 'interested', 'import', 'logs'].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
