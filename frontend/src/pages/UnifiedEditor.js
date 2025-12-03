@@ -39,8 +39,16 @@ function UnifiedEditor() {
   const loadProfile = async () => {
     try {
       const username = localStorage.getItem('username');
+      if (!username) {
+        console.error('No username in localStorage');
+        setLoading(false);
+        return;
+      }
+      
       const response = await axios.get(`${BACKEND_URL}/api/@/${username}`);
       const profile = response.data;
+      
+      console.log('Loaded profile:', profile);
       
       // Load existing data
       if (profile.profile_picture) setProfilePic(profile.profile_picture);
