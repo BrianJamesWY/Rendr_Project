@@ -33,15 +33,18 @@ async def get_showcase_folders(
     result = []
     for folder in folders:
         # Count videos in this showcase folder
+        folder_user_id = folder["user_id"]
         video_count = await db.videos.count_documents({
-            "user_id": current_user["user_id"],
-            "showcase_folder_id": folder["_id"]
+            "user_id": folder_user_id,
+            "showcase_folder_id": folder["_id"],
+            "is_public": True  # Only count public videos for showcase
         })
         
         # Count subfolders
         subfolder_count = await db.showcase_folders.count_documents({
-            "user_id": current_user["user_id"],
-            "parent_folder_id": folder["_id"]
+            "user_id": folder_user_id,
+            "parent_folder_id": folder["_id"],
+            "is_public": True  # Only count public subfolders
         })
         
         result.append({
