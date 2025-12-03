@@ -355,10 +355,10 @@ function Showcase() {
                     <img 
                       src={video.thumbnail_url ? `${BACKEND_URL}${video.thumbnail_url}` : 'https://via.placeholder.com/320x180/667eea/ffffff?text=Video'}
                       alt="Video"
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s' }}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.3s', pointerEvents: 'none' }}
                     />
-                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s' }}>
-                      <div style={{ width: '24px', height: '24px', background: 'rgba(0, 0, 0, 0.8)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transform: 'scale(0.8)', transition: 'all 0.3s', color: 'white', fontSize: '12px' }}>▶</div>
+                    <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.3s', pointerEvents: 'none' }}>
+                      <div style={{ width: '24px', height: '24px', background: 'rgba(0, 0, 0, 0.8)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0, transform: 'scale(0.8)', transition: 'all 0.3s', color: 'white', fontSize: '12px', pointerEvents: 'none' }}>▶</div>
                     </div>
                   </div>
                   <div style={{ paddingTop: '6px' }}>
