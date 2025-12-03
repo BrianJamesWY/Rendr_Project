@@ -82,6 +82,16 @@ const Navigation = ({ currentPage = '' }) => {
                 Upload
               </Link>
               <Link 
+                to="/editor" 
+                style={{ 
+                  color: currentPage === 'editor' ? '#667eea' : '#6b7280',
+                  textDecoration: 'none',
+                  fontWeight: currentPage === 'editor' ? '600' : '500'
+                }}
+              >
+                Editor
+              </Link>
+              <Link 
                 to="/earnings" 
                 style={{ 
                   color: currentPage === 'earnings' ? '#667eea' : '#6b7280',
