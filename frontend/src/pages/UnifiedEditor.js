@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
 
 function UnifiedEditor() {
   const navigate = useNavigate();
