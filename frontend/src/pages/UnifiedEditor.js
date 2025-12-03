@@ -9,6 +9,7 @@ function UnifiedEditor() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('profile');
   const [devicePreview, setDevicePreview] = useState('desktop');
+  const [loading, setLoading] = useState(true);
   
   // File upload refs
   const profilePicRef = useRef(null);
@@ -29,6 +30,36 @@ function UnifiedEditor() {
     { platform: 'TikTok', url: '', icon: '🎵' }
   ]);
   const [bioText, setBioText] = useState('');
+
+  // Load existing profile data
+  React.useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const loadProfile = async () => {
+    try {
+      const username = localStorage.getItem('username');
+      const response = await axios.get(`${BACKEND_URL}/api/@/${username}`);
+      const profile = response.data;
+      
+      // Load existing data
+      if (profile.profile_picture) setProfilePic(profile.profile_picture);
+      if (profile.banner_image) setBannerImage(profile.banner_image);
+      if (profile.profile_shape) setProfileShape(profile.profile_shape);
+      if (profile.profile_effect) setProfileEffect(profile.profile_effect);
+      if (profile.profile_border) setProfileBorder(profile.profile_border);
+      if (profile.border_color) setBorderColor(profile.border_color);
+      if (profile.bio) setBioText(profile.bio);
+      if (profile.social_media_links && profile.social_media_links.length > 0) {
+        setSocialLinks(profile.social_media_links);
+      }
+      
+      setLoading(false);
+    } catch (err) {
+      console.error('Error loading profile:', err);
+      setLoading(false);
+    }
+  };
 
   // Page Design state
   const [selectedPage, setSelectedPage] = useState('showcase');
