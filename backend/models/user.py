@@ -55,7 +55,13 @@ class UpdateProfile(BaseModel):
     social_media_links: Optional[List[Dict]] = None
     dashboard_social_links: Optional[List[Dict]] = None
     collection_label: Optional[str] = None
+    profile_picture: Optional[str] = None
     banner_image: Optional[str] = None
+    profile_shape: Optional[str] = None
+    profile_effect: Optional[str] = None
+    profile_border: Optional[str] = None
+    border_color: Optional[str] = None
+    page_design: Optional[Dict] = None
     phone: Optional[str] = None
     notification_preference: Optional[str] = None
     notify_video_length_threshold: Optional[int] = None
