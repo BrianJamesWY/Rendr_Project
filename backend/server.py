@@ -76,6 +76,7 @@ app.include_router(bounties.router, prefix="/api/bounties", tags=["Bounties"])
 app.include_router(community.router, prefix="/api", tags=["Community"])
 app.include_router(schedule.router, prefix="/api", tags=["Schedule"])
 app.include_router(store.router, prefix="/api", tags=["Store"])
+app.include_router(diagnostics.router, prefix="/api", tags=["Diagnostics"])
 
 @app.get("/")
 async def root():
