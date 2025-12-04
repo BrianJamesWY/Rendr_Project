@@ -89,12 +89,16 @@ async def diagnose_user_videos(username: str, current_user: dict = Depends(get_c
     """
     db = get_db()
     
-    # Get user
-    user = await db.users.find_one({"username": username}, {"_id": 0})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    user_id = user.get("user_id") or user.get("id")
+    # Use current_user if checking own videos, otherwise look up by username
+    if username == current_user.get("username"):
+        user_id = current_user["user_id"]
+        user = current_user
+    else:
+        # Get user by username
+        user = await db.users.find_one({"username": username}, {"_id": 0})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        user_id = user.get("user_id") or user.get("id")
     
     # Get all videos
     videos = await db.videos.find({"user_id": user_id}, {"_id": 0}).to_list(1000)
