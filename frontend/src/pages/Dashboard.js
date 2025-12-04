@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../components/Logo';
 
-const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Dashboard() {
   console.log('Dashboard BACKEND_URL:', BACKEND_URL);
