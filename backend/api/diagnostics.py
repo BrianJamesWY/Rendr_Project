@@ -29,7 +29,7 @@ async def full_health(current_user: dict = Depends(get_current_user)):
     Comprehensive health check - requires authentication
     Returns detailed system information
     """
-    db = await get_db()
+    db = get_db()
     
     # Check database
     try:
