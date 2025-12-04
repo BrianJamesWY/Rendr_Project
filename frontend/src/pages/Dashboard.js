@@ -340,7 +340,7 @@ function Dashboard() {
                 <Link to="/my-videos" style={{ fontSize: '13px', color: '#667eea', textDecoration: 'none', fontWeight: '500' }}>View All →</Link>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                {videos.slice(0, 5).map((video, index) => (
+                {videos.map((video, index) => (
                   <div key={video.video_id} style={{ display: 'flex', gap: '12px', padding: '10px', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s', ':hover': { background: '#f9f9f9' } }} onClick={() => handleEditVideo(video)}>
                     <div style={{ width: '120px', height: '68px', background: '#e5e5e5', borderRadius: '4px', flexShrink: 0, overflow: 'hidden' }}>
                       {video.thumbnail_url ? (
