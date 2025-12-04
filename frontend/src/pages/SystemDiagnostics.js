@@ -151,7 +151,7 @@ function SystemDiagnostics() {
               </div>
               <div style={{ fontSize: '13px', color: '#606060' }}>Total Videos</div>
             </div>
-            <div style={{ padding: '16px', background: '#fef3c7', borderRadius: '8px', border: '1px solid '#fde047' }}>
+            <div style={{ padding: '16px', background: '#fef3c7', borderRadius: '8px', border: '1px solid #fde047' }}>
               <div style={{ fontSize: '28px', fontWeight: '700', color: '#a16207', marginBottom: '4px' }}>
                 {healthData?.stats?.total_folders || 0}
               </div>
