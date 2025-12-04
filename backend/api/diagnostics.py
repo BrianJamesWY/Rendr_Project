@@ -87,7 +87,7 @@ async def diagnose_user_videos(username: str, current_user: dict = Depends(get_c
     Diagnose video issues for a specific user
     Returns detailed video information and potential problems
     """
-    db = await get_db()
+    db = get_db()
     
     # Get user
     user = await db.users.find_one({"username": username}, {"_id": 0})
