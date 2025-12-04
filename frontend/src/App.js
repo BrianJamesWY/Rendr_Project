@@ -35,10 +35,11 @@ import Bounties from "./pages/Bounties";
 import PostBounty from "./pages/PostBounty";
 import ClaimBounty from "./pages/ClaimBounty";
 import MyVideos from "./pages/MyVideos";
+import SystemDiagnostics from "./pages/SystemDiagnostics";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
-const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Home = () => {
