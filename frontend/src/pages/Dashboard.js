@@ -185,6 +185,7 @@ function Dashboard() {
             <Link to="/bounties" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Bounties</Link>
             <Link to="/earnings" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Monetization</Link>
             <Link to="/settings" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Settings</Link>
+            <Link to="/diagnostics" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>🔧 Diagnostics</Link>
           </nav>
         </div>
         
