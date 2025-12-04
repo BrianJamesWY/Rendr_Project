@@ -135,7 +135,7 @@ async def diagnose_user_videos(username: str, current_user: dict = Depends(get_c
     
     return {
         "username": username,
-        "user_id": user["user_id"],
+        "user_id": user_id,
         "premium_tier": user.get("premium_tier", "free"),
         "total_videos": len(videos),
         "videos_on_showcase": len([v for v in videos if v.get("on_showcase")]),
