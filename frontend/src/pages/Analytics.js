@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Logo from '../components/Logo';
 
-const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
 function Analytics() {
   const [stats, setStats] = useState(null);

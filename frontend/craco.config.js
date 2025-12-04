@@ -39,7 +39,7 @@ const webpackConfig = {
       const webpack = require('webpack');
       webpackConfig.plugins.push(
         new webpack.DefinePlugin({
-          'process.env.REACT_APP_BACKEND_URL': JSON.stringify('https://vidauth-app.preview.emergentagent.com')
+          'process.env.REACT_APP_BACKEND_URL': JSON.stringify('https://rendr-video-trust.preview.emergentagent.com')
         })
       );
 

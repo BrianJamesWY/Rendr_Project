@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
 function ClaimBounty() {
   const { bountyId } = useParams();

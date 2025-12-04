@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
 /**
  * Enhanced Video Card Component

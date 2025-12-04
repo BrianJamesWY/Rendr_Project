@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
 function UnifiedEditor() {
   const navigate = useNavigate();

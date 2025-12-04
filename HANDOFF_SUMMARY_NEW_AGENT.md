@@ -131,8 +131,8 @@ User has spent significant credits (down to ~27) with minimal progress. Claims t
 - Password: `Brian123!`
 
 **API Endpoints**:
-- Backend: `https://vidauth-app.preview.emergentagent.com/api`
-- Showcase: `https://vidauth-app.preview.emergentagent.com/@BrianJames`
+- Backend: `https://rendr-video-trust.preview.emergentagent.com/api`
+- Showcase: `https://rendr-video-trust.preview.emergentagent.com/@BrianJames`
 
 ---
 

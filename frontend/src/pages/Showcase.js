@@ -4,7 +4,7 @@ import axios from 'axios';
 import Logo from '../components/Logo';
 import VideoPlayer from '../components/VideoPlayer';
 
-const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
 function Showcase() {
   const { username } = useParams();

@@ -44,7 +44,7 @@ The CEO Admin panel has been completely overhauled with proper authentication.
 ## 🚪 Access Points
 
 **CEO Admin URL:**  
-https://vidauth-app.preview.emergentagent.com/ceo-access-b7k9m2x
+https://rendr-video-trust.preview.emergentagent.com/ceo-access-b7k9m2x
 
 **What You'll See:**
 1. Login screen with username + password fields

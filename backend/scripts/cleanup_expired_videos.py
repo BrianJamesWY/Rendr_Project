@@ -88,7 +88,7 @@ class VideoCleanupService:
             print(f"   Expires in: {hours_remaining} hours")
             
             # Send notification
-            download_url = f"https://vidauth-app.preview.emergentagent.com/dashboard?video={video['id']}"
+            download_url = f"https://rendr-video-trust.preview.emergentagent.com/dashboard?video={video['id']}"
             await notification_service.send_expiration_warning(
                 user=user,
                 verification_code=video['verification_code'],

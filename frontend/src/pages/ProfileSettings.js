@@ -4,7 +4,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import WatermarkSettings from '../components/WatermarkSettings';
 
-const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
 const SOCIAL_PLATFORMS = [
   { value: 'instagram', label: 'Instagram', icon: '📷' },

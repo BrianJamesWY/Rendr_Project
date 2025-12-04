@@ -13,7 +13,7 @@ const SubscriptionCheckout = () => {
     email: '',
     name: ''
   });
-  const BACKEND_URL = 'https://vidauth-app.preview.emergentagent.com';
+  const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
 
   useEffect(() => {
     const loadData = async () => {

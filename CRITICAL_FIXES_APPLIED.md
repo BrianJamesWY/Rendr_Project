@@ -96,7 +96,7 @@
 
 ### **Test 1: Video Upload & Showcase Display**
 **Steps:**
-1. Login at `https://vidauth-app.preview.emergentagent.com/CreatorLogin`
+1. Login at `https://rendr-video-trust.preview.emergentagent.com/CreatorLogin`
 2. Upload a new video
 3. Assign to "Best Videos" folder (or any showcase folder)
 4. Check Dashboard - video should appear in folder
@@ -230,13 +230,13 @@
 ## 📞 TESTING CREDENTIALS
 
 **Main Login:**
-- URL: `https://vidauth-app.preview.emergentagent.com/CreatorLogin`
+- URL: `https://rendr-video-trust.preview.emergentagent.com/CreatorLogin`
 - Username: `BrianJames`
 - Password: `Brian123!`
 - Tier: Enterprise
 
 **Showcase URL:**
-- Public: `https://vidauth-app.preview.emergentagent.com/@BrianJames`
+- Public: `https://rendr-video-trust.preview.emergentagent.com/@BrianJames`
 
 ---
 

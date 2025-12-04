@@ -205,7 +205,7 @@ sudo supervisorctl status
 
 4. Test webhook manually:
    ```bash
-   curl -X POST https://vidauth-app.preview.emergentagent.com/api/stripe/webhook \
+   curl -X POST https://rendr-video-trust.preview.emergentagent.com/api/stripe/webhook \
      -H "Content-Type: application/json" \
      -d '{"type": "test"}'
    ```
@@ -292,11 +292,11 @@ python3 /app/backend/debug_routes.py
 ### Manual API Testing
 ```bash
 # Test endpoint
-curl -v https://vidauth-app.preview.emergentagent.com/api/@/BrianJames
+curl -v https://rendr-video-trust.preview.emergentagent.com/api/@/BrianJames
 
 # Test with auth
 curl -H "Authorization: Bearer YOUR_TOKEN" \
-     https://vidauth-app.preview.emergentagent.com/api/auth/me
+     https://rendr-video-trust.preview.emergentagent.com/api/auth/me
 ```
 
 ### Check Environment Variables

@@ -206,10 +206,10 @@ Video File on Disk (/app/backend/uploads/videos/)
 ## 🎥 Test URLs
 
 ### For Direct Testing:
-- **Video Player Test**: `https://vidauth-app.preview.emergentagent.com/test-player.html`
-- **Download Video**: `https://vidauth-app.preview.emergentagent.com/api/videos/watch/964519ff-9e88-442e-b6b0-3c5e4eb3a3a8`
-- **Showcase Premium Tab**: `https://vidauth-app.preview.emergentagent.com/@BrianJames` (click Premium tab)
-- **My Videos Dashboard**: `https://vidauth-app.preview.emergentagent.com/my-videos` (login required)
+- **Video Player Test**: `https://rendr-video-trust.preview.emergentagent.com/test-player.html`
+- **Download Video**: `https://rendr-video-trust.preview.emergentagent.com/api/videos/watch/964519ff-9e88-442e-b6b0-3c5e4eb3a3a8`
+- **Showcase Premium Tab**: `https://rendr-video-trust.preview.emergentagent.com/@BrianJames` (click Premium tab)
+- **My Videos Dashboard**: `https://rendr-video-trust.preview.emergentagent.com/my-videos` (login required)
 
 ---
 
