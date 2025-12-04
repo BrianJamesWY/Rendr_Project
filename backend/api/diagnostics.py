@@ -192,7 +192,7 @@ async def test_video_flow(current_user: dict = Depends(get_current_user)):
     Test the complete video workflow
     Returns step-by-step status
     """
-    db = await get_db()
+    db = get_db()
     results = {}
     
     # Test 1: Can query user's videos
