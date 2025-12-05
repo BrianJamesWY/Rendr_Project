@@ -39,7 +39,10 @@ async def create_folder(
         "username": current_user.get("username"),
         "user_id": current_user["user_id"],
         "order": max_order + 1,
-        "created_at": datetime.now().isoformat()
+        "created_at": datetime.now().isoformat(),
+        "parent_id": getattr(folder_data, 'parent_id', None),
+        "thumbnail_url": getattr(folder_data, 'thumbnail_url', None),
+        "background": getattr(folder_data, 'background', {})
     }
     
     await db.folders.insert_one(folder_doc)
