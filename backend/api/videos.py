@@ -447,7 +447,34 @@ async def upload_video(
             "source": source,
             "uploaded_at": uploaded_at,
             
-            # Enhanced hashes (NEW)
+            # SHA-256 Hashes (BOTH versions - NEW DUAL HASH SYSTEM)
+            "hashes": {
+                "original_sha256": original_sha256,
+                "watermarked_sha256": watermarked_sha256,
+                "key_frame_hashes": key_frame_hashes,
+                "metadata_hash": None  # Will be calculated in background
+            },
+            
+            # Perceptual hashes (calculated in background)
+            "perceptual_hashes": {
+                "video_phashes": [],  # Will be populated async
+                "audio_hash": None,    # Will be calculated async
+                "center_region_hash": None
+            },
+            
+            # Master hash (will be calculated after all hashes complete)
+            "master_hash": None,
+            
+            # C2PA Manifest (generated in background)
+            "c2pa_manifest": {
+                "manifest_path": None,
+                "signature_valid": None,
+                "hard_binding_valid": None,
+                "issuer": "RENDR",
+                "created_at": None
+            },
+            
+            # Enhanced hashes (legacy - for compatibility)
             "hashes": {
                 "original": original_hashes['original_hash'],
                 "watermarked": watermarked_hashes['original_hash'],
