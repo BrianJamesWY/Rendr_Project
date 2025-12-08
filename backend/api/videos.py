@@ -424,7 +424,7 @@ async def upload_video(
         print("   ✅ Thumbnail saved")
         
         # STEP 8: Calculate expiration
-        print("\n⏰ STEP 7: Setting storage expiration...")
+        print("\n⏰ STEP 8: Setting storage expiration...")
         uploaded_at = datetime.now(timezone.utc)
         
         storage_durations = {
@@ -443,7 +443,7 @@ async def upload_video(
             expires_at = None
             print(f"   ♾️ Tier: {tier} - Unlimited storage")
         
-        # STEP 8: Blockchain (optional)
+        # STEP 9: Blockchain (optional)
         blockchain_data = None
         try:
             print("\n⛓️ STEP 8: Blockchain timestamping...")
