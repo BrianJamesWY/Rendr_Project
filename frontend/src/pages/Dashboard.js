@@ -19,6 +19,8 @@ function Dashboard() {
   const [error, setError] = useState(null);
   const [showEditVideoModal, setShowEditVideoModal] = useState(false);
   const [currentVideo, setCurrentVideo] = useState(null);
+  const [showEditFolderModal, setShowEditFolderModal] = useState(false);
+  const [currentFolder, setCurrentFolder] = useState(null);
   const [showNewFolderModal, setShowNewFolderModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
   const token = localStorage.getItem('token');
