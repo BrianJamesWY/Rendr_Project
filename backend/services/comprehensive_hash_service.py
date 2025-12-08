@@ -181,20 +181,6 @@ class ComprehensiveHashService:
         except Exception as e:
             print(f"⚠️ SHA-256 calculation error: {e}")
             return "error"
-
-                    "audio_sample_rate": audio_stream.get('sample_rate', 0) if audio_stream else 0,
-                    "audio_channels": audio_stream.get('channels', 0) if audio_stream else 0,
-                    "tags": data.get('format', {}).get('tags', {})
-                }
-                
-                return metadata
-            else:
-                print(f"⚠️ ffprobe failed: {result.stderr}")
-                return {}
-                
-        except Exception as e:
-            print(f"⚠️ Metadata extraction error: {e}")
-            return {}
     
     def _parse_fps(self, fps_str: str) -> float:
         """Parse FPS from fraction string"""
