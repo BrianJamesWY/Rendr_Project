@@ -512,6 +512,19 @@ async def upload_video(
         await db.videos.insert_one(video_doc)
         print("   ✅ Saved to database")
         
+        # STEP 9B: Queue comprehensive background processing
+        print("\n🚀 STEP 9B: Queuing background processing...")
+        async_video_processor.queue_video_processing(
+            video_id=video_id,
+            video_path=final_path,
+            original_path=file_path if not watermark_success else None,
+            verification_code=verification_code,
+            tier=tier,
+            user_id=current_user["user_id"]
+        )
+        print("   ✅ Background job queued (perceptual hashing, C2PA, blockchain)")
+        print("   ⏱️ Estimated completion: 30-60 seconds")
+        
         # STEP 10: Send notification (if applicable)
         print("\n📧 STEP 10: Checking notification preferences...")
         
