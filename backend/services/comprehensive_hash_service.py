@@ -34,15 +34,19 @@ class ComprehensiveHashService:
         self, 
         video_path: str,
         verification_code: str,
-        tier: str = "free"
+        tier: str = "free",
+        original_video_path: str = None,
+        is_watermarked: bool = False
     ) -> Dict:
         """
         Calculate all hash layers for comprehensive verification
         
         Args:
-            video_path: Path to video file
+            video_path: Path to video file (watermarked)
             verification_code: Generated verification code
             tier: User tier (affects hash depth)
+            original_video_path: Path to original (pre-watermark) video
+            is_watermarked: Whether this video has watermark applied
             
         Returns:
             Complete hash package with all layers
@@ -55,6 +59,10 @@ class ComprehensiveHashService:
             "verification_code": verification_code,
             "tier": tier,
             "timestamp": datetime.now(timezone.utc).isoformat(),
+            
+            # SHA-256 Hashes (BOTH versions)
+            "original_sha256": None,
+            "watermarked_sha256": None,
             
             # Layer 1: Key Frame Exact Hashes
             "key_frame_hashes": [],
@@ -74,6 +82,16 @@ class ComprehensiveHashService:
             # Combined signature
             "master_hash": None
         }
+        
+        # Calculate original SHA-256 if provided
+        if original_video_path and os.path.exists(original_video_path):
+            result["original_sha256"] = self._calculate_file_sha256(original_video_path)
+            print(f"✅ Original SHA-256: {result['original_sha256'][:32]}...")
+        
+        # Calculate watermarked SHA-256
+        if is_watermarked:
+            result["watermarked_sha256"] = self._calculate_file_sha256(video_path)
+            print(f"✅ Watermarked SHA-256: {result['watermarked_sha256'][:32]}...")
         
         # Get video properties first
         metadata = self._extract_video_metadata(video_path)
