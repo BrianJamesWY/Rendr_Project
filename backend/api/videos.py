@@ -555,19 +555,33 @@ async def upload_video(
             "video_id": video_id,
             "verification_code": verification_code,
             "status": "success",
-            "message": "Video uploaded and verified successfully",
+            "message": "Video uploaded and verified successfully with C2PA manifest",
             "watermarked_video_url": f"/api/videos/watch/{video_id}",
             "thumbnail_url": f"/api/videos/{video_id}/thumbnail",
             "hashes": {
-                "original_sha256": original_sha256,
-                "watermarked_sha256": watermarked_sha256,
-                "key_frame_count": len(key_frame_hashes)
+                "original_sha256": comprehensive_hashes.get('original_sha256', 'N/A')[:64] if comprehensive_hashes.get('original_sha256') else 'N/A',
+                "watermarked_sha256": comprehensive_hashes.get('watermarked_sha256', 'N/A')[:64] if comprehensive_hashes.get('watermarked_sha256') else 'N/A',
+                "key_frame_count": len(comprehensive_hashes.get('key_frame_hashes', [])),
+                "perceptual_hash_count": len(comprehensive_hashes.get('perceptual_hashes', [])),
+                "master_hash": comprehensive_hashes.get('master_hash', 'N/A')[:64] if comprehensive_hashes.get('master_hash') else 'N/A'
+            },
+            "c2pa": {
+                "manifest_created": True,
+                "manifest_path": c2pa_manifest_path
             },
             "processing_status": {
-                "stage": "watermark_complete",
-                "progress": 30,
-                "message": "Background processing started (perceptual hashes, C2PA, blockchain)",
-                "eta": "30-60 seconds"
+                "stage": "complete",
+                "progress": 100,
+                "message": "All verification layers complete (SHA-256, pHash, audio, metadata, C2PA)",
+                "verification_layers": [
+                    "Original SHA-256",
+                    "Watermarked SHA-256", 
+                    "Key Frame Hashes",
+                    "Perceptual Hashes" if tier in ["pro", "enterprise"] else None,
+                    "Audio Hash" if tier == "enterprise" else None,
+                    "Metadata Hash",
+                    "C2PA Manifest"
+                ]
             },
             "expires_at": expires_at.isoformat() if expires_at else None,
             "storage_duration": f"{duration_hours} hours" if duration_hours else "unlimited",
