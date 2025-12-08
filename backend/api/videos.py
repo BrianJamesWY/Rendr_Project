@@ -382,10 +382,15 @@ async def upload_video(
         final_path = f"{upload_dir}/{video_id}.mp4"
         os.rename(final_video_path, final_path)
         
-        # STEP 5: Calculate watermarked hash
-        print("\n🔐 STEP 5: Calculating watermarked hash...")
-        watermarked_hashes = enhanced_processor.calculate_all_hashes(final_path, tier)
-        print(f"   ✅ Watermarked hash: {watermarked_hashes['original_hash'][:32]}...")
+        # STEP 5: Calculate WATERMARKED SHA-256
+        print("\n🔐 STEP 5: Calculating watermarked SHA-256...")
+        watermarked_sha256 = comprehensive_hash_service._calculate_file_sha256(final_path)
+        print(f"   ✅ Watermarked SHA-256: {watermarked_sha256[:32]}...")
+        
+        # Extract 10 key frames for exact matching
+        print("   🔑 Extracting key frame hashes...")
+        key_frame_hashes = comprehensive_hash_service._calculate_key_frame_hashes(final_path)
+        print(f"   ✅ Key frames: {len(key_frame_hashes)}/10")
         
         # STEP 6: Generate thumbnail
         print("\n📸 STEP 6: Generating thumbnail...")
