@@ -756,3 +756,43 @@ async def download_video(
         media_type="video/mp4",
         filename=f"{video['verification_code']}.mp4"
     )
+
+
+@router.post("/{video_id}/thumbnail")
+async def upload_video_thumbnail(
+    video_id: str,
+    file: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload custom thumbnail for video"""
+    video = await db.videos.find_one({"id": video_id}, {"_id": 0})
+    if not video:
+        video = await db.videos.find_one({"_id": video_id}, {"_id": 0})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video["user_id"] != current_user["user_id"]:
+        raise HTTPException(403, "Access denied")
+    
+    # Save thumbnail
+    upload_dir = "/app/backend/uploads/thumbnails"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    file_path = f"{upload_dir}/{video_id}.jpg"
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    thumbnail_url = f"uploads/thumbnails/{video_id}.jpg"
+    
+    # Update video
+    id_field = "id" if video.get("id") else "_id"
+    await db.videos.update_one(
+        {id_field: video_id},
+        {"$set": {"thumbnail_path": thumbnail_url}}
+    )
+    
+    return {"thumbnail_url": thumbnail_url, "message": "Thumbnail uploaded successfully"}
+
