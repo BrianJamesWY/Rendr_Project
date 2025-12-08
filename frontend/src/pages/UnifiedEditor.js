@@ -586,24 +586,98 @@ function UnifiedEditor() {
           {/* Folders Tab */}
           {activeTab === 'folders' && (
             <div>
-              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>Folder Management</h2>
-              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>Organize your content into folders</p>
-              <div style={{ border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '1rem', marginBottom: '1rem' }}>
-                <div style={{ fontWeight: '600', marginBottom: '0.5rem', cursor: 'pointer' }}>📁 All Videos</div>
-                <div style={{ paddingLeft: '1rem', fontSize: '0.875rem' }}>
-                  <div style={{ padding: '0.5rem 0', cursor: 'pointer' }}>🎬 Tutorials</div>
-                  <div style={{ padding: '0.5rem 0', cursor: 'pointer' }}>🎥 Behind Scenes</div>
-                  <div style={{ padding: '0.5rem 0', cursor: 'pointer' }}>💎 Premium Content</div>
-                  <div style={{ padding: '0.5rem 0', cursor: 'pointer' }}>📚 Courses</div>
-                </div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>Folders & Content</h2>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>Organize your videos and folders</p>
+              
+              {/* Directory Tree - No Folder Icons */}
+              <div style={{ marginBottom: '1.5rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', padding: '1rem', background: '#fafafa' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.75rem', color: '#374151' }}>
+                  Content Structure
+                </label>
+                <DirectoryTree
+                  username={localStorage.getItem('rendr_username')}
+                  selectedItemId={selectedTreeItem?.id}
+                  onItemSelect={(item) => {
+                    setSelectedTreeItem(item);
+                    if (item) {
+                      setContentName(item.name || item.title || '');
+                      setContentDescription(item.description || '');
+                      setAccessLevel(item.access_level || 'Public (Free)');
+                    }
+                  }}
+                  onTreeUpdate={loadProfile}
+                  containerHeight="300px"
+                  showLayoutToggle={false}
+                />
               </div>
+              
+              {/* Name Field (below tree) */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>Folder Name</label>
-                <input type="text" placeholder="Enter folder name" style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Name
+                </label>
+                <input 
+                  type="text" 
+                  value={contentName}
+                  onChange={(e) => setContentName(e.target.value)}
+                  placeholder={selectedTreeItem ? "Enter name" : "Select an item from the tree above"}
+                  disabled={!selectedTreeItem}
+                  style={{ 
+                    width: '100%', 
+                    padding: '0.75rem', 
+                    border: '1px solid #e5e7eb', 
+                    borderRadius: '0.5rem', 
+                    fontSize: '0.875rem',
+                    background: selectedTreeItem ? 'white' : '#f9fafb',
+                    cursor: selectedTreeItem ? 'text' : 'not-allowed'
+                  }} 
+                />
               </div>
+              
+              {/* Description Field (above name as per requirement) */}
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>Access Level</label>
-                <select style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.875rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Description
+                </label>
+                <textarea 
+                  value={contentDescription}
+                  onChange={(e) => setContentDescription(e.target.value)}
+                  placeholder={selectedTreeItem ? "Enter description" : "Select an item from the tree above"}
+                  disabled={!selectedTreeItem}
+                  rows={3}
+                  style={{ 
+                    width: '100%', 
+                    padding: '0.75rem', 
+                    border: '1px solid #e5e7eb', 
+                    borderRadius: '0.5rem', 
+                    fontSize: '0.875rem',
+                    background: selectedTreeItem ? 'white' : '#f9fafb',
+                    cursor: selectedTreeItem ? 'text' : 'not-allowed',
+                    resize: 'vertical',
+                    fontFamily: 'inherit'
+                  }} 
+                />
+              </div>
+              
+              {/* Access Level Dropdown */}
+              <div style={{ marginBottom: '1.5rem' }}>
+                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
+                  Access Level
+                </label>
+                <select 
+                  value={accessLevel}
+                  onChange={(e) => setAccessLevel(e.target.value)}
+                  disabled={!selectedTreeItem}
+                  style={{ 
+                    width: '100%', 
+                    padding: '0.75rem', 
+                    border: '1px solid #e5e7eb', 
+                    borderRadius: '0.5rem', 
+                    fontSize: '0.875rem',
+                    background: selectedTreeItem ? 'white' : '#f9fafb',
+                    cursor: selectedTreeItem ? 'pointer' : 'not-allowed'
+                  }}
+                >
                   <option>Public (Free)</option>
                   <option>Subscribers Only</option>
                   <option>Premium Tier 1 ($4.99)</option>
@@ -611,7 +685,53 @@ function UnifiedEditor() {
                   <option>Premium Tier 3 ($19.99)</option>
                 </select>
               </div>
-              <button onClick={() => alert('Folder saved!')} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '0.5rem', fontWeight: '600', cursor: 'pointer', fontSize: '1rem' }}>💾 Save Folder</button>
+              
+              {/* Save Button */}
+              <button 
+                onClick={async () => {
+                  if (!selectedTreeItem) {
+                    alert('Please select an item from the tree first');
+                    return;
+                  }
+                  
+                  try {
+                    const token = localStorage.getItem('token');
+                    const updateData = {
+                      name: contentName,
+                      description: contentDescription,
+                      access_level: accessLevel
+                    };
+                    
+                    const endpoint = selectedTreeItem.type === 'folder' 
+                      ? `/api/folders/${selectedTreeItem.id}`
+                      : `/api/videos/${selectedTreeItem.id}`;
+                    
+                    await axios.put(`${BACKEND_URL}${endpoint}`, updateData, {
+                      headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    alert('Changes saved successfully!');
+                    loadProfile();
+                  } catch (error) {
+                    console.error('Save error:', error);
+                    alert('Failed to save changes');
+                  }
+                }}
+                disabled={!selectedTreeItem}
+                style={{ 
+                  width: '100%', 
+                  padding: '0.75rem', 
+                  background: selectedTreeItem ? 'linear-gradient(135deg, #667eea, #764ba2)' : '#d1d5db',
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '0.5rem', 
+                  fontWeight: '600', 
+                  cursor: selectedTreeItem ? 'pointer' : 'not-allowed', 
+                  fontSize: '1rem'
+                }}
+              >
+                💾 Save Changes
+              </button>
             </div>
           )}
 
