@@ -1,7 +1,9 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from typing import List
 import uuid
 from datetime import datetime
+import os
+import shutil
 
 from models.folder import FolderCreate, FolderUpdate, FolderResponse
 from utils.security import get_current_user
