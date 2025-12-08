@@ -527,10 +527,11 @@ async def upload_video(
         # STEP 11: Send notification (if applicable)
         print("\n📧 STEP 11: Checking notification preferences...")
         
-        should_notify = original_hashes['duration'] >= user.get('notify_video_length_threshold', 30)
+        video_duration = comprehensive_hashes['video_metadata'].get('duration', 0)
+        should_notify = video_duration >= user.get('notify_video_length_threshold', 30)
         
         if should_notify:
-            print(f"   📧 Video length ({original_hashes['duration']}s) exceeds threshold - sending notification")
+            print(f"   📧 Video length ({video_duration}s) exceeds threshold - sending notification")
             
             download_url = f"https://videoproof-1.preview.emergentagent.com/dashboard?video={video_id}"
             
@@ -538,13 +539,13 @@ async def upload_video(
                 user=user,
                 verification_code=verification_code,
                 download_url=download_url,
-                video_duration=original_hashes['duration']
+                video_duration=video_duration
             )
             
             print(f"   📧 Email sent: {notification_results.get('email', False)}")
             print(f"   📱 SMS sent: {notification_results.get('sms', False)}")
         else:
-            print(f"   ℹ️ Video too short ({original_hashes['duration']}s < threshold) - skipping notification")
+            print(f"   ℹ️ Video too short ({video_duration}s < threshold) - skipping notification")
         
         print(f"\n{'='*60}")
         print("✅ UPLOAD COMPLETE")
