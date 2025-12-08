@@ -842,21 +842,150 @@ function UnifiedEditor() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem', background: '#f9fafb', borderRadius: '0.5rem', minHeight: '600px' }}>
-            <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden', width: devicePreview === 'mobile' ? '375px' : devicePreview === 'tablet' ? '768px' : '100%', maxWidth: '100%' }}>
-              <div style={{ height: '150px', ...getBackgroundStyle(), backgroundSize: 'cover', backgroundPosition: 'center' }} />
-              <div style={{ padding: '2rem', textAlign: 'center' }}>
-                <div style={getProfileShapeStyle()}>
-                  {!profilePic && <span style={{ fontSize: '2rem' }}>👤</span>}
+            {/* Folders Tab - Show selected item preview */}
+            {activeTab === 'folders' && selectedTreeItem ? (
+              <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden', width: '100%', maxWidth: '600px', padding: '2rem' }}>
+                <div style={{ marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '2px solid #f0f0f0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                    <div style={{ 
+                      width: '48px', 
+                      height: '48px', 
+                      background: selectedTreeItem.type === 'folder' ? '#667eea' : '#764ba2',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '24px'
+                    }}>
+                      {selectedTreeItem.type === 'folder' ? '📁' : '🎥'}
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '12px', color: '#999', textTransform: 'uppercase', fontWeight: '600', letterSpacing: '0.5px' }}>
+                        {selectedTreeItem.type === 'folder' ? 'Folder Preview' : 'Video Preview'}
+                      </div>
+                      <div style={{ fontSize: '18px', fontWeight: '700', color: '#111' }}>
+                        {contentName || selectedTreeItem.name || selectedTreeItem.title || 'Untitled'}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {selectedTreeItem.type === 'video' && selectedTreeItem.thumbnail_path && (
+                    <div style={{ 
+                      width: '100%', 
+                      height: '250px', 
+                      background: `url(${BACKEND_URL}${selectedTreeItem.thumbnail_path}) center/cover`,
+                      borderRadius: '8px',
+                      marginBottom: '12px',
+                      position: 'relative'
+                    }}>
+                      <div style={{
+                        position: 'absolute',
+                        top: '12px',
+                        right: '12px',
+                        background: 'rgba(0,0,0,0.7)',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '12px',
+                        fontWeight: '600'
+                      }}>
+                        {selectedTreeItem.verification_code || 'N/A'}
+                      </div>
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '12px',
+                        left: '12px',
+                        background: 'rgba(0,0,0,0.7)',
+                        color: 'white',
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                        fontSize: '11px'
+                      }}>
+                        {selectedTreeItem.video_metadata?.duration ? `${Math.round(selectedTreeItem.video_metadata.duration)}s` : 'Video'}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Your Name</h3>
-                <p style={{ color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }}>{bioText || 'Your bio text will appear here...'}</p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '20px', flexWrap: 'wrap' }}>
-                  {socialLinks.filter(link => link.url).map((link, index) => (
-                    <span key={index} style={{ fontSize: '24px' }}>{link.icon}</span>
-                  ))}
+                
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#666', marginBottom: '6px' }}>Description</div>
+                  <div style={{ fontSize: '14px', color: '#333', lineHeight: '1.6' }}>
+                    {contentDescription || selectedTreeItem.description || 'No description provided.'}
+                  </div>
+                </div>
+                
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ fontSize: '13px', fontWeight: '600', color: '#666', marginBottom: '6px' }}>Access Level</div>
+                  <div style={{ 
+                    display: 'inline-block',
+                    padding: '6px 12px', 
+                    background: accessLevel === 'Public (Free)' ? '#e0f2fe' : '#fef3c7',
+                    color: accessLevel === 'Public (Free)' ? '#0369a1' : '#92400e',
+                    borderRadius: '6px',
+                    fontSize: '13px',
+                    fontWeight: '600'
+                  }}>
+                    {accessLevel}
+                  </div>
+                </div>
+                
+                {selectedTreeItem.type === 'video' && (
+                  <div style={{ marginTop: '20px', padding: '16px', background: '#f8fafc', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: '600', color: '#666', marginBottom: '8px' }}>Video Details</div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '13px' }}>
+                      <div>
+                        <span style={{ color: '#999' }}>Resolution:</span>{' '}
+                        <span style={{ fontWeight: '600' }}>{selectedTreeItem.video_metadata?.resolution || 'N/A'}</span>
+                      </div>
+                      <div>
+                        <span style={{ color: '#999' }}>FPS:</span>{' '}
+                        <span style={{ fontWeight: '600' }}>{selectedTreeItem.video_metadata?.fps || 'N/A'}</span>
+                      </div>
+                      <div>
+                        <span style={{ color: '#999' }}>Format:</span>{' '}
+                        <span style={{ fontWeight: '600' }}>MP4</span>
+                      </div>
+                      <div>
+                        <span style={{ color: '#999' }}>Status:</span>{' '}
+                        <span style={{ fontWeight: '600', color: '#10b981' }}>✓ Verified</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : activeTab === 'folders' ? (
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: '#999',
+                fontSize: '16px'
+              }}>
+                <div style={{ fontSize: '64px', marginBottom: '16px' }}>📂</div>
+                <div style={{ fontWeight: '600', marginBottom: '8px' }}>No Item Selected</div>
+                <div style={{ fontSize: '14px', textAlign: 'center', maxWidth: '300px' }}>
+                  Select a folder or video from the directory tree to see a live preview here
                 </div>
               </div>
-            </div>
+            ) : (
+              /* Profile preview for other tabs */
+              <div style={{ background: 'white', borderRadius: '0.5rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', overflow: 'hidden', width: devicePreview === 'mobile' ? '375px' : devicePreview === 'tablet' ? '768px' : '100%', maxWidth: '100%' }}>
+                <div style={{ height: '150px', ...getBackgroundStyle(), backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                <div style={{ padding: '2rem', textAlign: 'center' }}>
+                  <div style={getProfileShapeStyle()}>
+                    {!profilePic && <span style={{ fontSize: '2rem' }}>👤</span>}
+                  </div>
+                  <h3 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>Your Name</h3>
+                  <p style={{ color: '#6b7280', marginBottom: '1rem', fontSize: '0.875rem' }}>{bioText || 'Your bio text will appear here...'}</p>
+                  <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '20px', flexWrap: 'wrap' }}>
+                    {socialLinks.filter(link => link.url).map((link, index) => (
+                      <span key={index} style={{ fontSize: '24px' }}>{link.icon}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
