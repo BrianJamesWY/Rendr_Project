@@ -473,43 +473,36 @@ async def upload_video(
             "source": source,
             "uploaded_at": uploaded_at,
             
+            # Comprehensive hash package from new verification system
+            "comprehensive_hashes": comprehensive_hashes,
+            
             # SHA-256 Hashes (BOTH versions - NEW DUAL HASH SYSTEM)
             "hashes": {
-                "original_sha256": original_sha256,
-                "watermarked_sha256": watermarked_sha256,
-                "key_frame_hashes": key_frame_hashes,
-                "metadata_hash": None  # Will be calculated in background
+                "original_sha256": comprehensive_hashes.get('original_sha256'),
+                "watermarked_sha256": comprehensive_hashes.get('watermarked_sha256'),
+                "key_frame_hashes": comprehensive_hashes.get('key_frame_hashes', []),
+                "metadata_hash": comprehensive_hashes.get('metadata_hash'),
+                "master_hash": comprehensive_hashes.get('master_hash')
             },
             
-            # Perceptual hashes (calculated in background)
+            # Perceptual hashes from comprehensive service
             "perceptual_hashes": {
-                "video_phashes": [],  # Will be populated async
-                "audio_hash": None,    # Will be calculated async
-                "center_region_hash": None
+                "video_phashes": comprehensive_hashes.get('perceptual_hashes', []),
+                "audio_hash": comprehensive_hashes.get('audio_hash'),
+                "center_region_hash": None  # Legacy field
             },
             
-            # Master hash (will be calculated after all hashes complete)
-            "master_hash": None,
-            
-            # C2PA Manifest (generated in background)
+            # C2PA Manifest
             "c2pa_manifest": {
-                "manifest_path": None,
+                "manifest_path": c2pa_manifest_path,
                 "signature_valid": None,
                 "hard_binding_valid": None,
                 "issuer": "RENDR",
-                "created_at": None
+                "created_at": datetime.now(timezone.utc),
+                "manifest_data": c2pa_manifest_data
             },
             
-            # Enhanced hashes (legacy - for compatibility)
-            "hashes": {
-                "original": original_hashes['original_hash'],
-                "watermarked": watermarked_hashes['original_hash'],
-                "center_region": original_hashes.get('center_region_hash'),
-                "audio": original_hashes.get('audio_hash'),
-                "metadata": original_hashes['metadata_hash']
-            },
-            
-            # Storage management (NEW)
+            # Storage management
             "storage": {
                 "tier": tier,
                 "uploaded_at": uploaded_at,
@@ -518,21 +511,14 @@ async def upload_video(
                 "download_count": 0
             },
             
-            # Legacy fields (keep for compatibility)
-            "perceptual_hash": {
-                "combined_hash": original_hashes['original_hash']
-            },
-            "video_metadata": {
-                "duration": original_hashes['duration'],
-                "frame_count": original_hashes['frame_count'],
-                "resolution": original_hashes['resolution']
-            },
+            # Video metadata from comprehensive service
+            "video_metadata": comprehensive_hashes.get('video_metadata', {}),
             "thumbnail_path": thumbnail_path,
             "folder_id": folder_id,
-            "showcase_folder_id": folder_id,  # NEW: Also set showcase folder
+            "showcase_folder_id": folder_id,
             "blockchain_signature": blockchain_data,
             "verification_status": "verified",
-            "is_public": True  # NEW: Default to public for showcase
+            "is_public": True
         }
         
         await db.videos.insert_one(video_doc)
