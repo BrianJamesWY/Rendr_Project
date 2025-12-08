@@ -1,6 +1,7 @@
 """
 C2PA (Coalition for Content Provenance and Authenticity) Service
 Creates and verifies C2PA manifests for video authentication
+Using official c2pa-python library
 """
 
 import json
@@ -9,6 +10,16 @@ import base64
 from typing import Dict, Optional
 from datetime import datetime, timezone
 import os
+
+# Try to import c2pa library
+try:
+    import c2pa
+    from c2pa import Builder, Reader
+    C2PA_AVAILABLE = True
+    print("✅ C2PA library loaded successfully")
+except ImportError:
+    C2PA_AVAILABLE = False
+    print("⚠️ C2PA library not available, using fallback mode")
 
 class C2PAService:
     """
