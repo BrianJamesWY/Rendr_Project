@@ -152,6 +152,19 @@ class ComprehensiveHashService:
                     "resolution": f"{video_stream.get('width', 0)}x{video_stream.get('height', 0)}",
                     "fps": self._parse_fps(video_stream.get('r_frame_rate', '30/1')),
                     "audio_codec": audio_stream.get('codec_long_name', 'none') if audio_stream else 'none',
+                    "audio_sample_rate": audio_stream.get('sample_rate', 0) if audio_stream else 0,
+                    "audio_channels": audio_stream.get('channels', 0) if audio_stream else 0,
+                    "tags": data.get('format', {}).get('tags', {})
+                }
+                
+                return metadata
+            else:
+                print(f"⚠️ ffprobe failed: {result.stderr}")
+                return {}
+                
+        except Exception as e:
+            print(f"⚠️ Metadata extraction error: {e}")
+            return {}
 
     
     def _calculate_file_sha256(self, file_path: str) -> str:
