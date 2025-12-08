@@ -651,8 +651,10 @@ function Dashboard() {
   );
 }
 
-// Edit Video Modal Component
-function EditVideoModal({ video, folders, socialPlatforms, onClose, onSave, token, onFolderCreated }) {
+// Removed old EditVideoModal - now using component from /components/EditVideoModal.js
+
+// Placeholder function (to be removed)
+function OldEditVideoModalRemoved() {
   const [title, setTitle] = useState(video.title || '');
   const [description, setDescription] = useState(video.description || '');
   const [folderId, setFolderId] = useState(video.folder_id || '');
