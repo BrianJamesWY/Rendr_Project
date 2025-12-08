@@ -446,14 +446,14 @@ async def upload_video(
         # STEP 9: Blockchain (optional)
         blockchain_data = None
         try:
-            print("\n⛓️ STEP 8: Blockchain timestamping...")
+            print("\n⛓️ STEP 9: Blockchain timestamping...")
             blockchain_data = blockchain_service.timestamp_video(
                 video_id=video_id,
                 verification_code=verification_code,
-                video_hash=original_hashes['original_hash'],
+                video_hash=comprehensive_hashes['master_hash'],
                 metadata={
-                    "duration": original_hashes['duration'],
-                    "resolution": original_hashes['resolution'],
+                    "duration": comprehensive_hashes['video_metadata'].get('duration', 0),
+                    "resolution": comprehensive_hashes['video_metadata'].get('resolution', ''),
                     "tier": tier
                 }
             )
@@ -462,8 +462,8 @@ async def upload_video(
         except Exception as e:
             print(f"   ⚠️ Blockchain failed: {e}")
         
-        # STEP 9: Save to database
-        print("\n💾 STEP 9: Saving to database...")
+        # STEP 10: Save to database
+        print("\n💾 STEP 10: Saving to database...")
         
         video_doc = {
             "_id": video_id,
