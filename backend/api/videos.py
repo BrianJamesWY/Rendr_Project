@@ -758,6 +758,34 @@ async def delete_video(
     db = Depends(get_db)
 ):
     """Delete a video"""
+
+
+@router.get("/{video_id}/processing-status")
+async def get_processing_status(
+    video_id: str,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Get current processing status for a video"""
+    # Verify ownership
+    video = await db.videos.find_one({"id": video_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video["user_id"] != current_user["user_id"]:
+        raise HTTPException(403, "Access denied")
+    
+    # Get status from async processor
+    status = async_video_processor.get_processing_status(video_id)
+    
+    # If no status in cache, check database
+    if status.get("status") == "unknown":
+        db_status = video.get("processing_status", {})
+        if db_status:
+            status = db_status
+    
+    return status
+
     # Check both 'id' and '_id' fields for compatibility with old videos
     video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
     
