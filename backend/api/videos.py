@@ -288,11 +288,13 @@ async def upload_video(
         print(f"   Tier: {tier}")
         print(f"   Quota: {active_count + 1}/{limit if limit != -1 else 'unlimited'}")
         
-        # STEP 1: Calculate ORIGINAL hash (pre-watermark)
-        print("\n🔍 STEP 1: Calculating original hash (pre-watermark)...")
-        original_hashes = enhanced_processor.calculate_all_hashes(file_path, tier)
+        # STEP 1: Calculate ORIGINAL SHA-256 (pre-watermark) 
+        print("\n🔍 STEP 1: Calculating original SHA-256 (pre-watermark)...")
+        original_sha256 = comprehensive_hash_service._calculate_file_sha256(file_path)
+        print(f"   ✅ Original SHA-256: {original_sha256[:32]}...")
         
-        print(f"   ✅ Original hash: {original_hashes['original_hash'][:32]}...")
+        # Also get basic metadata for quota/duplicate check
+        original_hashes = enhanced_processor.calculate_all_hashes(file_path, tier)
         print(f"   ✅ Duration: {original_hashes['duration']}s")
         print(f"   ✅ Frames: {original_hashes['frame_count']}")
         
