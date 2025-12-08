@@ -245,17 +245,60 @@ class C2PAService:
         except:
             return ""
     
+    def read_c2pa_from_file(self, video_path: str) -> Optional[Dict]:
+        """
+        Read C2PA manifest from video file using official library
+        
+        Args:
+            video_path: Path to video file with embedded C2PA
+            
+        Returns:
+            Manifest dict or None if not found
+        """
+        if not C2PA_AVAILABLE:
+            print("⚠️ C2PA library not available")
+            return None
+        
+        try:
+            # Use C2PA Reader to extract manifest
+            reader = Reader(video_path)
+            manifest_store = reader.get_manifest_store()
+            
+            if manifest_store:
+                print(f"✅ C2PA manifest found in {video_path}")
+                return manifest_store
+            else:
+                print(f"ℹ️ No C2PA manifest found in {video_path}")
+                return None
+                
+        except Exception as e:
+            print(f"⚠️ Error reading C2PA manifest: {e}")
+            return None
+    
     def verify_manifest(self, manifest_path: str) -> Dict:
         """
         Verify C2PA manifest
         
         Args:
-            manifest_path: Path to .c2pa manifest file
+            manifest_path: Path to .c2pa manifest file or video file
             
         Returns:
             Verification result
         """
         try:
+            # If it's a video file and c2pa library is available, try reading embedded manifest
+            if C2PA_AVAILABLE and (manifest_path.endswith('.mp4') or manifest_path.endswith('.mov')):
+                manifest_store = self.read_c2pa_from_file(manifest_path)
+                if manifest_store:
+                    return {
+                        "valid": True,
+                        "manifest_present": True,
+                        "claim_generator": "C2PA",
+                        "source": "embedded",
+                        "manifest_store": manifest_store
+                    }
+            
+            # Fall back to reading .c2pa sidecar file
             with open(manifest_path, 'r') as f:
                 manifest = json.load(f)
             
@@ -265,6 +308,7 @@ class C2PAService:
                 "manifest_present": True,
                 "claim_generator": manifest.get("claim_generator"),
                 "verification_code": None,
+                "source": "sidecar",
                 "issues": []
             }
             
