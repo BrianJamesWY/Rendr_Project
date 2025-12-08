@@ -212,11 +212,14 @@ class VideoVerificationTester:
                 
                 # Verify hash structure in database
                 hashes = uploaded_video.get("hashes", {})
-                hash_fields = ["original_sha256", "watermarked_sha256", "key_frame_hashes"]
                 
-                hash_checks = {}
-                for field in hash_fields:
-                    hash_checks[field] = hashes.get(field) is not None
+                # Check required hash fields (original_sha256 may be null for reused files)
+                hash_checks = {
+                    "watermarked_sha256": hashes.get("watermarked_sha256") is not None,
+                    "key_frame_hashes": isinstance(hashes.get("key_frame_hashes"), list) and len(hashes.get("key_frame_hashes", [])) == 10,
+                    "metadata_hash": hashes.get("metadata_hash") is not None,
+                    "master_hash": hashes.get("master_hash") is not None
+                }
                 
                 if all(hash_checks.values()):
                     details = f"Database document verified. Fields present: {list(hash_checks.keys())}"
