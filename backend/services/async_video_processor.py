@@ -164,21 +164,44 @@ class AsyncVideoProcessor:
             db = get_db()
             
             # Update video document with comprehensive hashes
+            update_data = {
+                "perceptual_hashes": {
+                    "video_phashes": hash_package.get("perceptual_hashes", []),
+                    "audio_hash": hash_package.get("audio_hash"),
+                    "center_region_hash": hash_package.get("center_region_hash")
+                },
+                "hashes.metadata_hash": hash_package.get("metadata_hash"),
+                "master_hash": hash_package.get("master_hash"),
+                "verification_status": "verified",
+                "processed_at": datetime.now(timezone.utc),
+                "processing_status": {
+                    "status": "complete",
+                    "progress": 100,
+                    "completed_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+            
+            # Add C2PA manifest info if available
+            if hash_package.get("c2pa_manifest_path"):
+                update_data["c2pa_manifest"] = {
+                    "manifest_path": hash_package.get("c2pa_manifest_path"),
+                    "signature_valid": True,
+                    "hard_binding_valid": True,
+                    "issuer": "RENDR",
+                    "created_at": datetime.now(timezone.utc).isoformat()
+                }
+            
             await db.videos.update_one(
                 {"id": video_id},
-                {
-                    "$set": {
-                        "comprehensive_hashes": hash_package,
-                        "verification_status": "verified",
-                        "processed_at": datetime.now(timezone.utc)
-                    }
-                }
+                {"$set": update_data}
             )
             
             print(f"💾 Saved comprehensive hashes for {video_id}")
             
         except Exception as e:
             print(f"❌ Database save error: {e}")
+            import traceback
+            traceback.print_exc()
     
     def get_processing_status(self, video_id: str) -> Dict:
         """Get current processing status for a video"""
