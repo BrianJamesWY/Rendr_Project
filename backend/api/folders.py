@@ -181,3 +181,75 @@ async def delete_folder(
     await db.folders.delete_one({"_id": folder_id})
     
     return {"message": "Folder deleted successfully"}
+
+
+@router.post("/{folder_id}/thumbnail")
+async def upload_folder_thumbnail(
+    folder_id: str,
+    file: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload thumbnail for folder"""
+    folder = await db.folders.find_one({"_id": folder_id})
+    
+    if not folder:
+        raise HTTPException(404, "Folder not found")
+    
+    if folder["username"] != current_user.get("username"):
+        raise HTTPException(403, "Access denied")
+    
+    # Save thumbnail
+    upload_dir = "/app/backend/uploads/thumbnails"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    file_path = f"{upload_dir}/folder_{folder_id}.jpg"
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    thumbnail_url = f"uploads/thumbnails/folder_{folder_id}.jpg"
+    
+    # Update folder
+    await db.folders.update_one(
+        {"_id": folder_id},
+        {"$set": {"thumbnail_url": thumbnail_url}}
+    )
+    
+    return {"thumbnail_url": thumbnail_url, "message": "Thumbnail uploaded successfully"}
+
+@router.post("/{folder_id}/background")
+async def upload_folder_background(
+    folder_id: str,
+    file: UploadFile = File(...),
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Upload background image for folder"""
+    folder = await db.folders.find_one({"_id": folder_id})
+    
+    if not folder:
+        raise HTTPException(404, "Folder not found")
+    
+    if folder["username"] != current_user.get("username"):
+        raise HTTPException(403, "Access denied")
+    
+    # Save background
+    upload_dir = "/app/backend/uploads/backgrounds"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    file_path = f"{upload_dir}/folder_{folder_id}.jpg"
+    
+    with open(file_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+    
+    background_url = f"uploads/backgrounds/folder_{folder_id}.jpg"
+    
+    # Update folder background
+    await db.folders.update_one(
+        {"_id": folder_id},
+        {"$set": {"background.imageUrl": background_url}}
+    )
+    
+    return {"background_url": background_url, "message": "Background uploaded successfully"}
+
