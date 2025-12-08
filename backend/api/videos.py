@@ -382,15 +382,20 @@ async def upload_video(
         final_path = f"{upload_dir}/{video_id}.mp4"
         os.rename(final_video_path, final_path)
         
-        # STEP 5: Calculate WATERMARKED SHA-256
-        print("\n🔐 STEP 5: Calculating watermarked SHA-256...")
-        watermarked_sha256 = comprehensive_hash_service._calculate_file_sha256(final_path)
-        print(f"   ✅ Watermarked SHA-256: {watermarked_sha256[:32]}...")
-        
-        # Extract 10 key frames for exact matching
-        print("   🔑 Extracting key frame hashes...")
-        key_frame_hashes = comprehensive_hash_service._calculate_key_frame_hashes(final_path)
-        print(f"   ✅ Key frames: {len(key_frame_hashes)}/10")
+        # STEP 5: Calculate ALL hashes using comprehensive service
+        print("\n🔐 STEP 5: Calculating comprehensive hashes...")
+        comprehensive_hashes = comprehensive_hash_service.calculate_all_hashes(
+            video_path=final_path,
+            verification_code=verification_code,
+            tier=tier,
+            original_video_path=file_path if not watermark_success else None,
+            is_watermarked=watermark_success
+        )
+        print(f"   ✅ All hashes calculated")
+        print(f"   ✅ Original SHA-256: {comprehensive_hashes['original_sha256'][:32] if comprehensive_hashes['original_sha256'] else 'N/A'}...")
+        print(f"   ✅ Watermarked SHA-256: {comprehensive_hashes['watermarked_sha256'][:32] if comprehensive_hashes['watermarked_sha256'] else 'N/A'}...")
+        print(f"   ✅ Key frames: {len(comprehensive_hashes['key_frame_hashes'])}/10")
+        print(f"   ✅ Perceptual hashes: {len(comprehensive_hashes['perceptual_hashes'])}")
         
         # STEP 6: Generate thumbnail
         print("\n📸 STEP 6: Generating thumbnail...")
