@@ -604,12 +604,17 @@ function Dashboard() {
       {showEditVideoModal && currentVideo && (
         <EditVideoModal 
           video={currentVideo}
-          folders={folders}
-          socialPlatforms={socialPlatforms}
           onClose={() => { setShowEditVideoModal(false); setCurrentVideo(null); }}
           onSave={loadDashboard}
-          onFolderCreated={loadDashboard}
-          token={token}
+        />
+      )}
+
+      {/* Edit Folder Modal */}
+      {showEditFolderModal && currentFolder && (
+        <EditFolderModal
+          folder={currentFolder}
+          onClose={() => { setShowEditFolderModal(false); setCurrentFolder(null); }}
+          onSave={loadDashboard}
         />
       )}
 
