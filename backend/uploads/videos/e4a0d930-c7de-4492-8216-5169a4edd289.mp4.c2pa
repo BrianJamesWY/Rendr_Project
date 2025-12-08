@@ -1,0 +1,96 @@
+{
+  "@context": "https://c2pa.org/specifications/2.2",
+  "claim_generator": "RENDR v1.0",
+  "claim_generator_info": [
+    {
+      "name": "RENDR",
+      "version": "1.0",
+      "icon": "https://rendr.com/logo.png"
+    }
+  ],
+  "title": "test_video.mp4",
+  "format": "video/mp4",
+  "instance_id": "xmp.iid:RND-KP27GB",
+  "assertions": [
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "alg": "sha256",
+        "hash": null,
+        "name": "original_video",
+        "description": "Hash of pristine original video before watermarking"
+      }
+    },
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "alg": "sha256",
+        "hash": "016c5af0edac1526e960b24ff9df2fccb0dd9e4f545016a19154851000369884",
+        "name": "watermarked_video",
+        "description": "Hash of watermarked video with verification code"
+      }
+    },
+    {
+      "label": "stds.schema-org.CreativeWork",
+      "data": {
+        "@type": "VideoObject",
+        "author": {
+          "@type": "Person",
+          "name": "BrianJames",
+          "identifier": "bd763e13-1f30-4c3a-9c06-8ff93fd09485"
+        },
+        "datePublished": "2025-12-08T19:15:47.419792+00:00",
+        "name": "test_video.mp4",
+        "description": ""
+      }
+    },
+    {
+      "label": "c2pa.actions",
+      "data": {
+        "actions": [
+          {
+            "action": "c2pa.edited",
+            "softwareAgent": "RENDR Watermark v1.0",
+            "when": "2025-12-08T19:15:47.419807+00:00",
+            "changes": [
+              {
+                "description": "Added watermark with verification code",
+                "region": "left edge vertical"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "rendr.verification",
+      "data": {
+        "verification_code": "RND-KP27GB",
+        "verification_url": "https://rendr.com/verify/RND-KP27GB",
+        "key_frame_hashes": [
+          "5151a3bd396b33e992407593f0dbf6f876085e6b8741df92d160fac4d175797c",
+          "5151a3bd396b33e992407593f0dbf6f876085e6b8741df92d160fac4d175797c",
+          "5151a3bd396b33e992407593f0dbf6f876085e6b8741df92d160fac4d175797c",
+          "4eeccca753f4833bd5a8edf6adeda20b798e78524c5c48e3c045bccd250054d3",
+          "4eeccca753f4833bd5a8edf6adeda20b798e78524c5c48e3c045bccd250054d3",
+          "4eeccca753f4833bd5a8edf6adeda20b798e78524c5c48e3c045bccd250054d3",
+          "806f990f433a25c172e6c378ea158b9464005c8a2e4956f5314131fb3f9fb643",
+          "806f990f433a25c172e6c378ea158b9464005c8a2e4956f5314131fb3f9fb643",
+          "806f990f433a25c172e6c378ea158b9464005c8a2e4956f5314131fb3f9fb643",
+          "bf69e074461e749effbf988f3d3f8168f056b2ffa0af2e32d278a80f7671c0be"
+        ],
+        "perceptual_hashes": [
+          "9b13939a6c65939a6c65939a6c65939a6c65939a6c65939a6c65939a6c65939a"
+        ],
+        "audio_hash": "d2634ba7204c6a4e56b77b47e3d2b4106ba7951ec8bdd147fd087f99d00dba6a",
+        "metadata_hash": "0b3abecb0a1e66acfc8ab803a27a610642ad967be2287b2540c953f556b30cc4",
+        "master_hash": "9d736b3f95b52232cfae231b30966c709e5b0f82e7e4a05c1722b03a3866cbe8"
+      }
+    }
+  ],
+  "hard_binding": {
+    "alg": "sha256",
+    "hash": "016c5af0edac1526e960b24ff9df2fccb0dd9e4f545016a19154851000369884",
+    "exclusions": []
+  }
+}
