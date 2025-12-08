@@ -397,12 +397,33 @@ async def upload_video(
         print(f"   ✅ Key frames: {len(comprehensive_hashes['key_frame_hashes'])}/10")
         print(f"   ✅ Perceptual hashes: {len(comprehensive_hashes['perceptual_hashes'])}")
         
-        # STEP 6: Generate thumbnail
-        print("\n📸 STEP 6: Generating thumbnail...")
+        # STEP 6: Create C2PA Manifest
+        print("\n📜 STEP 6: Creating C2PA manifest...")
+        c2pa_manifest_data = c2pa_service.create_manifest(
+            video_path=final_path,
+            verification_code=verification_code,
+            user_info={
+                "username": username,
+                "user_id": current_user["user_id"]
+            },
+            hashes=comprehensive_hashes,
+            metadata={
+                "title": video_file.filename,
+                "device": comprehensive_hashes["video_metadata"].get("tags", {}).get("com.apple.quicktime.model", ""),
+                "duration": comprehensive_hashes["video_metadata"].get("duration", 0)
+            }
+        )
+        
+        # Save C2PA manifest as sidecar file
+        c2pa_manifest_path = c2pa_service.save_manifest(c2pa_manifest_data, final_path)
+        print(f"   ✅ C2PA manifest saved")
+        
+        # STEP 7: Generate thumbnail
+        print("\n📸 STEP 7: Generating thumbnail...")
         thumbnail_path = video_processor.extract_thumbnail(final_path, video_id)
         print("   ✅ Thumbnail saved")
         
-        # STEP 7: Calculate expiration
+        # STEP 8: Calculate expiration
         print("\n⏰ STEP 7: Setting storage expiration...")
         uploaded_at = datetime.now(timezone.utc)
         
