@@ -94,6 +94,12 @@ function UnifiedEditor() {
   const [primaryColor, setPrimaryColor] = useState('#667eea');
   const [secondaryColor, setSecondaryColor] = useState('#764ba2');
 
+  // Folders & Content state
+  const [selectedTreeItem, setSelectedTreeItem] = useState(null);
+  const [contentName, setContentName] = useState('');
+  const [contentDescription, setContentDescription] = useState('');
+  const [accessLevel, setAccessLevel] = useState('Public (Free)');
+
   // Premium Pricing state
   const [tiers, setTiers] = useState([
     { name: 'Basic Tier', price: '4.99', description: 'Access to basic content library, new videos weekly' },
