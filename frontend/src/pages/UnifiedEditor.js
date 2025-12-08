@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
+const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
 
 function UnifiedEditor() {
   const navigate = useNavigate();

@@ -13,7 +13,7 @@ const SubscriptionCheckout = () => {
     email: '',
     name: ''
   });
-  const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
+  const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
 
   useEffect(() => {
     const loadData = async () => {

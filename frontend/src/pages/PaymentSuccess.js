@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
+const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
 
 function PaymentSuccess() {
   const navigate = useNavigate();

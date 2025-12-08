@@ -6,7 +6,7 @@ const Navigation = ({ currentPage = '' }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const BACKEND_URL = 'https://rendr-video-trust.preview.emergentagent.com';
+  const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
 
   useEffect(() => {
     if (token) {

@@ -1,7 +1,7 @@
 #!/bin/bash
 # Test critical user flows
 
-BACKEND_URL="https://rendr-video-trust.preview.emergentagent.com/api"
+BACKEND_URL="https://videoproof-1.preview.emergentagent.com/api"
 
 echo "====================================="
 echo "Testing Critical User Flows"
