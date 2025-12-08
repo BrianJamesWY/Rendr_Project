@@ -69,7 +69,7 @@ class AsyncVideoProcessor:
         callback: Callable = None
     ):
         """
-        Background thread worker - calculates all hashes
+        Background thread worker - calculates all hashes and creates C2PA manifest
         """
         try:
             print(f"\n⚙️ Background processing started for {video_id}")
@@ -78,12 +78,54 @@ class AsyncVideoProcessor:
             self.status_cache[video_id]["progress"] = 10
             self.status_cache[video_id]["current_step"] = "Extracting metadata"
             
-            # Calculate comprehensive hashes
+            # Calculate comprehensive hashes (includes perceptual, audio, metadata)
+            print("🔍 Calculating comprehensive hashes...")
             hash_package = comprehensive_hash_service.calculate_all_hashes(
                 video_path,
                 verification_code,
-                tier
+                tier,
+                is_watermarked=True
             )
+            
+            self.status_cache[video_id]["progress"] = 60
+            self.status_cache[video_id]["current_step"] = "Creating C2PA manifest"
+            
+            # Create C2PA manifest
+            print("📜 Creating C2PA manifest...")
+            try:
+                from services.c2pa_service import c2pa_service
+                
+                # Get user info from database
+                db = get_db()
+                user = asyncio.run(db.users.find_one({"user_id": user_id}, {"_id": 0}))
+                
+                c2pa_manifest = c2pa_service.create_manifest(
+                    video_path=video_path,
+                    verification_code=verification_code,
+                    user_info={
+                        "username": user.get("username", "Unknown"),
+                        "user_id": user_id
+                    },
+                    hashes={
+                        "original_sha256": hash_package.get("original_sha256"),
+                        "watermarked_sha256": hash_package.get("watermarked_sha256"),
+                        "key_frame_hashes": hash_package.get("key_frame_hashes", []),
+                        "perceptual_hashes": hash_package.get("perceptual_hashes", []),
+                        "audio_hash": hash_package.get("audio_hash"),
+                        "metadata_hash": hash_package.get("metadata_hash"),
+                        "master_hash": hash_package.get("master_hash")
+                    },
+                    metadata=hash_package.get("video_metadata", {})
+                )
+                
+                # Save C2PA manifest
+                manifest_path = c2pa_service.save_manifest(c2pa_manifest, video_path)
+                hash_package["c2pa_manifest_path"] = manifest_path
+                print(f"✅ C2PA manifest saved: {manifest_path}")
+                
+            except Exception as e:
+                print(f"⚠️ C2PA manifest creation failed: {e}")
+                hash_package["c2pa_manifest_path"] = None
             
             self.status_cache[video_id]["progress"] = 80
             self.status_cache[video_id]["current_step"] = "Saving to database"
@@ -107,6 +149,8 @@ class AsyncVideoProcessor:
                 
         except Exception as e:
             print(f"❌ Background processing error for {video_id}: {e}")
+            import traceback
+            traceback.print_exc()
             self.status_cache[video_id] = {
                 "status": "error",
                 "progress": 0,
