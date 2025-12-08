@@ -556,6 +556,19 @@ async def upload_video(
             "verification_code": verification_code,
             "status": "success",
             "message": "Video uploaded and verified successfully",
+            "watermarked_video_url": f"/api/videos/watch/{video_id}",
+            "thumbnail_url": f"/api/videos/{video_id}/thumbnail",
+            "hashes": {
+                "original_sha256": original_sha256,
+                "watermarked_sha256": watermarked_sha256,
+                "key_frame_count": len(key_frame_hashes)
+            },
+            "processing_status": {
+                "stage": "watermark_complete",
+                "progress": 30,
+                "message": "Background processing started (perceptual hashes, C2PA, blockchain)",
+                "eta": "30-60 seconds"
+            },
             "expires_at": expires_at.isoformat() if expires_at else None,
             "storage_duration": f"{duration_hours} hours" if duration_hours else "unlimited",
             "tier": tier
