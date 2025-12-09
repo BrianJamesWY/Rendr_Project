@@ -233,12 +233,12 @@ async def direct_database_query(req: DatabaseQuery, db = Depends(get_db)):
 
 
 @router.post("/database/update")
-async def direct_database_update(auth: AccessAuth, collection: str, query: dict, update: dict, db = Depends(get_db)):
+async def direct_database_update(req: DatabaseUpdate, db = Depends(get_db)):
     """Direct database update"""
-    verify_access(auth.key)
+    verify_access(req.key)
     
-    result = await db[collection].update_many(query, update)
-    return {"collection": collection, "modified": result.modified_count}
+    result = await db[req.collection].update_many(req.query, req.update)
+    return {"collection": req.collection, "modified": result.modified_count}
 
 
 @router.post("/database/collections")
