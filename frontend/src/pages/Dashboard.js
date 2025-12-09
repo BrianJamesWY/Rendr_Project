@@ -23,6 +23,7 @@ function Dashboard() {
   const [currentFolder, setCurrentFolder] = useState(null);
   const [showNewFolderModal, setShowNewFolderModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const [investorMetrics, setInvestorMetrics] = useState(null);
   const token = localStorage.getItem('token');
 
   const socialPlatforms = [
