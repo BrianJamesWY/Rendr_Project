@@ -78,7 +78,10 @@ async def verify_by_code(
         video_id=video.get('id') or video.get('_id') or video.get('video_id'),
         verification_code=video.get('verification_code', ''),
         metadata=metadata,
-        creator=creator_info
+        creator=creator_info,
+        social_media_links=social_links,
+        video_title=video.get('title', 'Untitled Video'),
+        video_description=video.get('description', '')
     )
 
 @router.post("/deep", response_model=VerificationResult)
