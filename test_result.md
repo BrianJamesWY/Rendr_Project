@@ -3111,3 +3111,31 @@ agent_communication:
       - All API endpoints returning expected data structures - WORKING
       
       OVERALL ASSESSMENT: All requested special features are fully functional and production-ready. The Super Secret Backdoor system provides complete administrative access with proper security. Both CEO and Investor dashboards return comprehensive platform analytics. All login credentials work correctly and provide appropriate access levels.
+
+---
+## CRITICAL TECHNICAL REFERENCE FOR ALL AGENTS
+
+**READ `/app/TECHNICAL_REFERENCE.md` BEFORE MAKING ANY DATABASE CHANGES**
+
+### Key Points to Avoid Repeated Errors:
+
+1. **Database**: Use `test_database`, NOT `rendr`
+2. **User Primary Key**: `_id` field (string UUID), NOT `user_id`
+3. **Password Hashing**: Use `passlib.CryptContext`, NOT raw bcrypt
+4. **JWT Tokens**: Do NOT contain roles - must query database
+5. **Supervisor Config**: Check `/etc/supervisor/conf.d/supervisord.conf` for hardcoded URLs if CORS errors occur
+
+### Before Creating ANY Records:
+```bash
+# Check existing schema first
+cd /app/backend && python3 -c "
+import asyncio
+from motor.motor_asyncio import AsyncIOMotorClient
+async def check():
+    db = AsyncIOMotorClient('mongodb://localhost:27017').test_database
+    user = await db.users.find_one({})
+    print('User schema:', list(user.keys()))
+asyncio.run(check())
+"
+```
+
