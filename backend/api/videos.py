@@ -13,6 +13,7 @@ from services.notification_service import notification_service
 from services.comprehensive_hash_service import comprehensive_hash_service
 from services.async_video_processor import async_video_processor
 from services.c2pa_service import c2pa_service
+from services.resubmission_prevention import resubmission_prevention
 from pydantic import BaseModel
 from typing import Optional
 from fastapi.responses import FileResponse, StreamingResponse
