@@ -318,11 +318,22 @@ sudo supervisorctl status
 # Restart services
 sudo supervisorctl restart backend
 sudo supervisorctl restart frontend
+sudo supervisorctl restart redis
+sudo supervisorctl restart rq-worker:*
 
 # View logs
 tail -f /var/log/supervisor/backend.err.log
 tail -f /var/log/supervisor/backend.out.log
+tail -f /var/log/rq-worker.out.log
+tail -f /var/log/redis.out.log
 ```
+
+### Redis & Background Workers
+- **Redis:** Port 6379, localhost only
+- **RQ Workers:** 2 workers processing from 3 queues (high, default, low)
+- **Job Types:** Video hashing (perceptual, audio), cleanup tasks
+- **Check Redis:** `redis-cli ping` should return PONG
+- **Monitor Queue:** `redis-cli LLEN rq:queue:default` shows queue length
 
 ### When to Restart
 - ✅ After `.env` file changes
