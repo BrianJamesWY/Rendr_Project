@@ -81,7 +81,7 @@ Position: Left side (default), Right side for premium users (coming soon)
 ## API Configuration
 
 The app connects to:
-- **Development**: `https://videoproof-1.preview.emergentagent.com/api`
+- **Development**: `https://rendr-verify-1.preview.emergentagent.com/api`
 - **Production**: (to be configured in config.js)
 
 ## Testing

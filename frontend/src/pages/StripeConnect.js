@@ -8,7 +8,7 @@ const StripeConnect = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+  const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
   const handleConnect = async () => {
     setIsLoading(true);

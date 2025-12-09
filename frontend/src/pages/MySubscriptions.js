@@ -11,7 +11,7 @@ const MySubscriptions = () => {
     monthly_total: 0,
     videos_accessible: 0
   });
-  const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+  const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
   useEffect(() => {
     const fetchSubscriptions = async () => {

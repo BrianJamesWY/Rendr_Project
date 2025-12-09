@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
 function WatermarkSettings({ user, onUpdate }) {
   const [position, setPosition] = useState('left');

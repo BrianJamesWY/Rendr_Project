@@ -1,6 +1,6 @@
 # RENDR API Documentation
 **Version:** 1.0  
-**Base URL:** `https://videoproof-1.preview.emergentagent.com/api`  
+**Base URL:** `https://rendr-verify-1.preview.emergentagent.com/api`  
 **Last Updated:** December 9, 2025
 
 ---
@@ -54,7 +54,7 @@ Login and receive JWT token.
 
 **Example (curl):**
 ```bash
-curl -X POST https://videoproof-1.preview.emergentagent.com/api/auth/login \
+curl -X POST https://rendr-verify-1.preview.emergentagent.com/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"BrianJames","password":"Brian123!"}'
 ```
@@ -225,7 +225,7 @@ Upload and verify a video.
 ```bash
 TOKEN="your-jwt-token"
 
-curl -X POST https://videoproof-1.preview.emergentagent.com/api/videos/upload \
+curl -X POST https://rendr-verify-1.preview.emergentagent.com/api/videos/upload \
   -H "Authorization: Bearer $TOKEN" \
   -F "video_file=@/path/to/video.mp4" \
   -F "folder_id=folder-uuid-optional"
@@ -346,7 +346,7 @@ Range: bytes=0-1023
 **Example:**
 ```html
 <video controls>
-  <source src="https://videoproof-1.preview.emergentagent.com/api/videos/watch/video-id" type="video/mp4">
+  <source src="https://rendr-verify-1.preview.emergentagent.com/api/videos/watch/video-id" type="video/mp4">
 </video>
 ```
 
@@ -464,7 +464,7 @@ Verify a video by its verification code.
 
 **Example (curl):**
 ```bash
-curl -X POST https://videoproof-1.preview.emergentagent.com/api/verify/code \
+curl -X POST https://rendr-verify-1.preview.emergentagent.com/api/verify/code \
   -H "Content-Type: application/json" \
   -d '{"verification_code":"RND-A1B2C3"}'
 ```
@@ -651,7 +651,7 @@ Get public profile and videos for a creator.
 
 **Example:**
 ```
-https://videoproof-1.preview.emergentagent.com/api/showcase/BrianJames
+https://rendr-verify-1.preview.emergentagent.com/api/showcase/BrianJames
 ```
 
 ---
@@ -925,21 +925,21 @@ const pollStatus = async (videoId) => {
 
 ### 1. Login
 ```bash
-TOKEN=$(curl -s -X POST https://videoproof-1.preview.emergentagent.com/api/auth/login \
+TOKEN=$(curl -s -X POST https://rendr-verify-1.preview.emergentagent.com/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"BrianJames","password":"Brian123!"}' | jq -r '.token')
 ```
 
 ### 2. Upload Video
 ```bash
-curl -X POST https://videoproof-1.preview.emergentagent.com/api/videos/upload \
+curl -X POST https://rendr-verify-1.preview.emergentagent.com/api/videos/upload \
   -H "Authorization: Bearer $TOKEN" \
   -F "video_file=@video.mp4"
 ```
 
 ### 3. Verify by Code
 ```bash
-curl -X POST https://videoproof-1.preview.emergentagent.com/api/verify/code \
+curl -X POST https://rendr-verify-1.preview.emergentagent.com/api/verify/code \
   -H "Content-Type: application/json" \
   -d '{"verification_code":"RND-ABC123"}'
 ```

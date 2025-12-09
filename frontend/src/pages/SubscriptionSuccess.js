@@ -6,7 +6,7 @@ const SubscriptionSuccess = () => {
   const [searchParams] = useSearchParams();
   const [subscriptionDetails, setSubscriptionDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+  const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
   useEffect(() => {
     const loadData = async () => {

@@ -20,7 +20,7 @@
 ## 🔐 SECTION 1: AUTHENTICATION
 
 ### Test 1.1: User Registration
-**URL:** https://videoproof-1.preview.emergentagent.com/CreatorLogin
+**URL:** https://rendr-verify-1.preview.emergentagent.com/CreatorLogin
 
 - [ ] Click on the registration/signup area
 - [ ] Enter test username: `TestUser` + random number (e.g., TestUser123)
@@ -40,7 +40,7 @@ _________________________________________________________________
 ---
 
 ### Test 1.2: User Login (Existing Account)
-**URL:** https://videoproof-1.preview.emergentagent.com/CreatorLogin
+**URL:** https://rendr-verify-1.preview.emergentagent.com/CreatorLogin
 
 - [ ] Enter username: `BrianJames`
 - [ ] Enter password: `Brian123!`
@@ -58,7 +58,7 @@ _________________________________________________________________
 ---
 
 ### Test 1.3: Invalid Login
-**URL:** https://videoproof-1.preview.emergentagent.com/CreatorLogin
+**URL:** https://rendr-verify-1.preview.emergentagent.com/CreatorLogin
 
 - [ ] Enter username: `WrongUser`
 - [ ] Enter password: `WrongPassword`
@@ -78,7 +78,7 @@ _________________________________________________________________
 ## 🏠 SECTION 2: DASHBOARD
 
 ### Test 2.1: Dashboard Layout
-**URL:** https://videoproof-1.preview.emergentagent.com/dashboard
+**URL:** https://rendr-verify-1.preview.emergentagent.com/dashboard
 
 - [ ] **EXPECTED:** See RENDR logo in top left (purple gradient star with checkmark)
 - [ ] **EXPECTED:** Logo is clickable
@@ -97,7 +97,7 @@ _________________________________________________________________
 ---
 
 ### Test 2.2: Dashboard Stats
-**URL:** https://videoproof-1.preview.emergentagent.com/dashboard
+**URL:** https://rendr-verify-1.preview.emergentagent.com/dashboard
 
 - [ ] **CHECK:** Total Videos shows a number (should be 22 for BrianJames)
 - [ ] **CHECK:** Verifications shows a number
@@ -114,7 +114,7 @@ _________________________________________________________________
 ---
 
 ### Test 2.3: Bounty CTA Banner
-**URL:** https://videoproof-1.preview.emergentagent.com/dashboard
+**URL:** https://rendr-verify-1.preview.emergentagent.com/dashboard
 
 - [ ] **EXPECTED:** Purple gradient banner visible with bounty information
 - [ ] **EXPECTED:** Banner shows "892 hunters are ready"
@@ -132,7 +132,7 @@ _________________________________________________________________
 ---
 
 ### Test 2.4: Connected Platforms
-**URL:** https://videoproof-1.preview.emergentagent.com/dashboard
+**URL:** https://rendr-verify-1.preview.emergentagent.com/dashboard
 
 - [ ] **EXPECTED:** See 4 platform cards: YouTube, TikTok, Instagram, Twitter
 - [ ] **EXPECTED:** Each shows emoji icon
@@ -148,7 +148,7 @@ _________________________________________________________________
 ---
 
 ### Test 2.5: Quick Stats Sidebar
-**URL:** https://videoproof-1.preview.emergentagent.com/dashboard
+**URL:** https://rendr-verify-1.preview.emergentagent.com/dashboard
 
 - [ ] **CHECK:** Premium Subscribers shows "0" or a number
 - [ ] **CHECK:** Premium Folders shows "0" or a number
@@ -165,7 +165,7 @@ _________________________________________________________________
 ---
 
 ### Test 2.6: Logo Click (Dashboard)
-**URL:** https://videoproof-1.preview.emergentagent.com/dashboard
+**URL:** https://rendr-verify-1.preview.emergentagent.com/dashboard
 
 - [ ] Click RENDR logo in top left
 - [ ] **EXPECTED:** Page reloads or stays on dashboard (already there)
@@ -182,7 +182,7 @@ _________________________________________________________________
 ## 📹 SECTION 3: VIDEO UPLOAD
 
 ### Test 3.1: Access Upload Page
-**URL:** https://videoproof-1.preview.emergentagent.com/upload
+**URL:** https://rendr-verify-1.preview.emergentagent.com/upload
 
 - [ ] From dashboard, click "Upload Video" button OR
 - [ ] Navigate directly to /upload
@@ -202,7 +202,7 @@ _________________________________________________________________
 ---
 
 ### Test 3.2: Upload Video File
-**URL:** https://videoproof-1.preview.emergentagent.com/upload
+**URL:** https://rendr-verify-1.preview.emergentagent.com/upload
 
 - [ ] Click file upload area or "Choose File"
 - [ ] Select a small video file (MP4 recommended, <50MB for testing)
@@ -228,7 +228,7 @@ Verification Code: _____________________________________________
 ---
 
 ### Test 3.3: Duplicate Detection
-**URL:** https://videoproof-1.preview.emergentagent.com/upload
+**URL:** https://rendr-verify-1.preview.emergentagent.com/upload
 
 - [ ] Upload the SAME video file again
 - [ ] **EXPECTED:** System detects duplicate
@@ -247,7 +247,7 @@ _________________________________________________________________
 ## 👤 SECTION 4: SHOWCASE (PUBLIC PROFILE)
 
 ### Test 4.1: Access Your Showcase
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 - [ ] From dashboard, click "View Showcase" button OR
 - [ ] Navigate to /@BrianJames directly
@@ -268,7 +268,7 @@ _________________________________________________________________
 ---
 
 ### Test 4.2: Showcase Navigation
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 - [ ] **CHECK:** RENDR logo visible in top left
 - [ ] Click RENDR logo
@@ -287,7 +287,7 @@ _________________________________________________________________
 ---
 
 ### Test 4.3: Showcase Tabs
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 **Videos Tab:**
 - [ ] Click "Videos" tab
@@ -391,7 +391,7 @@ _________________________________________________________________
 ---
 
 ### Test 4.4: Social Links
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 - [ ] **CHECK:** Social links visible as large circles (66px)
 - [ ] **CHECK:** Icons visible (📷, 🎵, ▶️, etc.)
@@ -409,7 +409,7 @@ _________________________________________________________________
 ---
 
 ### Test 4.5: Stats Display
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 - [ ] **CHECK:** Videos count displays
 - [ ] **CHECK:** Folders count displays
@@ -426,7 +426,7 @@ _________________________________________________________________
 ---
 
 ### Test 4.6: Video Click
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 - [ ] Go to Videos tab
 - [ ] Click on any video thumbnail
@@ -444,7 +444,7 @@ _________________________________________________________________
 ## ✏️ SECTION 5: SHOWCASE EDITOR
 
 ### Test 5.1: Access Showcase Editor
-**URL:** https://videoproof-1.preview.emergentagent.com/showcase-editor
+**URL:** https://rendr-verify-1.preview.emergentagent.com/showcase-editor
 
 - [ ] From dashboard, click "Showcase Editor" card OR
 - [ ] Navigate to /showcase-editor directly
@@ -464,7 +464,7 @@ _________________________________________________________________
 ---
 
 ### Test 5.2: Profile Information Section
-**URL:** https://videoproof-1.preview.emergentagent.com/showcase-editor
+**URL:** https://rendr-verify-1.preview.emergentagent.com/showcase-editor
 
 - [ ] Click "Profile Information" section to expand
 - [ ] **CHECK:** Display Name field shows current name
@@ -484,7 +484,7 @@ _________________________________________________________________
 ---
 
 ### Test 5.3: Header Design Section
-**URL:** https://videoproof-1.preview.emergentagent.com/showcase-editor
+**URL:** https://rendr-verify-1.preview.emergentagent.com/showcase-editor
 
 - [ ] Click "Header Design" section to expand
 - [ ] **CHECK:** Banner Background dropdown visible
@@ -503,7 +503,7 @@ _________________________________________________________________
 ---
 
 ### Test 5.4: Social Links Section
-**URL:** https://videoproof-1.preview.emergentagent.com/showcase-editor
+**URL:** https://rendr-verify-1.preview.emergentagent.com/showcase-editor
 
 - [ ] Click "Social Links" section to expand
 - [ ] **CHECK:** Existing social links display
@@ -525,7 +525,7 @@ _________________________________________________________________
 ---
 
 ### Test 5.5: Save Changes
-**URL:** https://videoproof-1.preview.emergentagent.com/showcase-editor
+**URL:** https://rendr-verify-1.preview.emergentagent.com/showcase-editor
 
 - [ ] Make any change (e.g., edit display name)
 - [ ] **EXPECTED:** "Save Changes*" button shows asterisk (unsaved indicator)
@@ -545,7 +545,7 @@ _________________________________________________________________
 ---
 
 ### Test 5.6: Preview Panel
-**URL:** https://videoproof-1.preview.emergentagent.com/showcase-editor
+**URL:** https://rendr-verify-1.preview.emergentagent.com/showcase-editor
 
 - [ ] **CHECK:** Preview panel shows live iframe of showcase
 - [ ] **CHECK:** Device selector visible: Desktop, Tablet, Mobile
@@ -568,7 +568,7 @@ _________________________________________________________________
 ## 🎯 SECTION 6: BOUNTY SYSTEM
 
 ### Test 6.1: Browse Bounties
-**URL:** https://videoproof-1.preview.emergentagent.com/bounties
+**URL:** https://rendr-verify-1.preview.emergentagent.com/bounties
 
 - [ ] Navigate to /bounties OR click "Bounties" from dashboard nav
 - [ ] **EXPECTED:** Bounties marketplace page loads
@@ -587,7 +587,7 @@ _________________________________________________________________
 ---
 
 ### Test 6.2: Post a Bounty
-**URL:** https://videoproof-1.preview.emergentagent.com/bounties/post
+**URL:** https://rendr-verify-1.preview.emergentagent.com/bounties/post
 
 - [ ] From bounties page, click "Post New Bounty" OR
 - [ ] Navigate to /bounties/post directly
@@ -611,7 +611,7 @@ Bounty ID: _____________________________________________________
 ---
 
 ### Test 6.3: View Bounty Details
-**URL:** https://videoproof-1.preview.emergentagent.com/bounties
+**URL:** https://rendr-verify-1.preview.emergentagent.com/bounties
 
 - [ ] Click on any bounty from the list
 - [ ] **EXPECTED:** Bounty details page loads OR details modal opens
@@ -632,7 +632,7 @@ _________________________________________________________________
 ---
 
 ### Test 6.4: Claim a Bounty
-**URL:** https://videoproof-1.preview.emergentagent.com/bounties/:id/claim
+**URL:** https://rendr-verify-1.preview.emergentagent.com/bounties/:id/claim
 
 **NOTE:** This test requires a DIFFERENT user account (hunter). You can:
 - Option A: Create a new test account
@@ -657,7 +657,7 @@ _________________________________________________________________
 ---
 
 ### Test 6.5: Verify Claim (Creator)
-**URL:** https://videoproof-1.preview.emergentagent.com/bounties (My Bounties)
+**URL:** https://rendr-verify-1.preview.emergentagent.com/bounties (My Bounties)
 
 - [ ] As the bounty creator (BrianJames), go to "My Bounties"
 - [ ] **EXPECTED:** See bounties you created
@@ -679,7 +679,7 @@ _________________________________________________________________
 ---
 
 ### Test 6.6: Process Payout
-**URL:** https://videoproof-1.preview.emergentagent.com/bounties (My Bounties)
+**URL:** https://rendr-verify-1.preview.emergentagent.com/bounties (My Bounties)
 
 - [ ] For a verified bounty, look for "Process Payout" button
 - [ ] Click "Process Payout" button
@@ -701,7 +701,7 @@ _________________________________________________________________
 ## 💰 SECTION 7: MONETIZATION (STRIPE CONNECT)
 
 ### Test 7.1: Access Earnings Page
-**URL:** https://videoproof-1.preview.emergentagent.com/earnings
+**URL:** https://rendr-verify-1.preview.emergentagent.com/earnings
 
 - [ ] From dashboard, click "Monetization" tab OR
 - [ ] Navigate to /earnings directly
@@ -719,7 +719,7 @@ _________________________________________________________________
 ---
 
 ### Test 7.2: Stripe Connect Onboarding (if not connected)
-**URL:** https://videoproof-1.preview.emergentagent.com/earnings
+**URL:** https://rendr-verify-1.preview.emergentagent.com/earnings
 
 **NOTE:** Skip if already connected
 
@@ -741,7 +741,7 @@ _________________________________________________________________
 ---
 
 ### Test 7.3: Create Premium Folder
-**URL:** https://videoproof-1.preview.emergentagent.com/earnings
+**URL:** https://rendr-verify-1.preview.emergentagent.com/earnings
 
 **NOTE:** Requires Stripe Connect to be set up
 
@@ -767,7 +767,7 @@ Folder ID: _____________________________________________________
 ---
 
 ### Test 7.4: Subscribe to Premium Folder
-**URL:** https://videoproof-1.preview.emergentagent.com/@BrianJames
+**URL:** https://rendr-verify-1.preview.emergentagent.com/@BrianJames
 
 **NOTE:** This test requires a DIFFERENT user account OR use test Stripe cards
 
@@ -795,7 +795,7 @@ _________________________________________________________________
 ---
 
 ### Test 7.5: View My Subscriptions
-**URL:** https://videoproof-1.preview.emergentagent.com/my-subscriptions
+**URL:** https://rendr-verify-1.preview.emergentagent.com/my-subscriptions
 
 - [ ] Navigate to /my-subscriptions
 - [ ] **EXPECTED:** Subscriptions page loads
@@ -813,7 +813,7 @@ _________________________________________________________________
 ---
 
 ### Test 7.6: Cancel Subscription
-**URL:** https://videoproof-1.preview.emergentagent.com/my-subscriptions
+**URL:** https://rendr-verify-1.preview.emergentagent.com/my-subscriptions
 
 **NOTE:** Only test if you have an active subscription
 
@@ -835,7 +835,7 @@ _________________________________________________________________
 ## 🔍 SECTION 8: VIDEO VERIFICATION
 
 ### Test 8.1: Verify by Code
-**URL:** https://videoproof-1.preview.emergentagent.com/verify
+**URL:** https://rendr-verify-1.preview.emergentagent.com/verify
 
 - [ ] Navigate to /verify
 - [ ] **EXPECTED:** Verification page loads
@@ -858,7 +858,7 @@ _________________________________________________________________
 ---
 
 ### Test 8.2: Verify Invalid Code
-**URL:** https://videoproof-1.preview.emergentagent.com/verify
+**URL:** https://rendr-verify-1.preview.emergentagent.com/verify
 
 - [ ] Enter invalid code: `RND-99999`
 - [ ] Click "Verify" button
@@ -876,7 +876,7 @@ _________________________________________________________________
 ## 🔧 SECTION 9: CEO ADMIN (Advanced)
 
 ### Test 9.1: Access CEO Admin
-**URL:** https://videoproof-1.preview.emergentagent.com/ceo-access-b7k9m2x
+**URL:** https://rendr-verify-1.preview.emergentagent.com/ceo-access-b7k9m2x
 
 **NOTE:** Requires BrianJames account
 
@@ -902,7 +902,7 @@ _________________________________________________________________
 ## 📊 SECTION 10: ANALYTICS
 
 ### Test 10.1: View Analytics Dashboard
-**URL:** https://videoproof-1.preview.emergentagent.com/analytics
+**URL:** https://rendr-verify-1.preview.emergentagent.com/analytics
 
 - [ ] From dashboard nav, click "Analytics"
 - [ ] **EXPECTED:** Analytics page loads
@@ -922,7 +922,7 @@ _________________________________________________________________
 ## 🌐 SECTION 11: EXPLORE (CREATOR DISCOVERY)
 
 ### Test 11.1: Browse Creators
-**URL:** https://videoproof-1.preview.emergentagent.com/explore
+**URL:** https://rendr-verify-1.preview.emergentagent.com/explore
 
 - [ ] Navigate to /explore
 - [ ] **EXPECTED:** Explore page loads
@@ -944,7 +944,7 @@ _________________________________________________________________
 ## ⚙️ SECTION 12: SETTINGS
 
 ### Test 12.1: Access Settings
-**URL:** https://videoproof-1.preview.emergentagent.com/settings
+**URL:** https://rendr-verify-1.preview.emergentagent.com/settings
 
 - [ ] From dashboard nav, click "Settings"
 - [ ] **EXPECTED:** Settings page loads
@@ -962,7 +962,7 @@ _________________________________________________________________
 ---
 
 ### Test 12.2: Update Profile
-**URL:** https://videoproof-1.preview.emergentagent.com/settings
+**URL:** https://rendr-verify-1.preview.emergentagent.com/settings
 
 - [ ] Change display name
 - [ ] Update bio

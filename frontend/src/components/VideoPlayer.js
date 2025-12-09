@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
 function VideoPlayer({ videoId, thumbnail, title, onClose, isAuthenticated = false }) {
   const videoRef = useRef(null);

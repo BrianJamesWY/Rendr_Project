@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
 function ResetPassword() {
   const navigate = useNavigate();

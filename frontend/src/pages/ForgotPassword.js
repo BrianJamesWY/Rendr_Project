@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');

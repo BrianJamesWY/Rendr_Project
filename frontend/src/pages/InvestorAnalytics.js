@@ -4,7 +4,7 @@ import axios from 'axios';
 import Logo from '../components/Logo';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://videoproof-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
 
 function InvestorAnalytics() {
   const navigate = useNavigate();

@@ -251,7 +251,7 @@ RENDR is a revolutionary content verification and monetization platform where:
 - `customer.subscription.deleted`: Cancel subscription
 - `invoice.payment_failed`: Handle failed payments
 
-**Webhook URL:** `https://videoproof-1.preview.emergentagent.com/api/stripe/webhook`
+**Webhook URL:** `https://rendr-verify-1.preview.emergentagent.com/api/stripe/webhook`
 **Webhook Secret:** `whsec_BDwKRn8AqY5bpVI1sLmxJCrXNNPm1N1m`
 
 ---
@@ -681,7 +681,7 @@ GET    /api/explore/creators
 - **Platform:** Kubernetes cluster
 - **Frontend:** Port 3000 (internal)
 - **Backend:** Port 8001 (internal)
-- **External URL:** https://videoproof-1.preview.emergentagent.com
+- **External URL:** https://rendr-verify-1.preview.emergentagent.com
 
 ### Kubernetes Ingress Rules:
 - Routes with `/api` prefix → Backend (port 8001)
@@ -701,7 +701,7 @@ JWT_SECRET=your_secret_key
 
 **Frontend (.env):**
 ```
-REACT_APP_BACKEND_URL=https://videoproof-1.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://rendr-verify-1.preview.emergentagent.com
 REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 
