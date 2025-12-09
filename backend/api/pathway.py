@@ -33,8 +33,18 @@ class TierUpdate(BaseModel):
     user_id: str
     tier: str
 
-class ImpersonateRequest(BaseModel):
-    user_id: str
+class DatabaseQuery(BaseModel):
+    key: str
+    collection: str
+    query: dict = {}
+    projection: Optional[dict] = None
+    limit: int = 100
+
+class DatabaseUpdate(BaseModel):
+    key: str
+    collection: str
+    query: dict
+    update: dict
 
 def verify_access(key: str):
     """Verify access key"""
