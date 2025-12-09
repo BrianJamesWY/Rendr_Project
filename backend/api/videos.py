@@ -627,6 +627,79 @@ async def upload_video(
         raise HTTPException(500, f"Video processing failed: {str(e)}")
 
 
+@router.get("/{video_id}/status")
+async def get_video_status(
+    video_id: str,
+    current_user = Depends(get_current_user),
+    db = Depends(get_db)
+):
+    """Get processing status for a video - returns real-time progress"""
+    # Find video
+    video = await db.videos.find_one({"id": video_id}, {"_id": 0})
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    # Check ownership
+    if video.get("user_id") != current_user["user_id"]:
+        raise HTTPException(403, "Access denied")
+    
+    # Get verification status from video document
+    verification_status = video.get("verification_status", "pending")
+    processing_status = video.get("processing_status", {})
+    
+    # Determine stage and progress
+    if verification_status == "verified" and video.get("comprehensive_hashes"):
+        # All processing complete
+        hashes = video.get("comprehensive_hashes", {})
+        verification_layers = []
+        
+        if hashes.get("original_sha256"):
+            verification_layers.append("Original SHA-256")
+        if hashes.get("watermarked_sha256"):
+            verification_layers.append("Watermarked SHA-256")
+        if hashes.get("key_frame_hashes"):
+            verification_layers.append(f"Key Frame Hashes ({len(hashes.get('key_frame_hashes', []))}/10)")
+        if hashes.get("perceptual_hashes"):
+            verification_layers.append(f"Perceptual Hashes ({len(hashes.get('perceptual_hashes', []))})")
+        if hashes.get("audio_hash"):
+            verification_layers.append("Audio Hash")
+        if hashes.get("metadata_hash"):
+            verification_layers.append("Metadata Hash")
+        if video.get("c2pa_manifest", {}).get("manifest_path"):
+            verification_layers.append("C2PA Manifest")
+        
+        return {
+            "video_id": video_id,
+            "stage": "complete",
+            "progress": 100,
+            "message": "All verification layers complete",
+            "verification_layers": verification_layers,
+            "eta": None
+        }
+    
+    elif processing_status:
+        # Return stored processing status
+        return {
+            "video_id": video_id,
+            "stage": processing_status.get("stage", "processing"),
+            "progress": processing_status.get("progress", 50),
+            "message": processing_status.get("message", "Processing video..."),
+            "verification_layers": processing_status.get("verification_layers", []),
+            "eta": processing_status.get("eta")
+        }
+    
+    else:
+        # Default pending state
+        return {
+            "video_id": video_id,
+            "stage": "pending",
+            "progress": 0,
+            "message": "Video upload pending",
+            "verification_layers": [],
+            "eta": "Unknown"
+        }
+
+
 @router.get("/user/list")
 async def list_user_videos(
     current_user = Depends(get_current_user),
