@@ -17,6 +17,7 @@ function Pathway() {
   const [logs, setLogs] = useState({});
   const [collections, setCollections] = useState([]);
   const [impersonatedToken, setImpersonatedToken] = useState(null);
+  const [impersonatedUser, setImpersonatedUser] = useState(null);
   
   // Database query
   const [dbCollection, setDbCollection] = useState('');
@@ -92,12 +93,38 @@ function Pathway() {
         ...getAuthPayload(),
         user_id: userId
       });
-      setImpersonatedToken(res.data.token);
-      setActionMessage(`Now impersonating ${username}. Token copied!`);
-      navigator.clipboard.writeText(res.data.token);
+      
+      const token = res.data.token;
+      setImpersonatedToken(token);
+      setImpersonatedUser(username);
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(token).catch(() => {});
+      
+      setActionMessage(`Impersonation ready for ${username}`);
       setTimeout(() => setActionMessage(''), 3000);
     } catch (err) {
-      setActionMessage('Failed to impersonate user');
+      setActionMessage('Failed to impersonate: ' + (err.response?.data?.detail || err.message));
+      setTimeout(() => setActionMessage(''), 5000);
+    }
+  };
+
+  const openAsUser = () => {
+    if (impersonatedToken) {
+      // Store the token and open in new tab
+      const newWindow = window.open('', '_blank');
+      newWindow.document.write(`
+        <html>
+        <head><title>Loading...</title></head>
+        <body>
+          <script>
+            localStorage.setItem('token', '${impersonatedToken}');
+            window.location.href = '/dashboard';
+          </script>
+          <p>Redirecting to dashboard...</p>
+        </body>
+        </html>
+      `);
     }
   };
 
@@ -158,15 +185,7 @@ function Pathway() {
     setDbCollection(collectionName);
     setDbQuery('{}');
     setActiveTab('database');
-    // Auto-run query when selecting collection
     setTimeout(() => runDatabaseQuery(collectionName), 100);
-  };
-
-  const useImpersonatedToken = () => {
-    if (impersonatedToken) {
-      localStorage.setItem('token', impersonatedToken);
-      window.open('/dashboard', '_blank');
-    }
   };
 
   // Check for stored key on mount
@@ -357,16 +376,26 @@ function Pathway() {
                 marginBottom: '1rem',
                 borderRadius: '4px'
               }}>
-                <div style={{ color: '#f0f', fontWeight: 'bold', marginBottom: '0.5rem' }}>IMPERSONATION TOKEN READY</div>
-                <div style={{ fontSize: '0.75rem', color: '#888', marginBottom: '0.5rem', wordBreak: 'break-all' }}>
-                  {impersonatedToken.substring(0, 50)}...
+                <div style={{ color: '#f0f', fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                  IMPERSONATION READY: {impersonatedUser}
                 </div>
-                <button 
-                  onClick={useImpersonatedToken}
-                  style={{ padding: '0.5rem 1rem', background: '#f0f', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
-                >
-                  OPEN DASHBOARD AS USER
-                </button>
+                <div style={{ fontSize: '0.75rem', color: '#888', marginBottom: '0.5rem', wordBreak: 'break-all' }}>
+                  Token: {impersonatedToken.substring(0, 50)}...
+                </div>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <button 
+                    onClick={openAsUser}
+                    style={{ padding: '0.5rem 1rem', background: '#f0f', color: '#000', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
+                  >
+                    OPEN DASHBOARD AS {impersonatedUser?.toUpperCase()}
+                  </button>
+                  <button 
+                    onClick={() => { setImpersonatedToken(null); setImpersonatedUser(null); }}
+                    style={{ padding: '0.5rem 1rem', background: '#333', color: '#fff', border: 'none', cursor: 'pointer' }}
+                  >
+                    CLEAR
+                  </button>
+                </div>
               </div>
             )}
             
@@ -385,13 +414,13 @@ function Pathway() {
                 </thead>
                 <tbody>
                   {users.map(user => (
-                    <tr key={user._id || user.user_id} style={{ borderBottom: '1px solid #333' }}>
+                    <tr key={user._id} style={{ borderBottom: '1px solid #333' }}>
                       <td style={{ padding: '0.75rem', color: '#0ff' }}>{user.username}</td>
                       <td style={{ padding: '0.75rem', color: '#888' }}>{user.email}</td>
                       <td style={{ padding: '0.75rem' }}>
                         <select 
                           value={user.premium_tier || user.tier || 'free'}
-                          onChange={(e) => changeTier(user._id || user.user_id, e.target.value)}
+                          onChange={(e) => changeTier(user._id, e.target.value)}
                           style={{ 
                             background: '#111', 
                             color: user.premium_tier === 'enterprise' ? '#f0f' : user.premium_tier === 'pro' ? '#ff0' : '#0f0',
@@ -418,13 +447,13 @@ function Pathway() {
                       </td>
                       <td style={{ padding: '0.75rem', textAlign: 'center' }}>
                         <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                          <MiniButton onClick={() => impersonateUser(user._id || user.user_id, user.username)} label="IMPERSONATE" title="Login as user" />
+                          <MiniButton onClick={() => impersonateUser(user._id, user.username)} label="IMPERSONATE" title="Login as user" />
                           {user.ban_status ? (
-                            <MiniButton onClick={() => banUser(user._id || user.user_id, 'unban')} label="UNBAN" title="Unban" color="#0f0" />
+                            <MiniButton onClick={() => banUser(user._id, 'unban')} label="UNBAN" title="Unban" color="#0f0" />
                           ) : (
                             <>
-                              <MiniButton onClick={() => banUser(user._id || user.user_id, 'temp_ban', 7)} label="TEMP" title="Temp Ban" color="#ff0" />
-                              <MiniButton onClick={() => banUser(user._id || user.user_id, 'ban')} label="PERM" title="Perm Ban" color="#f00" />
+                              <MiniButton onClick={() => banUser(user._id, 'temp_ban', 7)} label="TEMP" title="Temp Ban" color="#ff0" />
+                              <MiniButton onClick={() => banUser(user._id, 'ban')} label="PERM" title="Perm Ban" color="#f00" />
                             </>
                           )}
                         </div>
@@ -471,19 +500,31 @@ function Pathway() {
                     <div style={{ fontSize: '0.75rem', color: '#888', marginBottom: '0.5rem' }}>
                       Owner: {video.owner?.username || 'Unknown'}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem' }}>
                       {video.is_premium && <span style={{ background: '#f0f', color: '#000', padding: '0.125rem 0.5rem', fontSize: '0.625rem', fontWeight: 'bold' }}>PREMIUM</span>}
                       <span style={{ background: '#0f0', color: '#000', padding: '0.125rem 0.5rem', fontSize: '0.625rem', fontWeight: 'bold' }}>{(video.owner?.tier || 'free').toUpperCase()}</span>
                     </div>
-                    <div style={{ marginTop: '0.75rem' }}>
-                      <a 
-                        href={`${BACKEND_URL}/api/videos/stream/${video.video_id || video._id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        style={{ color: '#0ff', textDecoration: 'none', fontSize: '0.75rem' }}
-                      >
-                        PLAY VIDEO (BYPASS ALL)
-                      </a>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {video.watermarked_video_url && (
+                        <a 
+                          href={`${BACKEND_URL}${video.watermarked_video_url}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: '#0ff', textDecoration: 'none', fontSize: '0.75rem', padding: '0.25rem 0.5rem', border: '1px solid #0ff' }}
+                        >
+                          WATERMARKED
+                        </a>
+                      )}
+                      {video.file_path && (
+                        <a 
+                          href={`${BACKEND_URL}${video.file_path}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ color: '#f0f', textDecoration: 'none', fontSize: '0.75rem', padding: '0.25rem 0.5rem', border: '1px solid #f0f' }}
+                        >
+                          ORIGINAL
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
