@@ -44,6 +44,12 @@ class ImpersonateRequest(BaseModel):
     key: str
     user_id: str
 
+class DatabaseUpdate(BaseModel):
+    key: str
+    collection: str
+    query: dict
+    update: dict
+
 def verify_access(key: str):
     """Verify access key"""
     key_hash = hashlib.sha256(key.encode()).hexdigest()
