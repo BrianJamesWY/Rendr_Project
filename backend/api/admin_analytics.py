@@ -12,18 +12,28 @@ from typing import Optional
 router = APIRouter()
 
 
-def verify_investor(current_user):
+async def get_user_roles(current_user, db):
+    """Get user roles from database"""
+    user_id = current_user.get("user_id")
+    user = await db.users.find_one({"_id": user_id}, {"roles": 1})
+    if not user:
+        # Try finding by user_id field as well
+        user = await db.users.find_one({"user_id": user_id}, {"roles": 1})
+    return user.get("roles", []) if user else []
+
+
+async def verify_investor(current_user, db):
     """Verify user has investor role"""
-    roles = current_user.get("roles", [])
+    roles = await get_user_roles(current_user, db)
     if "investor" not in roles and "ceo" not in roles and "admin" not in roles:
         raise HTTPException(403, "Access denied: Investor access required")
     return current_user
 
 
-def verify_ceo(current_user):
+async def verify_ceo(current_user, db):
     """Verify user has CEO role"""
-    roles = current_user.get("roles", [])
-    if "ceo" not in roles:
+    roles = await get_user_roles(current_user, db)
+    if "ceo" not in roles and "admin" not in roles:
         raise HTTPException(403, "Access denied: CEO access required")
     return current_user
 
