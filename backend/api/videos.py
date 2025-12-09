@@ -332,8 +332,39 @@ async def upload_video(
             # Delete temp file
             os.remove(file_path)
             
-            # Update expiration if needed (extend storage)
-            if matching_video.get('storage', {}).get('expires_at'):
+            # Get creator info from users collection
+            original_user_id = matching_video.get('user_id')
+            creator_info = await db.users.find_one({"user_id": original_user_id}, {"_id": 0})
+            
+            # Check if current user is the owner
+            is_owner = (original_user_id == current_user["user_id"])
+            
+            # If NOT the owner, record this as a resubmission attempt
+            if not is_owner:
+                print("\n⚠️ RESUBMISSION ATTEMPT DETECTED")
+                print(f"   User {current_user['username']} tried to upload content owned by {creator_info.get('username', 'Unknown') if creator_info else 'Unknown'}")
+                
+                # Record the attempt and check for strikes
+                strike_result = await resubmission_prevention.record_duplicate_attempt(
+                    user_id=current_user["user_id"],
+                    video_hash=original_hashes['original_hash'],
+                    original_owner_id=original_user_id,
+                    original_verification_code=matching_video['verification_code'],
+                    db=db
+                )
+                
+                print(f"   📋 Strike status: {strike_result.get('message')}")
+                print(f"   📊 Total strikes: {strike_result.get('total_strikes', 0)}")
+                
+                # TODO: Send notification to original content creator
+                # notification_service.notify_duplicate_attempt(
+                #     owner_user_id=original_user_id,
+                #     attempter_username=current_user['username'],
+                #     verification_code=matching_video['verification_code']
+                # )
+            
+            # Update expiration if owner re-uploading (extend storage)
+            if is_owner and matching_video.get('storage', {}).get('expires_at'):
                 storage_durations = {"free": 24, "pro": 168, "enterprise": None}  # hours
                 duration = storage_durations.get(tier)
                 
@@ -348,13 +379,6 @@ async def upload_video(
             upload_date = matching_video.get('uploaded_at')
             if isinstance(upload_date, datetime):
                 upload_date = upload_date.isoformat()
-            
-            # Get creator info from users collection
-            original_user_id = matching_video.get('user_id')
-            creator_info = await db.users.find_one({"user_id": original_user_id}, {"_id": 0})
-            
-            # Check if current user is the owner
-            is_owner = (original_user_id == current_user["user_id"])
             
             # Get social media links for this video (from edit video modal)
             social_links = matching_video.get('social_media_links', [])
