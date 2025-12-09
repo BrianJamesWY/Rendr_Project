@@ -51,6 +51,19 @@ function Dashboard() {
       });
       setUser(userRes.data);
       
+      // Load investor metrics if user has investor/ceo/admin role
+      const userRoles = userRes.data.roles || [];
+      if (userRoles.includes('investor') || userRoles.includes('ceo') || userRoles.includes('admin')) {
+        try {
+          const investorRes = await axios.get(`${BACKEND_URL}/api/admin/investor/dashboard?days=7`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+          setInvestorMetrics(investorRes.data);
+        } catch (error) {
+          console.warn('Could not load investor metrics:', error);
+        }
+      }
+      
       const videosRes = await axios.get(`${BACKEND_URL}/api/videos/user/list`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
