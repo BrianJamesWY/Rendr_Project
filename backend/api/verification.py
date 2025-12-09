@@ -29,8 +29,10 @@ async def verify_by_code(
     creator_info = None
     user_id = video.get('user_id') or video.get('username')
     if user_id:
-        # Try to find by _id first, then by username
-        user = await db.users.find_one({"_id": user_id})
+        # Try to find by user_id first, then _id, then username
+        user = await db.users.find_one({"user_id": user_id}, {"_id": 0})
+        if not user:
+            user = await db.users.find_one({"_id": user_id})
         if not user:
             user = await db.users.find_one({"username": user_id})
         
@@ -38,8 +40,12 @@ async def verify_by_code(
             creator_info = {
                 "username": user.get('username', 'Unknown'),
                 "display_name": user.get('display_name', user.get('username', 'Unknown')),
-                "profile_url": f"/@{user.get('username', 'unknown')}"
+                "profile_url": f"/{user.get('username', 'unknown')}",
+                "profile_pic": user.get('profile', {}).get('profilePic')
             }
+    
+    # Get social media links for this video
+    social_links = video.get('social_media_links', []) or video.get('social_links', [])
     
     # Log attempt
     await db.verification_attempts.insert_one({
