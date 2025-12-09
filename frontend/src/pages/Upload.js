@@ -437,14 +437,86 @@ function Upload() {
               {result.is_owner ? 'Duplicate Upload' : 'Video Already Verified'}
             </h2>
 
+            <div style={styles.codeDisplay}>{result.verification_code}</div>
+            
+            <p style={{
+              color: result.is_owner ? '#78350f' : '#7f1d1d',
+              fontSize: '0.875rem',
+              marginTop: '1rem',
+              marginBottom: '1.5rem'
+            }}>
+              {result.is_owner 
+                ? 'Use your original verification code above'
+                : 'This is the original verification code for this video'}
+            </p>
+
             {result.is_owner ? (
               <>
-                <p style={{ color: '#78350f', marginBottom: '1rem' }}>
+                <p style={{ color: '#78350f', marginBottom: '0.5rem' }}>
                   You already uploaded this video!
                 </p>
-                <p style={{ color: '#78350f', fontSize: '0.875rem', marginBottom: '1rem' }}>
+                <p style={{ color: '#78350f', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
                   Original upload: {new Date(result.original_upload_date).toLocaleString()}
                 </p>
+                
+                {/* Action Buttons for Owner */}
+                {result.social_media_links && result.social_media_links.length > 0 && (
+                  <div style={{
+                    background: 'white',
+                    padding: '1.5rem',
+                    borderRadius: '0.75rem',
+                    marginBottom: '1rem',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                  }}>
+                    <p style={{ 
+                      color: '#374151', 
+                      fontSize: '0.875rem', 
+                      fontWeight: '600', 
+                      marginBottom: '1rem',
+                      textAlign: 'left'
+                    }}>
+                      📍 Where You Posted This Video
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                      {result.social_media_links.map((link, index) => (
+                        <a
+                          key={index}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '1rem 1.25rem',
+                            background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                            color: 'white',
+                            borderRadius: '0.5rem',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                            fontSize: '0.9375rem',
+                            transition: 'transform 0.2s, box-shadow 0.2s',
+                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <span style={{ fontSize: '1.5rem' }}>{link.icon || '🎥'}</span>
+                            <span>Take me to {link.platform || 'Video'}</span>
+                          </div>
+                          <span style={{ fontSize: '1.25rem' }}>→</span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <>
