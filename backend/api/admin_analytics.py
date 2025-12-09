@@ -5,7 +5,7 @@ Secure analytics endpoints with role-based access control
 
 from fastapi import APIRouter, Depends, HTTPException
 from database.mongodb import get_db
-from auth.security import get_current_user
+from utils.security import get_current_user
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
