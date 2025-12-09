@@ -520,7 +520,14 @@ function Upload() {
               </>
             ) : (
               <>
-                {/* Creator Card */}
+                <p style={{ color: '#7f1d1d', marginBottom: '0.5rem', fontSize: '1rem' }}>
+                  This video has already been verified by <strong>{result.original_owner}</strong>
+                </p>
+                <p style={{ color: '#7f1d1d', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+                  Original upload: {new Date(result.original_upload_date).toLocaleString()}
+                </p>
+
+                {/* Prominent Action Buttons */}
                 <div style={{
                   background: 'white',
                   padding: '1.5rem',
@@ -528,145 +535,149 @@ function Upload() {
                   marginBottom: '1.5rem',
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
                 }}>
-                  <p style={{ 
-                    color: '#374151', 
-                    fontSize: '0.875rem', 
-                    fontWeight: '600', 
-                    marginBottom: '1rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Original Content Creator
-                  </p>
-                  
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-                    {result.creator_profile_pic ? (
-                      <img 
-                        src={`${process.env.REACT_APP_BACKEND_URL}${result.creator_profile_pic}`}
-                        alt={result.original_owner}
-                        style={{
-                          width: '56px',
-                          height: '56px',
-                          borderRadius: '50%',
-                          objectFit: 'cover',
-                          border: '3px solid #667eea'
-                        }}
-                      />
-                    ) : (
-                      <div style={{
-                        width: '56px',
-                        height: '56px',
-                        borderRadius: '50%',
-                        background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '24px',
-                        color: 'white',
-                        fontWeight: 'bold'
+                  {/* Take me to the Video */}
+                  {result.social_media_links && result.social_media_links.length > 0 && (
+                    <>
+                      <p style={{ 
+                        color: '#111827', 
+                        fontSize: '1rem', 
+                        fontWeight: '700', 
+                        marginBottom: '0.75rem',
+                        textAlign: 'left'
                       }}>
-                        {result.original_owner?.charAt(0)?.toUpperCase() || '?'}
+                        Take me to the Video
+                      </p>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                        {result.social_media_links.map((link, index) => (
+                          <a
+                            key={index}
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '1rem 1.25rem',
+                              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                              color: 'white',
+                              borderRadius: '0.5rem',
+                              textDecoration: 'none',
+                              fontWeight: '600',
+                              fontSize: '0.9375rem',
+                              transition: 'transform 0.2s, box-shadow 0.2s',
+                              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                            }}
+                            onMouseEnter={(e) => {
+                              e.currentTarget.style.transform = 'translateY(-2px)';
+                              e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                            }}
+                            onMouseLeave={(e) => {
+                              e.currentTarget.style.transform = 'translateY(0)';
+                              e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                            }}
+                          >
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                              <span style={{ fontSize: '1.5rem' }}>{link.icon || '🎥'}</span>
+                              <span>Watch on {link.platform || 'Platform'}</span>
+                            </div>
+                            <span style={{ fontSize: '1.25rem' }}>→</span>
+                          </a>
+                        ))}
                       </div>
-                    )}
-                    
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontSize: '1.25rem', fontWeight: '700', color: '#111827', marginBottom: '0.25rem' }}>
-                        {result.original_owner}
-                      </div>
-                      <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                        Uploaded {new Date(result.original_upload_date).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {result.creator_showcase_url && (
-                    <a
-                      href={result.creator_showcase_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{
-                        display: 'inline-block',
-                        padding: '0.625rem 1.25rem',
-                        background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                        color: 'white',
-                        borderRadius: '0.5rem',
-                        textDecoration: 'none',
-                        fontSize: '0.875rem',
-                        fontWeight: '600',
-                        transition: 'transform 0.2s',
-                        cursor: 'pointer'
-                      }}
-                      onMouseEnter={(e) => e.target.style.transform = 'translateY(-2px)'}
-                      onMouseLeave={(e) => e.target.style.transform = 'translateY(0)'}
-                    >
-                      👤 View Creator Profile
-                    </a>
+                    </>
                   )}
-                </div>
-                
-                {/* Social Media Links */}
-                {result.social_media_links && result.social_media_links.length > 0 && (
-                  <div style={{
-                    background: 'white',
-                    padding: '1.5rem',
-                    borderRadius: '0.75rem',
-                    marginBottom: '1.5rem',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                  }}>
-                    <p style={{ 
-                      color: '#374151', 
-                      fontSize: '0.875rem', 
-                      fontWeight: '600', 
-                      marginBottom: '1rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.5px'
-                    }}>
-                      Where This Video Is Posted
-                    </p>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                      {result.social_media_links.map((link, index) => (
-                        <a
-                          key={index}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
+                  
+                  {/* Take me to the Creator */}
+                  {result.creator_showcase_url && (
+                    <>
+                      <p style={{ 
+                        color: '#111827', 
+                        fontSize: '1rem', 
+                        fontWeight: '700', 
+                        marginBottom: '0.75rem',
+                        textAlign: 'left'
+                      }}>
+                        Take me to the Creator
+                      </p>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                        {result.creator_profile_pic ? (
+                          <img 
+                            src={`${process.env.REACT_APP_BACKEND_URL}${result.creator_profile_pic}`}
+                            alt={result.original_owner}
+                            style={{
+                              width: '48px',
+                              height: '48px',
+                              borderRadius: '50%',
+                              objectFit: 'cover',
+                              border: '2px solid #667eea'
+                            }}
+                          />
+                        ) : (
+                          <div style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            background: 'linear-gradient(135deg, #667eea, #764ba2)',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.75rem',
-                            padding: '0.75rem',
-                            background: '#f9fafb',
-                            borderRadius: '0.5rem',
-                            textDecoration: 'none',
-                            color: '#374151',
-                            border: '1px solid #e5e7eb',
-                            transition: 'all 0.2s'
-                          }}
-                          onMouseEnter={(e) => {
-                            e.target.style.background = '#f3f4f6';
-                            e.target.style.borderColor = '#667eea';
-                          }}
-                          onMouseLeave={(e) => {
-                            e.target.style.background = '#f9fafb';
-                            e.target.style.borderColor = '#e5e7eb';
-                          }}
-                        >
-                          <span style={{ fontSize: '1.5rem' }}>{link.icon || '🔗'}</span>
-                          <div style={{ flex: 1 }}>
-                            <div style={{ fontWeight: '600', fontSize: '0.875rem' }}>
-                              {link.platform || 'External Link'}
-                            </div>
-                            <div style={{ fontSize: '0.75rem', color: '#6b7280' }}>
-                              {link.url.length > 50 ? link.url.substring(0, 50) + '...' : link.url}
-                            </div>
+                            justifyContent: 'center',
+                            fontSize: '20px',
+                            color: 'white',
+                            fontWeight: 'bold'
+                          }}>
+                            {result.original_owner?.charAt(0)?.toUpperCase() || '?'}
                           </div>
-                          <span style={{ fontSize: '1.25rem', color: '#667eea' }}>→</span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                        )}
+                        
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827' }}>
+                            {result.original_owner}
+                          </div>
+                          <div style={{ fontSize: '0.8125rem', color: '#6b7280' }}>
+                            Content Creator
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <a
+                        href={result.creator_showcase_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '1rem 1.25rem',
+                          background: 'linear-gradient(135deg, #10b981, #059669)',
+                          color: 'white',
+                          borderRadius: '0.5rem',
+                          textDecoration: 'none',
+                          fontWeight: '600',
+                          fontSize: '0.9375rem',
+                          transition: 'transform 0.2s, box-shadow 0.2s',
+                          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                          cursor: 'pointer'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <span style={{ fontSize: '1.5rem' }}>👤</span>
+                          <span>View {result.original_owner}'s Showcase</span>
+                        </div>
+                        <span style={{ fontSize: '1.25rem' }}>→</span>
+                      </a>
+                    </>
+                  )}
+                </div>
                 
                 {/* Security Alert - Smaller, Less Prominent */}
                 <div style={{
