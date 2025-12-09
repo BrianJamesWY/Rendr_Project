@@ -281,6 +281,79 @@ function Dashboard() {
           </div>
         </div>
         
+        {/* Investor Platform Metrics - Only for Investor/CEO/Admin */}
+        {investorMetrics && (user?.roles?.includes('investor') || user?.roles?.includes('ceo') || user?.roles?.includes('admin')) && (
+          <div style={{ marginBottom: '24px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '12px', padding: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <div>
+                <h2 style={{ fontSize: '20px', fontWeight: '700', color: 'white', marginBottom: '4px' }}>
+                  📊 Platform Metrics
+                </h2>
+                <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)' }}>
+                  Real-time analytics across entire RENDR platform
+                </p>
+              </div>
+              <Link 
+                to="/investor" 
+                style={{ 
+                  padding: '8px 16px', 
+                  background: 'rgba(255,255,255,0.2)', 
+                  color: 'white',
+                  borderRadius: '6px', 
+                  textDecoration: 'none', 
+                  fontSize: '13px', 
+                  fontWeight: '600',
+                  border: '1px solid rgba(255,255,255,0.3)'
+                }}
+              >
+                View Full Dashboard →
+              </Link>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '16px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', marginBottom: '8px' }}>Total Users</div>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'white' }}>
+                  {investorMetrics.users?.total?.toLocaleString() || 0}
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
+                  +{investorMetrics.users?.new || 0} new ({investorMetrics.users?.growth_rate || 0}%)
+                </div>
+              </div>
+              
+              <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '16px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', marginBottom: '8px' }}>Total Videos</div>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'white' }}>
+                  {investorMetrics.videos?.total?.toLocaleString() || 0}
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
+                  +{investorMetrics.videos?.new || 0} new ({investorMetrics.videos?.growth_rate || 0}%)
+                </div>
+              </div>
+              
+              <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '16px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', marginBottom: '8px' }}>Verifications</div>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'white' }}>
+                  {investorMetrics.verifications?.total?.toLocaleString() || 0}
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
+                  {investorMetrics.verifications?.recent || 0} recent
+                </div>
+              </div>
+              
+              <div style={{ background: 'rgba(255,255,255,0.15)', borderRadius: '8px', padding: '16px', backdropFilter: 'blur(10px)' }}>
+                <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.9)', marginBottom: '8px' }}>Security</div>
+                <div style={{ fontSize: '28px', fontWeight: '700', color: 'white' }}>
+                  {(100 - (investorMetrics.security?.blocked_attempts_percentage || 0)).toFixed(1)}%
+                </div>
+                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.8)', marginTop: '4px' }}>
+                  {investorMetrics.security?.duplicate_attempts || 0} blocked
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
         {/* Bounty CTA */}
         <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '8px', padding: '20px', marginBottom: '24px', color: 'white' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
