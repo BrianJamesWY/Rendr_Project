@@ -76,13 +76,26 @@ async def register(user: UserRegister, db=Depends(get_db)):
 @router.post("/login", response_model=UserWithToken)
 async def login(credentials: UserLogin, db=Depends(get_db)):
     """Login user"""
+    print(f"DEBUG: Attempting login for username: {credentials.username}")
     user = await db.users.find_one({"username": credentials.username})
+    print(f"DEBUG: User found: {user is not None}")
     
-    if not user or not verify_password(credentials.password, user["password_hash"]):
+    if not user:
+        print(f"DEBUG: No user found with username: {credentials.username}")
+        raise HTTPException(401, "Invalid username or password")
+    
+    print(f"DEBUG: Has password_hash: {'password_hash' in user}")
+    print(f"DEBUG: Password from request: {repr(credentials.password)}")
+    
+    password_check = verify_password(credentials.password, user["password_hash"])
+    print(f"DEBUG: Password check result: {password_check}")
+    
+    if not password_check:
+        print(f"DEBUG: Password verification failed")
         raise HTTPException(401, "Invalid username or password")
     
     # Debug: print actual user_id
-    print(f"DEBUG LOGIN: username={credentials.username}, _id={user['_id']}")
+    print(f"DEBUG LOGIN SUCCESS: username={credentials.username}, _id={user['_id']}")
     
     # Create token
     token = create_access_token({
