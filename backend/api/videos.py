@@ -298,6 +298,25 @@ async def upload_video(
         print(f"   Tier: {tier}")
         print(f"   Quota: {active_count + 1}/{limit if limit != -1 else 'unlimited'}")
         
+        # Check if user is banned or has strikes
+        user_status = await resubmission_prevention.check_user_status(current_user["user_id"], db)
+        
+        if not user_status["can_upload"]:
+            print(f"\n🚫 UPLOAD BLOCKED: {user_status['message']}")
+            raise HTTPException(
+                403,
+                {
+                    "error": "upload_blocked",
+                    "message": user_status["message"],
+                    "status": user_status["status"],
+                    "strikes": user_status["strikes"],
+                    "ban_expires_at": user_status["ban_expires_at"].isoformat() if user_status["ban_expires_at"] else None
+                }
+            )
+        
+        if user_status["strikes"] > 0:
+            print(f"\n⚠️ USER WARNING: {user_status['strikes']} strikes - {user_status['message']}")
+        
         # STEP 1: Calculate ORIGINAL SHA-256 (pre-watermark) 
         print("\n🔍 STEP 1: Calculating original SHA-256 (pre-watermark)...")
         original_sha256 = comprehensive_hash_service._calculate_file_sha256(file_path)
