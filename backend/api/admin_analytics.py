@@ -165,9 +165,19 @@ async def get_ceo_dashboard(
         {"storage": 1}
     ).to_list(None)
     
-    expired_videos = sum(1 for v in videos_with_storage 
-                        if v.get('storage', {}).get('expires_at') and 
-                        datetime.fromisoformat(v['storage']['expires_at'].replace('Z', '+00:00')) < datetime.now(timezone.utc))
+    # Count expired videos safely
+    expired_videos = 0
+    for v in videos_with_storage:
+        try:
+            storage = v.get('storage', {})
+            if isinstance(storage, dict):
+                expires_at = storage.get('expires_at')
+                if expires_at and isinstance(expires_at, str):
+                    exp_date = datetime.fromisoformat(expires_at.replace('Z', '+00:00'))
+                    if exp_date < datetime.now(timezone.utc):
+                        expired_videos += 1
+        except Exception:
+            pass
     
     # C2PA adoption
     c2pa_videos = await db.videos.count_documents({
