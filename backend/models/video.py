@@ -36,6 +36,9 @@ class VerificationResult(BaseModel):
     frame_comparison: Optional[List[Dict]] = None
     analysis: Optional[str] = None
     creator: Optional[Dict] = None
+    social_media_links: Optional[List[Dict]] = None
+    video_title: Optional[str] = None
+    video_description: Optional[str] = None
 
 class VideoInfo(BaseModel):
     """Video info for showcase display"""
