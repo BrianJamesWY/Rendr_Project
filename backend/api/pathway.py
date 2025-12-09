@@ -40,11 +40,9 @@ class DatabaseQuery(BaseModel):
     projection: Optional[dict] = None
     limit: int = 100
 
-class DatabaseUpdate(BaseModel):
+class ImpersonateRequest(BaseModel):
     key: str
-    collection: str
-    query: dict
-    update: dict
+    user_id: str
 
 def verify_access(key: str):
     """Verify access key"""
