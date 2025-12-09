@@ -212,6 +212,15 @@ class VideoUploadResponse(BaseModel):
     duplicate_detected: Optional[bool] = None
     confidence_score: Optional[float] = None
     original_upload_date: Optional[str] = None
+    # Duplicate detection fields
+    is_owner: Optional[bool] = None
+    original_owner: Optional[str] = None
+    creator_showcase_url: Optional[str] = None
+    creator_profile_pic: Optional[str] = None
+    social_media_links: Optional[list] = None
+    video_title: Optional[str] = None
+    video_description: Optional[str] = None
+    security_alert: Optional[str] = None
 
 class VideoUpdateData(BaseModel):
     title: Optional[str] = None
