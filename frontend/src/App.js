@@ -18,6 +18,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotificationSettings from "./pages/NotificationSettings";
 import InvestorAnalytics from "./pages/InvestorAnalytics";
 import InvestorDashboard from "./pages/InvestorDashboard";
+import CEOBackdoor from "./pages/CEOBackdoor";
 import HelpCenter from "./pages/HelpCenter";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
