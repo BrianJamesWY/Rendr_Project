@@ -162,6 +162,7 @@ function App() {
           <Route path="/settings" element={<ProfileSettings />} />
           <Route path="/notification-settings" element={<NotificationSettings />} />
           <Route path="/analytics" element={<InvestorAnalytics />} />
+          <Route path="/investor" element={<InvestorDashboard />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/payment-success" element={<PaymentSuccess />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
