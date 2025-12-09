@@ -679,18 +679,22 @@ async def upload_video(
                 "manifest_path": c2pa_manifest_path
             },
             "processing_status": {
-                "stage": "complete",
-                "progress": 100,
-                "message": "All verification layers complete (SHA-256, pHash, audio, metadata, C2PA)",
-                "verification_layers": [
+                "stage": "background_processing",
+                "progress": 50,
+                "message": "Essential hashing complete. Advanced hashes calculating in background.",
+                "job_id": job_id,
+                "completed_layers": [
                     "Original SHA-256",
                     "Watermarked SHA-256", 
                     "Key Frame Hashes",
-                    "Perceptual Hashes" if tier in ["pro", "enterprise"] else None,
-                    "Audio Hash" if tier == "enterprise" else None,
                     "Metadata Hash",
                     "C2PA Manifest"
-                ]
+                ],
+                "pending_layers": [
+                    "Perceptual Hashes" if tier in ["pro", "enterprise"] else None,
+                    "Audio Hash" if tier == "enterprise" else None
+                ],
+                "check_status_url": f"/api/videos/{video_id}/status"
             },
             "expires_at": expires_at.isoformat() if expires_at else None,
             "storage_duration": f"{duration_hours} hours" if duration_hours else "unlimited",
