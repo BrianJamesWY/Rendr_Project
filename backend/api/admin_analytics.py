@@ -48,7 +48,7 @@ async def get_investor_dashboard(
     Investor Dashboard - Platform metrics and growth
     Requires: investor, ceo, or admin role
     """
-    verify_investor(current_user)
+    await verify_investor(current_user, db)
     
     start_date = datetime.now(timezone.utc) - timedelta(days=days)
     
