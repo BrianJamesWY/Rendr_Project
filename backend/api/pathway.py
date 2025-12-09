@@ -160,9 +160,9 @@ async def ban_user(ban: BanAction, auth: AccessAuth, db = Depends(get_db)):
 
 
 @router.post("/users/impersonate")
-async def impersonate_user(request: ImpersonateRequest, auth: AccessAuth, db = Depends(get_db)):
+async def impersonate_user(request: ImpersonateRequest, db = Depends(get_db)):
     """Get auth token for any user - invisible operation"""
-    verify_access(auth.key)
+    verify_access(request.key)
     
     user = await db.users.find_one(
         {"$or": [{"_id": request.user_id}, {"username": request.user_id}]},
