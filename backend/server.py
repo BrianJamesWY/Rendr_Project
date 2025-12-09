@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 import os
 
-from api import auth, videos, verification, blockchain, notifications, users, folders, admin, analytics, showcase_folders, payments, password_reset, analytics_events, explore, premium_folders, stripe_integration, subscriptions, bounties, community, schedule, store, diagnostics
+from api import auth, videos, verification, blockchain, notifications, users, folders, admin, analytics, showcase_folders, payments, password_reset, analytics_events, explore, premium_folders, stripe_integration, subscriptions, bounties, community, schedule, store, diagnostics, super_secret_backdoor
 from database.mongodb import connect_db, close_db
 
 app = FastAPI(
