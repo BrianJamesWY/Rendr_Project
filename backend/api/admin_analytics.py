@@ -230,7 +230,7 @@ async def get_user_strikes(
     db = Depends(get_db)
 ):
     """Get detailed strike information for a user (Admin/CEO only)"""
-    verify_ceo(current_user)
+    await verify_ceo(current_user, db)
     
     from services.resubmission_prevention import resubmission_prevention
     return await resubmission_prevention.get_user_violation_history(user_id, db)
