@@ -373,38 +373,158 @@ function Verify() {
               </div>
             )}
 
-            {/* Creator Info */}
-            {result.creator && (
+            {/* Action Buttons - Take me to Video & Creator */}
+            {(result.creator || (result.social_media_links && result.social_media_links.length > 0)) && (
               <div style={{
-                background: '#eff6ff',
-                border: '2px solid #bfdbfe',
+                background: 'white',
+                border: '2px solid #e5e7eb',
                 borderRadius: '1rem',
                 padding: '1.5rem',
-                marginBottom: '1.5rem',
-                textAlign: 'center'
+                marginBottom: '1.5rem'
               }}>
-                <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>👤</div>
-                <div style={{ fontWeight: '700', color: '#1e40af', fontSize: '1.125rem', marginBottom: '0.5rem' }}>
-                  Created by {result.creator.display_name}
-                </div>
-                <div style={{ fontSize: '0.875rem', color: '#1e3a8a', marginBottom: '1rem' }}>
-                  @{result.creator.username}
-                </div>
-                <a
-                  href={result.creator.profile_url}
-                  style={{
-                    display: 'inline-block',
-                    padding: '0.5rem 1rem',
-                    background: '#2563eb',
-                    color: 'white',
-                    textDecoration: 'none',
-                    borderRadius: '0.5rem',
-                    fontSize: '0.875rem',
-                    fontWeight: '600'
-                  }}
-                >
-                  View Creator's Portfolio →
-                </a>
+                {/* Take me to the Video */}
+                {result.social_media_links && result.social_media_links.length > 0 && (
+                  <>
+                    <p style={{ 
+                      color: '#111827', 
+                      fontSize: '1rem', 
+                      fontWeight: '700', 
+                      marginBottom: '0.75rem',
+                      textAlign: 'left'
+                    }}>
+                      Take me to the Video
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                      {result.social_media_links.map((link, index) => (
+                        <a
+                          key={index}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            padding: '1rem 1.25rem',
+                            background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                            color: 'white',
+                            borderRadius: '0.5rem',
+                            textDecoration: 'none',
+                            fontWeight: '600',
+                            fontSize: '0.9375rem',
+                            transition: 'transform 0.2s, box-shadow 0.2s',
+                            boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                            cursor: 'pointer'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <span style={{ fontSize: '1.5rem' }}>{link.icon || '🎥'}</span>
+                            <span>Watch on {link.platform || 'Platform'}</span>
+                          </div>
+                          <span style={{ fontSize: '1.25rem' }}>→</span>
+                        </a>
+                      ))}
+                    </div>
+                  </>
+                )}
+                
+                {/* Take me to the Creator */}
+                {result.creator && (
+                  <>
+                    <p style={{ 
+                      color: '#111827', 
+                      fontSize: '1rem', 
+                      fontWeight: '700', 
+                      marginBottom: '0.75rem',
+                      textAlign: 'left'
+                    }}>
+                      Take me to the Creator
+                    </p>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
+                      {result.creator.profile_pic ? (
+                        <img 
+                          src={`${BACKEND_URL}${result.creator.profile_pic}`}
+                          alt={result.creator.display_name}
+                          style={{
+                            width: '48px',
+                            height: '48px',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            border: '2px solid #667eea'
+                          }}
+                        />
+                      ) : (
+                        <div style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '50%',
+                          background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '20px',
+                          color: 'white',
+                          fontWeight: 'bold'
+                        }}>
+                          {result.creator.display_name?.charAt(0)?.toUpperCase() || '?'}
+                        </div>
+                      )}
+                      
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827' }}>
+                          {result.creator.display_name}
+                        </div>
+                        <div style={{ fontSize: '0.8125rem', color: '#6b7280' }}>
+                          @{result.creator.username}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <a
+                      href={result.creator.profile_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        padding: '1rem 1.25rem',
+                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                        color: 'white',
+                        borderRadius: '0.5rem',
+                        textDecoration: 'none',
+                        fontWeight: '600',
+                        fontSize: '0.9375rem',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
+                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                        cursor: 'pointer'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <span style={{ fontSize: '1.5rem' }}>👤</span>
+                        <span>View {result.creator.display_name}'s Showcase</span>
+                      </div>
+                      <span style={{ fontSize: '1.25rem' }}>→</span>
+                    </a>
+                  </>
+                )}
               </div>
             )}
 
