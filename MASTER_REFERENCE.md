@@ -43,8 +43,10 @@ EMERGENT_UNIVERSAL_KEY=[key]
 | `watermark.py` | Video watermarking | `apply_watermark()` | `from services.watermark import watermark_processor` |
 | `blockchain_service.py` | Blockchain timestamping | `timestamp_video()` | `from services.blockchain_service import blockchain_service` |
 | `notification_service.py` | Email/SMS notifications | `send_video_ready_notification()` | `from services.notification_service import notification_service` |
-| `async_video_processor.py` | Background processing (NOT FULLY IMPLEMENTED) | `queue_video_processing()` | `from services.async_video_processor import async_video_processor` |
+| `async_video_processor.py` | Background processing (LEGACY - use redis_queue_service instead) | `queue_video_processing()` | `from services.async_video_processor import async_video_processor` |
 | `resubmission_prevention.py` | Strike/ban system | `check_user_status()`, `record_duplicate_attempt()` | `from services.resubmission_prevention import resubmission_prevention` |
+| `redis_queue_service.py` | Redis Queue management | `enqueue_video_processing()`, `get_job_status()` | `from services.redis_queue_service import redis_queue_service` |
+| `background_tasks.py` | Worker tasks (run by RQ workers) | `process_video_hashes()`, `cleanup_expired_videos()` | Direct execution by workers |
 
 ### Backend API Routes (`/app/backend/api/`)
 
