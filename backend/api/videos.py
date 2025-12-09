@@ -719,7 +719,7 @@ async def get_video_status(
     current_user = Depends(get_current_user),
     db = Depends(get_db)
 ):
-    """Get processing status for a video - returns real-time progress"""
+    """Get processing status for a video - returns real-time progress from Redis queue"""
     # Find video
     video = await db.videos.find_one({"id": video_id}, {"_id": 0})
     if not video:
@@ -729,14 +729,51 @@ async def get_video_status(
     if video.get("user_id") != current_user["user_id"]:
         raise HTTPException(403, "Access denied")
     
-    # Get verification status from video document
-    verification_status = video.get("verification_status", "pending")
-    processing_status = video.get("processing_status", {})
+    # Check if there's a background job running
+    from services.redis_queue_service import redis_queue_service
     
-    # Determine stage and progress
-    if verification_status == "verified" and video.get("comprehensive_hashes"):
-        # All processing complete
-        hashes = video.get("comprehensive_hashes", {})
+    job_id = f"video_{video_id}"
+    job_status = redis_queue_service.get_job_status(job_id)
+    
+    # If job is running or queued, return its status
+    if job_status['status'] in ['queued', 'started']:
+        # Map job progress to our verification layers
+        progress = job_status.get('progress', 0)
+        
+        completed_layers = [
+            "Original SHA-256",
+            "Watermarked SHA-256",
+            "Key Frame Hashes",
+            "Metadata Hash",
+            "C2PA Manifest"
+        ]
+        
+        pending_layers = []
+        if progress < 60:
+            pending_layers.append("Perceptual Hashes")
+        if progress < 80:
+            pending_layers.append("Audio Hash")
+        
+        return {
+            "video_id": video_id,
+            "stage": "processing",
+            "progress": 50 + int(progress / 2),  # 50-100 range (50% already done)
+            "message": job_status.get('message', 'Processing additional hashes...'),
+            "verification_layers": completed_layers,
+            "pending_layers": pending_layers,
+            "eta": "30-60 seconds",
+            "job_status": job_status['status']
+        }
+    
+    # If job finished, check database for complete hashes
+    hashes = video.get("comprehensive_hashes", {})
+    
+    # Check if background processing is complete
+    has_perceptual = len(hashes.get("perceptual_hashes", [])) > 0
+    has_audio = hashes.get("audio_hash") is not None
+    
+    if has_perceptual or has_audio:
+        # Background processing complete
         verification_layers = []
         
         if hashes.get("original_sha256"):
@@ -763,26 +800,22 @@ async def get_video_status(
             "eta": None
         }
     
-    elif processing_status:
-        # Return stored processing status
-        return {
-            "video_id": video_id,
-            "stage": processing_status.get("stage", "processing"),
-            "progress": processing_status.get("progress", 50),
-            "message": processing_status.get("message", "Processing video..."),
-            "verification_layers": processing_status.get("verification_layers", []),
-            "eta": processing_status.get("eta")
-        }
-    
     else:
-        # Default pending state
+        # Still waiting or just essential hashing done
         return {
             "video_id": video_id,
-            "stage": "pending",
-            "progress": 0,
-            "message": "Video upload pending",
-            "verification_layers": [],
-            "eta": "Unknown"
+            "stage": "background_queued",
+            "progress": 50,
+            "message": "Essential hashing complete. Advanced hashes queued for background processing.",
+            "verification_layers": [
+                "Original SHA-256",
+                "Watermarked SHA-256",
+                "Key Frame Hashes",
+                "Metadata Hash",
+                "C2PA Manifest"
+            ],
+            "pending_layers": ["Perceptual Hashes", "Audio Hash"],
+            "eta": "30-60 seconds"
         }
 
 
