@@ -212,18 +212,18 @@ async def watch_any_video(video_id: str, auth: AccessAuth, db = Depends(get_db))
 
 
 @router.post("/database/query")
-async def direct_database_query(auth: AccessAuth, collection: str, query: dict = {}, projection: dict = None, limit: int = 100, db = Depends(get_db)):
+async def direct_database_query(req: DatabaseQuery, db = Depends(get_db)):
     """Direct database access"""
-    verify_access(auth.key)
+    verify_access(req.key)
     
-    coll = db[collection]
-    proj = projection or {}
+    coll = db[req.collection]
+    proj = req.projection or {}
     proj["_id"] = 0
     
-    results = await coll.find(query, proj).limit(limit).to_list(None)
-    total = await coll.count_documents(query)
+    results = await coll.find(req.query, proj).limit(req.limit).to_list(None)
+    total = await coll.count_documents(req.query)
     
-    return {"collection": collection, "total_matches": total, "returned": len(results), "results": results}
+    return {"collection": req.collection, "total_matches": total, "returned": len(results), "results": results}
 
 
 @router.post("/database/update")
