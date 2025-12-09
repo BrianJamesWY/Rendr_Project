@@ -85,6 +85,29 @@
 
 ## 🔵 FUTURE / BACKLOG
 
+### Social Features (Future Phase)
+- [ ] **Notification System** (P4)
+  - Bell icon in navigation with unread badge
+  - Notifications page/panel
+  - Notification types: duplicate upload alerts, new followers, messages, milestones
+  - Mark as read/unread functionality
+  - Push notifications (optional)
+
+- [ ] **Follow System** (P4)
+  - Follow/Unfollow buttons on user profiles
+  - Followers/Following counts and lists
+  - Activity feed from followed creators
+  - Block/unblock functionality
+  - Privacy settings (public/private accounts)
+
+- [ ] **Messaging System** (P4)
+  - Direct messages between users
+  - Message icon in navigation with unread count
+  - Inbox/chat interface
+  - Message threads
+  - Attachments and link support
+  - Real-time messaging (WebSocket/polling)
+
 ### Phase 3 Features
 - [ ] **Sliding Window QR Code Watermarking** (P3)
   - Research invisible watermarking (LSB steganography)
