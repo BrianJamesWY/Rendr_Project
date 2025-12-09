@@ -453,20 +453,39 @@ async def upload_video(
         final_path = f"{upload_dir}/{video_id}.mp4"
         os.rename(final_video_path, final_path)
         
-        # STEP 5: Calculate ALL hashes using comprehensive service
-        print("\n🔐 STEP 5: Calculating comprehensive hashes...")
-        comprehensive_hashes = comprehensive_hash_service.calculate_all_hashes(
-            video_path=final_path,
-            verification_code=verification_code,
-            tier=tier,
-            original_video_path=file_path if not watermark_success else None,
-            is_watermarked=watermark_success
-        )
-        print(f"   ✅ All hashes calculated")
-        print(f"   ✅ Original SHA-256: {comprehensive_hashes['original_sha256'][:32] if comprehensive_hashes['original_sha256'] else 'N/A'}...")
-        print(f"   ✅ Watermarked SHA-256: {comprehensive_hashes['watermarked_sha256'][:32] if comprehensive_hashes['watermarked_sha256'] else 'N/A'}...")
-        print(f"   ✅ Key frames: {len(comprehensive_hashes['key_frame_hashes'])}/10")
-        print(f"   ✅ Perceptual hashes: {len(comprehensive_hashes['perceptual_hashes'])}")
+        # STEP 5: Calculate FAST hashes only (SHA-256, key frames)
+        # Slow hashes (perceptual, audio) will be done in background via Redis
+        print("\n🔐 STEP 5: Calculating essential hashes (fast)...")
+        
+        # Calculate only the quick hashes
+        original_sha256 = comprehensive_hash_service._calculate_file_sha256(file_path)
+        print(f"   ✅ Original SHA-256: {original_sha256[:32]}...")
+        
+        watermarked_sha256 = comprehensive_hash_service._calculate_file_sha256(final_path)
+        print(f"   ✅ Watermarked SHA-256: {watermarked_sha256[:32]}...")
+        
+        # Key frame hashes (relatively fast - 10 frames)
+        key_frame_hashes = comprehensive_hash_service._calculate_key_frame_hashes(final_path)
+        print(f"   ✅ Key frames: {len(key_frame_hashes)}/10")
+        
+        # Extract metadata
+        video_metadata = comprehensive_hash_service._extract_metadata(final_path)
+        metadata_hash = comprehensive_hash_service._create_metadata_hash(video_metadata)
+        print(f"   ✅ Metadata hash: {metadata_hash[:32]}...")
+        
+        # Create partial comprehensive_hashes object (background will complete it)
+        comprehensive_hashes = {
+            'original_sha256': original_sha256,
+            'watermarked_sha256': watermarked_sha256,
+            'key_frame_hashes': key_frame_hashes,
+            'perceptual_hashes': [],  # Will be calculated in background
+            'audio_hash': None,        # Will be calculated in background
+            'metadata_hash': metadata_hash,
+            'master_hash': original_sha256,  # Temporary, will be updated
+            'video_metadata': video_metadata
+        }
+        
+        print(f"   ⏱️ Fast hashing complete! Background processing queued for perceptual & audio hashes")
         
         # STEP 6: Create C2PA Manifest
         print("\n📜 STEP 6: Creating C2PA manifest...")
