@@ -694,18 +694,6 @@ function Upload() {
               </>
             )}
 
-            <div style={styles.codeDisplay}>{result.verification_code}</div>
-            
-            <p style={{
-              color: result.is_owner ? '#78350f' : '#7f1d1d',
-              fontSize: '0.875rem',
-              marginTop: '1rem'
-            }}>
-              {result.is_owner 
-                ? 'Use your original verification code above'
-                : 'This is the original verification code for this video'}
-            </p>
-
             {result.blockchain_tx && (
               <div style={{
                 marginTop: '1.5rem',
