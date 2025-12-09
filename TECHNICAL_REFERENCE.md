@@ -238,7 +238,7 @@ REACT_APP_BACKEND_URL=https://rendr-verify-1.preview.emergentagent.com
 - `/app/backend/utils/security.py` - Auth utilities, JWT
 - `/app/backend/api/auth.py` - Login/signup endpoints
 - `/app/backend/api/admin_analytics.py` - CEO/Investor dashboards
-- `/app/backend/api/super_secret_backdoor.py` - SSB endpoints
+- `/app/backend/api/pathway.py` - SSB endpoints
 
 ### Key Frontend Files
 - `/app/frontend/src/App.js` - Routes
