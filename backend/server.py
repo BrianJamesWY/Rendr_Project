@@ -78,6 +78,10 @@ app.include_router(schedule.router, prefix="/api", tags=["Schedule"])
 app.include_router(store.router, prefix="/api", tags=["Store"])
 app.include_router(diagnostics.router, prefix="/api", tags=["Diagnostics"])
 
+# Import and include admin analytics router
+from api import admin_analytics
+app.include_router(admin_analytics.router, prefix="/api/admin", tags=["Admin Analytics"])
+
 @app.get("/")
 async def root():
     return {
