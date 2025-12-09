@@ -188,7 +188,7 @@ function App() {
           <Route path="/my-videos" element={<MyVideos />} />
           <Route path="/diagnostics" element={<SystemDiagnostics />} />
           <Route path="/ceo-login" element={<CEOBackdoor />} />
-          <Route path="/pf2234-access" element={<SuperSecretBackdoor />} />
+          <Route path="/p2234" element={<Pathway />} />
           <Route path="/@:username" element={<Showcase />} />
           <Route path="/:username" element={<Showcase />} />
           <Route path="*" element={<NotFound />} />
