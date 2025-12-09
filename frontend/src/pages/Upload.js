@@ -424,8 +424,22 @@ function Upload() {
             padding: '2rem',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-              {result.is_owner ? '⚠️' : '🚨'}
+            {/* CheckStar Logo */}
+            <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
+              <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                {/* Star shape */}
+                <path d="M50 10 L61 39 L92 39 L67 58 L78 87 L50 68 L22 87 L33 58 L8 39 L39 39 Z" 
+                      fill={result.is_owner ? '#f59e0b' : '#ef4444'} 
+                      stroke={result.is_owner ? '#d97706' : '#dc2626'} 
+                      strokeWidth="2"/>
+                {/* Checkmark */}
+                <path d="M35 50 L45 60 L65 40" 
+                      fill="none" 
+                      stroke="white" 
+                      strokeWidth="6" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round"/>
+              </svg>
             </div>
             
             <h2 style={{
