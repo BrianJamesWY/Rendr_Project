@@ -339,6 +339,16 @@ async def upload_video(
             if isinstance(upload_date, datetime):
                 upload_date = upload_date.isoformat()
             
+            # Get creator info from users collection
+            original_user_id = matching_video.get('user_id')
+            creator_info = await db.users.find_one({"user_id": original_user_id}, {"_id": 0})
+            
+            # Check if current user is the owner
+            is_owner = (original_user_id == current_user["user_id"])
+            
+            # Get social media links for this video (from edit video modal)
+            social_links = matching_video.get('social_media_links', [])
+            
             return {
                 "video_id": matching_video['id'],
                 "verification_code": matching_video['verification_code'],
@@ -346,7 +356,15 @@ async def upload_video(
                 "message": "This video was already uploaded. Returning existing verification code.",
                 "duplicate_detected": True,
                 "confidence_score": confidence,
-                "original_upload_date": upload_date
+                "original_upload_date": upload_date,
+                "is_owner": is_owner,
+                "original_owner": creator_info.get('username', 'Unknown') if creator_info else 'Unknown',
+                "creator_showcase_url": f"/{creator_info.get('username', '')}" if creator_info else None,
+                "creator_profile_pic": creator_info.get('profile', {}).get('profilePic') if creator_info else None,
+                "social_media_links": social_links,
+                "video_title": matching_video.get('title', 'Untitled Video'),
+                "video_description": matching_video.get('description', ''),
+                "security_alert": "Uploading someone else's verified content may violate copyright and platform terms of service."
             }
         
         # STEP 3: NEW VIDEO - Generate verification code
