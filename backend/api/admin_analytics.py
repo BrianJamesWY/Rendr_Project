@@ -138,7 +138,7 @@ async def get_ceo_dashboard(
     CEO Dashboard - Comprehensive system stats
     Requires: CEO role only
     """
-    verify_ceo(current_user)
+    await verify_ceo(current_user, db)
     
     # Get all data from investor dashboard
     investor_data = await get_investor_dashboard(30, current_user, db)
