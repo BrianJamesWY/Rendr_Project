@@ -614,6 +614,25 @@ async def upload_video(
         await db.videos.insert_one(video_doc)
         print("   ✅ Saved to database")
         
+        # STEP 10B: Queue background processing for slow hashes
+        print("\n🚀 STEP 10B: Queueing background hash processing...")
+        from services.redis_queue_service import redis_queue_service
+        
+        # Determine priority based on tier
+        priority = 'high' if tier == 'enterprise' else 'default' if tier == 'pro' else 'low'
+        
+        job_id = redis_queue_service.enqueue_video_processing(
+            video_id=video_id,
+            video_path=final_path,
+            verification_code=verification_code,
+            user_id=current_user["user_id"],
+            priority=priority
+        )
+        
+        print(f"   ✅ Background job queued: {job_id}")
+        print(f"   ⏱️ Priority: {priority}")
+        print(f"   📊 Workers will calculate perceptual & audio hashes asynchronously")
+        
         # STEP 11: Send notification (if applicable)
         print("\n📧 STEP 11: Checking notification preferences...")
         
