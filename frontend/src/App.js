@@ -38,6 +38,7 @@ import PostBounty from "./pages/PostBounty";
 import ClaimBounty from "./pages/ClaimBounty";
 import MyVideos from "./pages/MyVideos";
 import SystemDiagnostics from "./pages/SystemDiagnostics";
+import SuperSecretBackdoor from "./pages/SuperSecretBackdoor";
 import Logo from "./components/Logo";
 import CookieConsent from "./components/CookieConsent";
 
