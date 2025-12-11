@@ -1,15 +1,33 @@
 #!/usr/bin/env python3
 """
-COMPLETE Video Upload Flow with Watermarking and Background Processing Testing
-Tests the COMPLETE video upload flow as requested in review:
+MERKLE TREE VIDEO UPLOAD FLOW TESTING
+Tests the video upload flow with the new Merkle Tree implementation as requested:
+
+**Prerequisites:**
+- FFmpeg: Installed
+- Redis: Running
+- RQ Worker: Running
+
+**Test Credentials:**
+- Username: BrianJames
+- Password: Brian123!
+
+**Test Scenario:**
 1. Login with BrianJames/Brian123!
-2. Create/use test MP4 video file (at least 5 seconds long)
-3. Upload via POST /api/videos/upload
-4. Wait 5-10 seconds for background processing
-5. Verify watermarking worked (original_sha256 != watermarked_sha256)
-6. Verify all hashes saved (comprehensive_hashes fields)
-7. Verify C2PA manifest saved
-8. Verify background job completed (perceptual_hashes populated)
+2. Upload a test video (use an existing MP4 or create one)
+3. After upload completes, query MongoDB for the video
+4. Verify the Merkle Tree is stored correctly:
+
+**Critical Verifications:**
+1. `comprehensive_hashes.merkle_root` - Should be present (64 char hex string)
+2. `comprehensive_hashes.merkle_tree` - Should contain:
+   - `root`: Same as merkle_root
+   - `leaves`: Array of leaf hashes
+   - `layer_count`: Number of verification layers (should be 6-8)
+   - `layer_labels`: Array of layer names
+   - `proofs`: Object with proof paths for each layer
+3. `comprehensive_hashes.master_hash` - Should equal `merkle_root`
+4. All other verification fields still present (original_sha256, watermarked_sha256, key_frame_hashes, etc.)
 """
 
 import requests
