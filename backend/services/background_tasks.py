@@ -181,8 +181,9 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
                         "completed_at": datetime.now(timezone.utc)
                     },
                     
-                    # Mark as fully verified
-                    "verification_status": "fully_verified"
+                    # Mark as fully verified - NOW appears in dashboard
+                    "verification_status": "fully_verified",
+                    "full_verification_status": "complete"
                 }
             }
         )
