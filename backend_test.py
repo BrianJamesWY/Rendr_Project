@@ -251,8 +251,63 @@ class VideoVerificationTester:
             self.log_test("MongoDB Connection", False, f"Failed to connect to MongoDB: {str(e)}")
             return False
 
+    def test_watermarking_verification(self) -> bool:
+        """CRITICAL TEST: Verify watermarking worked (original_sha256 != watermarked_sha256)"""
+        if not self.uploaded_video_id:
+            self.log_test("Watermarking Verification", False, "No uploaded video ID available")
+            return False
+        
+        if self.db is None:
+            self.log_test("Watermarking Verification", False, "No MongoDB connection available")
+            return False
+        
+        try:
+            # Query MongoDB directly for the uploaded video
+            video_doc = self.db.videos.find_one({"id": self.uploaded_video_id})
+            
+            if not video_doc:
+                # Try with _id field as well
+                video_doc = self.db.videos.find_one({"_id": self.uploaded_video_id})
+            
+            if not video_doc:
+                self.log_test("Watermarking Verification", False, "Uploaded video not found in MongoDB")
+                return False
+            
+            # Get comprehensive_hashes
+            comprehensive_hashes = video_doc.get("comprehensive_hashes", {})
+            original_sha = comprehensive_hashes.get("original_sha256")
+            watermarked_sha = comprehensive_hashes.get("watermarked_sha256")
+            
+            print(f"\n🔍 WATERMARKING VERIFICATION:")
+            print(f"   Original SHA256:    {original_sha[:32] if original_sha else 'MISSING'}...")
+            print(f"   Watermarked SHA256: {watermarked_sha[:32] if watermarked_sha else 'MISSING'}...")
+            
+            if not original_sha:
+                self.log_test("Watermarking Verification", False, "original_sha256 missing from database")
+                return False
+            
+            if not watermarked_sha:
+                self.log_test("Watermarking Verification", False, "watermarked_sha256 missing from database")
+                return False
+            
+            # CRITICAL CHECK: Hashes should be different (watermarking applied)
+            hashes_different = original_sha != watermarked_sha
+            
+            if hashes_different:
+                self.log_test("Watermarking Verification", True, 
+                            f"✅ WATERMARKING SUCCESSFUL: Hashes are different (watermark applied)")
+                return True
+            else:
+                self.log_test("Watermarking Verification", False, 
+                            f"❌ WATERMARKING FAILED: Hashes are identical (no watermark applied)")
+                return False
+                
+        except Exception as e:
+            self.log_test("Watermarking Verification", False, f"Watermarking verification error: {str(e)}")
+            return False
+
     def test_database_verification(self) -> bool:
-        """Test database document structure by directly querying MongoDB"""
+        """Test all hashes saved to database correctly"""
         if not self.uploaded_video_id:
             self.log_test("Database Verification", False, "No uploaded video ID available")
             return False
@@ -284,8 +339,11 @@ class VideoVerificationTester:
                 "original_sha256_present": comprehensive_hashes.get("original_sha256") is not None,
                 "original_sha256_not_empty": bool(comprehensive_hashes.get("original_sha256", "").strip()),
                 "watermarked_sha256_present": comprehensive_hashes.get("watermarked_sha256") is not None,
+                "watermarked_sha256_not_empty": bool(comprehensive_hashes.get("watermarked_sha256", "").strip()),
                 "key_frame_hashes_present": isinstance(comprehensive_hashes.get("key_frame_hashes"), list),
                 "key_frame_hashes_count": len(comprehensive_hashes.get("key_frame_hashes", [])) >= 8,  # Should have ~10
+                "perceptual_hashes_present": isinstance(comprehensive_hashes.get("perceptual_hashes"), list),
+                "audio_hash_present": comprehensive_hashes.get("audio_hash") is not None,
                 "metadata_hash_present": comprehensive_hashes.get("metadata_hash") is not None,
                 "master_hash_present": comprehensive_hashes.get("master_hash") is not None
             }
@@ -310,6 +368,10 @@ class VideoVerificationTester:
                 print(f"   📝 watermarked_sha256: {comprehensive_hashes['watermarked_sha256'][:32]}...")
             if comprehensive_hashes.get("key_frame_hashes"):
                 print(f"   📝 key_frame_hashes count: {len(comprehensive_hashes['key_frame_hashes'])}")
+            if comprehensive_hashes.get("perceptual_hashes"):
+                print(f"   📝 perceptual_hashes count: {len(comprehensive_hashes['perceptual_hashes'])}")
+            if comprehensive_hashes.get("audio_hash"):
+                print(f"   📝 audio_hash: {comprehensive_hashes['audio_hash'][:32]}...")
             if comprehensive_hashes.get("metadata_hash"):
                 print(f"   📝 metadata_hash: {comprehensive_hashes['metadata_hash'][:32]}...")
             if comprehensive_hashes.get("master_hash"):
@@ -334,7 +396,7 @@ class VideoVerificationTester:
             
             if original_sha and watermarked_sha:
                 hashes_different = original_sha != watermarked_sha
-                print(f"\n🔍 HASH COMPARISON:")
+                print(f"\n🔍 WATERMARKING VERIFICATION:")
                 print(f"   {'✅' if hashes_different else '❌'} original_sha256 != watermarked_sha256: {hashes_different}")
             
             # Overall assessment
@@ -345,7 +407,10 @@ class VideoVerificationTester:
                 details = "✅ ALL VERIFICATION DATA CORRECTLY SAVED TO DATABASE"
                 details += f"\n   - comprehensive_hashes: ALL FIELDS PRESENT"
                 details += f"\n   - original_sha256: {'NOT EMPTY' if critical_checks['original_sha256_not_empty'] else 'EMPTY/NULL'}"
+                details += f"\n   - watermarked_sha256: {'NOT EMPTY' if critical_checks['watermarked_sha256_not_empty'] else 'EMPTY/NULL'}"
                 details += f"\n   - key_frame_hashes: {len(comprehensive_hashes.get('key_frame_hashes', []))} hashes"
+                details += f"\n   - perceptual_hashes: {len(comprehensive_hashes.get('perceptual_hashes', []))} hashes"
+                details += f"\n   - audio_hash: {'PRESENT' if comprehensive_hashes.get('audio_hash') else 'MISSING'}"
                 details += f"\n   - c2pa_manifest: ALL FIELDS PRESENT"
                 
                 self.log_test("Database Verification", True, details)
