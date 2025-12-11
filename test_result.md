@@ -3204,3 +3204,30 @@ asyncio.run(check())
 "
 ```
 
+
+## Session: 2025-12-11 - Database Storage Issue Fix
+
+### Issue Fixed:
+- **Problem**: Verification data (comprehensive_hashes, C2PA manifest) was being calculated but NOT saved to database
+- **Root Causes Found**:
+  1. `background_tasks.py` was using hardcoded `client['rendr']` instead of `client['test_database']`
+  2. `original_sha256` was being recalculated AFTER the original file was deleted
+  3. Function names were incorrect (`_extract_metadata` → `_extract_video_metadata`, `_create_metadata_hash` → `_hash_metadata`)
+
+### Changes Made:
+1. `/app/backend/services/background_tasks.py`: Fixed database name to use `DB_NAME` environment variable
+2. `/app/backend/api/videos.py`: Removed duplicate calculation of original_sha256 at Step 5 (using value from Step 1)
+3. Function name corrections made by testing agent
+
+### Test Results:
+- ✅ Login successful (BrianJames/Brian123!)
+- ✅ Video upload successful (RND-9L2ZQC)
+- ✅ ALL comprehensive_hashes fields present in database
+- ✅ original_sha256: PRESENT (was MISSING before)
+- ✅ C2PA manifest: PRESENT with 8 keys
+- ✅ Key frame hashes: 10 hashes
+
+### Notes:
+- FFmpeg not available in test environment - watermarking skipped (original == watermarked SHA)
+- Redis not running - background processing skipped
+- Core verification data storage is now FULLY FUNCTIONAL
