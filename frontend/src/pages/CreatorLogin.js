@@ -30,13 +30,23 @@ function CreatorLogin() {
         password
       });
 
-      console.log('✅ Login response received:', { username: response.data.username });
+      console.log('✅ Login response received:', { username: response.data.username, account_type: response.data.account_type });
 
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('rendr_username', response.data.username);
       
-      console.log('✅ Token stored, navigating to dashboard...');
-      navigate('/dashboard');
+      // Redirect based on account type
+      const accountType = response.data.account_type;
+      if (accountType === 'investor') {
+        console.log('✅ Investor login, navigating to investor dashboard...');
+        navigate('/investor');
+      } else if (accountType === 'ceo') {
+        console.log('✅ CEO login, navigating to CEO dashboard...');
+        navigate('/ceo-login');
+      } else {
+        console.log('✅ Token stored, navigating to dashboard...');
+        navigate('/dashboard');
+      }
     } catch (err) {
       console.error('❌ Login failed:', err);
       console.error('Error details:', {
