@@ -32,8 +32,8 @@ function Upload() {
   const handleQuickLogin = async () => {
     try {
       const response = await axios.post(`${BACKEND_URL}/api/auth/login`, {
-        username: 'testcreator',
-        password: 'test123'
+        username: 'BrianJames',
+        password: 'Brian123!'
       });
       
       if (response.data.token) {
@@ -42,6 +42,19 @@ function Upload() {
       }
     } catch (err) {
       console.error('Login failed:', err);
+      // Try alternate credentials
+      try {
+        const response2 = await axios.post(`${BACKEND_URL}/api/auth/login`, {
+          username: 'testcreator',
+          password: 'test123'
+        });
+        if (response2.data.token) {
+          localStorage.setItem('token', response2.data.token);
+          setIsLoggedIn(true);
+        }
+      } catch (err2) {
+        console.error('Fallback login also failed:', err2);
+      }
     }
   };
 
