@@ -549,7 +549,7 @@ class VideoVerificationTester:
     def print_summary(self):
         """Print test summary"""
         print("\n" + "=" * 80)
-        print("🎯 VIDEO UPLOAD AND VERIFICATION TEST SUMMARY")
+        print("🎯 VIDEO UPLOAD VERIFICATION DATA TEST SUMMARY")
         print("=" * 80)
         
         passed = sum(1 for result in self.test_results if result["success"])
@@ -564,6 +564,22 @@ class VideoVerificationTester:
         for result in self.test_results:
             status = "✅" if result["success"] else "❌"
             print(f"{status} {result['test']}: {result['details']}")
+        
+        print("\n🔍 CRITICAL VERIFICATION DATA STATUS:")
+        db_test = next((r for r in self.test_results if r["test"] == "Database Verification"), None)
+        if db_test:
+            if db_test["success"]:
+                print("✅ ALL VERIFICATION DATA CORRECTLY SAVED TO DATABASE")
+                print("   ✅ comprehensive_hashes.original_sha256: PRESENT AND NOT EMPTY")
+                print("   ✅ comprehensive_hashes.watermarked_sha256: PRESENT")
+                print("   ✅ comprehensive_hashes.key_frame_hashes: PRESENT (~10 hashes)")
+                print("   ✅ comprehensive_hashes.metadata_hash: PRESENT")
+                print("   ✅ comprehensive_hashes.master_hash: PRESENT")
+                print("   ✅ c2pa_manifest.manifest_path: PRESENT")
+                print("   ✅ c2pa_manifest.manifest_data: PRESENT")
+            else:
+                print("❌ VERIFICATION DATA INCOMPLETE OR MISSING")
+                print("   ⚠️ Check database document structure")
         
         print("\n🔍 FAILED TESTS:")
         failed_tests = [r for r in self.test_results if not r["success"]]
@@ -581,6 +597,8 @@ class VideoVerificationTester:
             print(f"   Video ID: {self.uploaded_video_id}")
             print(f"   Verification Code: {self.verification_code}")
             print(f"   User: {TEST_USER['username']}")
+            print(f"   Database: {DB_NAME}")
+            print(f"   Collection: videos")
 
 def main():
     """Main test execution"""
