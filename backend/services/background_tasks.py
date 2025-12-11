@@ -192,6 +192,50 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
         print(f"   ✅ Saved audio hash: {audio_hash[:16] if audio_hash else 'N/A'}...")
         print(f"   ✅ Updated Merkle root: {updated_merkle_root[:32]}...")
         
+        # ============================================================
+        # EMIT VERIFICATION_COMPLETE EVENT
+        # This triggers the notification worker
+        # ============================================================
+        try:
+            from services.event_emitter import event_emitter, Events, create_verification_complete_event
+            from services.notification_service import notification_service
+            
+            # Get user info for notification
+            user = await db.users.find_one({"id": video.get("user_id")}, {"_id": 0})
+            
+            if user:
+                # Create event data
+                event_data = create_verification_complete_event(
+                    video_id=video_id,
+                    verification_code=verification_code,
+                    user_id=video.get("user_id"),
+                    user_email=user.get("email", ""),
+                    video_title=video.get("title", video.get("original_filename", "Your Video")),
+                    notification_preferences={
+                        "email": user.get("notify_email", True),
+                        "sms": user.get("notify_sms", False)
+                    }
+                )
+                
+                # Emit the event
+                await event_emitter.emit(Events.VERIFICATION_COMPLETE, event_data)
+                
+                # Send notification if user wants it
+                if user.get("notify_on_verification", True) and user.get("email"):
+                    print(f"\n📧 Sending verification complete notification...")
+                    
+                    await notification_service.send_video_ready_notification(
+                        user=user,
+                        verification_code=verification_code,
+                        download_url=f"/dashboard?video={video_id}",
+                        video_duration=video.get("duration", 0)
+                    )
+                    
+                    print(f"   ✅ Notification sent to {user.get('email')}")
+                    
+        except Exception as notify_error:
+            print(f"   ⚠️ Notification error (non-fatal): {notify_error}")
+        
     except Exception as e:
         print(f"   ❌ Database update failed: {e}")
         import traceback
