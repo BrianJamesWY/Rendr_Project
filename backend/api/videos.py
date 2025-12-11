@@ -618,14 +618,47 @@ async def upload_video(
         # STEP 10B: Queue background processing for slow hashes
         print("\n🚀 STEP 10B: Queueing background hash processing...")
         
-        # Skip Redis queue for testing - simulate job ID
-        job_id = f"test_job_{video_id[:8]}"
         priority = 'high' if tier == 'enterprise' else 'default' if tier == 'pro' else 'low'
         
-        print(f"   ⚠️ Redis not available - skipping background queue")
-        print(f"   ✅ Simulated job ID: {job_id}")
-        print(f"   ⏱️ Priority: {priority}")
-        print(f"   📊 Essential hashes already calculated synchronously")
+        try:
+            # Import and use Redis queue service
+            from services.redis_queue_service import RedisQueueService
+            redis_service = RedisQueueService()
+            
+            # Queue background processing job
+            job_id = redis_service.enqueue_video_processing(
+                video_id=video_id,
+                video_path=final_path,
+                verification_code=verification_code,
+                user_id=current_user["user_id"],
+                priority=priority
+            )
+            
+            print(f"   ✅ Background job queued: {job_id}")
+            print(f"   ⏱️ Priority: {priority}")
+            print(f"   📊 Perceptual & audio hashes will be calculated in background")
+            
+        except Exception as e:
+            print(f"   ⚠️ Redis queue failed: {str(e)}")
+            print(f"   📊 Falling back to synchronous processing")
+            
+            # Fallback: calculate hashes synchronously
+            job_id = f"sync_job_{video_id[:8]}"
+            try:
+                perceptual_hashes = comprehensive_hash_service._calculate_perceptual_hashes(final_path)
+                audio_hash = comprehensive_hash_service._calculate_audio_hash(final_path)
+                
+                # Update database with background hashes
+                await db.videos.update_one(
+                    {"id": video_id},
+                    {"$set": {
+                        "comprehensive_hashes.perceptual_hashes": perceptual_hashes,
+                        "comprehensive_hashes.audio_hash": audio_hash
+                    }}
+                )
+                print(f"   ✅ Synchronous processing complete")
+            except Exception as sync_e:
+                print(f"   ❌ Synchronous processing failed: {str(sync_e)}")
         
         # STEP 11: Send notification (if applicable)
         print("\n📧 STEP 11: Checking notification preferences...")
