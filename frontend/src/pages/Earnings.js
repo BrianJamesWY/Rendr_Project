@@ -8,7 +8,7 @@ const Earnings = () => {
   const [earnings, setEarnings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
-  const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
+  const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
 
   const handleConnectStripe = async () => {
     try {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
 
 /**
  * Quota Indicator Component

@@ -206,10 +206,10 @@ Video File on Disk (/app/backend/uploads/videos/)
 ## 🎥 Test URLs
 
 ### For Direct Testing:
-- **Video Player Test**: `https://rendr-verify-1.preview.emergentagent.com/test-player.html`
-- **Download Video**: `https://rendr-verify-1.preview.emergentagent.com/api/videos/watch/964519ff-9e88-442e-b6b0-3c5e4eb3a3a8`
-- **Showcase Premium Tab**: `https://rendr-verify-1.preview.emergentagent.com/@BrianJames` (click Premium tab)
-- **My Videos Dashboard**: `https://rendr-verify-1.preview.emergentagent.com/my-videos` (login required)
+- **Video Player Test**: `https://verify-video.preview.emergentagent.com/test-player.html`
+- **Download Video**: `https://verify-video.preview.emergentagent.com/api/videos/watch/964519ff-9e88-442e-b6b0-3c5e4eb3a3a8`
+- **Showcase Premium Tab**: `https://verify-video.preview.emergentagent.com/@BrianJames` (click Premium tab)
+- **My Videos Dashboard**: `https://verify-video.preview.emergentagent.com/my-videos` (login required)
 
 ---
 

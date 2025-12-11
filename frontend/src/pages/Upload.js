@@ -3,7 +3,7 @@ import axios from 'axios';
 import Logo from '../components/Logo';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
 
 // ============================================
 // STYLES - Easy to change colors/fonts/spacing

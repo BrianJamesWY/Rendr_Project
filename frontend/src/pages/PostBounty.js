@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://rendr-verify-1.preview.emergentagent.com';
+const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
 
 function PostBounty() {
   const [videos, setVideos] = useState([]);

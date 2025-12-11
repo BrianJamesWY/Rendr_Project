@@ -1,213 +1,218 @@
 <analysis>**original_problem_statement:**
-The user, Brian, wants to build a video verification and content creator platform named Rendr. The primary goal is to implement a robust, multi-layered video verification system (SHA-256, perceptual hashing, audio hashing, metadata hashing, C2PA), add watermarks, and significant UI/UX improvements. These include a directory tree for content organization, new modals for editing videos and folders, and a live preview on the editor page.
+The user, Brian, wants to build a video verification and content creator platform named Rendr Studio. The primary goal is to implement a robust, multi-layered video verification system. The user is extremely focused on ensuring this system is perfect and comprehensive, including all discussed layers (SHA-256, perceptual hashing, audio hashing, metadata hashing, verification code watermarking, C2PA, a Master Hash, and mandatory Blockchain integration).
 
-The user has also requested social features like notifications, following, and messaging, which are planned for a future phase. The immediate focus has been on completing the core verification pipeline, fixing critical bugs, implementing an asynchronous processing architecture with Redis, and creating role-based analytics dashboards.
+The platform also requires role-based access for different user types. A 'CEO' dashboard for management analytics, an 'Investor' dashboard for high-level metrics, and a secret Pathway page for the user's own 'god-mode' administrative access have been implemented.
+
+The user is highly concerned about wasted time and credits due to recurring errors and has requested the creation of a definitive technical reference document to guide all future development and prevent repeated mistakes. Future project goals include integrating Rendr BodyCam and Rendr Bounty systems.
 
 **PRODUCT REQUIREMENTS:**
-1.  **Core Verification System:**
-    *   Implement an asynchronous pipeline using Redis for background hashing (pHash, audio hash).
-    *   Generate multiple hashes: original SHA-256, watermarked SHA-256, perceptual, audio, metadata.
-    *   Integrate C2PA to create a provenance manifest (initially as a sidecar file, eventually embedded).
-    *   Implement a resubmission prevention system with video fingerprinting to track and penalize users uploading others' content.
-2.  **UI/UX Enhancements:**
-    *   A fully functional  page with a  for content management and a live preview panel.
-    *   A uniform, professional design for the Duplicate Upload () and Verification Result () pages, featuring the user's CheckStar logo and clear action buttons.
-    *   Role-based dashboards for 'Investors' and 'CEOs' accessible via protected routes.
-    *   A frontend component to display real-time video processing status.
-3.  **Social Features (Future):**
-    *   A notification system with a bell icon in the header.
-    *   A user-following system.
-    *   A direct messaging system between users.
+1.  **Complete Verification System:**
+    *   A full, 10-layer asynchronous verification pipeline must be fully implemented and **all generated data must be saved to the database**.
+    *   Layers include: Original SHA-256, Watermarked SHA-256, Key Frame Hashes, Metadata Hash, Master Hash (to be improved to a Merkle Tree), C2PA Manifest, Perceptual Hash (pHash), Audio Hash, and a Blockchain Timestamp.
+    *   The verification code () must be burned into a watermark on the video.
+    *   The system must use Redis for asynchronous processing to ensure a fast UI response for the user.
+2.  **Role-Based Access & Dashboards:**
+    *   **Pathway Page ():** A hidden, password-protected 'god-mode' admin page for the user () only. Password: .
+    *   **CEO Dashboard ():** A dedicated dashboard for management-level users. Accessed via login with /.
+    *   **Investor Dashboard ():** A dedicated dashboard for investors. Accessed via login with /.
+3.  **Documentation:**
+    *   Create and maintain a comprehensive artifact that details the entire verification workflow, suitable for presenting to investors and for onboarding future agents to prevent errors.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application's core backend functionality is largely complete but requires frontend integration. The backend crash from the previous fork was fixed. The comprehensive, 7-layer video verification system has been implemented and is now processed asynchronously using Redis and RQ workers to prevent long waits on uploads. The Video Already Verified and Verify by Code pages have been redesigned for a uniform look and feel, including creator showcase links and the user's custom logo.
+The application has three distinct, role-based dashboards (Pathway, CEO, Investor) with dedicated login flows that now work correctly. The Pathway page was successfully implemented, providing 'god-mode' administrative functions, and was secured with obfuscated naming and a password prompt. A recurring CORS issue was identified and fixed by correcting the supervisor configuration. To prevent future errors, a  was created.
 
-Role-based access control (RBAC) is in place. An investor dashboard () and a CEO backdoor page () have been created, with the main user dashboard conditionally displaying investor metrics based on user roles. A dedicated investor account has been created, and the user's primary account () has been granted 'investor' and 'ceo' roles. Critical documentation, including a  and , has been created to guide future development.
+The backend has the code for a multi-layered verification system that runs asynchronously using Redis. However, a critical issue remains: many of the calculated hashes and the C2PA manifest are **not being saved** to the database, rendering the verification incomplete. The user's current focus is to fix this and perfect the entire verification pipeline before moving on.
 
 **Last working item**:
--   **Last item agent was working**: The user reported that the newly created investor credentials were not working. The agent successfully regenerated and updated the investor password hash in the database. Immediately after, the agent created a super secret CEO backdoor page () and added the corresponding route () for the user's main account.
+-   **Last item agent was working**: The user requested a comprehensive, printable artifact detailing the full, 11-step verification system workflow. The agent gathered all necessary information from the codebase and user documents to prepare this artifact.
 -   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: Manual testing. The agent should verify that the investor credentials now work. Then, log in as  and navigate to  to confirm the page loads. The  can be used for visual confirmation of both.
+-   **Agent Testing Done**: N/A
+-   **Which testing method agent to use?**: N/A (This is a documentation task).
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Investor Login requires verification (P0)
--   Issue 2: Changes not showing potential recurrence (P1)
--   Issue 3: Asynchronous Status Update UI not built (P2)
+-   Issue 1: Verification Data Not Being Saved to Database (P0)
+-   Issue 2: pHash Algorithm Underperforms on Heavy Compression (P1)
+-   Issue 3: Asynchronous Status Update UI Not Built (P2)
+-   Issue 4: Recurring Login/CORS Issue Risk (P2)
 
 **Issues Detail**:
--   **Issue 1**:
-    -   **Description**: The user was unable to log in with the  credentials. The agent has reset the password, but this fix needs to be verified by the user or the next agent.
-    -   **Attempted fixes**: Regenerated the bcrypt hash for the password  and updated the  collection for .
+-   **Issue 1: Verification Data Not Being Saved to Database**
+    -   **Description**: The backend calculates multiple verification layers (Key Frame Hashes, Perceptual Hashes, Master Hash, C2PA Manifest) during the async process, but they are not being persisted in the video document in the database. This is the main blocker for a functional verification system. The agent identified this in messages #451, #466, and #481.
+    -   **Attempted fixes**: None. The agent only identified the problem.
     -   **Next debug checklist**:
-        1.  Attempt to log in using the credentials: , .
-        2.  If login fails, inspect browser console logs for errors.
-        3.  Verify the backend URL is correct and no CORS issues are present.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is required for the user to test and share the Investor Dashboard feature.
-    -   **Status**: USER VERIFICATION PENDING
-    -   **Is recurring issue?**: Y (Login issues have been common)
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on other issue**: None
-
--   **Issue 2**:
-    -   **Description**: In message #262, the user reported that the redesigned Duplicate Upload screen was not visible to them. The agent did not debug this but proceeded with other tasks. This might indicate a frontend build caching issue that could resurface.
-    -   **Attempted fixes**: None. The agent moved on to other tasks.
-    -   **Next debug checklist**: If any new UI changes are not visible, the first step should be to restart the frontend service (frontend: ERROR (not running)
-frontend: started) to ensure the latest build is served and clear any browser cache.
-    -   **Why fix this issue and what will be achieved with the fix?**: Ensures a reliable development feedback loop and that the user sees the work being done.
+        1.  Inspect  and the background task logic in .
+        2.  Find where the async job result is handled.
+        3.  Implement the database update operation () to save the  and  objects into the correct video document.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is the most critical issue. Fixing it will make the verification system functional by ensuring all verification data is stored and can be used for comparison.
     -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
     -   **Blocked on other issue**: None
 
--   **Issue 3**:
-    -   **Description**: The backend now processes videos asynchronously, but there is no frontend UI to show the user the real-time status of this process. An empty component file () was created but never implemented or integrated.
+-   **Issue 2: pHash Algorithm Underperforms on Heavy Compression**
+    -   **Description**: Testing revealed that the perceptual hash similarity drops to ~61% on heavily compressed videos, below the desired threshold.
+    -   **Attempted fixes**: None.
+    -   **Next debug checklist**:
+        1.  In , modify the pHash logic.
+        2.  Before hashing, scale all sampled frames to a uniform, standard size (e.g., 512x512).
+        3.  Consider experimenting with or adding  or  from the  library as complementary algorithms.
+    -   **Why fix this issue and what will be achieved with the fix?**: Improves the robustness of the verification system against real-world video modifications.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
+    -   **Blocked on other issue**: None
+
+-   **Issue 3: Asynchronous Status Update UI Not Built**
+    -   **Description**: The backend processes videos asynchronously, but there is no frontend UI to show the user the real-time status of this process. An empty component file () exists but is not implemented.
     -   **Attempted fixes**: None.
     -   **Next debug checklist**:
         1.  Flesh out  to poll the  endpoint.
-        2.  Design a UI (e.g., progress bar, checklist of steps) to display the status received from the backend.
-        3.  Integrate this component into the  or a video detail page to be displayed after an upload.
-    -   **Why fix this issue and what will be achieved with the fix?**: Provides crucial user feedback, improving the user experience for the asynchronous upload process.
+        2.  Design a UI (e.g., checklist of steps) to display the status.
+        3.  Integrate this component into the  or a video detail page.
+    -   **Why fix this issue and what will be achieved with the fix?**: Provides crucial user feedback and improves the UX for the core upload feature.
     -   **Status**: NOT STARTED
     -   **Is recurring issue?**: N
     -   **Should Test frontend/backend/both after fix?**: Frontend
     -   **Blocked on other issue**: None
 
-**In progress Task List**:
--   **Task 1**: Implement Super Secret Backdoor Page (P0)
-    -   **Where to resume**: The file  has been created and routed to . It is currently a blank placeholder. The next step is to build out the UI for this page, fetching data from the  endpoint and providing powerful administrative actions.
-    -   **What will be achieved with this?**: The user will have a centralized, powerful dashboard for full platform oversight and management, accessible only to them.
-    -   **Status**: IN PROGRESS
+-   **Issue 4: Recurring Login/CORS Issue Risk**
+    -   **Description**: A Network Error on login or CORS issue has occurred multiple times, caused by a hardcoded  in .
+    -   **Attempted fixes**: The agent has fixed this manually multiple times by editing the file and restarting the frontend.
+    -   **Next debug checklist**: If any frontend API call fails with a CORS or Network Error, **IMMEDIATELY** check  before any other debugging.
+    -   **Why fix this issue and what will be achieved with the fix?**: Prevents wasted time on a known, recurring environmental issue.
+    -   **Status**: RESOLVED (but high risk of recurrence)
+    -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on other issue**: None
+
+**In progress Task List**:
+-   **Task 1: Create Comprehensive Verification Workflow Document (P0)**
+    -   **Where to resume**: The agent has extracted all necessary data from user documents and the codebase. The next step is to synthesize this into a well-structured  or  file as requested by the user in message #482. The document should cover all 11 verification steps, the async architecture, real-world claims, and be suitable for investors.
+    -   **What will be achieved with this?**: Fulfills a direct user request, provides a crucial reference for future development to prevent errors, and creates investor-facing material.
+    -   **Status**: IN PROGRESS
+    -   **Should Test frontend/backend/both after fix?**: N/A
     -   **Blocked on something**: None
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks:**
-    -   **(P2) Implement Social Features**: The user has requested a suite of social features, which were added to the  file. This is the next major feature set to tackle after current tasks are complete.
-        -   Notification System (Bell icon, notifications page).
-        -   User Following System (Follow/unfollow buttons, follower lists).
-        -   Direct Messaging System.
+    -   **(P0) Run Full End-to-End Verification Test:** After fixing the data storage issue, upload a video and verify that all 10 layers of verification are calculated, stored, and can be retrieved correctly.
+    -   **(P1) Implement Proper Merkle Tree:** Replace the current Master Hash (a simple combined hash) with a proper Merkle Tree for a more robust and verifiable data structure.
+    -   **(P1) Integrate Blockchain Functionality:** Set up and integrate the existing blockchain service () into the upload flow, making it a mandatory step as requested by the user.
 -   **Future Tasks:**
-    -   **(P3) Improve Perceptual Hash Algorithm**: Research and implement more robust pHash algorithms like  or .
-    -   **(P3) C2PA Certificate Signing**: Implement the embedding of C2PA manifests directly into video files using signing certificates.
-    -   **(P3) Blockchain Enhancement**: Plan and implement on-chain storage for video hashes.
-    -   **(P3) Sliding Window QR Code Watermarking**: Implement an advanced, semi-transparent QR code watermarking feature for premium tiers.
+    -   **(P2) Implement Social Features:** Notifications, Following, Messaging.
+    -   **(P3) Integrate Rendr BodyCam.**
+    -   **(P3) Integrate Rendr Bounty.**
+    -   **(P3) Implement C2PA Certificate Signing & Embedding.**
+    -   **(P3) Implement Sliding Window QR Code Watermarking.**
 
 **Completed work in this session**
--   **Backend Crash Fixed**: Resolved  in .
--   **Asynchronous Processing Implemented**: Installed and configured Redis and RQ; wired the video upload endpoint to queue background jobs for hashing, making uploads near-instantaneous.
--   **Role-Based Dashboards Created**: Implemented protected  and  pages and their corresponding backend analytics endpoints.
--   **Conditional UI on Dashboard**: Updated the main  to conditionally display investor metrics only for users with the appropriate role.
--   **Login and Access Control Fixed**: Resolved multiple login failures, including a CORS issue caused by a hardcoded supervisor config and an incorrect password hash for the investor account.
--   **Uniform Verification UI**: Redesigned the Duplicate Upload () and Verify Result () pages to have a consistent, professional appearance with action buttons and the user's CheckStar logo.
--   **Comprehensive Documentation**: Created  and  to serve as a single source of truth for the project's architecture, endpoints, and data models.
--   **Resubmission Prevention**: Implemented a system to fingerprint videos and apply strikes fairly to prevent users from spamming uploads of unauthorized content.
+-   **Role-Based Access Fixed:** Created and fixed dedicated login flows and dashboards for Pathway (admin), CEO, and Investor roles.
+-   **Pathway Page Implemented:** Created a secure, obfuscated admin page () and fixed all its functions (impersonation, database queries, etc.). The page was renamed from Super Secret Backdoor and all related files were given non-obvious names.
+-   **Recurring CORS Issue Resolved:** Identified that  was overriding the frontend's backend URL and fixed it.
+-   **Technical Documentation Created:** Created  to document DB schema, environment variables, and common pitfalls to prevent future agents from repeating mistakes.
+-   **Minor UI Fix:** Renamed Videos button on the dashboard to Upload.
+-   **TODO List Updated:** Added user's new feature requests (Rendr BodyCam, Rendr Bounty) to .
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: Frontend Test Automation for Uploads is Unreliable**: The agent repeatedly failed to automate file uploads in its test scripts and had to resort to  to test the backend API. The underlying issue with the automated browser test was never fixed.
-    -   **Debug checklist**: Review the playwright/automation scripts for file uploads to understand why they fail. Ensure file paths are correct and the upload input is correctly targeted.
-    -   **Why to solve this issue and what will be achieved with this?**: A reliable frontend test suite is crucial for end-to-end testing and preventing regressions.
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Is recurring issue?**: Y
+-   **Issue 1: Frontend Test Automation for Uploads is Unreliable**: (From previous handoff) The agent repeatedly failed to automate file uploads in its test scripts and had to resort to  to test the backend API.
+-   **Issue 2: Orphaned Analytics Pages**: (From previous handoff) The old files  and  are now obsolete and should be deleted.
+-   **Issue 3: Reusable UI Component Not Created**: (From previous handoff) The UI for verification results is duplicated in  and  and should be extracted into a reusable component.
 
 **Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork**: Network Error on login due to frontend/backend URL mismatches.
--   **Recurrence count**: At least 3 times in the project's history.
--   **Status**: RESOLVED, but remains a high-risk area. The root cause is often a cached or hardcoded  in the environment, particularly in . Any Network Error on login should immediately prompt a check of this file and a restart of the frontend service.
+-   **Issue recurrence in previous fork**: Network Error on login due to an incorrect  being set in .
+-   **Recurrence count**: At least 4 times in the project's history. This session included one occurrence.
+-   **Status**: RESOLVED (but remains a high-risk area). The first debugging step for any frontend API failure should be to check this file.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Asynchronous Task Processing**: Using Redis as a message broker and RQ (Redis Queue) to run long video hashing tasks in the background, providing a non-blocking user experience.
--   **Role-Based Access Control (RBAC)**: Backend endpoints and frontend routes/components are protected based on user roles (e.g., , ) stored in the database.
--   **Video Fingerprinting**: A system to create a unique hash for a video upload attempt () to prevent users from being penalized multiple times for uploading the same unauthorized video.
--   **Supervisor Configuration**: A critical part of the environment setup. Incorrectly hardcoded environment variables in  have been a frequent source of major bugs.
--   **Pydantic Models**: Used extensively in the FastAPI backend to define and validate API request and response data structures.
+-   **Asynchronous Task Processing**: Using Redis and RQ workers to handle heavy video processing in the background.
+-   **Role-Based Access Control (RBAC)**: Separate login flows and protected routes for CEO, Investor, and Admin (Pathway) users.
+-   **Obfuscated Admin Access**: The Pathway feature uses a fake 404 page, a hidden password input, and non-descriptive file/route names (, ) for security.
+-   **Supervisor Configuration**: A critical environment file () that has repeatedly caused bugs by overriding  variables.
 
 **key DB schema**
--   **users**: Contains a  array field (e.g., ).
--   **videos**: Contains  and a detailed  object.
--   **duplicate_attempts**: A new collection to log unauthorized upload attempts, containing , , and a unique .
+-   **users**: Contains a  array (e.g., ) and an  string used for login redirects. The  is a string UUID.
+-   **videos**: The main collection. **Crucially, it is missing fields to store the full  and  objects.**
 
 **changes in tech stack**
--   **Redis**: Added as a service for caching and message broking.
--   **RQ (Redis Queue)**: Added as the Python library to manage background jobs running on Redis.
+-   None in this session.
 
 **All files of reference**
--   **/app/frontend/src/pages/CEOBackdoor.js**: A newly created placeholder page for the user's primary admin interface.
--   **/app/frontend/src/pages/InvestorDashboard.js**: The new, protected dashboard for investor analytics.
--   **/app/frontend/src/pages/Dashboard.js**: Modified to conditionally render investor metrics.
--   **/app/backend/api/videos.py**: Core upload logic, now integrated with Redis.
--   **/app/backend/services/redis_queue_service.py**: The interface for adding jobs to the background queue.
--   **/app/backend/services/background_tasks.py**: The code that RQ workers execute for long-running tasks.
--   **/etc/supervisor/conf.d/supervisord.conf**: A critical configuration file. **Check for hardcoded URLs here first if login fails.**
--   **/app/MASTER_REFERENCE.md**: The project's single source of truth, created at user's request.
--   **/app/TODO.md**: The task list for tracking progress.
+-   **/app/backend/api/pathway.py**: New API for the admin Pathway.
+-   **/app/frontend/src/pages/Pathway.js**: New UI for the admin Pathway.
+-   **/app/frontend/src/pages/CreatorLogin.js**: Modified to handle role-based redirects after login.
+-   **/app/backend/api/videos.py**: The core file containing the entire verification workflow logic.
+-   **/app/backend/services/comprehensive_hash_service.py**: Contains the implementation of all hashing layers.
+-   **/app/TECHNICAL_REFERENCE.md**: New, critical document to guide development and prevent errors.
+-   **/etc/supervisor/conf.d/supervisord.conf**: High-risk configuration file. Check for hardcoded URLs here first if login/API calls fail.
 
 **Areas that need refactoring**
--   **Reusable Verification Result UI**: The redesigned UI for showing verification/duplicate results in  and  is nearly identical. This code should be extracted into a reusable component (e.g., ) to reduce duplication.
--   **Orphaned Analytics Pages**: The old files  and  are now obsolete after being consolidated into . They should be deleted to clean up the codebase.
+-   **Orphaned Analytics Pages**: The old files  and  should be deleted.
+-   **Reusable Verification Result UI**: The UI in  and  should be extracted into a reusable component.
 
 **key api endpoints**
--   : Initiates video upload, returns immediately after enqueuing background tasks.
--   : Fetches the processing status of a background job from Redis.
--   : Protected endpoint for investor analytics.
--   : Protected endpoint for CEO-level analytics.
--   : User authentication endpoint.
+-   : The main endpoint that orchestrates the entire verification flow.
+-   : Authenticates access to the Pathway page.
+-   : Executes direct database queries from the Pathway page.
+-   : Standard login endpoint, now returns  for role-based redirects.
 
 **Critical Info for New Agent**
--   **The user's account  has  and  roles.** This is crucial for testing protected pages.
--   **Investor login was just fixed but needs verification.** Use , .
--   **Check  for login issues.** If you see a Network Error during login, immediately check  for a hardcoded  before debugging elsewhere. This has been a recurring, time-wasting bug.
--   **A super secret CEO page exists at **. It is a blank placeholder and needs to be implemented.
--   **Video processing is now asynchronous.** The main hashing work happens in the background via Redis workers. Do not expect hashes to be present immediately after the upload API returns.
+-   **User Frustration is High**: The user is extremely frustrated with wasted time and credits on recurring bugs. Adhere strictly to the provided documentation (, user-uploaded docs) and test changes thoroughly.
+-   **Top Priority is Verification System**: The user's number one goal is to perfect the verification workflow. The immediate next step is to **fix the database storage** for all verification layers.
+-   **Check  FIRST**: If any frontend API calls fail with Network Error or CORS issues, immediately check  for hardcoded URLs. This is a known, recurring problem.
+-   **Blockchain is NOT optional**: The user has clarified that blockchain integration is a core, mandatory part of the system.
+-   **Master Hash needs improvement**: The current Master Hash is a simple combination. The user is open to upgrading this to a proper Merkle Tree.
 
 **documents created in this job**
--   /app/MASTER_REFERENCE.md
--   /app/API_DOCUMENTATION.md
--   /app/TODO.md
+-   /app/TECHNICAL_REFERENCE.md
 
 **Last 10 User Messages and any pending user messages**
-1.  **User asks to do P2/Medium Priority tasks and add social features.** (Notifications, Following, Messaging).
-2.  **User agrees to add social features to the TODO list but prioritize existing tasks.**
-3.  **User gets login error after agent implements analytics module.**
-4.  **User asks for a comprehensive master reference document to prevent future confusion.**
-5.  **User agrees to create API documentation as the next task.**
-6.  **User asks to set up Redis, questioning why it wasn't on the TODO list.**
-7.  **User asks for clarification on wire into upload endpoint and agrees to proceed.**
-8.  **User asks for an explanation of video fingerprinting from the TODO list.**
-9.  **User requests that the diagnostics page be moved to the Investor Page and asks how to access it.**
-10. **(PENDING) User gets an Access Denied error on the investor page, confirming RBAC works, and asks for a dedicated investor login.**
+1.  **User asks about missing components** (async, merkle root). Status: Addressed.
+2.  **User points out missing verification code** in the workflow. Status: Addressed.
+3.  **User doesn't understand steps 9-12** and asks for a complete picture again. Status: Addressed.
+4.  **User provides their own doc and clarifies vision**: Likes real-world claims, wants fast async flow, is open to Merkle Tree, and requests a final, comprehensive artifact for investors and future agents. Status: Pending artifact creation.
+5.  **User reports incorrect login credentials** for Investor/CEO via screenshots. Status: Fixed (passwords were case-sensitive).
+6.  **User asks what's next** on the TODO list. Status: Addressed.
+7.  **User pivots to focus on hashing/verification**: Asks for new TODO items (BodyCam, Bounty) and an explanation of the current pHash system. Status: Addressed.
+8.  **User asks for confirmation of ALL verification steps** after pHash test results seemed low. Status: Addressed.
+9.  **User asks why Pathway is not asking for a password** and states that CEO/Investor pages should not be tied to their personal login. Status: Fixed.
+10. **(PENDING) User clarifies CEO/Investor login requirements**: They should use the standard login page but with their own credentials (/, /), and NOT require the user to log in as BrianJames first. Status: Implemented and tested successfully.
 
 **Project Health Check:**
--   **Broken**: The  page is an empty placeholder and not functional. The investor login was just fixed and is unverified.
--   **Mocked**: The frontend UI for asynchronous status updates is completely missing, even though the backend infrastructure is in place.
+-   **Broken**: The verification system is incomplete because key data (, , , etc.) is calculated but **not saved** to the database.
+-   **Mocked**: The frontend UI to display the real-time status of asynchronous video processing is still an unimplemented placeholder.
 
 **3rd Party Integrations**
--   **FFmpeg**: For server-side video processing (watermarking, frame extraction).
--   **Redis**: For asynchronous task queuing and caching.
+-   **FFmpeg**: Used for server-side video processing (watermarking, frame extraction).
+-   **Redis**: Used for asynchronous task queuing via the RQ library.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, for both backend and frontend.
--   **Troubleshoot agent used after agent stuck in loop**: YES, successfully identified the hardcoded URL in the supervisor config.
+-   **Testing agent used after significant changes**: YES, the agent used the backend testing agent after creating new users, which passed.
+-   **Troubleshoot agent used after agent stuck in loop**: NO.
 -   **Test files created**: None.
--   **Known regressions**: Login functionality has been historically fragile due to environment configuration issues.
+-   **Known regressions**: The login functionality remains fragile due to the  environmental issue.
 
 **Credentials to test flow:**
--   **CEO/Admin Account**:
+-   **Pathway (Admin) Account**:
+    -   URL: 
+    -   Password: 
+-   **CEO Account**:
     -   Username: 
     -   Password: 
-    -   Roles: , 
 -   **Investor Account**:
     -   Username: 
+    -   Password:  (all lowercase)
+-   **User's Main Account**:
+    -   Username: 
     -   Password: 
-    -   Roles: 
 
 **What agent forgot to execute**
--   The agent created  to replace  and  but never deleted the old, now-unused files.
--   The agent created the placeholder  page but did not implement any of its UI or functionality.
--   The agent created  as an empty file but never built the UI component or integrated it to show real-time upload progress.</analysis>
+-   The critical fix for saving all calculated verification data to the database.
+-   Deleting the obsolete analytics pages (, ).
+-   Refactoring the duplicated verification result UI into a reusable component.
+-   Implementing the  component for async progress updates.</analysis>
