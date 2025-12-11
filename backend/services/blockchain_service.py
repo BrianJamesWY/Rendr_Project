@@ -246,5 +246,64 @@ class BlockchainService:
         
         return status
 
+    def timestamp_video(self, video_id: str, verification_code: str, video_hash: str, metadata: Dict = None) -> Optional[Dict]:
+        """
+        Synchronous wrapper for blockchain timestamping (used in upload flow)
+        
+        Args:
+            video_id: Unique video identifier
+            verification_code: RND-XXXXXX code
+            video_hash: Master hash of the video
+            metadata: Optional metadata (duration, resolution, tier)
+        
+        Returns:
+            Dict with transaction details or None if failed
+        """
+        import asyncio
+        
+        if not self.private_key:
+            print("   ⚠️ Blockchain: No private key configured - skipping")
+            return None
+        
+        if not self.is_connected():
+            print("   ⚠️ Blockchain: Not connected to network - skipping")
+            return None
+        
+        try:
+            # Create combined hash for blockchain storage
+            # Include verification code + master hash for unique identification
+            combined_data = f"{verification_code}:{video_hash}"
+            
+            # Run the async write_signature in a new event loop or use existing
+            try:
+                loop = asyncio.get_event_loop()
+                if loop.is_running():
+                    # If we're already in an async context, create a task
+                    import concurrent.futures
+                    with concurrent.futures.ThreadPoolExecutor() as executor:
+                        future = executor.submit(
+                            asyncio.run,
+                            self.write_signature(video_id, combined_data, metadata)
+                        )
+                        result = future.result(timeout=180)  # 3 min timeout
+                else:
+                    result = loop.run_until_complete(
+                        self.write_signature(video_id, combined_data, metadata)
+                    )
+            except RuntimeError:
+                # No event loop, create one
+                result = asyncio.run(self.write_signature(video_id, combined_data, metadata))
+            
+            if result:
+                # Add verification code to result for database storage
+                result['verification_code'] = verification_code
+                result['video_hash'] = video_hash
+            
+            return result
+            
+        except Exception as e:
+            print(f"   ⚠️ Blockchain timestamp error: {e}")
+            return None
+
 # Global instance
 blockchain_service = BlockchainService()
