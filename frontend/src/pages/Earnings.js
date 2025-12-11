@@ -202,7 +202,7 @@ const Earnings = () => {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827' }}>Premium Folders</h2>
             <Link
-              to="/showcase-editor?tab=premium"
+              to="/editor?tab=premium"
               style={{
                 padding: '0.625rem 1.25rem',
                 background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',

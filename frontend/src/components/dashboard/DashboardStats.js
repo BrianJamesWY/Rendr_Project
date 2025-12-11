@@ -79,7 +79,7 @@ const DashboardStats = ({ videos, folders, user, analytics }) => {
 
         {/* Showcase Editor */}
         <Link 
-          to="/showcase-editor"
+          to="/editor"
           style={{
             display: 'block',
             background: 'white', 
