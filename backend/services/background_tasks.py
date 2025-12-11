@@ -101,8 +101,10 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
     Update video document with ALL verification layers
     
     CRITICAL: This persists the complete verification data to the database
+    and recalculates the Merkle Tree with the new hashes
     """
     import hashlib
+    from services.comprehensive_hash_service import comprehensive_hash_service
     
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
     db_name = os.environ.get('DB_NAME', 'test_database')
@@ -120,34 +122,25 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
         # Get existing hashes
         existing_hashes = video.get("comprehensive_hashes", {})
         
-        # Calculate updated master hash (combination of ALL layers)
-        components = [
-            verification_code,
-            existing_hashes.get("metadata_hash", ""),
-            "".join(existing_hashes.get("key_frame_hashes", [])),
-            "".join(perceptual_hashes),  # New perceptual hashes
-            audio_hash if audio_hash else "",  # New audio hash
-            existing_hashes.get("timestamp", datetime.now(timezone.utc).isoformat())
-        ]
-        combined = "|".join(components)
-        updated_master_hash = hashlib.sha256(combined.encode()).hexdigest()
+        # Build complete hash package for Merkle Tree recalculation
+        complete_hash_data = {
+            "verification_code": verification_code,
+            "original_sha256": existing_hashes.get("original_sha256"),
+            "watermarked_sha256": existing_hashes.get("watermarked_sha256"),
+            "key_frame_hashes": existing_hashes.get("key_frame_hashes", []),
+            "perceptual_hashes": perceptual_hashes,  # New perceptual hashes
+            "audio_hash": audio_hash,  # New audio hash
+            "metadata_hash": existing_hashes.get("metadata_hash"),
+            "timestamp": existing_hashes.get("timestamp", datetime.now(timezone.utc).isoformat())
+        }
         
-        # Update the video document with ALL verification data
-        result = await db.videos.update_one(
-            {"id": video_id},
-            {
-                "$set": {
-                    # Update comprehensive_hashes
-                    "comprehensive_hashes.perceptual_hashes": perceptual_hashes,
-                    "comprehensive_hashes.audio_hash": audio_hash,
-                    "comprehensive_hashes.master_hash": updated_master_hash,
-                    
-                    # Also update the top-level hashes object for API response
-                    "hashes.perceptual_hash_count": len(perceptual_hashes),
-                    "hashes.master_hash": updated_master_hash,
-                    
-                    # Update perceptual_hashes object
-                    "perceptual_hashes.video_phashes": perceptual_hashes,
+        # Recalculate Merkle Tree with ALL layers now present
+        print("   🌳 Recalculating Merkle Tree with all verification layers...")
+        merkle_data = comprehensive_hash_service.create_merkle_tree(complete_hash_data)
+        updated_merkle_root = merkle_data['merkle_root']
+        
+        print(f"   ✅ Updated Merkle root: {updated_merkle_root[:32]}...")
+        print(f"   ✅ Total layers in tree: {merkle_data['layer_count']}")
                     "perceptual_hashes.audio_hash": audio_hash,
                     
                     # Update processing status
