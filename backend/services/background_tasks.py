@@ -96,32 +96,94 @@ def process_video_hashes(video_id: str, video_path: str, verification_code: str,
         raise
 
 
-async def update_video_hashes(video_id: str, perceptual_hashes: list, audio_hash: str):
-    """Update video document with additional hashes"""
+async def update_video_hashes(video_id: str, verification_code: str, perceptual_hashes: list, audio_hash: str):
+    """
+    Update video document with ALL verification layers
+    
+    CRITICAL: This persists the complete verification data to the database
+    """
+    import hashlib
+    
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
     db_name = os.environ.get('DB_NAME', 'test_database')
     client = AsyncIOMotorClient(mongo_url)
     db = client[db_name]
     
     try:
-        # Update the video document
+        # First, get the existing video to combine hashes for master hash
+        video = await db.videos.find_one({"id": video_id}, {"_id": 0})
+        
+        if not video:
+            print(f"   ⚠️ Video {video_id} not found in database!")
+            return
+        
+        # Get existing hashes
+        existing_hashes = video.get("comprehensive_hashes", {})
+        
+        # Calculate updated master hash (combination of ALL layers)
+        components = [
+            verification_code,
+            existing_hashes.get("metadata_hash", ""),
+            "".join(existing_hashes.get("key_frame_hashes", [])),
+            "".join(perceptual_hashes),  # New perceptual hashes
+            audio_hash if audio_hash else "",  # New audio hash
+            existing_hashes.get("timestamp", datetime.now(timezone.utc).isoformat())
+        ]
+        combined = "|".join(components)
+        updated_master_hash = hashlib.sha256(combined.encode()).hexdigest()
+        
+        # Update the video document with ALL verification data
         result = await db.videos.update_one(
             {"id": video_id},
             {
                 "$set": {
+                    # Update comprehensive_hashes
                     "comprehensive_hashes.perceptual_hashes": perceptual_hashes,
                     "comprehensive_hashes.audio_hash": audio_hash,
+                    "comprehensive_hashes.master_hash": updated_master_hash,
+                    
+                    # Also update the top-level hashes object for API response
+                    "hashes.perceptual_hash_count": len(perceptual_hashes),
+                    "hashes.master_hash": updated_master_hash,
+                    
+                    # Update perceptual_hashes object
+                    "perceptual_hashes.video_phashes": perceptual_hashes,
+                    "perceptual_hashes.audio_hash": audio_hash,
+                    
+                    # Update processing status
                     "processing_status": {
                         "stage": "complete",
                         "progress": 100,
-                        "message": "All hashes calculated",
-                        "updated_at": datetime.now(timezone.utc)
-                    }
+                        "message": "All verification layers complete",
+                        "verification_layers": [
+                            "Original SHA-256",
+                            "Watermarked SHA-256",
+                            f"Key Frame Hashes ({len(existing_hashes.get('key_frame_hashes', []))})",
+                            f"Perceptual Hashes ({len(perceptual_hashes)})",
+                            "Audio Hash" if audio_hash and audio_hash != "no_audio" else "No Audio",
+                            "Metadata Hash",
+                            "C2PA Manifest",
+                            "Master Hash"
+                        ],
+                        "completed_at": datetime.now(timezone.utc)
+                    },
+                    
+                    # Mark as fully verified
+                    "verification_status": "fully_verified"
                 }
             }
         )
         
-        print(f"   📊 Database updated: {result.modified_count} document(s)")
+        print(f"   📊 Database update result: {result.modified_count} document(s) modified")
+        print(f"   ✅ Saved {len(perceptual_hashes)} perceptual hashes")
+        print(f"   ✅ Saved audio hash: {audio_hash[:16] if audio_hash else 'N/A'}...")
+        print(f"   ✅ Updated master hash: {updated_master_hash[:32]}...")
+        
+    except Exception as e:
+        print(f"   ❌ Database update failed: {e}")
+        import traceback
+        traceback.print_exc()
+        raise
         
     finally:
         client.close()
