@@ -495,15 +495,16 @@ class VideoVerificationTester:
             
             # Print detailed merkle_tree structure
             if merkle_tree:
+                tree_data = merkle_tree.get("tree_data", {})
+                leaves = tree_data.get("leaves", [])
                 print(f"\n📊 MERKLE TREE DETAILS:")
                 print(f"   🌳 Root: {merkle_tree.get('merkle_root', 'MISSING')}")
-                print(f"   🍃 Leaves count: {len(merkle_tree.get('leaves', []))}")
+                print(f"   🍃 Leaves count: {len(leaves)}")
                 print(f"   📏 Layer count: {merkle_tree.get('layer_count', 'MISSING')}")
                 print(f"   🏷️ Layer labels: {merkle_tree.get('layer_labels', [])}")
                 print(f"   🔐 Proofs count: {len(merkle_tree.get('proofs', {}))}")
                 
                 # Show first few leaves
-                leaves = merkle_tree.get("leaves", [])
                 if leaves:
                     print(f"   📝 First 3 leaves:")
                     for i, leaf in enumerate(leaves[:3]):
