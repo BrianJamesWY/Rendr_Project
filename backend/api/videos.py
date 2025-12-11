@@ -470,7 +470,7 @@ async def upload_video(
         print(f"   ✅ Key frames: {len(key_frame_hashes)}/10")
         
         # Extract metadata
-        video_metadata = comprehensive_hash_service._extract_metadata(final_path)
+        video_metadata = comprehensive_hash_service._extract_video_metadata(final_path)
         metadata_hash = comprehensive_hash_service._create_metadata_hash(video_metadata)
         print(f"   ✅ Metadata hash: {metadata_hash[:32]}...")
         
