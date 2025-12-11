@@ -471,7 +471,7 @@ async def upload_video(
         
         # Extract metadata
         video_metadata = comprehensive_hash_service._extract_video_metadata(final_path)
-        metadata_hash = comprehensive_hash_service._create_metadata_hash(video_metadata)
+        metadata_hash = comprehensive_hash_service._hash_metadata(video_metadata)
         print(f"   ✅ Metadata hash: {metadata_hash[:32]}...")
         
         # Create partial comprehensive_hashes object (background will complete it)
