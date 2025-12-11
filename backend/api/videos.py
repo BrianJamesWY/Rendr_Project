@@ -457,10 +457,11 @@ async def upload_video(
         # Slow hashes (perceptual, audio) will be done in background via Redis
         print("\n🔐 STEP 5: Calculating essential hashes (fast)...")
         
-        # Calculate only the quick hashes
-        original_sha256 = comprehensive_hash_service._calculate_file_sha256(file_path)
-        print(f"   ✅ Original SHA-256: {original_sha256[:32]}...")
+        # NOTE: original_sha256 was already calculated in Step 1 (pre-watermark)
+        # We keep that value - do NOT recalculate (file was deleted after watermarking)
+        print(f"   ✅ Original SHA-256 (from Step 1): {original_sha256[:32]}...")
         
+        # Calculate watermarked SHA-256 (post-watermark)
         watermarked_sha256 = comprehensive_hash_service._calculate_file_sha256(final_path)
         print(f"   ✅ Watermarked SHA-256: {watermarked_sha256[:32]}...")
         
