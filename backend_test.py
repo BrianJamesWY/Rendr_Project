@@ -436,6 +436,145 @@ class VideoVerificationTester:
             self.log_test("Database Verification (Initial)", False, f"Database verification error: {str(e)}")
             return False
 
+    def test_merkle_tree_verification(self) -> bool:
+        """CRITICAL TEST: Verify Merkle Tree implementation is working correctly"""
+        if not self.uploaded_video_id:
+            self.log_test("Merkle Tree Verification", False, "No uploaded video ID available")
+            return False
+        
+        if self.db is None:
+            self.log_test("Merkle Tree Verification", False, "No MongoDB connection available")
+            return False
+        
+        try:
+            # Query MongoDB for the uploaded video
+            video_doc = self.db.videos.find_one({"id": self.uploaded_video_id})
+            
+            if not video_doc:
+                video_doc = self.db.videos.find_one({"_id": self.uploaded_video_id})
+            
+            if not video_doc:
+                self.log_test("Merkle Tree Verification", False, "Uploaded video not found in MongoDB")
+                return False
+            
+            print(f"\n🌳 MERKLE TREE VERIFICATION FOR VIDEO: {self.uploaded_video_id}")
+            print("=" * 80)
+            
+            comprehensive_hashes = video_doc.get("comprehensive_hashes", {})
+            
+            # CRITICAL VERIFICATION 1: merkle_root should be present (64 char hex string)
+            merkle_root = comprehensive_hashes.get("merkle_root")
+            merkle_root_valid = (
+                merkle_root is not None and 
+                isinstance(merkle_root, str) and 
+                len(merkle_root) == 64 and 
+                all(c in '0123456789abcdef' for c in merkle_root.lower())
+            )
+            
+            print(f"🔍 CRITICAL VERIFICATION 1: merkle_root")
+            print(f"   {'✅' if merkle_root_valid else '❌'} Present and valid 64-char hex: {merkle_root_valid}")
+            if merkle_root:
+                print(f"   📝 merkle_root: {merkle_root}")
+            
+            # CRITICAL VERIFICATION 2: merkle_tree should contain required structure
+            merkle_tree = comprehensive_hashes.get("merkle_tree", {})
+            merkle_tree_checks = {
+                "merkle_tree_exists": isinstance(merkle_tree, dict) and len(merkle_tree) > 0,
+                "root_matches": merkle_tree.get("merkle_root") == merkle_root,
+                "leaves_present": isinstance(merkle_tree.get("leaves"), list) and len(merkle_tree.get("leaves", [])) > 0,
+                "layer_count_present": isinstance(merkle_tree.get("layer_count"), int) and merkle_tree.get("layer_count", 0) >= 6,
+                "layer_labels_present": isinstance(merkle_tree.get("layer_labels"), list) and len(merkle_tree.get("layer_labels", [])) > 0,
+                "proofs_present": isinstance(merkle_tree.get("proofs"), dict) and len(merkle_tree.get("proofs", {})) > 0
+            }
+            
+            print(f"\n🔍 CRITICAL VERIFICATION 2: merkle_tree structure")
+            for check, result in merkle_tree_checks.items():
+                status = "✅" if result else "❌"
+                print(f"   {status} {check}: {result}")
+            
+            # Print detailed merkle_tree structure
+            if merkle_tree:
+                print(f"\n📊 MERKLE TREE DETAILS:")
+                print(f"   🌳 Root: {merkle_tree.get('merkle_root', 'MISSING')}")
+                print(f"   🍃 Leaves count: {len(merkle_tree.get('leaves', []))}")
+                print(f"   📏 Layer count: {merkle_tree.get('layer_count', 'MISSING')}")
+                print(f"   🏷️ Layer labels: {merkle_tree.get('layer_labels', [])}")
+                print(f"   🔐 Proofs count: {len(merkle_tree.get('proofs', {}))}")
+                
+                # Show first few leaves
+                leaves = merkle_tree.get("leaves", [])
+                if leaves:
+                    print(f"   📝 First 3 leaves:")
+                    for i, leaf in enumerate(leaves[:3]):
+                        print(f"      {i+1}. {leaf[:32]}...")
+                
+                # Show proof structure
+                proofs = merkle_tree.get("proofs", {})
+                if proofs:
+                    print(f"   🔐 Proof keys: {list(proofs.keys())}")
+            
+            # CRITICAL VERIFICATION 3: master_hash should equal merkle_root
+            master_hash = comprehensive_hashes.get("master_hash")
+            master_hash_matches = master_hash == merkle_root
+            
+            print(f"\n🔍 CRITICAL VERIFICATION 3: master_hash equals merkle_root")
+            print(f"   {'✅' if master_hash_matches else '❌'} master_hash == merkle_root: {master_hash_matches}")
+            if master_hash:
+                print(f"   📝 master_hash: {master_hash}")
+            
+            # CRITICAL VERIFICATION 4: All other verification fields still present
+            other_fields_checks = {
+                "original_sha256_present": comprehensive_hashes.get("original_sha256") is not None,
+                "watermarked_sha256_present": comprehensive_hashes.get("watermarked_sha256") is not None,
+                "key_frame_hashes_present": isinstance(comprehensive_hashes.get("key_frame_hashes"), list),
+                "key_frame_hashes_count": len(comprehensive_hashes.get("key_frame_hashes", [])) >= 8,
+                "metadata_hash_present": comprehensive_hashes.get("metadata_hash") is not None,
+                "verification_code_present": comprehensive_hashes.get("verification_code") is not None
+            }
+            
+            print(f"\n🔍 CRITICAL VERIFICATION 4: Other verification fields")
+            for check, result in other_fields_checks.items():
+                status = "✅" if result else "❌"
+                print(f"   {status} {check}: {result}")
+            
+            # Overall assessment
+            all_merkle_checks = (
+                merkle_root_valid and 
+                all(merkle_tree_checks.values()) and 
+                master_hash_matches and 
+                all(other_fields_checks.values())
+            )
+            
+            if all_merkle_checks:
+                details = "✅ MERKLE TREE IMPLEMENTATION WORKING CORRECTLY"
+                details += f"\n   ✅ merkle_root: 64-char hex string present"
+                details += f"\n   ✅ merkle_tree: Complete structure with {merkle_tree.get('layer_count', 0)} layers"
+                details += f"\n   ✅ master_hash: Equals merkle_root as expected"
+                details += f"\n   ✅ All other verification fields: Present and valid"
+                details += f"\n   🌳 Layer labels: {merkle_tree.get('layer_labels', [])}"
+                details += f"\n   🔐 Proof paths: {len(merkle_tree.get('proofs', {}))} layers have proofs"
+                
+                self.log_test("Merkle Tree Verification", True, details)
+                return True
+            else:
+                failed_checks = []
+                if not merkle_root_valid:
+                    failed_checks.append("merkle_root invalid")
+                failed_checks.extend([k for k, v in merkle_tree_checks.items() if not v])
+                if not master_hash_matches:
+                    failed_checks.append("master_hash != merkle_root")
+                failed_checks.extend([k for k, v in other_fields_checks.items() if not v])
+                
+                details = "❌ MERKLE TREE IMPLEMENTATION ISSUES DETECTED"
+                details += f"\n   Failed checks: {failed_checks}"
+                
+                self.log_test("Merkle Tree Verification", False, details)
+                return False
+                
+        except Exception as e:
+            self.log_test("Merkle Tree Verification", False, f"Merkle tree verification error: {str(e)}")
+            return False
+
     def test_database_verification_final(self) -> bool:
         """Test final database state after background processing"""
         if not self.uploaded_video_id:
