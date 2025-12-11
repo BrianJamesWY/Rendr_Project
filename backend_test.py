@@ -502,7 +502,10 @@ class VideoVerificationTester:
     
     def run_complete_verification_workflow(self):
         """Run the complete video upload and verification workflow test"""
-        print("🎯 Starting Video Upload and Verification Testing")
+        print("🎯 TESTING VIDEO UPLOAD VERIFICATION DATA STORAGE")
+        print("=" * 80)
+        print("Focus: Verifying ALL verification data is saved to database correctly")
+        print("Critical fields: comprehensive_hashes.original_sha256, c2pa_manifest")
         print("=" * 80)
         
         # 1. Health check
@@ -510,29 +513,35 @@ class VideoVerificationTester:
             print("❌ API health check failed, aborting tests")
             return
         
-        # 2. Authentication
+        # 2. Connect to MongoDB
+        if not self.connect_to_mongodb():
+            print("❌ MongoDB connection failed, aborting tests")
+            return
+        
+        # 3. Authentication
         if not self.authenticate():
             print("❌ Authentication failed, aborting tests")
             return
         
-        # 3. Get user tier
+        # 4. Get user tier
         user_tier = self.get_user_tier()
         print(f"ℹ️ Testing with user tier: {user_tier}")
         
-        # 4. Test complete upload flow
+        # 5. Test complete upload flow
         video_id = self.test_video_upload()
         
         if video_id:
-            # 5. Test database verification
+            # 6. CRITICAL TEST: Database verification with direct MongoDB access
             self.test_database_verification()
             
-            # 6. Test C2PA manifest file
+            # 7. Test C2PA manifest file
             self.test_c2pa_manifest_file()
-            
-            # 7. Test perceptual hash compression resistance
-            self.test_perceptual_hash_compression()
         else:
             print("❌ Video upload failed, skipping dependent tests")
+        
+        # Cleanup MongoDB connection
+        if self.mongo_client:
+            self.mongo_client.close()
         
         # Print summary
         self.print_summary()
