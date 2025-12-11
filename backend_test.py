@@ -36,6 +36,8 @@ class VideoVerificationTester:
         self.test_results = []
         self.uploaded_video_id = None
         self.verification_code = None
+        self.mongo_client = None
+        self.db = None
         
     def log_test(self, test_name: str, success: bool, details: str = "", response_data: Any = None):
         """Log test results"""
