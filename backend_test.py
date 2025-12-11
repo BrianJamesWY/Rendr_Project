@@ -108,33 +108,75 @@ class VideoVerificationTester:
             self.log_test("Get User Tier", False, f"Error getting user tier: {str(e)}")
             return "free"
     
-    def test_video_upload(self) -> Optional[str]:
-        """Test complete video upload flow"""
+    def create_test_video(self) -> Optional[str]:
+        """Create a test MP4 video file (at least 5 seconds long) using FFmpeg"""
         try:
-            # Use an existing video file from uploads directory
-            video_files = [
-                "/app/backend/uploads/videos/0ab80ba5-0dbe-40a1-9d1d-efb590b7ed8a.mp4",
-                "/app/backend/uploads/videos/0f95734d-a233-4944-bfdc-3403e3db837b.mp4",
-                "/app/backend/uploads/videos/401f6964-94b4-4c87-8f7c-4e1ffb245cb8.mp4"
+            # Create a temporary video file using FFmpeg
+            temp_dir = "/tmp/video_test"
+            os.makedirs(temp_dir, exist_ok=True)
+            
+            test_video_path = f"{temp_dir}/test_video_5sec.mp4"
+            
+            # Create a 5-second test video with color bars and audio tone
+            ffmpeg_cmd = [
+                'ffmpeg', '-y',  # Overwrite output file
+                '-f', 'lavfi',   # Use libavfilter virtual input
+                '-i', 'testsrc2=duration=5:size=640x480:rate=30',  # 5 second video, 640x480, 30fps
+                '-f', 'lavfi',   # Audio input
+                '-i', 'sine=frequency=1000:duration=5',  # 1kHz tone for 5 seconds
+                '-c:v', 'libx264',  # H.264 video codec
+                '-c:a', 'aac',      # AAC audio codec
+                '-shortest',        # Stop when shortest stream ends
+                test_video_path
             ]
             
-            test_video = None
-            for video_file in video_files:
-                if os.path.exists(video_file):
-                    test_video = video_file
-                    break
+            print(f"\n🎬 Creating test video (5 seconds) with FFmpeg...")
+            result = subprocess.run(ffmpeg_cmd, capture_output=True, text=True, timeout=30)
             
+            if result.returncode == 0 and os.path.exists(test_video_path):
+                # Verify video duration
+                duration_cmd = ['ffprobe', '-v', 'quiet', '-show_entries', 'format=duration', 
+                               '-of', 'csv=p=0', test_video_path]
+                duration_result = subprocess.run(duration_cmd, capture_output=True, text=True)
+                
+                if duration_result.returncode == 0:
+                    duration = float(duration_result.stdout.strip())
+                    file_size = os.path.getsize(test_video_path)
+                    
+                    self.log_test("Create Test Video", True, 
+                                f"Created test video: {duration:.1f}s, {file_size:,} bytes")
+                    return test_video_path
+                else:
+                    self.log_test("Create Test Video", False, "Could not verify video duration")
+                    return None
+            else:
+                self.log_test("Create Test Video", False, 
+                            f"FFmpeg failed: {result.stderr}")
+                return None
+                
+        except subprocess.TimeoutExpired:
+            self.log_test("Create Test Video", False, "FFmpeg timeout")
+            return None
+        except Exception as e:
+            self.log_test("Create Test Video", False, f"Error creating test video: {str(e)}")
+            return None
+
+    def test_video_upload(self) -> Optional[str]:
+        """Test complete video upload flow with watermarking"""
+        try:
+            # Create a fresh test video
+            test_video = self.create_test_video()
             if not test_video:
-                self.log_test("Video Upload", False, "No test video files found in uploads directory")
                 return None
             
-            print(f"\n🎬 Testing video upload with: {os.path.basename(test_video)}")
+            print(f"\n🎬 Testing video upload with watermarking...")
+            print(f"   Test video: {os.path.basename(test_video)}")
             
             # Remove Content-Type header for multipart upload
             headers = {"Authorization": f"Bearer {self.auth_token}"}
             
             with open(test_video, 'rb') as f:
-                files = {'video_file': ('test_video.mp4', f, 'video/mp4')}
+                files = {'video_file': ('test_video_5sec.mp4', f, 'video/mp4')}
                 data = {'folder_id': None}  # No folder for this test
                 
                 response = requests.post(
@@ -144,6 +186,10 @@ class VideoVerificationTester:
                     data=data,
                     timeout=120  # Extended timeout for video processing
                 )
+            
+            # Clean up test video
+            if os.path.exists(test_video):
+                os.remove(test_video)
             
             if response.status_code == 200:
                 upload_data = response.json()
@@ -175,8 +221,12 @@ class VideoVerificationTester:
                 details += f"\nTier: {upload_data.get('tier')}, Storage: {upload_data.get('storage_duration')}"
                 details += f"\nStatus: {upload_data.get('status')}, Message: {upload_data.get('message')}"
                 
-                # Note: hashes and c2pa fields are not in response due to Pydantic model mismatch
-                # But backend logs show they are being calculated correctly
+                # Check for hash information in response
+                hashes = upload_data.get("hashes", {})
+                if hashes:
+                    details += f"\nHashes in response: original_sha256={hashes.get('original_sha256', 'N/A')[:16]}..."
+                    details += f", watermarked_sha256={hashes.get('watermarked_sha256', 'N/A')[:16]}..."
+                    details += f", key_frames={hashes.get('key_frame_count', 0)}"
                 
                 self.log_test("Video Upload", True, details, upload_data)
                 return self.uploaded_video_id
