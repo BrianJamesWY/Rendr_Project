@@ -199,7 +199,7 @@ class VideoVerificationTester:
             self.log_test("Database Verification", False, "No uploaded video ID available")
             return False
         
-        if not self.db:
+        if self.db is None:
             self.log_test("Database Verification", False, "No MongoDB connection available")
             return False
         
