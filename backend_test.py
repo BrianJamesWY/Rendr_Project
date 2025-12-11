@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """
-Video Upload Verification Data Testing
-Tests that ALL verification data is being saved to the database correctly
-Focus: comprehensive_hashes and c2pa_manifest fields
+COMPLETE Video Upload Flow with Watermarking and Background Processing Testing
+Tests the COMPLETE video upload flow as requested in review:
+1. Login with BrianJames/Brian123!
+2. Create/use test MP4 video file (at least 5 seconds long)
+3. Upload via POST /api/videos/upload
+4. Wait 5-10 seconds for background processing
+5. Verify watermarking worked (original_sha256 != watermarked_sha256)
+6. Verify all hashes saved (comprehensive_hashes fields)
+7. Verify C2PA manifest saved
+8. Verify background job completed (perceptual_hashes populated)
 """
 
 import requests
@@ -11,6 +18,7 @@ import time
 import os
 import subprocess
 import hashlib
+import tempfile
 from typing import Dict, Any, Optional
 from pymongo import MongoClient
 
