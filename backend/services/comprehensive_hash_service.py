@@ -831,16 +831,17 @@ class ComprehensiveHashService:
                     # Legacy format - simple hex hash
                     hash1 = imagehash.hex_to_hash(h1)
                     hash2 = imagehash.hex_to_hash(h2)
+                    
+                    # Calculate Hamming distance
+                    distance = hash1 - hash2
+                    
+                    # Convert to similarity (0-1 scale)
+                    max_distance = len(hash1.hash.flatten())
+                    similarity = 1.0 - (distance / max_distance)
+                    similarities.append(similarity)
                 
-                # Calculate Hamming distance
-                distance = hash1 - hash2
-                
-                # Convert to similarity (0-1 scale)
-                max_distance = len(hash1.hash.flatten())
-                similarity = 1.0 - (distance / max_distance)
-                similarities.append(similarity)
-                
-            except:
+            except Exception as e:
+                print(f"⚠️ Hash comparison error at frame {i}: {e}")
                 continue
         
         return sum(similarities) / len(similarities) if similarities else 0.0
