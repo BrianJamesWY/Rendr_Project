@@ -8,6 +8,7 @@ This implements the complete verification pipeline:
 3. Perceptual audio hash (chromaprint for compression tolerance)
 4. SHA-256 of metadata (EXIF/XMP preservation)
 5. Watermark with optional QR code
+6. Merkle Tree Root for tamper-proof verification
 """
 
 import cv2
@@ -20,6 +21,134 @@ import json
 import os
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime, timezone
+
+
+class MerkleTree:
+    """
+    Merkle Tree implementation for video verification
+    
+    Creates a binary tree where:
+    - Leaf nodes = SHA-256 hashes of individual verification layers
+    - Internal nodes = SHA-256(left_child + right_child)
+    - Root = single hash representing ALL verification data
+    
+    Benefits over simple combined hash:
+    1. Can verify individual layers without full recalculation
+    2. Proof of inclusion for any single layer
+    3. Industry standard (Bitcoin, Ethereum, Git)
+    4. Tamper-evident: changing ANY leaf changes the root
+    """
+    
+    def __init__(self, leaves: List[str] = None):
+        self.leaves = leaves or []
+        self.tree = []
+        self.root = None
+        
+        if self.leaves:
+            self._build_tree()
+    
+    def _hash_pair(self, left: str, right: str) -> str:
+        """Hash two nodes together"""
+        combined = left + right
+        return hashlib.sha256(combined.encode()).hexdigest()
+    
+    def _build_tree(self):
+        """Build the Merkle tree from leaves"""
+        if not self.leaves:
+            self.root = hashlib.sha256(b"empty").hexdigest()
+            return
+        
+        # Start with leaf hashes
+        current_level = self.leaves.copy()
+        self.tree = [current_level.copy()]
+        
+        # Build up the tree
+        while len(current_level) > 1:
+            next_level = []
+            
+            # Process pairs
+            for i in range(0, len(current_level), 2):
+                left = current_level[i]
+                # If odd number, duplicate the last node
+                right = current_level[i + 1] if i + 1 < len(current_level) else left
+                
+                parent_hash = self._hash_pair(left, right)
+                next_level.append(parent_hash)
+            
+            self.tree.append(next_level)
+            current_level = next_level
+        
+        self.root = current_level[0] if current_level else None
+    
+    def get_root(self) -> str:
+        """Get the Merkle root"""
+        return self.root
+    
+    def get_proof(self, leaf_index: int) -> List[Dict]:
+        """
+        Get the proof path for a specific leaf
+        This allows verification of a single layer without all data
+        """
+        if not self.tree or leaf_index >= len(self.leaves):
+            return []
+        
+        proof = []
+        index = leaf_index
+        
+        for level in self.tree[:-1]:  # All levels except root
+            # Determine sibling
+            if index % 2 == 0:
+                # Left node, sibling is on right
+                sibling_index = index + 1 if index + 1 < len(level) else index
+                position = "right"
+            else:
+                # Right node, sibling is on left
+                sibling_index = index - 1
+                position = "left"
+            
+            proof.append({
+                "hash": level[sibling_index],
+                "position": position
+            })
+            
+            # Move to parent index
+            index = index // 2
+        
+        return proof
+    
+    def verify_proof(self, leaf_hash: str, proof: List[Dict], root: str) -> bool:
+        """
+        Verify a leaf belongs to the tree using its proof
+        """
+        current_hash = leaf_hash
+        
+        for step in proof:
+            sibling_hash = step["hash"]
+            
+            if step["position"] == "right":
+                current_hash = self._hash_pair(current_hash, sibling_hash)
+            else:
+                current_hash = self._hash_pair(sibling_hash, current_hash)
+        
+        return current_hash == root
+    
+    def to_dict(self) -> Dict:
+        """Export tree structure for storage"""
+        return {
+            "root": self.root,
+            "leaves": self.leaves,
+            "leaf_count": len(self.leaves),
+            "tree_depth": len(self.tree),
+            "algorithm": "sha256",
+            "version": "1.0"
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict) -> 'MerkleTree':
+        """Reconstruct tree from stored data"""
+        tree = cls(data.get("leaves", []))
+        return tree
+
 
 class ComprehensiveHashService:
     """
