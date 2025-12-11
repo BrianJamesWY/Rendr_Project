@@ -198,7 +198,7 @@ function Dashboard() {
           
           <nav style={{ display: 'flex', gap: '4px' }}>
             <Link to="/dashboard" style={{ padding: '8px 12px', color: '#030303', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', background: '#e5e5e5' }}>Dashboard</Link>
-            <Link to="/upload" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Videos</Link>
+            <Link to="/upload" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Upload</Link>
             <Link to="/editor" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Editor</Link>
             <Link to="/bounties" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Bounties</Link>
             <Link to="/earnings" style={{ padding: '8px 12px', color: '#606060', textDecoration: 'none', fontSize: '14px', fontWeight: '500', borderRadius: '4px', transition: 'background 0.2s' }}>Monetization</Link>
