@@ -122,5 +122,36 @@ async def get_me(current_user=Depends(get_current_user), db=Depends(get_db)):
         "phone": user.get("phone"),
         "notification_preference": user.get("notification_preference", "email"),
         "notify_video_length_threshold": user.get("notify_video_length_threshold", 30),
-        "sms_opted_in": user.get("sms_opted_in", True)
+        "sms_opted_in": user.get("sms_opted_in", True),
+        "notify_on_verification": user.get("notify_on_verification", True)
+    }
+
+
+@router.patch("/me/notifications")
+async def update_notification_preferences(
+    current_user=Depends(get_current_user),
+    db=Depends(get_db),
+    notify_email: bool = True,
+    notify_sms: bool = False,
+    notify_on_verification: bool = True,
+    notify_video_length_threshold: int = 30
+):
+    """Update user notification preferences"""
+    await db.users.update_one(
+        {"_id": current_user["user_id"]},
+        {
+            "$set": {
+                "notify_email": notify_email,
+                "notify_sms": notify_sms,
+                "notify_on_verification": notify_on_verification,
+                "notify_video_length_threshold": notify_video_length_threshold
+            }
+        }
+    )
+    
+    return {
+        "message": "Notification preferences updated",
+        "notify_email": notify_email,
+        "notify_sms": notify_sms,
+        "notify_on_verification": notify_on_verification
     }
