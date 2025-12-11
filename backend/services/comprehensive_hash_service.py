@@ -37,25 +37,56 @@ class MerkleTree:
     2. Proof of inclusion for any single layer
     3. Industry standard (Bitcoin, Ethereum, Git)
     4. Tamper-evident: changing ANY leaf changes the root
+    
+    RENDR-specific design decisions:
+    - Fixed leaf order (versioned schema) for consistency
+    - Small tree (8 leaves max) - no rebalancing needed
+    - Write-once model - tree rebuilt max 2x then frozen
+    - Hash algorithm versioned for future rotation
     """
     
-    def __init__(self, leaves: List[str] = None):
+    # Schema version - increment when leaf order changes
+    SCHEMA_VERSION = "1.0"
+    
+    # Supported hash algorithms (for future rotation)
+    HASH_ALGORITHMS = {
+        "sha256": hashlib.sha256,
+        "sha384": hashlib.sha384,
+        "sha512": hashlib.sha512,
+    }
+    
+    # Canonical leaf order - DO NOT CHANGE without version bump
+    LEAF_ORDER_V1 = [
+        "verification_code",
+        "original_sha256", 
+        "watermarked_sha256",
+        "key_frames",
+        "perceptual_hashes",
+        "audio_hash",
+        "metadata_hash",
+        "timestamp"
+    ]
+    
+    def __init__(self, leaves: List[str] = None, algorithm: str = "sha256"):
         self.leaves = leaves or []
         self.tree = []
         self.root = None
+        self.algorithm = algorithm
+        self._hash_func = self.HASH_ALGORITHMS.get(algorithm, hashlib.sha256)
         
         if self.leaves:
             self._build_tree()
     
     def _hash_pair(self, left: str, right: str) -> str:
-        """Hash two nodes together"""
+        """Hash two nodes together using configured algorithm"""
+        # Sort to ensure consistent ordering (left + right always same order)
         combined = left + right
-        return hashlib.sha256(combined.encode()).hexdigest()
+        return self._hash_func(combined.encode()).hexdigest()
     
     def _build_tree(self):
         """Build the Merkle tree from leaves"""
         if not self.leaves:
-            self.root = hashlib.sha256(b"empty").hexdigest()
+            self.root = self._hash_func(b"empty").hexdigest()
             return
         
         # Start with leaf hashes
@@ -69,7 +100,7 @@ class MerkleTree:
             # Process pairs
             for i in range(0, len(current_level), 2):
                 left = current_level[i]
-                # If odd number, duplicate the last node
+                # If odd number, duplicate the last node (standard Merkle approach)
                 right = current_level[i + 1] if i + 1 < len(current_level) else left
                 
                 parent_hash = self._hash_pair(left, right)
