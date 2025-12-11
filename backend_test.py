@@ -882,18 +882,18 @@ class VideoVerificationTester:
             return False
 
     def run_complete_verification_workflow(self):
-        """Run the COMPLETE video upload flow with watermarking and background processing test"""
-        print("🎯 TESTING COMPLETE VIDEO UPLOAD FLOW WITH WATERMARKING AND BACKGROUND PROCESSING")
+        """Run the MERKLE TREE video upload flow test"""
+        print("🎯 TESTING VIDEO UPLOAD FLOW WITH NEW MERKLE TREE IMPLEMENTATION")
         print("=" * 90)
         print("Test Scenario:")
         print("1. Login with BrianJames/Brian123!")
-        print("2. Create test MP4 video file (at least 5 seconds long)")
-        print("3. Upload via POST /api/videos/upload")
-        print("4. Wait 5-10 seconds for background processing")
-        print("5. Verify watermarking worked (original_sha256 != watermarked_sha256)")
-        print("6. Verify all hashes saved (comprehensive_hashes fields)")
-        print("7. Verify C2PA manifest saved")
-        print("8. Verify background job completed (perceptual_hashes populated)")
+        print("2. Upload a test video (create MP4)")
+        print("3. After upload completes, query MongoDB for the video")
+        print("4. Verify the Merkle Tree is stored correctly:")
+        print("   - comprehensive_hashes.merkle_root (64 char hex string)")
+        print("   - comprehensive_hashes.merkle_tree with root, leaves, layer_count, layer_labels, proofs")
+        print("   - comprehensive_hashes.master_hash should equal merkle_root")
+        print("   - All other verification fields still present")
         print("=" * 90)
         
         # 1. Health check
