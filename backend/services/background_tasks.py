@@ -13,9 +13,15 @@ def process_video_hashes(video_id: str, video_path: str, verification_code: str,
     """
     Background task: Calculate additional hashes (perceptual, audio, etc.)
     This runs in a separate worker process
+    
+    CRITICAL: This function updates the database with:
+    - Perceptual hashes (compression-resistant)
+    - Audio hash (audio fingerprint)
+    - Updated master hash (combining all layers)
     """
     from rq import get_current_job
     from services.comprehensive_hash_service import comprehensive_hash_service
+    import hashlib
     
     job = get_current_job()
     
@@ -25,18 +31,17 @@ def process_video_hashes(video_id: str, video_path: str, verification_code: str,
         job.meta['message'] = 'Starting hash calculations...'
         job.save_meta()
         
-        print(f"🔄 Background processing started for video {video_id}")
+        print(f"\n{'='*60}")
+        print(f"🔄 BACKGROUND PROCESSING - Video {video_id}")
+        print(f"{'='*60}")
         
-        # Calculate perceptual hashes (this is slow)
+        # Calculate perceptual hashes (this is slow but critical for verification)
         job.meta['progress'] = 30
         job.meta['message'] = 'Calculating perceptual hashes...'
         job.save_meta()
         
-        perceptual_hashes = comprehensive_hash_service._calculate_perceptual_hashes(
-            video_path,
-            sample_rate=30
-        )
-        
+        print("📊 Step 1: Calculating perceptual hashes...")
+        perceptual_hashes = comprehensive_hash_service._calculate_perceptual_hashes(video_path)
         print(f"   ✅ Calculated {len(perceptual_hashes)} perceptual hashes")
         
         # Calculate audio hash
@@ -44,37 +49,47 @@ def process_video_hashes(video_id: str, video_path: str, verification_code: str,
         job.meta['message'] = 'Calculating audio hash...'
         job.save_meta()
         
-        audio_hash = comprehensive_hash_service._calculate_audio_hash(video_path)
+        print("📊 Step 2: Calculating audio hash...")
+        audio_hash = comprehensive_hash_service._calculate_audio_perceptual_hash(video_path)
         print(f"   ✅ Audio hash: {audio_hash[:32] if audio_hash else 'N/A'}...")
         
-        # Update database
+        # Update database with ALL calculated data
         job.meta['progress'] = 80
-        job.meta['message'] = 'Updating database...'
+        job.meta['message'] = 'Saving verification data to database...'
         job.save_meta()
+        
+        print("💾 Step 3: Updating database with all verification layers...")
         
         # Use asyncio to update MongoDB
         asyncio.run(update_video_hashes(
             video_id=video_id,
+            verification_code=verification_code,
             perceptual_hashes=perceptual_hashes,
             audio_hash=audio_hash
         ))
         
         # Complete
         job.meta['progress'] = 100
-        job.meta['message'] = 'Processing complete'
+        job.meta['message'] = 'All verification layers complete'
         job.save_meta()
         
-        print(f"   ✅ Background processing complete for {video_id}")
+        print(f"{'='*60}")
+        print(f"✅ BACKGROUND PROCESSING COMPLETE - {video_id}")
+        print(f"{'='*60}\n")
         
         return {
             'video_id': video_id,
+            'verification_code': verification_code,
             'perceptual_hash_count': len(perceptual_hashes),
             'audio_hash': audio_hash,
             'status': 'success'
         }
         
     except Exception as e:
-        print(f"   ❌ Background processing failed: {e}")
+        print(f"\n❌ BACKGROUND PROCESSING FAILED: {e}")
+        import traceback
+        traceback.print_exc()
+        
         job.meta['progress'] = 0
         job.meta['message'] = f'Error: {str(e)}'
         job.save_meta()
