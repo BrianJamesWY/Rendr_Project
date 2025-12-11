@@ -409,10 +409,24 @@ class ComprehensiveHashService:
     
     def _calculate_perceptual_hashes(self, video_path: str) -> List[str]:
         """
-        Calculate pHash (DCT-based) on center 50% of frames
-        This survives compression, cropping, and minor edits
+        Calculate multiple perceptual hashes for compression-resistant verification.
+        
+        IMPROVED ALGORITHM (v2):
+        1. Normalize frame to 512x512 (resolution-independent)
+        2. Extract center 50% (border/watermark resistant)
+        3. Calculate COMBINED hash: pHash + dHash + aHash
+        4. Store as structured data for flexible matching
+        
+        This survives:
+        - Heavy compression (CRF 40+)
+        - Resolution changes (1080p → 360p → 1080p)
+        - Minor cropping and padding
+        - Color adjustments
+        
+        Returns list of combined hash strings in format:
+        "p:{phash}|d:{dhash}|a:{ahash}"
         """
-        phashes = []
+        combined_hashes = []
         
         try:
             cap = cv2.VideoCapture(video_path)
@@ -426,21 +440,33 @@ class ComprehensiveHashService:
                 
                 # Sample every Nth frame
                 if frame_count % self.phash_sample_rate == 0:
-                    # Extract center 50%
+                    # STEP 1: Extract center 50% (watermark/border resistant)
                     height, width = frame.shape[:2]
                     center_h_start = height // 4
                     center_h_end = 3 * height // 4
                     center_w_start = width // 4
                     center_w_end = 3 * width // 4
-                    
                     center_region = frame[center_h_start:center_h_end, center_w_start:center_w_end]
                     
-                    # Convert to PIL Image for imagehash
-                    pil_image = Image.fromarray(cv2.cvtColor(center_region, cv2.COLOR_BGR2RGB))
+                    # STEP 2: Normalize to 512x512 (resolution-independent)
+                    normalized = cv2.resize(center_region, (512, 512), interpolation=cv2.INTER_AREA)
                     
-                    # Calculate perceptual hash (DCT-based, compression resistant)
-                    phash = str(imagehash.phash(pil_image, hash_size=16))
-                    phashes.append(phash)
+                    # Convert to PIL Image for imagehash
+                    pil_image = Image.fromarray(cv2.cvtColor(normalized, cv2.COLOR_BGR2RGB))
+                    
+                    # STEP 3: Calculate multiple hash types (hash_size=8 for better tolerance)
+                    # pHash: DCT-based, good for overall structure
+                    phash = str(imagehash.phash(pil_image, hash_size=8))
+                    
+                    # dHash: Gradient-based, good for edges
+                    dhash = str(imagehash.dhash(pil_image, hash_size=8))
+                    
+                    # aHash: Average-based, good for brightness patterns
+                    ahash = str(imagehash.average_hash(pil_image, hash_size=8))
+                    
+                    # Store as combined format
+                    combined = f"p:{phash}|d:{dhash}|a:{ahash}"
+                    combined_hashes.append(combined)
                 
                 frame_count += 1
             
@@ -449,7 +475,49 @@ class ComprehensiveHashService:
         except Exception as e:
             print(f"⚠️ Perceptual hashing error: {e}")
         
-        return phashes
+        return combined_hashes
+    
+    def calculate_perceptual_similarity(self, hash1: str, hash2: str) -> float:
+        """
+        Calculate similarity between two combined perceptual hashes.
+        
+        Args:
+            hash1: Combined hash string "p:{phash}|d:{dhash}|a:{ahash}"
+            hash2: Combined hash string "p:{phash}|d:{dhash}|a:{ahash}"
+        
+        Returns:
+            Weighted similarity percentage (0-100)
+        """
+        try:
+            # Parse combined hashes
+            def parse_combined(h):
+                parts = {}
+                for part in h.split("|"):
+                    key, val = part.split(":")
+                    parts[key] = imagehash.hex_to_hash(val)
+                return parts
+            
+            h1 = parse_combined(hash1)
+            h2 = parse_combined(hash2)
+            
+            # Calculate individual similarities
+            def hash_similarity(a, b):
+                bits = len(a.hash.flatten())
+                distance = a - b
+                return (1 - distance / bits) * 100
+            
+            # Weighted combination (pHash=40%, dHash=30%, aHash=30%)
+            phash_sim = hash_similarity(h1['p'], h2['p']) if 'p' in h1 and 'p' in h2 else 0
+            dhash_sim = hash_similarity(h1['d'], h2['d']) if 'd' in h1 and 'd' in h2 else 0
+            ahash_sim = hash_similarity(h1['a'], h2['a']) if 'a' in h1 and 'a' in h2 else 0
+            
+            combined_similarity = phash_sim * 0.4 + dhash_sim * 0.3 + ahash_sim * 0.3
+            
+            return combined_similarity
+            
+        except Exception as e:
+            print(f"⚠️ Similarity calculation error: {e}")
+            return 0.0
     
     def _calculate_audio_perceptual_hash(self, video_path: str) -> str:
         """
