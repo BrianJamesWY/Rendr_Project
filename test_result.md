@@ -564,7 +564,63 @@ backend:
         agent: "testing"
         comment: "TESTED: Complete video upload flow with watermarking and background processing fully functional. All critical verifications passed: 1) Login with BrianJames/Brian123! successful, 2) Created 5-second test MP4 video (641,092 bytes) using FFmpeg, 3) Video upload via POST /api/videos/upload successful (ID: d461c0fd-4615-4893-a877-7563d8447081, Code: RND-LIGKAK), 4) Watermarking working correctly - original_sha256 (59577cdc...) DIFFERENT from watermarked_sha256 (13db8092...), 5) All hashes saved to database: comprehensive_hashes.original_sha256 (PRESENT), comprehensive_hashes.watermarked_sha256 (PRESENT & DIFFERENT), comprehensive_hashes.key_frame_hashes (10 hashes), comprehensive_hashes.perceptual_hashes (5 entries from background job), comprehensive_hashes.audio_hash (PRESENT from background job), comprehensive_hashes.master_hash (PRESENT), 6) C2PA manifest saved with manifest_data present, 7) Background processing completed successfully - Redis queue working, RQ worker processing jobs, perceptual and audio hashes populated after 5-10 second wait. Fixed Redis queue integration issue by enabling actual background processing instead of simulation mode. All 11 test scenarios passed with 100% success rate."
 
+  - task: "Merkle Tree Implementation for Video Upload Flow"
+    implemented: true
+    working: true
+    file: "backend/services/comprehensive_hash_service.py, backend/api/videos.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "TESTED: Merkle Tree implementation fully functional. All critical verifications passed: 1) comprehensive_hashes.merkle_root present as 64-char hex string (a63ed4073d3243b22755656ef15055b89f6c4a23ae3b0b9eb3b60d7e9c900eb1), 2) comprehensive_hashes.merkle_tree contains complete structure with root matching merkle_root, leaves array (8 entries), layer_count (8 layers), layer_labels (['verification_code', 'original_sha256', 'watermarked_sha256', 'key_frames_10', 'perceptual_hashes_5', 'audio_hash', 'metadata_hash', 'timestamp']), and proofs object with proof paths for all 8 layers, 3) comprehensive_hashes.master_hash equals merkle_root as expected, 4) All other verification fields present (original_sha256, watermarked_sha256, key_frame_hashes, metadata_hash, verification_code). Background processing correctly updates Merkle Tree from 6 to 8 layers when perceptual and audio hashes are added. Video upload test with BrianJames/Brian123! credentials successful (Video ID: fc052c1c-87c5-4d8d-8b56-fa6404a6d326, Code: RND-0TLW35). Merkle Tree provides tamper-proof verification with individual layer proof capabilities."
+
 agent_communication:
+  - agent: "testing"
+    message: |
+      MERKLE TREE VIDEO UPLOAD FLOW TESTING COMPLETED - ALL FEATURES WORKING PERFECTLY
+      
+      Executed comprehensive testing of the video upload flow with new Merkle Tree implementation as requested:
+      
+      ✅ TEST SCENARIO EXECUTION:
+      1. ✅ Login with BrianJames/Brian123! - SUCCESSFUL (Enterprise tier user)
+      2. ✅ Created test MP4 video file (5 seconds, 641,092 bytes) using FFmpeg - SUCCESSFUL
+      3. ✅ Upload via POST /api/videos/upload - SUCCESSFUL (Video ID: fc052c1c-87c5-4d8d-8b56-fa6404a6d326, Code: RND-0TLW35)
+      4. ✅ Queried MongoDB for video after upload - SUCCESSFUL
+      5. ✅ Verified Merkle Tree stored correctly - SUCCESSFUL
+      
+      ✅ CRITICAL VERIFICATIONS PASSED:
+      - **comprehensive_hashes.merkle_root**: PRESENT ✅ (64-char hex: a63ed4073d3243b22755656ef15055b89f6c4a23ae3b0b9eb3b60d7e9c900eb1)
+      - **comprehensive_hashes.merkle_tree**: COMPLETE STRUCTURE ✅
+        - root: Same as merkle_root ✅
+        - leaves: Array of 8 leaf hashes ✅
+        - layer_count: 8 verification layers ✅
+        - layer_labels: ['verification_code', 'original_sha256', 'watermarked_sha256', 'key_frames_10', 'perceptual_hashes_5', 'audio_hash', 'metadata_hash', 'timestamp'] ✅
+        - proofs: Object with proof paths for all 8 layers ✅
+      - **comprehensive_hashes.master_hash**: EQUALS merkle_root ✅
+      - **All other verification fields**: PRESENT ✅ (original_sha256, watermarked_sha256, key_frame_hashes, metadata_hash, verification_code)
+      
+      ✅ INFRASTRUCTURE VERIFICATION:
+      - FFmpeg version 5.1.8: WORKING ✅
+      - Redis server: RUNNING (PONG response) ✅
+      - RQ Worker: ACTIVE (processing background jobs) ✅
+      - MongoDB: CONNECTED (test_database.videos collection) ✅
+      
+      ✅ MERKLE TREE DYNAMIC UPDATES:
+      - Initial Merkle Tree: 6 layers (before background processing) ✅
+      - Final Merkle Tree: 8 layers (after background processing adds perceptual_hashes_5 and audio_hash) ✅
+      - Tree structure correctly updated with new layers ✅
+      - Proof paths generated for all layers ✅
+      
+      ✅ ADDITIONAL VERIFICATIONS:
+      - Watermarking working correctly (original_sha256 ≠ watermarked_sha256) ✅
+      - C2PA manifest saved with 5 assertions ✅
+      - Background processing completed (perceptual hashes: 5 entries, audio hash: present) ✅
+      - All database fields properly populated ✅
+      
+      🎯 OVERALL ASSESSMENT: The Merkle Tree implementation is fully functional and production-ready. All requested verifications passed with 100% success rate (12/12 tests). The system provides tamper-proof verification with individual layer proof capabilities, dynamic tree updates during background processing, and complete integration with the existing video upload workflow.
+
   - agent: "testing"
     message: |
       COMPLETE VIDEO UPLOAD FLOW WITH WATERMARKING AND BACKGROUND PROCESSING TESTING COMPLETED - ALL FEATURES WORKING PERFECTLY
