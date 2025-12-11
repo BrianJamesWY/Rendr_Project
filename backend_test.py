@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend Test for Video Upload and Verification Flow
-Tests the complete video upload with comprehensive hashing and C2PA integration
+Video Upload Verification Data Testing
+Tests that ALL verification data is being saved to the database correctly
+Focus: comprehensive_hashes and c2pa_manifest fields
 """
 
 import requests
@@ -11,6 +12,7 @@ import os
 import subprocess
 import hashlib
 from typing import Dict, Any, Optional
+from pymongo import MongoClient
 
 # Configuration
 BASE_URL = "https://verify-video.preview.emergentagent.com"
@@ -21,6 +23,10 @@ TEST_USER = {
     "username": "BrianJames",
     "password": "Brian123!"
 }
+
+# MongoDB connection
+MONGO_URL = "mongodb://localhost:27017"
+DB_NAME = "test_database"
 
 class VideoVerificationTester:
     def __init__(self):
