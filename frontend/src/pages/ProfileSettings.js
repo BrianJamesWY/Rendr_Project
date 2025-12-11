@@ -4,7 +4,7 @@ import axios from 'axios';
 import Navigation from '../components/Navigation';
 import WatermarkSettings from '../components/WatermarkSettings';
 
-const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
+const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
 
 const SOCIAL_PLATFORMS = [
   { value: 'instagram', label: 'Instagram', icon: '📷' },

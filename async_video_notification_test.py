@@ -36,7 +36,7 @@ from typing import Dict, Any, Optional
 from pymongo import MongoClient
 
 # Configuration
-BASE_URL = "https://verify-video.preview.emergentagent.com"
+BASE_URL = "https://verifyvideos.preview.emergentagent.com"
 API_BASE = f"{BASE_URL}/api"
 
 # Test credentials

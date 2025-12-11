@@ -1,7 +1,7 @@
 #!/bin/bash
 # Test critical user flows
 
-BACKEND_URL="https://verify-video.preview.emergentagent.com/api"
+BACKEND_URL="https://verifyvideos.preview.emergentagent.com/api"
 
 echo "====================================="
 echo "Testing Critical User Flows"

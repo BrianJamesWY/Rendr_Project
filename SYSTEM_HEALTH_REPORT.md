@@ -11,7 +11,7 @@
 
 1. **Hardcoded Backend URLs** (P0)
    - Files: `Dashboard.js:6`, `Showcase.js:7`, `CreatorLogin.js:6`
-   - Issue: Using hardcoded `https://verify-video.preview.emergentagent.com`
+   - Issue: Using hardcoded `https://verifyvideos.preview.emergentagent.com`
    - Should use: `process.env.REACT_APP_BACKEND_URL`
    - Impact: Breaks in different environments
 

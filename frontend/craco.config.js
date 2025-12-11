@@ -39,7 +39,7 @@ const webpackConfig = {
       const webpack = require('webpack');
       webpackConfig.plugins.push(
         new webpack.DefinePlugin({
-          'process.env.REACT_APP_BACKEND_URL': JSON.stringify('https://verify-video.preview.emergentagent.com')
+          'process.env.REACT_APP_BACKEND_URL': JSON.stringify('https://verifyvideos.preview.emergentagent.com')
         })
       );
 

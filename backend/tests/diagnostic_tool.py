@@ -28,7 +28,7 @@ class DiagnosticTool:
         self.results = []
         self.errors = []
         self.warnings = []
-        self.backend_url = os.getenv('REACT_APP_BACKEND_URL', 'https://verify-video.preview.emergentagent.com')
+        self.backend_url = os.getenv('REACT_APP_BACKEND_URL', 'https://verifyvideos.preview.emergentagent.com')
         self.api_url = f"{self.backend_url}/api"
         
     def print_header(self, text: str):

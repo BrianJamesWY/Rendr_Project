@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://verify-video.preview.emergentagent.com"
+BASE_URL = "https://verifyvideos.preview.emergentagent.com"
 API_URL = f"{BASE_URL}/api"
 
 # Test URLs

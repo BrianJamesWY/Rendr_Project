@@ -9,7 +9,7 @@ const StripeConnectReturn = () => {
   const navigate = useNavigate();
   const [status, setStatus] = useState('loading'); // 'loading' | 'success' | 'error'
   const [message, setMessage] = useState('');
-  const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
+  const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
 
   useEffect(() => {
     const verifyConnection = async () => {

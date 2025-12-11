@@ -131,8 +131,8 @@ User has spent significant credits (down to ~27) with minimal progress. Claims t
 - Password: `Brian123!`
 
 **API Endpoints**:
-- Backend: `https://verify-video.preview.emergentagent.com/api`
-- Showcase: `https://verify-video.preview.emergentagent.com/@BrianJames`
+- Backend: `https://verifyvideos.preview.emergentagent.com/api`
+- Showcase: `https://verifyvideos.preview.emergentagent.com/@BrianJames`
 
 ---
 

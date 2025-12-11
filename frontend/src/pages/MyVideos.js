@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../components/Logo';
 
-const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
+const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
 
 function MyVideos() {
   console.log('MyVideos BACKEND_URL:', BACKEND_URL);

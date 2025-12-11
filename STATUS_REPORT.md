@@ -21,7 +21,7 @@ All requested tasks have been verified as **COMPLETE** or **NEARLY COMPLETE**. T
 - **Tested:** Yes, screenshot captured
 - **Result:** Page loads correctly, videos display, social links work
 - **Issues:** NONE - The reported bug appears to be resolved
-- **URL:** `https://verify-video.preview.emergentagent.com/@BrianJames`
+- **URL:** `https://verifyvideos.preview.emergentagent.com/@BrianJames`
 
 **Features Verified:**
 - Profile picture and banner display
@@ -341,9 +341,9 @@ REACT_APP_BACKEND_URL=<configured>
 - **CEO Admin:** /ceo-access-b7k9m2x → RendrCEO2025!
 
 ### **URLs:**
-- **Main App:** https://verify-video.preview.emergentagent.com
-- **Showcase:** https://verify-video.preview.emergentagent.com/@BrianJames
-- **CEO Admin:** https://verify-video.preview.emergentagent.com/ceo-access-b7k9m2x
+- **Main App:** https://verifyvideos.preview.emergentagent.com
+- **Showcase:** https://verifyvideos.preview.emergentagent.com/@BrianJames
+- **CEO Admin:** https://verifyvideos.preview.emergentagent.com/ceo-access-b7k9m2x
 - **Notification Settings:** /notification-settings
 - **Password Reset:** /forgot-password
 

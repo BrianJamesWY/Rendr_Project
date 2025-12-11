@@ -8,7 +8,7 @@ The user is highly concerned about wasted time and credits due to recurring erro
 **PRODUCT REQUIREMENTS:**
 1.  **Complete Verification System:**
     *   A full, 10-layer asynchronous verification pipeline must be fully implemented and **all generated data must be saved to the database**.
-    *   Layers include: Original SHA-256, Watermarked SHA-256, Key Frame Hashes, Metadata Hash, Master Hash (to be improved to a Merkle Tree), C2PA Manifest, Perceptual Hash (pHash), Audio Hash, and a Blockchain Timestamp.
+    *   Layers include: Original SHA-256, Watermarked SHA-256, Key Frame Hashes, Metadata Hash, Master Hash (now a Merkle Tree), C2PA Manifest, Perceptual Hash (pHash), Audio Hash, and a Blockchain Timestamp.
     *   The verification code () must be burned into a watermark on the video.
     *   The system must use Redis for asynchronous processing to ensure a fast UI response for the user.
 2.  **Role-Based Access & Dashboards:**
@@ -16,203 +16,183 @@ The user is highly concerned about wasted time and credits due to recurring erro
     *   **CEO Dashboard ():** A dedicated dashboard for management-level users. Accessed via login with /.
     *   **Investor Dashboard ():** A dedicated dashboard for investors. Accessed via login with /.
 3.  **Documentation:**
-    *   Create and maintain a comprehensive artifact that details the entire verification workflow, suitable for presenting to investors and for onboarding future agents to prevent errors.
+    *   Create and maintain a comprehensive artifact that details the entire verification workflow. A session summary document has been created.
 
 **User's preferred language**: English
 
 **what currently exists?**
-The application has three distinct, role-based dashboards (Pathway, CEO, Investor) with dedicated login flows that now work correctly. The Pathway page was successfully implemented, providing 'god-mode' administrative functions, and was secured with obfuscated naming and a password prompt. A recurring CORS issue was identified and fixed by correcting the supervisor configuration. To prevent future errors, a  was created.
+The core backend verification pipeline is now robust and functional. The critical issue of verification data not being saved to the database has been **fixed**. The Master Hash has been upgraded to a proper, versioned **Merkle Tree**. The perceptual hashing (pHash) algorithm was significantly improved, now achieving ~98% similarity on heavily compressed videos. FFmpeg and Redis were installed and configured, enabling background processing via RQ workers.
 
-The backend has the code for a multi-layered verification system that runs asynchronously using Redis. However, a critical issue remains: many of the calculated hashes and the C2PA manifest are **not being saved** to the database, rendering the verification incomplete. The user's current focus is to fix this and perfect the entire verification pipeline before moving on.
+On the frontend, a new, professional  component with drag-and-drop support has been created and integrated into the  page. An event-driven architecture for async notifications has been designed and partially implemented on the backend. However, the frontend is currently non-functional due to a recurring environment issue causing API calls to fail.
 
 **Last working item**:
--   **Last item agent was working**: The user requested a comprehensive, printable artifact detailing the full, 11-step verification system workflow. The agent gathered all necessary information from the codebase and user documents to prepare this artifact.
--   **Status**: IN PROGRESS
--   **Agent Testing Done**: N/A
--   **Which testing method agent to use?**: N/A (This is a documentation task).
+-   **Last item agent was working**: Fixing a recurring frontend environment issue where the React development server uses a cached, incorrect  from . This caused all API calls from the newly integrated upload page to fail with CORS errors.
+-   **Status**: BLOCKED
+-   **Agent Testing Done**: Y (but failed)
+-   **Which testing method agent to use?**: The underlying environment issue must be solved first. The primary file to check and fix is . After fixing it, a full restart of the frontend service (frontend: ERROR (not running)
+frontend: started) and possibly clearing the browser cache will be needed. Then, use the  on the  page to verify login and API functionality.
 -   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   Issue 1: Verification Data Not Being Saved to Database (P0)
--   Issue 2: pHash Algorithm Underperforms on Heavy Compression (P1)
--   Issue 3: Asynchronous Status Update UI Not Built (P2)
--   Issue 4: Recurring Login/CORS Issue Risk (P2)
+-   Issue 1: Frontend is Not Functional Due to Environment/CORS Issue (P0)
+-   Issue 2: Blockchain Integration Pending (P1)
+-   Issue 3: Obsolete Analytics Pages (P3)
+-   Issue 4: Duplicated Verification Result UI (P3)
 
 **Issues Detail**:
--   **Issue 1: Verification Data Not Being Saved to Database**
-    -   **Description**: The backend calculates multiple verification layers (Key Frame Hashes, Perceptual Hashes, Master Hash, C2PA Manifest) during the async process, but they are not being persisted in the video document in the database. This is the main blocker for a functional verification system. The agent identified this in messages #451, #466, and #481.
-    -   **Attempted fixes**: None. The agent only identified the problem.
+-   **Issue 1: Frontend is Not Functional Due to Environment/CORS Issue**
+    -   **Description**: The React dev server is using a stale/incorrect backend URL, causing all API calls to fail with CORS or network errors. This is a recurrence of a known issue where  contains a hardcoded URL.
+    -   **Attempted fixes**: The agent correctly identified the issue in  and fixed it. However, subsequent restarts and rebuilds of the frontend failed to clear the cached URL from the running development server, so the issue persists.
     -   **Next debug checklist**:
-        1.  Inspect  and the background task logic in .
-        2.  Find where the async job result is handled.
-        3.  Implement the database update operation () to save the  and  objects into the correct video document.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is the most critical issue. Fixing it will make the verification system functional by ensuring all verification data is stored and can be used for comparison.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Backend
-    -   **Blocked on other issue**: None
-
--   **Issue 2: pHash Algorithm Underperforms on Heavy Compression**
-    -   **Description**: Testing revealed that the perceptual hash similarity drops to ~61% on heavily compressed videos, below the desired threshold.
-    -   **Attempted fixes**: None.
-    -   **Next debug checklist**:
-        1.  In , modify the pHash logic.
-        2.  Before hashing, scale all sampled frames to a uniform, standard size (e.g., 512x512).
-        3.  Consider experimenting with or adding  or  from the  library as complementary algorithms.
-    -   **Why fix this issue and what will be achieved with the fix?**: Improves the robustness of the verification system against real-world video modifications.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Backend
-    -   **Blocked on other issue**: None
-
--   **Issue 3: Asynchronous Status Update UI Not Built**
-    -   **Description**: The backend processes videos asynchronously, but there is no frontend UI to show the user the real-time status of this process. An empty component file () exists but is not implemented.
-    -   **Attempted fixes**: None.
-    -   **Next debug checklist**:
-        1.  Flesh out  to poll the  endpoint.
-        2.  Design a UI (e.g., checklist of steps) to display the status.
-        3.  Integrate this component into the  or a video detail page.
-    -   **Why fix this issue and what will be achieved with the fix?**: Provides crucial user feedback and improves the UX for the core upload feature.
-    -   **Status**: NOT STARTED
-    -   **Is recurring issue?**: N
-    -   **Should Test frontend/backend/both after fix?**: Frontend
-    -   **Blocked on other issue**: None
-
--   **Issue 4: Recurring Login/CORS Issue Risk**
-    -   **Description**: A Network Error on login or CORS issue has occurred multiple times, caused by a hardcoded  in .
-    -   **Attempted fixes**: The agent has fixed this manually multiple times by editing the file and restarting the frontend.
-    -   **Next debug checklist**: If any frontend API call fails with a CORS or Network Error, **IMMEDIATELY** check  before any other debugging.
-    -   **Why fix this issue and what will be achieved with the fix?**: Prevents wasted time on a known, recurring environmental issue.
-    -   **Status**: RESOLVED (but high risk of recurrence)
+        1.  Verify  has the correct .
+        2.  Kill any lingering  processes ().
+        3.  Force a full restart of the frontend service: frontend: stopped
+frontend: started.
+        4.  Use  on  and inspect the browser console logs in the output to confirm API calls are now hitting the correct URL.
+    -   **Why fix this issue and what will be achieved with the fix?**: This is a complete blocker for any frontend work or testing. Fixing it will make the application usable again.
+    -   **Status**: IN PROGRESS
     -   **Is recurring issue?**: Y
     -   **Should Test frontend/backend/both after fix?**: Frontend
     -   **Blocked on other issue**: None
 
+-   **Issue 2: Blockchain Integration Pending**
+    -   **Description**: The user has specified that blockchain integration is a mandatory feature. The service () exists and connects to the Polygon Amoy testnet, but it is not called during the upload workflow.
+    -   **Attempted fixes**: The agent prepared the code for integration but discovered the  environment variable is empty.
+    -   **Why fix this issue and what will be achieved with the fix?**: Fulfills a core product requirement for providing an immutable timestamp of verification.
+    -   **Status**: BLOCKED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Backend
+    -   **Blocked on other issue**: Waiting for the user to provide a Polygon wallet private key.
+
+-   **Issue 3: Obsolete Analytics Pages**
+    -   **Description**: The files  and  were thought to be orphaned, but are still imported and routed in . However, there are newer dashboard components, and it's unclear if these pages are still desired. The  page link still exists on the main dashboard.
+    -   **Next debug checklist**: Ask the user if  and  are still needed, or if they can be removed along with their routes in  and any links pointing to them.
+    -   **Why fix this issue and what will be achieved with the fix?**: Code cleanup and removal of potentially confusing, legacy UI.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on other issue**: None
+
+-   **Issue 4: Duplicated Verification Result UI**
+    -   **Description**: The UI for displaying verification results is duplicated in multiple components (e.g., the old , ). This should be extracted into a single, reusable component.
+    -   **Status**: NOT STARTED
+    -   **Is recurring issue?**: N
+    -   **Should Test frontend/backend/both after fix?**: Frontend
+    -   **Blocked on other issue**: None
+
 **In progress Task List**:
--   **Task 1: Create Comprehensive Verification Workflow Document (P0)**
-    -   **Where to resume**: The agent has extracted all necessary data from user documents and the codebase. The next step is to synthesize this into a well-structured  or  file as requested by the user in message #482. The document should cover all 11 verification steps, the async architecture, real-world claims, and be suitable for investors.
-    -   **What will be achieved with this?**: Fulfills a direct user request, provides a crucial reference for future development to prevent errors, and creates investor-facing material.
+-   **Task 1: Implement Full Asynchronous Notification System (P2)**
+    -   **Where to resume**: The backend is ready. The  now emits a  event. A  and  exist. The next step is to implement the email sending logic using AWS SES as requested by the user. An  call will be needed for the AWS SES SDK. On the frontend, the  component has checkboxes for user preferences which need to be connected to the new backend API endpoint for saving those preferences.
+    -   **What will be achieved with this?**: Users will be notified via email when their video has finished the full, multi-layer verification process, creating a seamless asynchronous user experience.
     -   **Status**: IN PROGRESS
-    -   **Should Test frontend/backend/both after fix?**: N/A
-    -   **Blocked on something**: None
+    -   **Should Test frontend/backend/both after fix?**: Both
+    -   **Blocked on something**: Issue 1 (Frontend is Not Functional)
 
 **Upcoming and Future Tasks**
 -   **Upcoming Tasks:**
-    -   **(P0) Run Full End-to-End Verification Test:** After fixing the data storage issue, upload a video and verify that all 10 layers of verification are calculated, stored, and can be retrieved correctly.
-    -   **(P1) Implement Proper Merkle Tree:** Replace the current Master Hash (a simple combined hash) with a proper Merkle Tree for a more robust and verifiable data structure.
-    -   **(P1) Integrate Blockchain Functionality:** Set up and integrate the existing blockchain service () into the upload flow, making it a mandatory step as requested by the user.
+    -   **(P1) Implement C2PA Certificate Signing & Embedding:** Currently, the C2PA manifest is created as a sidecar file. The next step is to properly sign it and embed it into the video file.
+    -   **(P2) Full End-to-End Verification Test:** Once the frontend is working, upload a video, verify the new UI works, check that the email notification is sent, and confirm all data (including the Merkle tree) is correctly stored and displayed.
 -   **Future Tasks:**
-    -   **(P2) Implement Social Features:** Notifications, Following, Messaging.
-    -   **(P3) Integrate Rendr BodyCam.**
-    -   **(P3) Integrate Rendr Bounty.**
-    -   **(P3) Implement C2PA Certificate Signing & Embedding.**
-    -   **(P3) Implement Sliding Window QR Code Watermarking.**
+    -   **(P3) Social Features:** Notifications, Following, Messaging.
+    -   **(P3) Rendr BodyCam Integration.**
+    -   **(P3) Rendr Bounty Integration.**
+    -   **(P3) Sliding Window QR Code Watermarking.**
 
 **Completed work in this session**
--   **Role-Based Access Fixed:** Created and fixed dedicated login flows and dashboards for Pathway (admin), CEO, and Investor roles.
--   **Pathway Page Implemented:** Created a secure, obfuscated admin page () and fixed all its functions (impersonation, database queries, etc.). The page was renamed from Super Secret Backdoor and all related files were given non-obvious names.
--   **Recurring CORS Issue Resolved:** Identified that  was overriding the frontend's backend URL and fixed it.
--   **Technical Documentation Created:** Created  to document DB schema, environment variables, and common pitfalls to prevent future agents from repeating mistakes.
--   **Minor UI Fix:** Renamed Videos button on the dashboard to Upload.
--   **TODO List Updated:** Added user's new feature requests (Rendr BodyCam, Rendr Bounty) to .
+-   **Database Storage Fixed:** All verification data (, , ) is now correctly saved to the video document in MongoDB.
+-   **Merkle Tree Implemented:** Replaced the simple Master Hash with a robust, versioned, and verifiable Merkle Tree structure stored in the video document.
+-   **Perceptual Hashing Massively Improved:** The pHash algorithm was enhanced with frame normalization, increasing compression resistance from ~61% to **~98%** similarity.
+-   **Async Environment Setup:** Installed FFmpeg and Redis, and successfully started the RQ workers for background processing.
+-   **Async Notification System Designed:** Architected an event-driven flow for post-verification notifications and implemented the backend event emission.
+-   **Professional Upload UI Integrated:** Replaced the basic upload form with a new  component featuring drag-and-drop and a cleaner design.
+-   **Broken Links Fixed:** Fixed links pointing to a non-existent  route and removed the now-orphaned  file.
+-   **Session Summary Created:** A summary document for handoff was created at .
 
 **Earlier issues found/mentioned but not fixed**
--   **Issue 1: Frontend Test Automation for Uploads is Unreliable**: (From previous handoff) The agent repeatedly failed to automate file uploads in its test scripts and had to resort to  to test the backend API.
--   **Issue 2: Orphaned Analytics Pages**: (From previous handoff) The old files  and  are now obsolete and should be deleted.
--   **Issue 3: Reusable UI Component Not Created**: (From previous handoff) The UI for verification results is duplicated in  and  and should be extracted into a reusable component.
+-   **Issue 1: Reusable Verification Result UI**: The UI for displaying detailed verification results is duplicated across different components and should be refactored into a single, reusable component.
 
 **Known issue recurrence from previous fork**
 -   **Issue recurrence in previous fork**: Network Error on login due to an incorrect  being set in .
--   **Recurrence count**: At least 4 times in the project's history. This session included one occurrence.
--   **Status**: RESOLVED (but remains a high-risk area). The first debugging step for any frontend API failure should be to check this file.
+-   **Recurrence count**: 5+
+-   **Status**: IN PROGRESS (This is the current P0 blocker).
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Asynchronous Task Processing**: Using Redis and RQ workers to handle heavy video processing in the background.
--   **Role-Based Access Control (RBAC)**: Separate login flows and protected routes for CEO, Investor, and Admin (Pathway) users.
--   **Obfuscated Admin Access**: The Pathway feature uses a fake 404 page, a hidden password input, and non-descriptive file/route names (, ) for security.
--   **Supervisor Configuration**: A critical environment file () that has repeatedly caused bugs by overriding  variables.
+-   **Asynchronous Task Processing**: Redis + RQ workers for video processing.
+-   **Role-Based Access Control (RBAC)**: Separate dashboards and logins.
+-   **Merkle Tree**: A versioned, hierarchical hash tree for robust data verification, replacing the previous simple Master Hash.
+-   **Perceptual Hashing (pHash)**: Improved algorithm with frame normalization to resist video compression.
+-   **Event-Driven Notifications**: A decoupled system where background tasks emit events to trigger notifications (e.g., via AWS SES).
+-   **Supervisor Configuration**: A critical environment file () that is the source of a recurring frontend URL bug.
 
 **key DB schema**
--   **users**: Contains a  array (e.g., ) and an  string used for login redirects. The  is a string UUID.
--   **videos**: The main collection. **Crucially, it is missing fields to store the full  and  objects.**
+-   **users**:  (string),  (array),  (string).
+-   **videos**: Now contains a  (object) with , , , and . Also includes  ('processing', 'fully_verified').
 
 **changes in tech stack**
--   None in this session.
+-   FFmpeg and Redis were installed and configured.
 
 **All files of reference**
--   **/app/backend/api/pathway.py**: New API for the admin Pathway.
--   **/app/frontend/src/pages/Pathway.js**: New UI for the admin Pathway.
--   **/app/frontend/src/pages/CreatorLogin.js**: Modified to handle role-based redirects after login.
--   **/app/backend/api/videos.py**: The core file containing the entire verification workflow logic.
--   **/app/backend/services/comprehensive_hash_service.py**: Contains the implementation of all hashing layers.
--   **/app/TECHNICAL_REFERENCE.md**: New, critical document to guide development and prevent errors.
--   **/etc/supervisor/conf.d/supervisord.conf**: High-risk configuration file. Check for hardcoded URLs here first if login/API calls fail.
+-   **/etc/supervisor/conf.d/supervisord.conf**: **CURRENT BLOCKER**. The source of the recurring frontend URL bug.
+-   **/app/backend/services/comprehensive_hash_service.py**: Contains the new Merkle Tree logic and improved pHash algorithm.
+-   **/app/backend/api/videos.py**: Orchestrates the new upload flow, including Merkle Tree creation.
+-   **/app/backend/services/background_tasks.py**: Handles asynchronous processing and emits notification events.
+-   **/app/frontend/src/pages/Upload.js**: The main upload page, now using the new uploader component.
+-   **/app/frontend/src/components/VideoUploader.js**: The new, professional UI for uploads.
+-   **/app/SESSION_SUMMARY_2025-12-11.md**: A document summarizing the work done in this session.
 
 **Areas that need refactoring**
--   **Orphaned Analytics Pages**: The old files  and  should be deleted.
--   **Reusable Verification Result UI**: The UI in  and  should be extracted into a reusable component.
+-   The UI for displaying verification results is duplicated in  and potentially other components. It should be extracted into a reusable component.
 
 **key api endpoints**
--   : The main endpoint that orchestrates the entire verification flow.
--   : Authenticates access to the Pathway page.
--   : Executes direct database queries from the Pathway page.
--   : Standard login endpoint, now returns  for role-based redirects.
+-   : Main upload endpoint. Now creates a Merkle Tree and sets  to 'processing'.
+-   : Now accepts a  query parameter to filter videos (e.g., ).
+-   : New endpoint to update user's notification settings.
 
 **Critical Info for New Agent**
--   **User Frustration is High**: The user is extremely frustrated with wasted time and credits on recurring bugs. Adhere strictly to the provided documentation (, user-uploaded docs) and test changes thoroughly.
--   **Top Priority is Verification System**: The user's number one goal is to perfect the verification workflow. The immediate next step is to **fix the database storage** for all verification layers.
--   **Check  FIRST**: If any frontend API calls fail with Network Error or CORS issues, immediately check  for hardcoded URLs. This is a known, recurring problem.
--   **Blockchain is NOT optional**: The user has clarified that blockchain integration is a core, mandatory part of the system.
--   **Master Hash needs improvement**: The current Master Hash is a simple combination. The user is open to upgrading this to a proper Merkle Tree.
+-   **The frontend is currently BROKEN**. Your first task is to fix the recurring CORS/environment issue. The problem is the React dev server caching an old backend URL. The root cause is almost certainly an incorrect URL in . You will need to fix this file and then ensure the frontend fully restarts and clears its cache.
+-   **The user has deferred blockchain integration.** Do not work on it until the user provides the required private key.
+-   The next major feature requested by the user is the **asynchronous notification system using AWS SES**. You will need to use  for the SES integration.
+-   The user wants a clean dashboard. Videos should only appear on the main list once their  is .
+-   A summary of the session's work has been saved to  as requested by the user.
 
 **documents created in this job**
--   /app/TECHNICAL_REFERENCE.md
+-   /app/SESSION_SUMMARY_2025-12-11.md
 
 **Last 10 User Messages and any pending user messages**
-1.  **User asks about missing components** (async, merkle root). Status: Addressed.
-2.  **User points out missing verification code** in the workflow. Status: Addressed.
-3.  **User doesn't understand steps 9-12** and asks for a complete picture again. Status: Addressed.
-4.  **User provides their own doc and clarifies vision**: Likes real-world claims, wants fast async flow, is open to Merkle Tree, and requests a final, comprehensive artifact for investors and future agents. Status: Pending artifact creation.
-5.  **User reports incorrect login credentials** for Investor/CEO via screenshots. Status: Fixed (passwords were case-sensitive).
-6.  **User asks what's next** on the TODO list. Status: Addressed.
-7.  **User pivots to focus on hashing/verification**: Asks for new TODO items (BodyCam, Bounty) and an explanation of the current pHash system. Status: Addressed.
-8.  **User asks for confirmation of ALL verification steps** after pHash test results seemed low. Status: Addressed.
-9.  **User asks why Pathway is not asking for a password** and states that CEO/Investor pages should not be tied to their personal login. Status: Fixed.
-10. **(PENDING) User clarifies CEO/Investor login requirements**: They should use the standard login page but with their own credentials (/, /), and NOT require the user to log in as BrianJames first. Status: Implemented and tested successfully.
+1.  **User asks about Merkle Tree complexity.** Status: Addressed. The agent implemented a versioned, robust Merkle Tree and explained why it's suitable for RENDR's immutable data model.
+2.  **User wants to test compression resistance.** Status: Completed. The agent tested the existing pHash, confirmed it was weak (~62% similarity), implemented an improved algorithm, and proved it achieved ~98% similarity.
+3.  **User wants to build the async status UI.** Status: In Progress. The agent and user agreed on an event-driven architecture. The backend is prepped, and a new frontend uploader component was built.
+4.  **User specifies AWS SES for notifications.** Status: Acknowledged. This is the next step for the notification task.
+5.  **User clarifies UI philosophy: no status badges, verified videos are simply visible.** Status: Implemented. The backend API now supports filtering videos by .
+6.  **User confirms to integrate the new  component.** Status: Completed.
+7.  **User asks to clean up orphaned files.** Status: Completed. The agent found broken links to , fixed them, and then safely deleted the orphaned file.
+8.  **User asks for a summary of changes for the next agent.** Status: Completed. The agent created .
+9.  **User is ready to get a lot done.** (Motivational)
+10. **User confirms to fix the database storage issue first.** Status: Completed.
 
 **Project Health Check:**
--   **Broken**: The verification system is incomplete because key data (, , , etc.) is calculated but **not saved** to the database.
--   **Mocked**: The frontend UI to display the real-time status of asynchronous video processing is still an unimplemented placeholder.
+-   **Broken**: The entire frontend is currently non-functional due to a recurring CORS/environment configuration issue, blocking all UI interaction and testing.
+-   **Mocked**: The async notification system is partially implemented. The backend emits events, but the final step (sending emails via AWS SES) is not yet built.
 
 **3rd Party Integrations**
--   **FFmpeg**: Used for server-side video processing (watermarking, frame extraction).
--   **Redis**: Used for asynchronous task queuing via the RQ library.
+-   **FFmpeg**: Installed and used for video processing.
+-   **Redis / RQ**: Installed and used for asynchronous background tasks.
+-   **AWS SES (Simple Email Service)**: Planned for the next step to handle email notifications.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, the agent used the backend testing agent after creating new users, which passed.
+-   **Testing agent used after significant changes**: YES, the backend testing agent was used to validate the database storage fix, Merkle tree implementation, and pHash improvements.
 -   **Troubleshoot agent used after agent stuck in loop**: NO.
 -   **Test files created**: None.
--   **Known regressions**: The login functionality remains fragile due to the  environmental issue.
+-   **Known regressions**: The frontend is non-functional due to the recurring  environment issue.
 
 **Credentials to test flow:**
--   **Pathway (Admin) Account**:
-    -   URL: 
-    -   Password: 
--   **CEO Account**:
-    -   Username: 
-    -   Password: 
--   **Investor Account**:
-    -   Username: 
-    -   Password:  (all lowercase)
--   **User's Main Account**:
-    -   Username: 
-    -   Password: 
+-   **Pathway (Admin) Account**: URL: , Password: 
+-   **CEO Account**: Username: , Password: 
+-   **Investor Account**: Username: , Password: 
+-   **User's Main Account**: Username: , Password: 
 
 **What agent forgot to execute**
--   The critical fix for saving all calculated verification data to the database.
--   Deleting the obsolete analytics pages (, ).
--   Refactoring the duplicated verification result UI into a reusable component.
--   Implementing the  component for async progress updates.</analysis>
+-   The agent identified the fix for the recurring  issue but was unable to successfully apply it and clear the frontend dev server's cache, leaving the UI in a broken state. The task of fully unblocking the frontend remains.</analysis>

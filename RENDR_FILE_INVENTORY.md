@@ -186,7 +186,7 @@ BACKUP FILES:
 ### Frontend Environment
 **File:** `/app/frontend/.env`
 ```
-REACT_APP_BACKEND_URL=https://verify-video.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://verifyvideos.preview.emergentagent.com
 REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_test_...
 ```
 

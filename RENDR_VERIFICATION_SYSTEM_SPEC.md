@@ -466,7 +466,7 @@ POST /api/verify/video
 ## 📞 CONTACT
 
 **Platform:** Rendr Studio
-**URL:** https://verify-video.preview.emergentagent.com
+**URL:** https://verifyvideos.preview.emergentagent.com
 **Version:** 2.0
 
 ---

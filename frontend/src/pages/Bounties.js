@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://verify-video.preview.emergentagent.com';
+const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
 
 function Bounties() {
   const [bounties, setBounties] = useState([]);
