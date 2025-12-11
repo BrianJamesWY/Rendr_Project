@@ -455,7 +455,7 @@ class ComprehensiveHashService:
     
     def _create_master_hash(self, hash_package: Dict) -> str:
         """
-        Create master hash from all layers
+        Create master hash from all layers (legacy method - use create_merkle_tree for new code)
         This is the ultimate verification signature
         """
         components = [
@@ -469,6 +469,100 @@ class ComprehensiveHashService:
         
         combined = "|".join(components)
         return hashlib.sha256(combined.encode()).hexdigest()
+    
+    def create_merkle_tree(self, hash_data: Dict) -> Dict:
+        """
+        Create a Merkle Tree from all verification layers
+        
+        This provides:
+        1. A single root hash representing ALL verification data
+        2. Ability to prove individual layers without exposing all data
+        3. Tamper-evident structure (any change = different root)
+        
+        Args:
+            hash_data: Dict containing all verification hashes
+        
+        Returns:
+            Dict with merkle_root, tree structure, and layer labels
+        """
+        # Create leaf nodes from each verification layer
+        # Each leaf is a hash of a specific verification layer
+        leaves = []
+        layer_labels = []
+        
+        # Layer 1: Verification Code Hash
+        vc_hash = hashlib.sha256(hash_data.get("verification_code", "").encode()).hexdigest()
+        leaves.append(vc_hash)
+        layer_labels.append("verification_code")
+        
+        # Layer 2: Original SHA-256 (pre-watermark)
+        if hash_data.get("original_sha256"):
+            leaves.append(hash_data["original_sha256"])
+            layer_labels.append("original_sha256")
+        
+        # Layer 3: Watermarked SHA-256 (post-watermark)
+        if hash_data.get("watermarked_sha256"):
+            leaves.append(hash_data["watermarked_sha256"])
+            layer_labels.append("watermarked_sha256")
+        
+        # Layer 4: Key Frame Hashes (combined into single leaf)
+        key_frames = hash_data.get("key_frame_hashes", [])
+        if key_frames:
+            kf_combined = hashlib.sha256("".join(key_frames).encode()).hexdigest()
+            leaves.append(kf_combined)
+            layer_labels.append(f"key_frames_{len(key_frames)}")
+        
+        # Layer 5: Perceptual Hashes (combined into single leaf)
+        phashes = hash_data.get("perceptual_hashes", [])
+        if phashes:
+            ph_combined = hashlib.sha256("".join(phashes).encode()).hexdigest()
+            leaves.append(ph_combined)
+            layer_labels.append(f"perceptual_hashes_{len(phashes)}")
+        
+        # Layer 6: Audio Hash
+        audio_hash = hash_data.get("audio_hash")
+        if audio_hash and audio_hash not in ["no_audio", "audio_error", None]:
+            leaves.append(audio_hash)
+            layer_labels.append("audio_hash")
+        
+        # Layer 7: Metadata Hash
+        if hash_data.get("metadata_hash"):
+            leaves.append(hash_data["metadata_hash"])
+            layer_labels.append("metadata_hash")
+        
+        # Layer 8: Timestamp Hash
+        timestamp = hash_data.get("timestamp", datetime.now(timezone.utc).isoformat())
+        ts_hash = hashlib.sha256(timestamp.encode()).hexdigest()
+        leaves.append(ts_hash)
+        layer_labels.append("timestamp")
+        
+        # Build the Merkle Tree
+        merkle_tree = MerkleTree(leaves)
+        
+        # Create verification proofs for each layer
+        proofs = {}
+        for i, label in enumerate(layer_labels):
+            proofs[label] = merkle_tree.get_proof(i)
+        
+        return {
+            "merkle_root": merkle_tree.get_root(),
+            "tree_data": merkle_tree.to_dict(),
+            "layer_labels": layer_labels,
+            "layer_count": len(leaves),
+            "proofs": proofs,
+            "algorithm": "sha256-merkle",
+            "version": "1.0",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+    
+    def verify_merkle_proof(self, leaf_hash: str, proof: List[Dict], expected_root: str) -> bool:
+        """
+        Verify a single layer belongs to the Merkle Tree
+        
+        This allows verification of ONE layer without needing all other data
+        """
+        tree = MerkleTree()
+        return tree.verify_proof(leaf_hash, proof, expected_root)
     
     def verify_video(
         self, 
