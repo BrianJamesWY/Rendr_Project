@@ -860,12 +860,25 @@ async def get_video_status(
 @router.get("/user/list")
 async def list_user_videos(
     current_user = Depends(get_current_user),
-    db = Depends(get_db)
+    db = Depends(get_db),
+    include_processing: bool = False
 ):
-    """Get all videos for current user"""
-    videos = await db.videos.find(
-        {"user_id": current_user["user_id"]}
-    ).to_list(length=1000)
+    """
+    Get all videos for current user.
+    
+    By default, only returns fully verified videos.
+    Set include_processing=true to also see videos being processed.
+    
+    Philosophy: If a video is in the dashboard, it's verified and trustworthy.
+    """
+    # Build query based on filter preference
+    query = {"user_id": current_user["user_id"]}
+    
+    if not include_processing:
+        # Only show fully verified videos (default)
+        query["verification_status"] = {"$in": ["verified", "fully_verified"]}
+    
+    videos = await db.videos.find(query).to_list(length=1000)
     
     video_list = []
     for v in videos:
