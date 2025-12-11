@@ -623,13 +623,74 @@ class VideoVerificationTester:
             self.log_test("API Health Check", False, f"Error: {str(e)}")
             return False
     
+    def test_background_processing(self) -> bool:
+        """Test that background processing completed (perceptual_hashes populated)"""
+        if not self.uploaded_video_id:
+            self.log_test("Background Processing", False, "No uploaded video ID available")
+            return False
+        
+        if self.db is None:
+            self.log_test("Background Processing", False, "No MongoDB connection available")
+            return False
+        
+        try:
+            print(f"\n⏳ Waiting 5-10 seconds for background processing to complete...")
+            time.sleep(8)  # Wait for background processing
+            
+            # Query MongoDB for updated document
+            video_doc = self.db.videos.find_one({"id": self.uploaded_video_id})
+            
+            if not video_doc:
+                video_doc = self.db.videos.find_one({"_id": self.uploaded_video_id})
+            
+            if not video_doc:
+                self.log_test("Background Processing", False, "Video not found in database")
+                return False
+            
+            comprehensive_hashes = video_doc.get("comprehensive_hashes", {})
+            perceptual_hashes = comprehensive_hashes.get("perceptual_hashes", [])
+            audio_hash = comprehensive_hashes.get("audio_hash")
+            
+            print(f"\n🔍 BACKGROUND PROCESSING VERIFICATION:")
+            print(f"   Perceptual hashes count: {len(perceptual_hashes)}")
+            print(f"   Audio hash present: {'YES' if audio_hash else 'NO'}")
+            
+            # Check if background processing completed
+            background_completed = len(perceptual_hashes) > 0
+            
+            if background_completed:
+                details = f"✅ Background processing completed"
+                details += f"\n   - Perceptual hashes: {len(perceptual_hashes)} entries"
+                details += f"\n   - Audio hash: {'PRESENT' if audio_hash else 'MISSING'}"
+                
+                self.log_test("Background Processing", True, details)
+                return True
+            else:
+                details = f"❌ Background processing not completed"
+                details += f"\n   - Perceptual hashes: {len(perceptual_hashes)} entries (expected > 0)"
+                details += f"\n   - Audio hash: {'PRESENT' if audio_hash else 'MISSING'}"
+                
+                self.log_test("Background Processing", False, details)
+                return False
+                
+        except Exception as e:
+            self.log_test("Background Processing", False, f"Background processing check error: {str(e)}")
+            return False
+
     def run_complete_verification_workflow(self):
-        """Run the complete video upload and verification workflow test"""
-        print("🎯 TESTING VIDEO UPLOAD VERIFICATION DATA STORAGE")
-        print("=" * 80)
-        print("Focus: Verifying ALL verification data is saved to database correctly")
-        print("Critical fields: comprehensive_hashes.original_sha256, c2pa_manifest")
-        print("=" * 80)
+        """Run the COMPLETE video upload flow with watermarking and background processing test"""
+        print("🎯 TESTING COMPLETE VIDEO UPLOAD FLOW WITH WATERMARKING AND BACKGROUND PROCESSING")
+        print("=" * 90)
+        print("Test Scenario:")
+        print("1. Login with BrianJames/Brian123!")
+        print("2. Create test MP4 video file (at least 5 seconds long)")
+        print("3. Upload via POST /api/videos/upload")
+        print("4. Wait 5-10 seconds for background processing")
+        print("5. Verify watermarking worked (original_sha256 != watermarked_sha256)")
+        print("6. Verify all hashes saved (comprehensive_hashes fields)")
+        print("7. Verify C2PA manifest saved")
+        print("8. Verify background job completed (perceptual_hashes populated)")
+        print("=" * 90)
         
         # 1. Health check
         if not self.test_health_check():
@@ -641,7 +702,7 @@ class VideoVerificationTester:
             print("❌ MongoDB connection failed, aborting tests")
             return
         
-        # 3. Authentication
+        # 3. Authentication with BrianJames/Brian123!
         if not self.authenticate():
             print("❌ Authentication failed, aborting tests")
             return
@@ -650,15 +711,29 @@ class VideoVerificationTester:
         user_tier = self.get_user_tier()
         print(f"ℹ️ Testing with user tier: {user_tier}")
         
-        # 5. Test complete upload flow
+        # 5. Test complete upload flow (creates test video and uploads)
         video_id = self.test_video_upload()
         
         if video_id:
-            # 6. CRITICAL TEST: Database verification with direct MongoDB access
-            self.test_database_verification()
+            # 6. CRITICAL TEST: Verify watermarking worked
+            watermark_success = self.test_watermarking_verification()
             
-            # 7. Test C2PA manifest file
-            self.test_c2pa_manifest_file()
+            # 7. CRITICAL TEST: Database verification with direct MongoDB access
+            db_success = self.test_database_verification()
+            
+            # 8. Test C2PA manifest file
+            c2pa_success = self.test_c2pa_manifest_file()
+            
+            # 9. Test background processing completion
+            bg_success = self.test_background_processing()
+            
+            # Summary of critical tests
+            print(f"\n🎯 CRITICAL TEST RESULTS:")
+            print(f"   {'✅' if watermark_success else '❌'} Watermarking: {'WORKING' if watermark_success else 'FAILED'}")
+            print(f"   {'✅' if db_success else '❌'} Database hashes: {'COMPLETE' if db_success else 'INCOMPLETE'}")
+            print(f"   {'✅' if c2pa_success else '❌'} C2PA manifest: {'SAVED' if c2pa_success else 'MISSING'}")
+            print(f"   {'✅' if bg_success else '❌'} Background processing: {'COMPLETED' if bg_success else 'PENDING'}")
+            
         else:
             print("❌ Video upload failed, skipping dependent tests")
         
