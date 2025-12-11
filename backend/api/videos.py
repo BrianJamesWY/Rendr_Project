@@ -619,8 +619,11 @@ async def upload_video(
             "folder_id": folder_id,
             "showcase_folder_id": folder_id,
             "blockchain_signature": blockchain_data,
-            # Start as "processing" - will become "fully_verified" after background tasks complete
-            "verification_status": "processing",
+            # Video is "verified" (watermarked + basic hashes) but not "fully_verified" until background completes
+            # "verified" = watermarked video ready for download
+            # "fully_verified" = all hashes complete, appears in dashboard
+            "verification_status": "verified",
+            "full_verification_status": "processing",  # Background processing in progress
             "is_public": True
         }
         
