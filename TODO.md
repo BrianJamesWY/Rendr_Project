@@ -239,3 +239,29 @@
 - P1 = High (complete this sprint)
 - P2 = Medium (next sprint)
 - P3 = Low (backlog)
+
+---
+
+## 🆕 NEW PRODUCTS TO INTEGRATE
+
+### Rendr BodyCam (P3)
+- [ ] Design BodyCam video integration workflow
+- [ ] Implement BodyCam-specific metadata handling
+- [ ] Create BodyCam verification endpoints
+- [ ] Integrate with Rendr Studio verification system
+- [ ] Add BodyCam-specific dashboard views
+
+### Rendr Bounty (P3)
+- [ ] Design Bounty system architecture
+- [ ] Create Bounty management endpoints
+- [ ] Integrate with Rendr Studio verification
+- [ ] Build Bounty submission/claim workflow
+- [ ] Add Bounty tracking dashboard
+
+---
+
+## 📝 NAMING CONVENTION
+- **Rendr Studio** (or "Studio") = The main web application we've been building
+- **Rendr BodyCam** = Future body camera integration product
+- **Rendr Bounty** = Future bounty/reward system product
+
