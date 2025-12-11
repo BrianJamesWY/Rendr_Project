@@ -596,8 +596,13 @@ class ComprehensiveHashService:
             "layer_count": len(leaves),
             "proofs": proofs,
             "algorithm": "sha256-merkle",
+            "schema_version": MerkleTree.SCHEMA_VERSION,
+            "canonical_leaf_order": MerkleTree.LEAF_ORDER_V1,
             "version": "1.0",
-            "created_at": datetime.now(timezone.utc).isoformat()
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            # Migration metadata
+            "can_upgrade_algorithm": True,
+            "supported_algorithms": list(MerkleTree.HASH_ALGORITHMS.keys())
         }
     
     def verify_merkle_proof(self, leaf_hash: str, proof: List[Dict], expected_root: str) -> bool:
