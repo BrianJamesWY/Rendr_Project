@@ -482,9 +482,20 @@ async def upload_video(
             'perceptual_hashes': [],  # Will be calculated in background
             'audio_hash': None,        # Will be calculated in background
             'metadata_hash': metadata_hash,
-            'master_hash': original_sha256,  # Temporary, will be updated
-            'video_metadata': video_metadata
+            'master_hash': original_sha256,  # Temporary, will be updated with Merkle root
+            'video_metadata': video_metadata,
+            'verification_code': verification_code,
+            'timestamp': datetime.now(timezone.utc).isoformat()
         }
+        
+        # STEP 5B: Create Merkle Tree for tamper-proof verification
+        print("\n🌳 STEP 5B: Building Merkle Tree...")
+        merkle_data = comprehensive_hash_service.create_merkle_tree(comprehensive_hashes)
+        comprehensive_hashes['merkle_root'] = merkle_data['merkle_root']
+        comprehensive_hashes['merkle_tree'] = merkle_data
+        comprehensive_hashes['master_hash'] = merkle_data['merkle_root']  # Use Merkle root as master hash
+        print(f"   ✅ Merkle root: {merkle_data['merkle_root'][:32]}...")
+        print(f"   ✅ Layers included: {merkle_data['layer_count']}")
         
         print(f"   ⏱️ Fast hashing complete! Background processing queued for perceptual & audio hashes")
         
