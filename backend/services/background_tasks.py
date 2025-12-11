@@ -141,13 +141,33 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
         
         print(f"   ✅ Updated Merkle root: {updated_merkle_root[:32]}...")
         print(f"   ✅ Total layers in tree: {merkle_data['layer_count']}")
+        
+        # Update the video document with ALL verification data
+        result = await db.videos.update_one(
+            {"id": video_id},
+            {
+                "$set": {
+                    # Update comprehensive_hashes
+                    "comprehensive_hashes.perceptual_hashes": perceptual_hashes,
+                    "comprehensive_hashes.audio_hash": audio_hash,
+                    "comprehensive_hashes.master_hash": updated_merkle_root,
+                    "comprehensive_hashes.merkle_root": updated_merkle_root,
+                    "comprehensive_hashes.merkle_tree": merkle_data,
+                    
+                    # Also update the top-level hashes object for API response
+                    "hashes.perceptual_hash_count": len(perceptual_hashes),
+                    "hashes.master_hash": updated_merkle_root,
+                    "hashes.merkle_root": updated_merkle_root,
+                    
+                    # Update perceptual_hashes object
+                    "perceptual_hashes.video_phashes": perceptual_hashes,
                     "perceptual_hashes.audio_hash": audio_hash,
                     
                     # Update processing status
                     "processing_status": {
                         "stage": "complete",
                         "progress": 100,
-                        "message": "All verification layers complete",
+                        "message": "All verification layers complete with Merkle Tree",
                         "verification_layers": [
                             "Original SHA-256",
                             "Watermarked SHA-256",
@@ -156,7 +176,7 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
                             "Audio Hash" if audio_hash and audio_hash != "no_audio" else "No Audio",
                             "Metadata Hash",
                             "C2PA Manifest",
-                            "Master Hash"
+                            "Merkle Tree Root"
                         ],
                         "completed_at": datetime.now(timezone.utc)
                     },
@@ -170,7 +190,7 @@ async def update_video_hashes(video_id: str, verification_code: str, perceptual_
         print(f"   📊 Database update result: {result.modified_count} document(s) modified")
         print(f"   ✅ Saved {len(perceptual_hashes)} perceptual hashes")
         print(f"   ✅ Saved audio hash: {audio_hash[:16] if audio_hash else 'N/A'}...")
-        print(f"   ✅ Updated master hash: {updated_master_hash[:32]}...")
+        print(f"   ✅ Updated Merkle root: {updated_merkle_root[:32]}...")
         
     except Exception as e:
         print(f"   ❌ Database update failed: {e}")
