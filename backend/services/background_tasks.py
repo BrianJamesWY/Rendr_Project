@@ -84,8 +84,9 @@ def process_video_hashes(video_id: str, video_path: str, verification_code: str,
 async def update_video_hashes(video_id: str, perceptual_hashes: list, audio_hash: str):
     """Update video document with additional hashes"""
     mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+    db_name = os.environ.get('DB_NAME', 'test_database')
     client = AsyncIOMotorClient(mongo_url)
-    db = client['rendr']
+    db = client[db_name]
     
     try:
         # Update the video document
