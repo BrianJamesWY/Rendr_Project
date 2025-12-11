@@ -150,6 +150,10 @@ class MerkleTree:
     def verify_proof(self, leaf_hash: str, proof: List[Dict], root: str) -> bool:
         """
         Verify a leaf belongs to the tree using its proof
+        
+        This is the key feature that makes Merkle trees powerful:
+        You can prove a specific piece of data is part of the tree
+        WITHOUT needing to know all the other data.
         """
         current_hash = leaf_hash
         
@@ -164,20 +168,30 @@ class MerkleTree:
         return current_hash == root
     
     def to_dict(self) -> Dict:
-        """Export tree structure for storage"""
+        """Export tree structure for storage with full versioning"""
         return {
             "root": self.root,
             "leaves": self.leaves,
             "leaf_count": len(self.leaves),
             "tree_depth": len(self.tree),
-            "algorithm": "sha256",
+            "algorithm": self.algorithm,
+            "schema_version": self.SCHEMA_VERSION,
+            "leaf_order_schema": self.LEAF_ORDER_V1,
             "version": "1.0"
         }
     
     @classmethod
     def from_dict(cls, data: Dict) -> 'MerkleTree':
-        """Reconstruct tree from stored data"""
-        tree = cls(data.get("leaves", []))
+        """Reconstruct tree from stored data with version checking"""
+        stored_version = data.get("schema_version", "1.0")
+        algorithm = data.get("algorithm", "sha256")
+        
+        # Version migration check
+        if stored_version != cls.SCHEMA_VERSION:
+            print(f"⚠️ Merkle tree schema version mismatch: stored={stored_version}, current={cls.SCHEMA_VERSION}")
+            # Future: Add migration logic here
+        
+        tree = cls(data.get("leaves", []), algorithm=algorithm)
         return tree
 
 
