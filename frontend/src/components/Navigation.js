@@ -6,7 +6,7 @@ const Navigation = ({ currentPage = '' }) => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
-  const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     if (token) {

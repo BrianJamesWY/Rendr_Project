@@ -13,7 +13,7 @@ const SubscriptionCheckout = () => {
     email: '',
     name: ''
   });
-  const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const loadData = async () => {

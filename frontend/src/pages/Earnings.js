@@ -8,7 +8,7 @@ const Earnings = () => {
   const [earnings, setEarnings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [connecting, setConnecting] = useState(false);
-  const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const handleConnectStripe = async () => {
     try {

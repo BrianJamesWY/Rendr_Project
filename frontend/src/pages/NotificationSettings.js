@@ -4,7 +4,7 @@ import axios from 'axios';
 import Logo from '../components/Logo';
 import Navigation from '../components/Navigation';
 
-const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function NotificationSettings() {
   const navigate = useNavigate();

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../components/Logo';
 
-const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function Admin() {
   const navigate = useNavigate();

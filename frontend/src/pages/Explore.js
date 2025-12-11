@@ -10,7 +10,7 @@ const Explore = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTier, setFilterTier] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
-  const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   useEffect(() => {
     const fetchCreators = async () => {

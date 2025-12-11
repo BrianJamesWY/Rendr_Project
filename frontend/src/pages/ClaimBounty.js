@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Navigation from '../components/Navigation';
 import axios from 'axios';
 
-const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 function ClaimBounty() {
   const { bountyId } = useParams();
