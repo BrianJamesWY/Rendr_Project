@@ -478,10 +478,11 @@ class VideoVerificationTester:
             
             # CRITICAL VERIFICATION 2: merkle_tree should contain required structure
             merkle_tree = comprehensive_hashes.get("merkle_tree", {})
+            tree_data = merkle_tree.get("tree_data", {})
             merkle_tree_checks = {
                 "merkle_tree_exists": isinstance(merkle_tree, dict) and len(merkle_tree) > 0,
                 "root_matches": merkle_tree.get("merkle_root") == merkle_root,
-                "leaves_present": isinstance(merkle_tree.get("leaves"), list) and len(merkle_tree.get("leaves", [])) > 0,
+                "leaves_present": isinstance(tree_data.get("leaves"), list) and len(tree_data.get("leaves", [])) > 0,
                 "layer_count_present": isinstance(merkle_tree.get("layer_count"), int) and merkle_tree.get("layer_count", 0) >= 6,
                 "layer_labels_present": isinstance(merkle_tree.get("layer_labels"), list) and len(merkle_tree.get("layer_labels", [])) > 0,
                 "proofs_present": isinstance(merkle_tree.get("proofs"), dict) and len(merkle_tree.get("proofs", {})) > 0
