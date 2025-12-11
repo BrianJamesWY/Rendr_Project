@@ -804,8 +804,11 @@ class ComprehensiveHashService:
     
     def _calculate_phash_similarity(self, hashes1: List[str], hashes2: List[str]) -> float:
         """
-        Calculate similarity between two sets of perceptual hashes
-        Uses Hamming distance
+        Calculate similarity between two sets of perceptual hashes.
+        
+        Supports both:
+        - Legacy format: simple hex string
+        - New format: "p:{phash}|d:{dhash}|a:{ahash}"
         """
         if not hashes1 or not hashes2:
             return 0.0
@@ -816,8 +819,18 @@ class ComprehensiveHashService:
         
         for i in range(min_len):
             try:
-                hash1 = imagehash.hex_to_hash(hashes1[i])
-                hash2 = imagehash.hex_to_hash(hashes2[i])
+                h1 = hashes1[i]
+                h2 = hashes2[i]
+                
+                # Check if new combined format
+                if "|" in h1 and "|" in h2:
+                    # Use new similarity calculation
+                    sim = self.calculate_perceptual_similarity(h1, h2)
+                    similarities.append(sim / 100)  # Normalize to 0-1
+                else:
+                    # Legacy format - simple hex hash
+                    hash1 = imagehash.hex_to_hash(h1)
+                    hash2 = imagehash.hex_to_hash(h2)
                 
                 # Calculate Hamming distance
                 distance = hash1 - hash2
