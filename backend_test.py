@@ -306,14 +306,14 @@ class VideoVerificationTester:
             self.log_test("Watermarking Verification", False, f"Watermarking verification error: {str(e)}")
             return False
 
-    def test_database_verification(self) -> bool:
-        """Test all hashes saved to database correctly"""
+    def test_database_verification_initial(self) -> bool:
+        """Test initial hashes saved to database correctly (before background processing)"""
         if not self.uploaded_video_id:
-            self.log_test("Database Verification", False, "No uploaded video ID available")
+            self.log_test("Database Verification (Initial)", False, "No uploaded video ID available")
             return False
         
         if self.db is None:
-            self.log_test("Database Verification", False, "No MongoDB connection available")
+            self.log_test("Database Verification (Initial)", False, "No MongoDB connection available")
             return False
         
         try:
@@ -325,16 +325,17 @@ class VideoVerificationTester:
                 video_doc = self.db.videos.find_one({"_id": self.uploaded_video_id})
             
             if not video_doc:
-                self.log_test("Database Verification", False, "Uploaded video not found in MongoDB")
+                self.log_test("Database Verification (Initial)", False, "Uploaded video not found in MongoDB")
                 return False
             
-            print(f"\n🔍 ANALYZING DATABASE DOCUMENT FOR VIDEO: {self.uploaded_video_id}")
+            print(f"\n🔍 ANALYZING INITIAL DATABASE DOCUMENT FOR VIDEO: {self.uploaded_video_id}")
             print("=" * 80)
             
-            # CRITICAL VERIFICATION: comprehensive_hashes field
+            # CRITICAL VERIFICATION: comprehensive_hashes field (initial state)
             comprehensive_hashes = video_doc.get("comprehensive_hashes", {})
             
-            critical_checks = {
+            # Initial checks (before background processing)
+            initial_checks = {
                 "comprehensive_hashes_exists": "comprehensive_hashes" in video_doc,
                 "original_sha256_present": comprehensive_hashes.get("original_sha256") is not None,
                 "original_sha256_not_empty": bool(comprehensive_hashes.get("original_sha256", "").strip()),
@@ -342,8 +343,6 @@ class VideoVerificationTester:
                 "watermarked_sha256_not_empty": bool(comprehensive_hashes.get("watermarked_sha256", "").strip()),
                 "key_frame_hashes_present": isinstance(comprehensive_hashes.get("key_frame_hashes"), list),
                 "key_frame_hashes_count": len(comprehensive_hashes.get("key_frame_hashes", [])) >= 8,  # Should have ~10
-                "perceptual_hashes_present": isinstance(comprehensive_hashes.get("perceptual_hashes"), list),
-                "audio_hash_present": comprehensive_hashes.get("audio_hash") is not None,
                 "metadata_hash_present": comprehensive_hashes.get("metadata_hash") is not None,
                 "master_hash_present": comprehensive_hashes.get("master_hash") is not None
             }
@@ -357,8 +356,8 @@ class VideoVerificationTester:
             }
             
             # Print detailed analysis
-            print("📊 COMPREHENSIVE HASHES ANALYSIS:")
-            for check, result in critical_checks.items():
+            print("📊 INITIAL COMPREHENSIVE HASHES ANALYSIS:")
+            for check, result in initial_checks.items():
                 status = "✅" if result else "❌"
                 print(f"   {status} {check}: {result}")
             
@@ -368,10 +367,6 @@ class VideoVerificationTester:
                 print(f"   📝 watermarked_sha256: {comprehensive_hashes['watermarked_sha256'][:32]}...")
             if comprehensive_hashes.get("key_frame_hashes"):
                 print(f"   📝 key_frame_hashes count: {len(comprehensive_hashes['key_frame_hashes'])}")
-            if comprehensive_hashes.get("perceptual_hashes"):
-                print(f"   📝 perceptual_hashes count: {len(comprehensive_hashes['perceptual_hashes'])}")
-            if comprehensive_hashes.get("audio_hash"):
-                print(f"   📝 audio_hash: {comprehensive_hashes['audio_hash'][:32]}...")
             if comprehensive_hashes.get("metadata_hash"):
                 print(f"   📝 metadata_hash: {comprehensive_hashes['metadata_hash'][:32]}...")
             if comprehensive_hashes.get("master_hash"):
@@ -382,14 +377,6 @@ class VideoVerificationTester:
                 status = "✅" if result else "❌"
                 print(f"   {status} {check}: {result}")
             
-            if c2pa_manifest.get("manifest_path"):
-                print(f"   📝 manifest_path: {c2pa_manifest['manifest_path']}")
-            if c2pa_manifest.get("manifest_data"):
-                manifest_data = c2pa_manifest['manifest_data']
-                print(f"   📝 manifest_data type: {type(manifest_data)}")
-                if isinstance(manifest_data, dict):
-                    print(f"   📝 manifest_data keys: {list(manifest_data.keys())}")
-            
             # Check if original_sha256 is different from watermarked_sha256
             original_sha = comprehensive_hashes.get("original_sha256")
             watermarked_sha = comprehensive_hashes.get("watermarked_sha256")
@@ -399,37 +386,97 @@ class VideoVerificationTester:
                 print(f"\n🔍 WATERMARKING VERIFICATION:")
                 print(f"   {'✅' if hashes_different else '❌'} original_sha256 != watermarked_sha256: {hashes_different}")
             
-            # Overall assessment
-            all_critical_passed = all(critical_checks.values())
+            # Overall assessment (initial state)
+            all_initial_passed = all(initial_checks.values())
             all_c2pa_passed = all(c2pa_checks.values())
             
-            if all_critical_passed and all_c2pa_passed:
-                details = "✅ ALL VERIFICATION DATA CORRECTLY SAVED TO DATABASE"
-                details += f"\n   - comprehensive_hashes: ALL FIELDS PRESENT"
-                details += f"\n   - original_sha256: {'NOT EMPTY' if critical_checks['original_sha256_not_empty'] else 'EMPTY/NULL'}"
-                details += f"\n   - watermarked_sha256: {'NOT EMPTY' if critical_checks['watermarked_sha256_not_empty'] else 'EMPTY/NULL'}"
+            if all_initial_passed and all_c2pa_passed:
+                details = "✅ ALL INITIAL VERIFICATION DATA CORRECTLY SAVED TO DATABASE"
+                details += f"\n   - comprehensive_hashes: INITIAL FIELDS PRESENT"
+                details += f"\n   - original_sha256: {'NOT EMPTY' if initial_checks['original_sha256_not_empty'] else 'EMPTY/NULL'}"
+                details += f"\n   - watermarked_sha256: {'NOT EMPTY' if initial_checks['watermarked_sha256_not_empty'] else 'EMPTY/NULL'}"
                 details += f"\n   - key_frame_hashes: {len(comprehensive_hashes.get('key_frame_hashes', []))} hashes"
-                details += f"\n   - perceptual_hashes: {len(comprehensive_hashes.get('perceptual_hashes', []))} hashes"
-                details += f"\n   - audio_hash: {'PRESENT' if comprehensive_hashes.get('audio_hash') else 'MISSING'}"
                 details += f"\n   - c2pa_manifest: ALL FIELDS PRESENT"
+                details += f"\n   - Background processing will add perceptual & audio hashes"
                 
-                self.log_test("Database Verification", True, details)
+                self.log_test("Database Verification (Initial)", True, details)
                 return True
             else:
-                failed_critical = [k for k, v in critical_checks.items() if not v]
+                failed_initial = [k for k, v in initial_checks.items() if not v]
                 failed_c2pa = [k for k, v in c2pa_checks.items() if not v]
                 
-                details = "❌ VERIFICATION DATA INCOMPLETE"
-                if failed_critical:
-                    details += f"\n   - Failed comprehensive_hashes checks: {failed_critical}"
+                details = "❌ INITIAL VERIFICATION DATA INCOMPLETE"
+                if failed_initial:
+                    details += f"\n   - Failed initial checks: {failed_initial}"
                 if failed_c2pa:
                     details += f"\n   - Failed c2pa_manifest checks: {failed_c2pa}"
                 
-                self.log_test("Database Verification", False, details)
+                self.log_test("Database Verification (Initial)", False, details)
                 return False
                 
         except Exception as e:
-            self.log_test("Database Verification", False, f"Database verification error: {str(e)}")
+            self.log_test("Database Verification (Initial)", False, f"Database verification error: {str(e)}")
+            return False
+
+    def test_database_verification_final(self) -> bool:
+        """Test final database state after background processing"""
+        if not self.uploaded_video_id:
+            self.log_test("Database Verification (Final)", False, "No uploaded video ID available")
+            return False
+        
+        if self.db is None:
+            self.log_test("Database Verification (Final)", False, "No MongoDB connection available")
+            return False
+        
+        try:
+            # Query MongoDB for final state
+            video_doc = self.db.videos.find_one({"id": self.uploaded_video_id})
+            
+            if not video_doc:
+                video_doc = self.db.videos.find_one({"_id": self.uploaded_video_id})
+            
+            if not video_doc:
+                self.log_test("Database Verification (Final)", False, "Video not found in database")
+                return False
+            
+            comprehensive_hashes = video_doc.get("comprehensive_hashes", {})
+            
+            # Final checks (after background processing)
+            final_checks = {
+                "comprehensive_hashes_exists": "comprehensive_hashes" in video_doc,
+                "original_sha256_present": comprehensive_hashes.get("original_sha256") is not None,
+                "watermarked_sha256_present": comprehensive_hashes.get("watermarked_sha256") is not None,
+                "key_frame_hashes_present": isinstance(comprehensive_hashes.get("key_frame_hashes"), list),
+                "key_frame_hashes_count": len(comprehensive_hashes.get("key_frame_hashes", [])) >= 8,
+                "perceptual_hashes_present": isinstance(comprehensive_hashes.get("perceptual_hashes"), list),
+                "perceptual_hashes_count": len(comprehensive_hashes.get("perceptual_hashes", [])) > 0,
+                "audio_hash_present": comprehensive_hashes.get("audio_hash") is not None,
+                "metadata_hash_present": comprehensive_hashes.get("metadata_hash") is not None,
+                "master_hash_present": comprehensive_hashes.get("master_hash") is not None
+            }
+            
+            print(f"\n🔍 FINAL DATABASE STATE VERIFICATION:")
+            for check, result in final_checks.items():
+                status = "✅" if result else "❌"
+                print(f"   {status} {check}: {result}")
+            
+            if all(final_checks.values()):
+                details = "✅ ALL FINAL VERIFICATION DATA PRESENT"
+                details += f"\n   - Perceptual hashes: {len(comprehensive_hashes.get('perceptual_hashes', []))} entries"
+                details += f"\n   - Audio hash: {'PRESENT' if comprehensive_hashes.get('audio_hash') else 'MISSING'}"
+                details += f"\n   - Background processing completed successfully"
+                
+                self.log_test("Database Verification (Final)", True, details)
+                return True
+            else:
+                failed_final = [k for k, v in final_checks.items() if not v]
+                details = f"❌ FINAL VERIFICATION DATA INCOMPLETE: {failed_final}"
+                
+                self.log_test("Database Verification (Final)", False, details)
+                return False
+                
+        except Exception as e:
+            self.log_test("Database Verification (Final)", False, f"Final verification error: {str(e)}")
             return False
     
     def test_c2pa_manifest_file(self) -> bool:
