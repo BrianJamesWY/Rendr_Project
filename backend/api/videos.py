@@ -619,7 +619,8 @@ async def upload_video(
             "folder_id": folder_id,
             "showcase_folder_id": folder_id,
             "blockchain_signature": blockchain_data,
-            "verification_status": "verified",
+            # Start as "processing" - will become "fully_verified" after background tasks complete
+            "verification_status": "processing",
             "is_public": True
         }
         
