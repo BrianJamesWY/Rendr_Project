@@ -925,19 +925,23 @@ class VideoVerificationTester:
             # 7. CRITICAL TEST: Initial database verification (before background processing)
             db_initial_success = self.test_database_verification_initial()
             
-            # 8. Test C2PA manifest file
+            # 8. NEW CRITICAL TEST: Verify Merkle Tree implementation
+            merkle_success = self.test_merkle_tree_verification()
+            
+            # 9. Test C2PA manifest file
             c2pa_success = self.test_c2pa_manifest_file()
             
-            # 9. Test background processing completion
+            # 10. Test background processing completion
             bg_success = self.test_background_processing()
             
-            # 10. CRITICAL TEST: Final database verification (after background processing)
+            # 11. CRITICAL TEST: Final database verification (after background processing)
             db_final_success = self.test_database_verification_final()
             
             # Summary of critical tests
             print(f"\n🎯 CRITICAL TEST RESULTS:")
             print(f"   {'✅' if watermark_success else '❌'} Watermarking: {'WORKING' if watermark_success else 'FAILED'}")
             print(f"   {'✅' if db_initial_success else '❌'} Initial database hashes: {'COMPLETE' if db_initial_success else 'INCOMPLETE'}")
+            print(f"   {'✅' if merkle_success else '❌'} Merkle Tree: {'WORKING' if merkle_success else 'FAILED'}")
             print(f"   {'✅' if c2pa_success else '❌'} C2PA manifest: {'SAVED' if c2pa_success else 'MISSING'}")
             print(f"   {'✅' if bg_success else '❌'} Background processing: {'COMPLETED' if bg_success else 'PENDING'}")
             print(f"   {'✅' if db_final_success else '❌'} Final database hashes: {'COMPLETE' if db_final_success else 'INCOMPLETE'}")
