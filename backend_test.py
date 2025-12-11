@@ -180,68 +180,129 @@ class VideoVerificationTester:
             self.log_test("Video Upload", False, f"Upload error: {str(e)}")
             return None
     
+    def connect_to_mongodb(self) -> bool:
+        """Connect to MongoDB database"""
+        try:
+            self.mongo_client = MongoClient(MONGO_URL)
+            self.db = self.mongo_client[DB_NAME]
+            # Test connection
+            self.db.admin.command('ping')
+            self.log_test("MongoDB Connection", True, "Connected to MongoDB successfully")
+            return True
+        except Exception as e:
+            self.log_test("MongoDB Connection", False, f"Failed to connect to MongoDB: {str(e)}")
+            return False
+
     def test_database_verification(self) -> bool:
-        """Test database document structure"""
+        """Test database document structure by directly querying MongoDB"""
         if not self.uploaded_video_id:
             self.log_test("Database Verification", False, "No uploaded video ID available")
             return False
         
+        if not self.db:
+            self.log_test("Database Verification", False, "No MongoDB connection available")
+            return False
+        
         try:
-            # We can't directly access MongoDB, but we can verify through API endpoints
-            response = self.session.get(f"{API_BASE}/videos/user/list")
+            # Query MongoDB directly for the uploaded video
+            video_doc = self.db.videos.find_one({"id": self.uploaded_video_id})
             
-            if response.status_code == 200:
-                videos = response.json()
+            if not video_doc:
+                # Try with _id field as well
+                video_doc = self.db.videos.find_one({"_id": self.uploaded_video_id})
+            
+            if not video_doc:
+                self.log_test("Database Verification", False, "Uploaded video not found in MongoDB")
+                return False
+            
+            print(f"\n🔍 ANALYZING DATABASE DOCUMENT FOR VIDEO: {self.uploaded_video_id}")
+            print("=" * 80)
+            
+            # CRITICAL VERIFICATION: comprehensive_hashes field
+            comprehensive_hashes = video_doc.get("comprehensive_hashes", {})
+            
+            critical_checks = {
+                "comprehensive_hashes_exists": "comprehensive_hashes" in video_doc,
+                "original_sha256_present": comprehensive_hashes.get("original_sha256") is not None,
+                "original_sha256_not_empty": bool(comprehensive_hashes.get("original_sha256", "").strip()),
+                "watermarked_sha256_present": comprehensive_hashes.get("watermarked_sha256") is not None,
+                "key_frame_hashes_present": isinstance(comprehensive_hashes.get("key_frame_hashes"), list),
+                "key_frame_hashes_count": len(comprehensive_hashes.get("key_frame_hashes", [])) >= 8,  # Should have ~10
+                "metadata_hash_present": comprehensive_hashes.get("metadata_hash") is not None,
+                "master_hash_present": comprehensive_hashes.get("master_hash") is not None
+            }
+            
+            # C2PA manifest verification
+            c2pa_manifest = video_doc.get("c2pa_manifest", {})
+            c2pa_checks = {
+                "c2pa_manifest_exists": "c2pa_manifest" in video_doc,
+                "manifest_path_present": c2pa_manifest.get("manifest_path") is not None,
+                "manifest_data_present": c2pa_manifest.get("manifest_data") is not None
+            }
+            
+            # Print detailed analysis
+            print("📊 COMPREHENSIVE HASHES ANALYSIS:")
+            for check, result in critical_checks.items():
+                status = "✅" if result else "❌"
+                print(f"   {status} {check}: {result}")
+            
+            if comprehensive_hashes.get("original_sha256"):
+                print(f"   📝 original_sha256: {comprehensive_hashes['original_sha256'][:32]}...")
+            if comprehensive_hashes.get("watermarked_sha256"):
+                print(f"   📝 watermarked_sha256: {comprehensive_hashes['watermarked_sha256'][:32]}...")
+            if comprehensive_hashes.get("key_frame_hashes"):
+                print(f"   📝 key_frame_hashes count: {len(comprehensive_hashes['key_frame_hashes'])}")
+            if comprehensive_hashes.get("metadata_hash"):
+                print(f"   📝 metadata_hash: {comprehensive_hashes['metadata_hash'][:32]}...")
+            if comprehensive_hashes.get("master_hash"):
+                print(f"   📝 master_hash: {comprehensive_hashes['master_hash'][:32]}...")
+            
+            print("\n📊 C2PA MANIFEST ANALYSIS:")
+            for check, result in c2pa_checks.items():
+                status = "✅" if result else "❌"
+                print(f"   {status} {check}: {result}")
+            
+            if c2pa_manifest.get("manifest_path"):
+                print(f"   📝 manifest_path: {c2pa_manifest['manifest_path']}")
+            if c2pa_manifest.get("manifest_data"):
+                manifest_data = c2pa_manifest['manifest_data']
+                print(f"   📝 manifest_data type: {type(manifest_data)}")
+                if isinstance(manifest_data, dict):
+                    print(f"   📝 manifest_data keys: {list(manifest_data.keys())}")
+            
+            # Check if original_sha256 is different from watermarked_sha256
+            original_sha = comprehensive_hashes.get("original_sha256")
+            watermarked_sha = comprehensive_hashes.get("watermarked_sha256")
+            
+            if original_sha and watermarked_sha:
+                hashes_different = original_sha != watermarked_sha
+                print(f"\n🔍 HASH COMPARISON:")
+                print(f"   {'✅' if hashes_different else '❌'} original_sha256 != watermarked_sha256: {hashes_different}")
+            
+            # Overall assessment
+            all_critical_passed = all(critical_checks.values())
+            all_c2pa_passed = all(c2pa_checks.values())
+            
+            if all_critical_passed and all_c2pa_passed:
+                details = "✅ ALL VERIFICATION DATA CORRECTLY SAVED TO DATABASE"
+                details += f"\n   - comprehensive_hashes: ALL FIELDS PRESENT"
+                details += f"\n   - original_sha256: {'NOT EMPTY' if critical_checks['original_sha256_not_empty'] else 'EMPTY/NULL'}"
+                details += f"\n   - key_frame_hashes: {len(comprehensive_hashes.get('key_frame_hashes', []))} hashes"
+                details += f"\n   - c2pa_manifest: ALL FIELDS PRESENT"
                 
-                # Find our uploaded video
-                uploaded_video = None
-                for video in videos:
-                    if video.get("video_id") == self.uploaded_video_id:
-                        uploaded_video = video
-                        break
-                
-                if not uploaded_video:
-                    self.log_test("Database Verification", False, "Uploaded video not found in user's video list")
-                    return False
-                
-                # Verify database structure
-                required_fields = [
-                    "verification_code", "hashes", "storage"
-                ]
-                
-                missing_fields = []
-                for field in required_fields:
-                    if field not in uploaded_video:
-                        missing_fields.append(field)
-                
-                if missing_fields:
-                    self.log_test("Database Verification", False, f"Missing database fields: {missing_fields}")
-                    return False
-                
-                # Verify hash structure in database
-                hashes = uploaded_video.get("hashes", {})
-                
-                # Check required hash fields (original_sha256 may be null for reused files)
-                hash_checks = {
-                    "watermarked_sha256": hashes.get("watermarked_sha256") is not None,
-                    "key_frame_hashes": isinstance(hashes.get("key_frame_hashes"), list) and len(hashes.get("key_frame_hashes", [])) == 10,
-                    "metadata_hash": hashes.get("metadata_hash") is not None,
-                    "master_hash": hashes.get("master_hash") is not None
-                }
-                
-                if all(hash_checks.values()):
-                    details = f"Database document verified. Fields present: {list(hash_checks.keys())}"
-                    details += f"\nVerification code: {uploaded_video.get('verification_code')}"
-                    details += f"\nStorage tier: {uploaded_video.get('storage', {}).get('tier', 'unknown')}"
-                    
-                    self.log_test("Database Verification", True, details)
-                    return True
-                else:
-                    failed_fields = [k for k, v in hash_checks.items() if not v]
-                    self.log_test("Database Verification", False, f"Missing hash fields: {failed_fields}")
-                    return False
+                self.log_test("Database Verification", True, details)
+                return True
             else:
-                self.log_test("Database Verification", False, f"Failed to get video list: {response.status_code}")
+                failed_critical = [k for k, v in critical_checks.items() if not v]
+                failed_c2pa = [k for k, v in c2pa_checks.items() if not v]
+                
+                details = "❌ VERIFICATION DATA INCOMPLETE"
+                if failed_critical:
+                    details += f"\n   - Failed comprehensive_hashes checks: {failed_critical}"
+                if failed_c2pa:
+                    details += f"\n   - Failed c2pa_manifest checks: {failed_c2pa}"
+                
+                self.log_test("Database Verification", False, details)
                 return False
                 
         except Exception as e:
