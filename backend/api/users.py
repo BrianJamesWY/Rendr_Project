@@ -59,9 +59,12 @@ async def get_creator_videos(
     if not user:
         raise HTTPException(404, f"Creator @{username} not found")
     
-    # Build query filter - use user_id instead of username
+    # Get the correct user_id - could be stored as user_id field or _id
+    user_id = user.get("user_id") or str(user.get("_id"))
+    
+    # Build query filter - use user_id field from videos
     query = {
-        "user_id": user["_id"],
+        "user_id": user_id,
         "on_showcase": True  # Only show videos marked for showcase
     }
     
