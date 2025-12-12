@@ -724,6 +724,33 @@ function UnifiedEditor() {
                 </select>
               </div>
               
+              {/* Delete Button */}
+              <button 
+                onClick={() => {
+                  if (selectedTreeItem) {
+                    setShowDeleteModal(true);
+                  }
+                }}
+                disabled={!selectedTreeItem}
+                style={{ 
+                  width: '100%', 
+                  padding: '0.75rem', 
+                  background: selectedTreeItem ? '#ef4444' : '#fca5a5',
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '0.5rem', 
+                  fontWeight: '600', 
+                  cursor: selectedTreeItem ? 'pointer' : 'not-allowed', 
+                  fontSize: '1rem',
+                  marginBottom: '0.75rem',
+                  transition: 'background 0.2s'
+                }}
+                onMouseEnter={(e) => { if (selectedTreeItem) e.target.style.background = '#dc2626'; }}
+                onMouseLeave={(e) => { if (selectedTreeItem) e.target.style.background = '#ef4444'; }}
+              >
+                🗑️ Delete {selectedTreeItem?.type === 'folder' ? 'Folder' : 'Video'}
+              </button>
+              
               {/* Save Button */}
               <button 
                 onClick={async () => {
