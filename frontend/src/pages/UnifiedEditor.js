@@ -648,6 +648,7 @@ function UnifiedEditor() {
                   onTreeUpdate={loadProfile}
                   containerHeight="300px"
                   showLayoutToggle={false}
+                  refreshTrigger={treeRefreshTrigger}
                 />
               </div>
               
