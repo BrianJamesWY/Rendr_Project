@@ -99,6 +99,7 @@ function UnifiedEditor() {
   const [contentName, setContentName] = useState('');
   const [contentDescription, setContentDescription] = useState('');
   const [accessLevel, setAccessLevel] = useState('Public (Free)');
+  const [treeRefreshTrigger, setTreeRefreshTrigger] = useState(0);
 
   // Premium Pricing state
   const [tiers, setTiers] = useState([
