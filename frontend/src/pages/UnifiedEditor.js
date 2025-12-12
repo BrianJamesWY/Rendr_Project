@@ -118,6 +118,10 @@ function UnifiedEditor() {
   const [bountyActive, setBountyActive] = useState(true);
   const [bountyAmount, setBountyAmount] = useState(50);
 
+  // Delete confirmation modal state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteInProgress, setDeleteInProgress] = useState(false);
+
   const tabs = [
     { id: 'profile', label: 'Profile & Banner', emoji: '👤' },
     { id: 'design', label: 'Page Design', emoji: '🎨' },
