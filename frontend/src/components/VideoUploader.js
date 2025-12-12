@@ -51,19 +51,9 @@ function VideoUploader({ onUploadComplete, onClose }) {
   };
 
   const handleFile = async (file) => {
-    // Validate file type
-    if (!file.type.startsWith('video/')) {
-      setError('Please select a video file');
-      return;
-    }
-
-    // Validate file size (500MB max)
-    const maxSize = 500 * 1024 * 1024;
-    if (file.size > maxSize) {
-      setError('File too large. Maximum size is 500MB.');
-      return;
-    }
-
+    // Accept any video file - no type or size restrictions
+    // The backend will handle any video format via FFmpeg
+    
     setError(null);
     setUploadState('uploading');
     setUploadProgress(0);
@@ -93,7 +83,13 @@ function VideoUploader({ onUploadComplete, onClose }) {
         if (xhr.status >= 200 && xhr.status < 300) {
           const result = JSON.parse(xhr.responseText);
           setUploadResult(result);
-          setUploadState('complete');
+          
+          // Check if this is a duplicate video
+          if (result.duplicate_detected || result.status === 'duplicate') {
+            setUploadState('duplicate');
+          } else {
+            setUploadState('complete');
+          }
           
           if (onUploadComplete) {
             onUploadComplete(result);
