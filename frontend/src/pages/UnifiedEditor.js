@@ -1055,6 +1055,139 @@ function UnifiedEditor() {
         </div>
 
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && selectedTreeItem && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: 'white',
+            borderRadius: '1rem',
+            padding: '2rem',
+            maxWidth: '450px',
+            width: '90%',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+          }}>
+            {/* Warning Icon */}
+            <div style={{
+              width: '60px',
+              height: '60px',
+              background: '#fef2f2',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 1.5rem auto'
+            }}>
+              <span style={{ fontSize: '2rem' }}>⚠️</span>
+            </div>
+
+            {/* Modal Title */}
+            <h3 style={{
+              fontSize: '1.25rem',
+              fontWeight: '700',
+              color: '#111827',
+              textAlign: 'center',
+              marginBottom: '1rem'
+            }}>
+              Confirm Delete
+            </h3>
+
+            {/* Confirmation Message */}
+            <p style={{
+              fontSize: '1rem',
+              color: '#4b5563',
+              textAlign: 'center',
+              marginBottom: '1.5rem',
+              lineHeight: '1.6'
+            }}>
+              Are you sure you want to delete "<strong style={{ color: '#111827' }}>{contentName || selectedTreeItem.name || selectedTreeItem.title || 'Untitled'}</strong>"?
+              {selectedTreeItem.type === 'folder' && (
+                <span style={{ display: 'block', marginTop: '0.5rem', fontSize: '0.875rem', color: '#ef4444' }}>
+                  This will also move all videos in this folder to the root level.
+                </span>
+              )}
+            </p>
+
+            {/* Action Buttons */}
+            <div style={{
+              display: 'flex',
+              gap: '1rem',
+              justifyContent: 'center'
+            }}>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteInProgress}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: '#f3f4f6',
+                  color: '#374151',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: deleteInProgress ? 'not-allowed' : 'pointer',
+                  fontSize: '1rem',
+                  minWidth: '100px'
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteItem}
+                disabled={deleteInProgress}
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  background: deleteInProgress ? '#fca5a5' : '#ef4444',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '0.5rem',
+                  fontWeight: '600',
+                  cursor: deleteInProgress ? 'not-allowed' : 'pointer',
+                  fontSize: '1rem',
+                  minWidth: '100px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.5rem'
+                }}
+              >
+                {deleteInProgress ? (
+                  <>
+                    <span style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderTopColor: 'transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></span>
+                    Deleting...
+                  </>
+                ) : (
+                  <>🗑️ Delete</>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* CSS for spinner animation */}
+      <style>{`
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 }
