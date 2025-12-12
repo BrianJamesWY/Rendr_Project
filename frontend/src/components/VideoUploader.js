@@ -356,6 +356,117 @@ function VideoUploader({ onUploadComplete, onClose }) {
     );
   }
 
+  // Duplicate Detected State
+  if (uploadState === 'duplicate' && uploadResult) {
+    const isOwner = uploadResult.is_owner;
+    
+    return (
+      <div className="w-full max-w-2xl mx-auto">
+        {/* Duplicate Alert Header */}
+        <div className="text-center mb-6">
+          <div className={`w-20 h-20 mx-auto mb-4 rounded-full flex items-center justify-center ${isOwner ? 'bg-blue-100' : 'bg-amber-100'}`}>
+            <span className="text-4xl">{isOwner ? '🔄' : '⚠️'}</span>
+          </div>
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            {isOwner ? 'Video Already Verified' : 'Duplicate Video Detected'}
+          </h3>
+          <p className="text-gray-600">
+            {isOwner 
+              ? 'You have already verified this video. Here is your existing verification code.'
+              : 'This video has already been verified by another creator.'}
+          </p>
+        </div>
+
+        {/* Original Creator Info (if not owner) */}
+        {!isOwner && (
+          <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">👤</span>
+              <div>
+                <p className="font-semibold text-amber-900">Original Creator: @{uploadResult.original_owner}</p>
+                <p className="text-sm text-amber-700">
+                  Uploaded on {uploadResult.original_upload_date ? new Date(uploadResult.original_upload_date).toLocaleDateString() : 'Unknown date'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Security Warning (if not owner) */}
+        {!isOwner && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <span className="text-xl">🚨</span>
+              <div>
+                <p className="font-semibold text-red-900">Security Alert</p>
+                <p className="text-sm text-red-700 mt-1">
+                  {uploadResult.security_alert || 'Uploading someone else\'s verified content may violate copyright and platform terms of service.'}
+                </p>
+                <p className="text-sm text-red-600 mt-2 font-medium">
+                  The original creator has been notified of this upload attempt.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Existing Verification Code */}
+        <div className={`rounded-2xl p-6 text-white mb-6 ${isOwner ? 'bg-gradient-to-br from-blue-500 to-indigo-600' : 'bg-gradient-to-br from-amber-500 to-orange-600'}`}>
+          <div className="flex items-center gap-2 text-blue-200 text-sm mb-2">
+            <Shield className="w-4 h-4" />
+            <span>Existing Verification Code</span>
+          </div>
+          <p className="text-3xl font-mono font-bold tracking-wider">
+            {uploadResult.verification_code}
+          </p>
+        </div>
+
+        {/* Video Info */}
+        {uploadResult.video_title && (
+          <div className="bg-gray-50 rounded-xl p-4 mb-6">
+            <p className="font-medium text-gray-900">{uploadResult.video_title}</p>
+            {uploadResult.video_description && (
+              <p className="text-sm text-gray-600 mt-1">{uploadResult.video_description}</p>
+            )}
+          </div>
+        )}
+
+        {/* Confidence Score */}
+        {uploadResult.confidence_score && (
+          <div className="text-center text-sm text-gray-500 mb-6">
+            Match confidence: {(uploadResult.confidence_score * 100).toFixed(1)}%
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <button
+            onClick={resetUpload}
+            className="flex-1 py-3 px-6 border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium rounded-xl transition-colors"
+          >
+            Upload Different Video
+          </button>
+          {uploadResult.creator_showcase_url && !isOwner && (
+            <a
+              href={uploadResult.creator_showcase_url}
+              className="flex-1 py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors text-center"
+            >
+              View Creator's Showcase
+            </a>
+          )}
+          {onClose && isOwner && (
+            <button
+              onClick={onClose}
+              className="flex-1 py-3 px-6 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-colors"
+            >
+              Done
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // Error State
   if (uploadState === 'error') {
     return (
