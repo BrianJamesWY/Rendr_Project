@@ -187,7 +187,7 @@ function VideoUploader({ onUploadComplete, onClose }) {
           </button>
           
           <p className="text-xs text-gray-400 mt-4">
-            MP4, MOV, AVI up to 500MB
+            All video formats supported • No size limit
           </p>
         </div>
 
