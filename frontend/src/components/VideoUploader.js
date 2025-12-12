@@ -150,9 +150,8 @@ function VideoUploader({ onUploadComplete, onClose }) {
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
           onDrop={handleDrop}
-          onClick={() => fileInputRef.current?.click()}
           className={`
-            relative border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer
+            relative border-2 border-dashed rounded-2xl p-12 text-center
             transition-all duration-300 ease-out
             ${dragActive 
               ? 'border-indigo-500 bg-indigo-50 scale-[1.02]' 
@@ -180,9 +179,18 @@ function VideoUploader({ onUploadComplete, onClose }) {
             {dragActive ? 'Drop your video here' : 'Drag & drop your video'}
           </p>
           <p className="text-sm text-gray-500 mb-4">
-            or click to browse
+            or
           </p>
-          <p className="text-xs text-gray-400">
+          
+          {/* Upload Button */}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            Choose Video File
+          </button>
+          
+          <p className="text-xs text-gray-400 mt-4">
             MP4, MOV, AVI up to 500MB
           </p>
         </div>
