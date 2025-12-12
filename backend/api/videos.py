@@ -879,8 +879,9 @@ async def list_user_videos(
     query = {"user_id": current_user["user_id"]}
     
     if not include_processing:
-        # Only show fully verified videos (default) - videos still processing should not appear
-        query["verification_status"] = "fully_verified"
+        # Show videos that are verified (watermarked) - they appear immediately after upload
+        # Both "verified" and "fully_verified" should show in dashboard
+        query["verification_status"] = {"$in": ["verified", "fully_verified"]}
     
     videos = await db.videos.find(query).to_list(length=1000)
     
