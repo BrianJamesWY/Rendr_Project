@@ -1046,6 +1046,41 @@ async def delete_video(
     db = Depends(get_db)
 ):
     """Delete a video"""
+    # Check both 'id' and '_id' fields for compatibility with old videos
+    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
+    
+    if not video:
+        raise HTTPException(404, "Video not found")
+    
+    if video['user_id'] != current_user['user_id']:
+        raise HTTPException(403, "Not authorized")
+    
+    # Delete video file
+    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
+    if os.path.exists(video_path):
+        os.remove(video_path)
+    
+    # Delete watermarked video file
+    watermarked_path = f"/app/backend/uploads/videos/{video_id}_watermarked.mp4"
+    if os.path.exists(watermarked_path):
+        os.remove(watermarked_path)
+    
+    # Delete thumbnail
+    if video.get('thumbnail_path'):
+        thumb_path = f"/app/backend{video['thumbnail_path']}"
+        if os.path.exists(thumb_path):
+            os.remove(thumb_path)
+    
+    # Also try the uploads/thumbnails path
+    thumb_path2 = f"/app/backend/uploads/thumbnails/{video_id}.jpg"
+    if os.path.exists(thumb_path2):
+        os.remove(thumb_path2)
+    
+    # Delete from database - use whichever ID field exists
+    id_field = "id" if video.get("id") else "_id"
+    await db.videos.delete_one({id_field: video_id})
+    
+    return {"message": "Video deleted successfully", "video_id": video_id}
 
 
 @router.get("/{video_id}/processing-status")
@@ -1073,32 +1108,6 @@ async def get_processing_status(
             status = db_status
     
     return status
-
-    # Check both 'id' and '_id' fields for compatibility with old videos
-    video = await db.videos.find_one({"$or": [{"id": video_id}, {"_id": video_id}]})
-    
-    if not video:
-        raise HTTPException(404, "Video not found")
-    
-    if video['user_id'] != current_user['user_id']:
-        raise HTTPException(403, "Not authorized")
-    
-    # Delete video file
-    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
-    if os.path.exists(video_path):
-        os.remove(video_path)
-    
-    # Delete thumbnail
-    if video.get('thumbnail_path'):
-        thumb_path = f"/app/backend{video['thumbnail_path']}"
-        if os.path.exists(thumb_path):
-            os.remove(thumb_path)
-    
-    # Delete from database - use whichever ID field exists
-    id_field = "id" if video.get("id") else "_id"
-    await db.videos.delete_one({id_field: video_id})
-    
-    return {"message": "Video deleted successfully"}
 
 
 @router.get("/{video_id}/download")
