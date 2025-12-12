@@ -217,6 +217,40 @@ function UnifiedEditor() {
     }
   };
 
+  // Handle delete for videos and folders
+  const handleDeleteItem = async () => {
+    if (!selectedTreeItem) return;
+    
+    setDeleteInProgress(true);
+    try {
+      const token = localStorage.getItem('token');
+      const endpoint = selectedTreeItem.type === 'folder' 
+        ? `/api/folders/${selectedTreeItem.id}`
+        : `/api/videos/${selectedTreeItem.id}`;
+      
+      await axios.delete(`${BACKEND_URL}${endpoint}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      // Clear selection and close modal
+      setSelectedTreeItem(null);
+      setContentName('');
+      setContentDescription('');
+      setAccessLevel('Public (Free)');
+      setShowDeleteModal(false);
+      
+      // Refresh the directory tree
+      loadProfile();
+      
+      alert(`${selectedTreeItem.type === 'folder' ? 'Folder' : 'Video'} deleted successfully!`);
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert(`Failed to delete ${selectedTreeItem.type}: ${error.response?.data?.detail || error.message}`);
+    } finally {
+      setDeleteInProgress(false);
+    }
+  };
+
   const getProfileShapeStyle = () => {
     const baseStyle = {
       width: '100px',
