@@ -63,9 +63,11 @@ async def get_creator_videos(
     user_id = user.get("user_id") or str(user.get("_id"))
     
     # Build query filter - use user_id field from videos
+    # Only show videos that are: on showcase AND fully verified
     query = {
         "user_id": user_id,
-        "on_showcase": True  # Only show videos marked for showcase
+        "on_showcase": True,
+        "verification_status": "fully_verified"  # Only show verified videos on showcase
     }
     
     # If platform filter is specified, only show videos in that social folder
