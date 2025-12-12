@@ -9,7 +9,8 @@ function DirectoryTree({
   onItemSelect, 
   onTreeUpdate,
   showLayoutToggle = true,
-  containerHeight = '400px'
+  containerHeight = '400px',
+  refreshTrigger = 0
 }) {
   const [tree, setTree] = useState([]);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
@@ -20,7 +21,7 @@ function DirectoryTree({
 
   useEffect(() => {
     loadDirectoryTree();
-  }, [username]);
+  }, [username, refreshTrigger]);
 
   const loadDirectoryTree = async () => {
     try {
