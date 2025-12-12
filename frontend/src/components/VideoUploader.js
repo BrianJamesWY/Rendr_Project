@@ -311,7 +311,7 @@ function VideoUploader({ onUploadComplete, onClose }) {
 
         {/* Download Button */}
         <a
-          href={`${BACKEND_URL}${uploadResult.download_url}`}
+          href={`${BACKEND_URL}/api/videos/${uploadResult.video_id}/download`}
           download
           className="block w-full py-4 px-6 bg-gray-900 hover:bg-gray-800 text-white text-center font-semibold rounded-xl transition-colors mb-4"
         >
