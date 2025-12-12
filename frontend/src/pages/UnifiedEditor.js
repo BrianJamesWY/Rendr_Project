@@ -241,6 +241,7 @@ function UnifiedEditor() {
       setShowDeleteModal(false);
       
       // Refresh the directory tree
+      setTreeRefreshTrigger(prev => prev + 1);
       loadProfile();
       
       alert(`${selectedTreeItem.type === 'folder' ? 'Folder' : 'Video'} deleted successfully!`);
