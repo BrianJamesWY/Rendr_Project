@@ -163,12 +163,22 @@ function VideoUploader({ onUploadComplete, onClose }) {
             className="hidden"
           />
           
-          <div className={`
-            w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center
-            transition-all duration-300
-            ${dragActive ? 'bg-indigo-500' : 'bg-gradient-to-br from-indigo-500 to-purple-600'}
-          `}>
-            <Upload className="w-8 h-8 text-white" />
+          {/* CheckStar Logo */}
+          <div className="w-20 h-20 mx-auto mb-4">
+            <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              {/* Star shape */}
+              <path d="M50 10 L61 39 L92 39 L67 58 L78 87 L50 68 L22 87 L33 58 L8 39 L39 39 Z" 
+                    fill={dragActive ? "#4f46e5" : "#6366f1"}
+                    stroke={dragActive ? "#4338ca" : "#4f46e5"}
+                    strokeWidth="2"/>
+              {/* Checkmark */}
+              <path d="M35 50 L45 60 L65 40" 
+                    fill="none" 
+                    stroke="white" 
+                    strokeWidth="6" 
+                    strokeLinecap="round" 
+                    strokeLinejoin="round"/>
+            </svg>
           </div>
           
           <p className="text-lg font-medium text-gray-900 mb-2">
