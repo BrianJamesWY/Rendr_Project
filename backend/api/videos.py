@@ -1127,9 +1127,15 @@ async def download_video(
     if video['user_id'] != current_user['user_id']:
         raise HTTPException(403, "Not authorized")
     
-    video_path = f"/app/backend/uploads/videos/{video_id}.mp4"
+    # Try watermarked version first, then original
+    watermarked_path = f"/app/backend/uploads/videos/{video_id}_watermarked.mp4"
+    original_path = f"/app/backend/uploads/videos/{video_id}.mp4"
     
-    if not os.path.exists(video_path):
+    if os.path.exists(watermarked_path):
+        video_path = watermarked_path
+    elif os.path.exists(original_path):
+        video_path = original_path
+    else:
         raise HTTPException(404, "Video file not found")
     
     # Increment download count
