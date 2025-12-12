@@ -279,14 +279,14 @@ function Verify() {
             boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
           }}>
             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-              {/* CheckStar Logo for authentic results */}
+              {/* CheckStar Logo for authentic results - RENDR Blue/Indigo */}
               {result.result === 'authentic' ? (
                 <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
-                  <svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    {/* Star shape */}
+                  <svg width="80" height="80" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    {/* Star shape - RENDR Indigo/Blue */}
                     <path d="M50 10 L61 39 L92 39 L67 58 L78 87 L50 68 L22 87 L33 58 L8 39 L39 39 Z" 
-                          fill="#10b981" 
-                          stroke="#059669" 
+                          fill="#6366f1" 
+                          stroke="#4f46e5" 
                           strokeWidth="2"/>
                     {/* Checkmark */}
                     <path d="M35 50 L45 60 L65 40" 
