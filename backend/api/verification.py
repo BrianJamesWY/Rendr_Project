@@ -44,8 +44,15 @@ async def verify_by_code(
                 "profile_pic": user.get('profile', {}).get('profilePic')
             }
     
-    # Get social media links for this video
-    social_links = video.get('social_media_links', []) or video.get('social_links', [])
+    # Get social media links for this video - only include valid links with actual URLs
+    raw_social_links = video.get('social_media_links', []) or video.get('social_links', [])
+    social_links = []
+    for link in raw_social_links:
+        if link and isinstance(link, dict):
+            url = link.get('url', '')
+            # Only include links that have actual URLs (not empty, not placeholders)
+            if url and url.strip() and not url.startswith('#') and url != 'https://' and len(url) > 10:
+                social_links.append(link)
     
     # Log attempt
     await db.verification_attempts.insert_one({
