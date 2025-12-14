@@ -111,6 +111,37 @@ Upload → Watermark → Return Video (FAST) → User can download immediately
 - Fixed broken `/showcase-editor` links → now point to `/editor`
 - Removed orphaned `ShowcaseEditor.js` (backed up to /tmp)
 
+
+---
+
+## Session Updates - December 14, 2025
+
+### 7. ✅ "Show on Showcase" Checkbox Added to Edit Video Details Modal
+**Feature**: Content creators can now control which videos appear on their public showcase
+
+**Implementation**:
+- Added `showOnShowcase` state variable to EditVideoModal.js
+- Beautiful toggle checkbox with visual feedback (color change, "Visible" badge)
+- When enabled, video's `on_showcase` is set to `true`
+- Video's `showcase_folder_id` is automatically set to match the selected folder
+- Videos only appear on showcase when checked AND have valid verification status
+
+**Files Changed**:
+- `/app/frontend/src/components/EditVideoModal.js` - Added checkbox UI and state
+- `/app/backend/api/users.py` - Updated showcase query to include both "verified" and "fully_verified" status
+
+**Database Fields Used**:
+- `on_showcase` (boolean) - Whether video shows on public showcase
+- `showcase_folder_id` (string) - Which folder the video appears in on showcase
+
+### 8. ✅ Additional Fixes Applied in This Session
+- CheckStar logo changed from GREEN (#10b981) to BLUE/INDIGO (#6366f1) on Verify page
+- Fixed fake YouTube links showing on verification results (now filters invalid URLs)
+- Fixed upload page: removed file type/size restrictions, shows "All video formats supported • No size limit"
+- Fixed duplicate video detection UI (shows different message for owner vs non-owner)
+- Fixed download button URL (now looks for watermarked version first)
+- Fixed dashboard video display (now shows both "verified" and "fully_verified" status)
+
 ---
 
 ## What Still Needs Work
