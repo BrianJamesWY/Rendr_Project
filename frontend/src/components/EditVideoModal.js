@@ -14,6 +14,7 @@ function EditVideoModal({ video, onClose, onSave }) {
   const [showAddPlatform, setShowAddPlatform] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedTreeItem, setSelectedTreeItem] = useState(null);
+  const [showOnShowcase, setShowOnShowcase] = useState(false);
   const thumbnailInputRef = useRef(null);
   const token = localStorage.getItem('token');
 
@@ -23,6 +24,7 @@ function EditVideoModal({ video, onClose, onSave }) {
       setDescription(video.description || '');
       setThumbnailUrl(video.thumbnail_url || '');
       setSocialLinks(video.social_links || [{ platform: '', url: '' }]);
+      setShowOnShowcase(video.on_showcase || false);
     }
   }, [video]);
 
