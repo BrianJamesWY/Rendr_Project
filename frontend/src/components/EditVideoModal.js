@@ -85,12 +85,16 @@ function EditVideoModal({ video, onClose, onSave }) {
 
   const handleSave = async () => {
     try {
+      const folderId = selectedTreeItem?.type === 'folder' ? selectedTreeItem.id : video?.folder_id;
+      
       const updateData = {
         title,
         description,
         thumbnail_url: thumbnailUrl,
         social_links: socialLinks.filter(l => l.url),
-        folder_id: selectedTreeItem?.type === 'folder' ? selectedTreeItem.id : null
+        folder_id: folderId,
+        on_showcase: showOnShowcase,
+        showcase_folder_id: showOnShowcase ? folderId : null
       };
       
       await axios.put(
