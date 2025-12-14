@@ -482,6 +482,102 @@ function EditVideoModal({ video, onClose, onSave }) {
               containerHeight="300px"
             />
           </div>
+
+          {/* Show on Showcase Checkbox */}
+          <div style={{ 
+            marginBottom: '20px',
+            padding: '16px',
+            background: showOnShowcase ? 'linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 100%)' : '#f9fafb',
+            borderRadius: '10px',
+            border: showOnShowcase ? '2px solid #667eea' : '1px solid #e5e7eb',
+            transition: 'all 0.3s ease'
+          }}>
+            <label style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px',
+              cursor: 'pointer',
+              userSelect: 'none'
+            }}>
+              <div style={{
+                position: 'relative',
+                width: '24px',
+                height: '24px'
+              }}>
+                <input
+                  type="checkbox"
+                  checked={showOnShowcase}
+                  onChange={(e) => setShowOnShowcase(e.target.checked)}
+                  style={{
+                    position: 'absolute',
+                    opacity: 0,
+                    width: '24px',
+                    height: '24px',
+                    cursor: 'pointer',
+                    zIndex: 1
+                  }}
+                />
+                <div style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '6px',
+                  border: showOnShowcase ? '2px solid #667eea' : '2px solid #d1d5db',
+                  background: showOnShowcase ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'all 0.2s ease'
+                }}>
+                  {showOnShowcase && (
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                      <path 
+                        d="M2 7L5.5 10.5L12 4" 
+                        stroke="white" 
+                        strokeWidth="2.5" 
+                        strokeLinecap="round" 
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <div>
+                <span style={{ 
+                  fontWeight: '600', 
+                  fontSize: '15px',
+                  color: showOnShowcase ? '#4f46e5' : '#374151'
+                }}>
+                  Show on Showcase
+                </span>
+                <p style={{ 
+                  margin: '4px 0 0 0', 
+                  fontSize: '13px', 
+                  color: '#6b7280',
+                  lineHeight: '1.4'
+                }}>
+                  {showOnShowcase 
+                    ? 'This video will appear on your public showcase in the selected folder'
+                    : 'Enable to display this video on your public showcase page'
+                  }
+                </p>
+              </div>
+              {showOnShowcase && (
+                <div style={{
+                  marginLeft: 'auto',
+                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  color: 'white',
+                  padding: '4px 10px',
+                  borderRadius: '20px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Visible
+                </div>
+              )}
+            </label>
+          </div>
         </div>
 
         {/* Footer */}
