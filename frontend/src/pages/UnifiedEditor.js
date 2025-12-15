@@ -525,22 +525,171 @@ function UnifiedEditor() {
               </div>
 
               <div style={{ marginBottom: '1.5rem' }}>
-                <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>Social Media Links</label>
-                {socialLinks.map((link, index) => (
-                  <div key={index} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.75rem' }}>
-                    <input type="url" value={link.url} onChange={(e) => { const newLinks = [...socialLinks]; newLinks[index].url = e.target.value; setSocialLinks(newLinks); }} placeholder={`${link.platform} URL`} style={{ flex: 1, padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.875rem' }} />
-                    <div style={{ width: '45px', height: '45px', background: '#f3f4f6', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', border: '1px solid #e5e7eb' }}>{link.icon}</div>
-                  </div>
-                ))}
-                <button onClick={() => setSocialLinks([...socialLinks, { platform: 'Custom', url: '', icon: '🔗' }])} style={{ marginTop: '0.5rem', padding: '0.5rem 1rem', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '0.5rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: '500' }}>+ Add Another Social Link</button>
-              </div>
-
-              <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>Bio Text</label>
                 <textarea rows="4" value={bioText} onChange={(e) => setBioText(e.target.value)} placeholder="Tell your audience about yourself..." style={{ width: '100%', padding: '0.75rem', border: '1px solid #e5e7eb', borderRadius: '0.5rem', fontSize: '0.875rem', fontFamily: 'inherit' }} />
               </div>
 
               <button onClick={handleSaveProfile} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '0.5rem', fontWeight: '600', cursor: 'pointer', fontSize: '1rem' }}>💾 Save Changes</button>
+            </div>
+          )}
+
+          {/* Media Links Tab */}
+          {activeTab === 'media' && (
+            <div>
+              <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#111827' }}>Media Links</h2>
+              <p style={{ color: '#6b7280', marginBottom: '2rem', fontSize: '0.875rem' }}>Add your social media and website links with custom thumbnails</p>
+
+              {socialLinks.map((link, index) => (
+                <div key={index} style={{ 
+                  border: '1px solid #e5e7eb', 
+                  borderRadius: '12px', 
+                  padding: '1rem', 
+                  marginBottom: '1rem',
+                  background: 'white'
+                }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                    {/* URL Input Section */}
+                    <div style={{ flex: 1 }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.5rem' }}>
+                        {link.platform} URL
+                      </label>
+                      <input 
+                        type="url" 
+                        value={link.url} 
+                        onChange={(e) => { 
+                          const newLinks = [...socialLinks]; 
+                          newLinks[index].url = e.target.value; 
+                          setSocialLinks(newLinks); 
+                        }} 
+                        placeholder={`https://${link.platform.toLowerCase()}.com/...`} 
+                        style={{ 
+                          width: '100%', 
+                          padding: '0.75rem', 
+                          border: '1px solid #e5e7eb', 
+                          borderRadius: '0.5rem', 
+                          fontSize: '0.875rem' 
+                        }} 
+                      />
+                    </div>
+
+                    {/* Thumbnail Upload Section */}
+                    <div style={{ width: '120px' }}>
+                      <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: '600', color: '#6b7280', marginBottom: '0.5rem' }}>
+                        Thumbnail
+                      </label>
+                      <div 
+                        onClick={() => {
+                          const input = document.createElement('input');
+                          input.type = 'file';
+                          input.accept = 'image/*';
+                          input.onchange = async (e) => {
+                            const file = e.target.files[0];
+                            if (file) {
+                              setUploadingLinkThumbnail(index);
+                              const formData = new FormData();
+                              formData.append('file', file);
+                              try {
+                                const response = await axios.post(`${BACKEND_URL}/api/upload/image`, formData, {
+                                  headers: { 
+                                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                                    'Content-Type': 'multipart/form-data'
+                                  }
+                                });
+                                const newLinks = [...socialLinks];
+                                newLinks[index].thumbnail = response.data.url || response.data.image_url;
+                                setSocialLinks(newLinks);
+                              } catch (err) {
+                                console.error('Failed to upload thumbnail:', err);
+                                alert('Failed to upload thumbnail');
+                              }
+                              setUploadingLinkThumbnail(null);
+                            }
+                          };
+                          input.click();
+                        }}
+                        style={{ 
+                          width: '100%', 
+                          height: '80px', 
+                          background: link.thumbnail ? `url(${link.thumbnail.startsWith('http') ? link.thumbnail : BACKEND_URL + link.thumbnail})` : '#f3f4f6', 
+                          backgroundSize: 'cover', 
+                          backgroundPosition: 'center',
+                          borderRadius: '8px', 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'center', 
+                          border: '2px dashed #d1d5db', 
+                          cursor: 'pointer',
+                          fontSize: '0.75rem',
+                          color: '#6b7280',
+                          textAlign: 'center',
+                          position: 'relative',
+                          overflow: 'hidden'
+                        }}
+                      >
+                        {uploadingLinkThumbnail === index ? (
+                          <span>Uploading...</span>
+                        ) : !link.thumbnail ? (
+                          <span>📷 Click to<br/>upload</span>
+                        ) : null}
+                      </div>
+                    </div>
+
+                    {/* Remove Button */}
+                    <button 
+                      onClick={() => {
+                        const newLinks = socialLinks.filter((_, i) => i !== index);
+                        setSocialLinks(newLinks);
+                      }}
+                      style={{ 
+                        padding: '0.5rem', 
+                        background: '#fee2e2', 
+                        border: 'none', 
+                        borderRadius: '6px', 
+                        cursor: 'pointer',
+                        color: '#dc2626',
+                        fontSize: '1rem',
+                        marginTop: '1.25rem'
+                      }}
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              <button 
+                onClick={() => setSocialLinks([...socialLinks, { platform: 'Custom', url: '', icon: '🔗', thumbnail: '' }])} 
+                style={{ 
+                  width: '100%', 
+                  padding: '0.75rem', 
+                  background: '#f3f4f6', 
+                  border: '1px dashed #d1d5db', 
+                  borderRadius: '0.5rem', 
+                  cursor: 'pointer', 
+                  fontSize: '0.875rem', 
+                  fontWeight: '500',
+                  marginBottom: '1.5rem'
+                }}
+              >
+                + Add Another Media Link
+              </button>
+
+              <button 
+                onClick={handleSaveProfile} 
+                style={{ 
+                  width: '100%', 
+                  padding: '0.75rem', 
+                  background: 'linear-gradient(135deg, #667eea, #764ba2)', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '0.5rem', 
+                  fontWeight: '600', 
+                  cursor: 'pointer', 
+                  fontSize: '1rem' 
+                }}
+              >
+                💾 Save Media Links
+              </button>
             </div>
           )}
 
