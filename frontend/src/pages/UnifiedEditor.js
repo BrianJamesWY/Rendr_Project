@@ -157,6 +157,7 @@ function UnifiedEditor() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
   const [uploadingLinkThumbnail, setUploadingLinkThumbnail] = useState(null);
+  const [savingProfile, setSavingProfile] = useState(false);
 
   const tabs = [
     { id: 'profile', label: 'Profile & Banner', emoji: '👤' },
