@@ -79,9 +79,42 @@ function UnifiedEditor() {
       
       console.log('[EDITOR] All data loaded, profileShape state is now:', profile.profile_shape);
       setLoading(false);
+      
+      // Also load premium tiers from the user's settings
+      loadPremiumTiers();
     } catch (err) {
       console.error('[EDITOR] Error loading profile:', err);
       setLoading(false);
+    }
+  };
+
+  const loadPremiumTiers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${BACKEND_URL}/api/auth/me/premium-tiers`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      const userTiers = response.data.tiers || [];
+      if (userTiers.length > 0) {
+        setTiers(userTiers);
+      }
+    } catch (err) {
+      console.error('[EDITOR] Error loading premium tiers:', err);
+    }
+  };
+
+  const savePremiumTiers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.put(`${BACKEND_URL}/api/auth/me/premium-tiers`, 
+        { tiers: tiers },
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      alert('Pricing tiers saved successfully!');
+    } catch (err) {
+      console.error('[EDITOR] Error saving premium tiers:', err);
+      alert('Failed to save pricing tiers');
     }
   };
 
