@@ -130,7 +130,7 @@ function MyVideos() {
           <Logo size="medium" />
         </Link>
         <h1 style={{ fontSize: '18px', fontWeight: '600', marginLeft: '24px' }}>My Videos</h1>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
           <Link to="/upload" style={{ padding: '8px 16px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', borderRadius: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: '500' }}>Upload Video</Link>
           <Link to="/dashboard" style={{ padding: '8px 16px', background: 'white', color: '#667eea', border: '1px solid #667eea', borderRadius: '8px', textDecoration: 'none', fontSize: '14px', fontWeight: '500' }}>Back to Dashboard</Link>
         </div>
