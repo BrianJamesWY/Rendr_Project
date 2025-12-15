@@ -958,6 +958,10 @@ async def update_video(
         update_fields['social_folders'] = video_data.social_folders
     if video_data.social_links is not None:
         update_fields['social_links'] = video_data.social_links
+    if video_data.access_level is not None:
+        update_fields['access_level'] = video_data.access_level
+    if video_data.thumbnail_url is not None:
+        update_fields['thumbnail_url'] = video_data.thumbnail_url
     
     if update_fields:
         # Use whichever ID field exists in the video
