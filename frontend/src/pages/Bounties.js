@@ -10,6 +10,7 @@ function Bounties() {
   const [myBounties, setMyBounties] = useState([]);
   const [activeTab, setActiveTab] = useState('all'); // 'all' or 'mine'
   const [loading, setLoading] = useState(true);
+  const [isSignedUp, setIsSignedUp] = useState(false); // Track if user has signed up for bounties
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
 
@@ -17,6 +18,7 @@ function Bounties() {
     loadBounties();
     if (token) {
       loadMyBounties();
+      checkBountySignup();
     }
   }, []);
 
@@ -42,12 +44,38 @@ function Bounties() {
     }
   };
 
+  const checkBountySignup = async () => {
+    try {
+      // Check if user has signed up for bounties (you can customize this check)
+      const response = await axios.get(`${BACKEND_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // For now, assume signed up if they have any bounties
+      setIsSignedUp(myBounties.length > 0 || response.data?.bounty_signup);
+    } catch (err) {
+      console.error('Failed to check bounty signup:', err);
+    }
+  };
+
   const handleClaimBounty = (bountyId) => {
     if (!token) {
       navigate('/creator-login');
       return;
     }
     navigate(`/bounties/${bountyId}/claim`);
+  };
+
+  const handleSignupOrPost = () => {
+    if (!token) {
+      navigate('/creator-login');
+      return;
+    }
+    if (isSignedUp) {
+      navigate('/bounties/post');
+    } else {
+      // Navigate to signup flow (to be built)
+      navigate('/bounties/signup');
+    }
   };
 
   return (
@@ -58,30 +86,43 @@ function Bounties() {
         {/* Header */}
         <div style={{ marginBottom: '2rem' }}>
           <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>
-            🎯 Content Theft Bounties
+            🎯 Protect Your Content with Bounties
           </h1>
-          <p style={{ fontSize: '1.125rem', color: '#6b7280' }}>
-            Help creators find their stolen content and earn rewards
-          </p>
+          <div style={{ fontSize: '1rem', color: '#6b7280', marginTop: '1rem' }}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ color: '#10b981', fontWeight: 'bold' }}>✓</span>
+                <span>Only pay when theft is confirmed</span>
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ color: '#10b981', fontWeight: 'bold' }}>✓</span>
+                <span>Fast average discovery time</span>
+              </li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                <span style={{ color: '#10b981', fontWeight: 'bold' }}>✓</span>
+                <span>Evidence packaged for DMCA and legal follow‑up</span>
+              </li>
+            </ul>
+          </div>
         </div>
 
         {/* Actions */}
         <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
-          {token && (
-            <Link
-              to="/bounties/post"
-              style={{
-                padding: '0.75rem 1.5rem',
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                color: 'white',
-                borderRadius: '0.5rem',
-                textDecoration: 'none',
-                fontWeight: '600'
-              }}
-            >
-              + Post Bounty
-            </Link>
-          )}
+          <button
+            onClick={handleSignupOrPost}
+            style={{
+              padding: '0.75rem 1.5rem',
+              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              color: 'white',
+              borderRadius: '0.5rem',
+              border: 'none',
+              cursor: 'pointer',
+              fontWeight: '600',
+              fontSize: '1rem'
+            }}
+          >
+            {isSignedUp ? '+ Post Bounty' : 'Sign up for Bounties'}
+          </button>
         </div>
 
         {/* Tabs */}
