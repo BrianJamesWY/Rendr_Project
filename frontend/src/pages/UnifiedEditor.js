@@ -614,7 +614,7 @@ function UnifiedEditor() {
                               const formData = new FormData();
                               formData.append('file', file);
                               try {
-                                const response = await axios.post(`${BACKEND_URL}/api/upload/image`, formData, {
+                                const response = await axios.post(`${BACKEND_URL}/api/videos/upload/image`, formData, {
                                   headers: { 
                                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                                     'Content-Type': 'multipart/form-data'
