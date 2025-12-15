@@ -165,10 +165,10 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Premium Video Filter Bug Fix"
-    - "Video Delete Endpoint"
-    - "Folder List Endpoint"
-    - "Video Update Endpoint"
+    - "Video Update with Access Level"
+    - "Public Showcase Videos Filter"
+    - "Premium Videos Endpoint"
+    - "Folder Creation Endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
