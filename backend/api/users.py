@@ -64,10 +64,17 @@ async def get_creator_videos(
     
     # Build query filter - use user_id field from videos
     # Only show videos that are: on showcase AND verified (either "verified" or "fully_verified")
+    # IMPORTANT: Exclude premium tier videos (pro/enterprise) - they should only appear in Premium Videos tab
     query = {
         "user_id": user_id,
         "on_showcase": True,
-        "verification_status": {"$in": ["verified", "fully_verified"]}
+        "verification_status": {"$in": ["verified", "fully_verified"]},
+        # Exclude premium tier videos from the free Videos tab
+        "$or": [
+            {"storage.tier": {"$exists": False}},  # Legacy videos without tier
+            {"storage.tier": "free"},              # Free tier videos only
+            {"storage": {"$exists": False}}        # Videos without storage field
+        ]
     }
     
     # If platform filter is specified, only show videos in that social folder
