@@ -51,27 +51,33 @@ backend:
 frontend:
   - task: "Dashboard Bounties Banner"
     implemented: true
-    working: "NA"
-    file: "frontend/src/components/Dashboard.js"
+    working: true
+    file: "frontend/src/pages/Dashboard.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Frontend testing not performed by testing agent - system limitations."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED: Dashboard bounties banner correctly shows 'Powered by Bounty.io, our infringement-hunting marketplace' and does NOT show '892 hunters are ready...' (correctly removed). Purple gradient banner displays properly with correct messaging."
 
   - task: "Bounties Page Updates"
     implemented: true
-    working: "NA"
+    working: true
     file: "frontend/src/pages/Bounties.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Frontend testing not performed by testing agent - system limitations."
+      - working: true
+        agent: "testing"
+        comment: "✅ PASSED: Bounties page shows correct header 'Protect Your Content with Bounties', all required bullet points ('Only pay when theft is confirmed', 'Fast average discovery time', 'Evidence packaged for DMCA and legal follow‑up'), and button correctly says 'Sign up for Bounties' (not 'Post Bounty')."
 
   - task: "Edit Video Modal Updates"
     implemented: true
@@ -84,6 +90,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Frontend testing not performed by testing agent - system limitations."
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ UNABLE TO TEST: Could not access Recent Videos section on dashboard to test Edit Video Modal. Login successful but Recent Videos section not found. Modal components (DELETE button, Folder Location dropdown, Show on Showcase checkbox) need verification."
 
   - task: "My Videos Page Modal Integration"
     implemented: true
@@ -96,6 +105,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Frontend testing not performed by testing agent - system limitations."
+      - working: "NA"
+        agent: "testing"
+        comment: "⚠️ UNABLE TO TEST: Could not access My Videos page (/my-videos) - authentication or routing issue. Need to verify unified EditVideoModal integration and that it shows same components as Dashboard modal."
 
 metadata:
   created_by: "testing_agent"
