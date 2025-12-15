@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import DirectoryTree from './DirectoryTree';
+import Logo from './Logo';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -19,6 +19,11 @@ function EditVideoModal({ video, onClose, onSave }) {
   const [selectedFolderId, setSelectedFolderId] = useState('');
   const [deleting, setDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [accessLevel, setAccessLevel] = useState('public');
+  const [premiumTiers, setPremiumTiers] = useState([]);
+  const [showNewFolderInput, setShowNewFolderInput] = useState(false);
+  const [newFolderName, setNewFolderName] = useState('');
+  const [creatingFolder, setCreatingFolder] = useState(false);
   const thumbnailInputRef = useRef(null);
   const token = localStorage.getItem('token');
 
@@ -30,8 +35,10 @@ function EditVideoModal({ video, onClose, onSave }) {
       setSocialLinks(video.social_links || [{ platform: '', url: '' }]);
       setShowOnShowcase(video.on_showcase || false);
       setSelectedFolderId(video.folder_id || '');
+      setAccessLevel(video.access_level || 'public');
     }
     loadFolders();
+    loadPremiumTiers();
   }, [video]);
 
   const loadFolders = async () => {
@@ -42,6 +49,61 @@ function EditVideoModal({ video, onClose, onSave }) {
       setFolders(Array.isArray(response.data) ? response.data : response.data.folders || []);
     } catch (error) {
       console.error('Failed to load folders:', error);
+    }
+  };
+
+  const loadPremiumTiers = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/auth/me`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      // Load user's custom premium tiers if they exist
+      if (response.data.premium_tiers && response.data.premium_tiers.length > 0) {
+        setPremiumTiers(response.data.premium_tiers);
+      } else {
+        // Default tiers if none set
+        setPremiumTiers([
+          { name: 'Basic Tier', price: '4.99' },
+          { name: 'Standard Tier', price: '9.99' },
+          { name: 'Premium Tier', price: '19.99' }
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to load premium tiers:', error);
+      // Use defaults on error
+      setPremiumTiers([
+        { name: 'Basic Tier', price: '4.99' },
+        { name: 'Standard Tier', price: '9.99' },
+        { name: 'Premium Tier', price: '19.99' }
+      ]);
+    }
+  };
+
+  const handleCreateFolder = async () => {
+    if (!newFolderName.trim()) return;
+    
+    try {
+      setCreatingFolder(true);
+      const response = await axios.post(
+        `${BACKEND_URL}/api/folders/`,
+        { folder_name: newFolderName.trim(), description: '' },
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      
+      // Add the new folder to the list and select it
+      const newFolder = {
+        folder_id: response.data.folder_id || response.data.id,
+        folder_name: newFolderName.trim()
+      };
+      setFolders([...folders, newFolder]);
+      setSelectedFolderId(newFolder.folder_id);
+      setNewFolderName('');
+      setShowNewFolderInput(false);
+      setCreatingFolder(false);
+    } catch (error) {
+      console.error('Failed to create folder:', error);
+      alert('Failed to create folder: ' + (error.response?.data?.detail || error.message));
+      setCreatingFolder(false);
     }
   };
 
