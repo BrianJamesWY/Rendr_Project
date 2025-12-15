@@ -1,0 +1,94 @@
+{
+  "@context": "https://c2pa.org/specifications/2.2",
+  "claim_generator": "RENDR v1.0",
+  "claim_generator_info": [
+    {
+      "name": "RENDR",
+      "version": "1.0",
+      "icon": "https://rendr.com/logo.png"
+    }
+  ],
+  "title": "964519ff-9e88-442e-b6b0-3c5e4eb3a3a8.mp4",
+  "format": "video/mp4",
+  "instance_id": "xmp.iid:RND-R7MPLF",
+  "assertions": [
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "alg": "sha256",
+        "hash": "11abc01172a829e1d5779ff5a22f51b5ec4376f84ac7534fbf47df922813e745",
+        "name": "original_video",
+        "description": "Hash of pristine original video before watermarking"
+      }
+    },
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "alg": "sha256",
+        "hash": "11abc01172a829e1d5779ff5a22f51b5ec4376f84ac7534fbf47df922813e745",
+        "name": "watermarked_video",
+        "description": "Hash of watermarked video with verification code"
+      }
+    },
+    {
+      "label": "stds.schema-org.CreativeWork",
+      "data": {
+        "@type": "VideoObject",
+        "author": {
+          "@type": "Person",
+          "name": "BrianJames",
+          "identifier": "bd763e13-1f30-4c3a-9c06-8ff93fd09485"
+        },
+        "datePublished": "2025-12-15T02:43:16.565326+00:00",
+        "name": "964519ff-9e88-442e-b6b0-3c5e4eb3a3a8.mp4",
+        "description": ""
+      }
+    },
+    {
+      "label": "c2pa.actions",
+      "data": {
+        "actions": [
+          {
+            "action": "c2pa.edited",
+            "softwareAgent": "RENDR Watermark v1.0",
+            "when": "2025-12-15T02:43:16.565338+00:00",
+            "changes": [
+              {
+                "description": "Added watermark with verification code",
+                "region": "left edge vertical"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "rendr.verification",
+      "data": {
+        "verification_code": "RND-R7MPLF",
+        "verification_url": "https://rendr.com/verify/RND-R7MPLF",
+        "key_frame_hashes": [
+          "96770366c429d0aa9b19cab592a7968da66b8ebb24ad7af5cf843494338d03e6",
+          "0f55fb55c038c519b9790deb27ce9d01995d312592a16cd42af7add2cde082af",
+          "6e0a1c365855911d1ae0537a7b0c61068dbb6c9de3d39abbda9c0214780e3d44",
+          "bc7bee9710e52b4df5bd5dbd6a02ad8ad8f374ccc5267d50dfedc064cfd7e047",
+          "60ff293c75323619627e8ec3eba22c0d092dd3d186b734235c15428e576ae611",
+          "7358648e65e13e038d2962538bd6c5c71dbe7d36d2f520c1fcff74f02ea62718",
+          "6a6cdfec51a518ccb642ee7d6d7468b8db0bb701a1fcb85cd40db5ba504b23a8",
+          "5c1948f2d6e15ed3e8d011bee01228e28d915f308bf1594c52d0946f47475b2d",
+          "acfab3ddf5e4418d817b9e59bc90b8786b44ecfbab4214b0e25be41e11fa572c",
+          "37beb5aa6a957827cd8de09d0bdd5b2da93f45832a5cf50dca2acc9ec6a32cae"
+        ],
+        "perceptual_hashes": [],
+        "audio_hash": null,
+        "metadata_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "master_hash": "b9077534914cfdc2ac5c4865a78ef8de0a7fa0727c29932cd529052701ba86d6"
+      }
+    }
+  ],
+  "hard_binding": {
+    "alg": "sha256",
+    "hash": "11abc01172a829e1d5779ff5a22f51b5ec4376f84ac7534fbf47df922813e745",
+    "exclusions": []
+  }
+}

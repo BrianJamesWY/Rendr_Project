@@ -1,0 +1,85 @@
+{
+  "@context": "https://c2pa.org/specifications/2.2",
+  "claim_generator": "RENDR v1.0",
+  "claim_generator_info": [
+    {
+      "name": "RENDR",
+      "version": "1.0",
+      "icon": "https://rendr.com/logo.png"
+    }
+  ],
+  "title": "video_2025-03-07_14-58-27.jpg",
+  "format": "video/mp4",
+  "instance_id": "xmp.iid:RND-RRR7QZ",
+  "assertions": [
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "alg": "sha256",
+        "hash": "7ba77cb81b13ad6938fdaf8525f39386300ba5c5ff07b21c187d979edad97287",
+        "name": "original_video",
+        "description": "Hash of pristine original video before watermarking"
+      }
+    },
+    {
+      "label": "c2pa.hash.data",
+      "data": {
+        "alg": "sha256",
+        "hash": "7ba77cb81b13ad6938fdaf8525f39386300ba5c5ff07b21c187d979edad97287",
+        "name": "watermarked_video",
+        "description": "Hash of watermarked video with verification code"
+      }
+    },
+    {
+      "label": "stds.schema-org.CreativeWork",
+      "data": {
+        "@type": "VideoObject",
+        "author": {
+          "@type": "Person",
+          "name": "BrianJames",
+          "identifier": "bd763e13-1f30-4c3a-9c06-8ff93fd09485"
+        },
+        "datePublished": "2025-12-15T03:22:06.425411+00:00",
+        "name": "video_2025-03-07_14-58-27.jpg",
+        "description": ""
+      }
+    },
+    {
+      "label": "c2pa.actions",
+      "data": {
+        "actions": [
+          {
+            "action": "c2pa.edited",
+            "softwareAgent": "RENDR Watermark v1.0",
+            "when": "2025-12-15T03:22:06.425415+00:00",
+            "changes": [
+              {
+                "description": "Added watermark with verification code",
+                "region": "left edge vertical"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "label": "rendr.verification",
+      "data": {
+        "verification_code": "RND-RRR7QZ",
+        "verification_url": "https://rendr.com/verify/RND-RRR7QZ",
+        "key_frame_hashes": [
+          "5fa0cf1ea142ffee71021d23364415e7d0e59e897ae0f9fbae8de83d136eaad8"
+        ],
+        "perceptual_hashes": [],
+        "audio_hash": null,
+        "metadata_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+        "master_hash": "de374ae30dd3a8d75e105210542d867492eeed7dfd50a20965c9b0b8cb124138"
+      }
+    }
+  ],
+  "hard_binding": {
+    "alg": "sha256",
+    "hash": "7ba77cb81b13ad6938fdaf8525f39386300ba5c5ff07b21c187d979edad97287",
+    "exclusions": []
+  }
+}
