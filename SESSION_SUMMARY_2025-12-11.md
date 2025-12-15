@@ -400,3 +400,37 @@ Based on previous session issues:
 1. Video ONLY shows on Showcase if `on_showcase: true`
 2. If `access_level: "public"` → Videos tab (free)
 3. If `access_level: "Silver Level"` (or any tier name) → Premium Videos tab under "Silver Level" section
+
+---
+
+## ✅ ADDITIONAL CHANGES - December 15, 2025 (Session 3)
+
+### Premium Tiers Persistence & Dynamic Loading:
+
+#### 1. ✅ New API Endpoints (`/app/backend/api/auth.py`)
+- `PUT /api/auth/me/premium-tiers` - Save user's premium content pricing tiers
+- `GET /api/auth/me/premium-tiers` - Fetch user's saved premium tiers
+- Added `premium_tiers` field to `/api/auth/me` response
+
+#### 2. ✅ Editor Page Updates (`/app/frontend/src/pages/UnifiedEditor.js`)
+- Premium tiers are now loaded from the database on page load
+- "Save Pricing" button now actually saves to the database via API
+- Added `loadPremiumTiers()` and `savePremiumTiers()` functions
+
+#### 3. ✅ Edit Video Modal Updates (`/app/frontend/src/components/EditVideoModal.js`)
+- Access Level dropdown now fetches tiers from `/api/auth/me/premium-tiers`
+- Previously saved `access_level` is loaded and displayed correctly when modal opens
+- Uses the user's custom tier names (e.g., "Silver Level", "Gold Level") from Premium Content Pricing
+
+### How It Works Now:
+1. User creates tiers in Editor → Premium Pricing tab (e.g., "Silver Level" at $4.99)
+2. User clicks "Save Pricing" → Tiers saved to database
+3. User opens Edit Video Modal → Access Level dropdown shows their custom tiers
+4. User selects "Silver Level" and saves → Video's access_level is set to "Silver Level"
+5. Next time user opens that video → "Silver Level" is pre-selected in dropdown
+6. Video appears on Showcase → Premium Videos tab under "Silver Level" section
+
+### Files Modified:
+- `/app/backend/api/auth.py` - Added premium-tiers endpoints
+- `/app/frontend/src/pages/UnifiedEditor.js` - Save/load premium tiers
+- `/app/frontend/src/components/EditVideoModal.js` - Dynamic tier loading
