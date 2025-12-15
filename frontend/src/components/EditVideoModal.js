@@ -100,6 +100,24 @@ function EditVideoModal({ video, onClose, onSave }) {
     alert('Verification code copied to clipboard!');
   };
 
+  const handleDeleteVideo = async () => {
+    try {
+      setDeleting(true);
+      await axios.delete(
+        `${BACKEND_URL}/api/videos/${video.video_id}`,
+        { headers: { 'Authorization': `Bearer ${token}` } }
+      );
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+      onSave(); // Refresh the parent list
+      onClose(); // Close the modal
+    } catch (error) {
+      console.error('Failed to delete video:', error);
+      alert('Failed to delete video: ' + (error.response?.data?.detail || error.message));
+      setDeleting(false);
+    }
+  };
+
   const handleSave = async () => {
     try {
       const folderId = selectedTreeItem?.type === 'folder' ? selectedTreeItem.id : video?.folder_id;
