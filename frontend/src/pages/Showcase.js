@@ -409,12 +409,7 @@ function Showcase() {
                     borderRadius: '12px', 
                     overflow: 'hidden', 
                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)', 
-                    cursor: 'pointer',
                     transition: 'transform 0.2s, box-shadow 0.2s'
-                  }}
-                  onClick={() => {
-                    setSelectedVideo(video);
-                    setShowVideoModal(true);
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.transform = 'translateY(-4px)';
@@ -460,23 +455,6 @@ function Showcase() {
                       </div>
                     )}
                     
-                    <div style={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: '60px',
-                      height: '60px',
-                      borderRadius: '50%',
-                      background: 'rgba(255, 255, 255, 0.9)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '24px'
-                    }}>
-                      ▶️
-                    </div>
-                    
                     {video.verification_code && (
                       <div style={{
                         position: 'absolute',
@@ -521,15 +499,56 @@ function Showcase() {
                       </p>
                     )}
                     
+                    {/* Action Buttons */}
                     <div style={{
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      fontSize: '12px',
-                      color: '#9ca3af'
+                      gap: '8px',
+                      marginTop: '12px'
                     }}>
-                      <span>{video.storage?.tier || 'free'}</span>
-                      <span>{new Date(video.uploaded_at).toLocaleDateString()}</span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideo(video);
+                          setShowVideoModal(true);
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '8px 12px',
+                          background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '4px'
+                        }}
+                      >
+                        ▶ Play
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedVideo(video);
+                          setShowVideoModal(true);
+                        }}
+                        style={{
+                          flex: 1,
+                          padding: '8px 12px',
+                          background: '#f3f4f6',
+                          color: '#374151',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '6px',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Video Details
+                      </button>
                     </div>
                   </div>
                 </div>
