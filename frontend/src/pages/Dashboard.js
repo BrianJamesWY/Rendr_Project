@@ -359,7 +359,7 @@ function Dashboard() {
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '20px', fontWeight: '700', marginBottom: '8px' }}>🎯 Protect Your Content with Bounties</div>
-              <div style={{ fontSize: '14px', opacity: 0.95, marginBottom: '12px' }}>892 hunters are ready to find stolen copies of your videos. You only pay if theft is found.</div>
+              <div style={{ fontSize: '14px', opacity: 0.95, marginBottom: '12px' }}>Powered by Bounty.io, our infringement-hunting marketplace</div>
               <div style={{ display: 'flex', gap: '24px', fontSize: '13px', opacity: 0.9 }}>
                 <span>✓ 3.2 day avg discovery</span>
                 <span>✓ 94% success rate</span>
@@ -367,7 +367,7 @@ function Dashboard() {
               </div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <Link to="/bounties/post" style={{ display: 'inline-block', padding: '12px 24px', background: 'white', color: '#667eea', fontWeight: '600', fontSize: '15px', borderRadius: '6px', textDecoration: 'none', whiteSpace: 'nowrap' }}>Post Bounty</Link>
+              <Link to="/bounties" style={{ display: 'inline-block', padding: '12px 24px', background: 'white', color: '#667eea', fontWeight: '600', fontSize: '15px', borderRadius: '6px', textDecoration: 'none', whiteSpace: 'nowrap' }}>Sign up for Bounties</Link>
               <div style={{ marginTop: '8px', fontSize: '12px', opacity: 0.9 }}>Starting at $25</div>
             </div>
           </div>
