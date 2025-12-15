@@ -120,14 +120,15 @@ function EditVideoModal({ video, onClose, onSave }) {
 
   const handleSave = async () => {
     try {
-      const folderId = selectedTreeItem?.type === 'folder' ? selectedTreeItem.id : video?.folder_id;
+      // Use folder from dropdown, or from tree selection as fallback
+      const folderId = selectedFolderId || (selectedTreeItem?.type === 'folder' ? selectedTreeItem.id : video?.folder_id);
       
       const updateData = {
         title,
         description,
         thumbnail_url: thumbnailUrl,
         social_links: socialLinks.filter(l => l.url),
-        folder_id: folderId,
+        folder_id: folderId || null,
         on_showcase: showOnShowcase,
         showcase_folder_id: showOnShowcase ? folderId : null
       };
