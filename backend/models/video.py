@@ -64,6 +64,9 @@ class VideoInfo(BaseModel):
     social_links: Optional[List[Dict]] = []
     on_showcase: Optional[bool] = False
     title: Optional[str] = None
+    # Access level for premium tiers
+    access_level: Optional[str] = "public"
+    uploaded_at: Optional[str] = None
 
 class VideoUpdate(BaseModel):
     """For updating video metadata"""
