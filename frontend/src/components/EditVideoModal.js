@@ -192,7 +192,8 @@ function EditVideoModal({ video, onClose, onSave }) {
         social_links: socialLinks.filter(l => l.url),
         folder_id: folderId || null,
         on_showcase: showOnShowcase,
-        showcase_folder_id: showOnShowcase ? folderId : null
+        showcase_folder_id: showOnShowcase ? folderId : null,
+        access_level: accessLevel
       };
       
       await axios.put(
