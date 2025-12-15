@@ -242,6 +242,81 @@ Based on previous session issues:
 
 ---
 
+## ✅ COMPLETED CHANGES - December 15, 2025
+
+### Backend Fixes:
+1. **✅ Premium Video Filter Bug (CRITICAL)** - `/app/backend/api/users.py`
+   - Fixed the query in `get_creator_videos` function
+   - Now excludes videos with `storage.tier` = "pro" or "enterprise" from the public Videos tab
+   - Premium videos only appear on the Premium Videos tab as intended
+
+### Frontend Fixes:
+
+2. **✅ Edit Video Modal Enhancements** - `/app/frontend/src/components/EditVideoModal.js`
+   - Added DELETE button (🗑️ Delete Video) on the left side of the footer
+   - Implemented delete confirmation modal
+   - Replaced DirectoryTree with a dropdown folder selector
+   - Now loads and displays all user folders for selection
+   - Folder selection properly updates when saving
+
+3. **✅ Dashboard Bounties Banner** - `/app/frontend/src/pages/Dashboard.js`
+   - Changed text from "892 hunters are ready..." to "Powered by Bounty.io, our infringement-hunting marketplace"
+   - Button now links to /bounties and says "Sign up for Bounties"
+
+4. **✅ Dashboard Thumbnail Display** - `/app/frontend/src/pages/Dashboard.js`
+   - Fixed thumbnail URL handling to check if already absolute URL
+   - Added error handling for broken thumbnails
+
+5. **✅ Bounties Page** - `/app/frontend/src/pages/Bounties.js`
+   - Changed header from "Content Theft Bounties" to "Protect Your Content with Bounties"
+   - Changed description to bullet points:
+     - "Only pay when theft is confirmed"
+     - "Fast average discovery time"
+     - "Evidence packaged for DMCA and legal follow‑up"
+   - Button now says "Sign up for Bounties" (reverts to "Post Bounty" after signup)
+
+6. **✅ Premium Videos Tab** - `/app/frontend/src/pages/Showcase.js`
+   - Removed "Enterprise" tier label
+   - Removed "invalid date" display
+   - Added "Play" button for each video
+   - Added "Video Details" button that opens VideoDetailsModal
+
+7. **✅ My Videos Page** - `/app/frontend/src/pages/MyVideos.js`
+   - Now imports and uses the shared EditVideoModal from `/app/frontend/src/components/EditVideoModal.js`
+   - Removed the old inline modal component
+   - Fixed syntax error (double `>` on line 133)
+
+8. **✅ Code Cleanup** - `/app/frontend/src/pages/Dashboard.js`
+   - Removed the old `OldEditVideoModalRemoved` function (was causing lint errors)
+
+### Files Modified:
+- `/app/backend/api/users.py` - Premium video filter fix
+- `/app/frontend/src/components/EditVideoModal.js` - Delete button + folder dropdown
+- `/app/frontend/src/pages/Dashboard.js` - Bounties banner + code cleanup
+- `/app/frontend/src/pages/Showcase.js` - Premium Videos tab updates
+- `/app/frontend/src/pages/Bounties.js` - Header/text/button updates
+- `/app/frontend/src/pages/MyVideos.js` - Use shared EditVideoModal
+
+---
+
+## TODO List (Added Tasks)
+
+### High Priority:
+- [ ] Build Bounty signup pages (triggered from "Sign up for Bounties" button)
+- [ ] After signup, button should revert to "Post Bounty"
+
+### Medium Priority:
+- [ ] Implement C2PA Certificate Signing & Embedding
+- [ ] Build "RendrBodyCam" feature
+
+### Low Priority:
+- [ ] Full "Rendr Bounty" integration (post-signup)
+- [ ] Social features: Notifications, Following, Messaging
+- [ ] Sliding Window QR Code Watermarking
+- [ ] Blockchain Integration (BLOCKED - awaiting Polygon wallet key)
+
+---
+
 ## Key Files Reference
 
 ### Backend Services
