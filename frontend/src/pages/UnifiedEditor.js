@@ -156,9 +156,11 @@ function UnifiedEditor() {
   // Delete confirmation modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteInProgress, setDeleteInProgress] = useState(false);
+  const [uploadingLinkThumbnail, setUploadingLinkThumbnail] = useState(null);
 
   const tabs = [
     { id: 'profile', label: 'Profile & Banner', emoji: '👤' },
+    { id: 'media', label: 'Media Links', emoji: '🔗' },
     { id: 'design', label: 'Page Design', emoji: '🎨' },
     { id: 'folders', label: 'Folders & Content', emoji: '📁' },
     { id: 'premium', label: 'Premium Pricing', emoji: '💎' },
