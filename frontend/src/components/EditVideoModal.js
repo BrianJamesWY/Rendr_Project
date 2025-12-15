@@ -569,14 +569,115 @@ function EditVideoModal({ video, onClose, onSave }) {
             </div>
           )}
 
-          {/* Folder Location - Dropdown Selector */}
+          {/* Folder Location - Dropdown Selector with Create New Option */}
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
               Folder Location
             </label>
+            {!showNewFolderInput ? (
+              <>
+                <select
+                  value={selectedFolderId}
+                  onChange={(e) => {
+                    if (e.target.value === '__create_new__') {
+                      setShowNewFolderInput(true);
+                    } else {
+                      setSelectedFolderId(e.target.value);
+                    }
+                  }}
+                  style={{
+                    width: '100%',
+                    padding: '10px 12px',
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box',
+                    background: 'white',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="">No Folder (Unsorted)</option>
+                  {folders.map(folder => (
+                    <option key={folder.folder_id} value={folder.folder_id}>
+                      📁 {folder.folder_name}
+                    </option>
+                  ))}
+                  <option value="__create_new__" style={{ color: '#667eea', fontWeight: '600' }}>
+                    ➕ Create New Folder...
+                  </option>
+                </select>
+                <div style={{ 
+                  marginTop: '8px', 
+                  fontSize: '12px', 
+                  color: '#6b7280',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <span>💡</span>
+                  <span>Select a folder to organize your video</span>
+                </div>
+              </>
+            ) : (
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <input
+                  type="text"
+                  value={newFolderName}
+                  onChange={(e) => setNewFolderName(e.target.value)}
+                  placeholder="Enter folder name"
+                  autoFocus
+                  style={{
+                    flex: 1,
+                    padding: '10px 12px',
+                    border: '1px solid #667eea',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    boxSizing: 'border-box'
+                  }}
+                  onKeyPress={(e) => e.key === 'Enter' && handleCreateFolder()}
+                />
+                <button
+                  onClick={handleCreateFolder}
+                  disabled={creatingFolder || !newFolderName.trim()}
+                  style={{
+                    padding: '10px 16px',
+                    background: creatingFolder ? '#9ca3af' : '#667eea',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: creatingFolder ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                >
+                  {creatingFolder ? '...' : 'Create'}
+                </button>
+                <button
+                  onClick={() => { setShowNewFolderInput(false); setNewFolderName(''); }}
+                  style={{
+                    padding: '10px 16px',
+                    background: '#f3f4f6',
+                    color: '#374151',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Access Level Dropdown */}
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
+              Access Level
+            </label>
             <select
-              value={selectedFolderId}
-              onChange={(e) => setSelectedFolderId(e.target.value)}
+              value={accessLevel}
+              onChange={(e) => setAccessLevel(e.target.value)}
               style={{
                 width: '100%',
                 padding: '10px 12px',
@@ -588,23 +689,22 @@ function EditVideoModal({ video, onClose, onSave }) {
                 cursor: 'pointer'
               }}
             >
-              <option value="">No Folder (Unsorted)</option>
-              {folders.map(folder => (
-                <option key={folder.folder_id} value={folder.folder_id}>
-                  📁 {folder.folder_name}
+              <option value="public">🌍 Public (Free)</option>
+              {premiumTiers.map((tier, idx) => (
+                <option key={idx} value={tier.name}>
+                  💎 {tier.name} (${tier.price})
                 </option>
               ))}
             </select>
             <div style={{ 
               marginTop: '8px', 
               fontSize: '12px', 
-              color: '#6b7280',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
+              color: '#6b7280'
             }}>
-              <span>💡</span>
-              <span>Select a folder to organize your video</span>
+              {accessLevel === 'public' 
+                ? '🌍 This video will be visible to everyone on the Videos tab'
+                : `💎 This video will appear in the "${accessLevel}" section of Premium Videos`
+              }
             </div>
           </div>
 
