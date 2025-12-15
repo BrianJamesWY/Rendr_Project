@@ -194,7 +194,7 @@ JWT_SECRET="rendr-secret-key-change-in-production"
 
 ### Frontend (.env)
 ```
-REACT_APP_BACKEND_URL=https://verifyvideos.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://rendr-platform.preview.emergentagent.com
 ```
 
 ### Supervisor Config

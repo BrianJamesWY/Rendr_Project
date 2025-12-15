@@ -1,6 +1,6 @@
 // Configuration file for Rendr Bodycam
 
-export const API_BASE_URL = 'https://verifyvideos.preview.emergentagent.com/api';
+export const API_BASE_URL = 'https://rendr-platform.preview.emergentagent.com/api';
 
 // Change this to your production API when deploying
 // export const API_BASE_URL = 'https://api.rendrtruth.com/api';

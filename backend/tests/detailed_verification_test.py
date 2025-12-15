@@ -6,7 +6,7 @@ Detailed verification tests for specific review requirements
 import requests
 import json
 
-BASE_URL = "https://verifyvideos.preview.emergentagent.com/api"
+BASE_URL = "https://rendr-platform.preview.emergentagent.com/api"
 CREDENTIALS = {"username": "BrianJames", "password": "Brian123!"}
 
 def get_auth_token():

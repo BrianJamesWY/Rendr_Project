@@ -127,7 +127,7 @@ User requested a massive UI and functionality overhaul for RENDR, a creator mone
 - STRIPE_WEBHOOK_SECRET (whsec_BDwKRn8AqY5bpVI1sLmxJCrXNNPm1N1m)
 
 **Frontend (.env):**
-- REACT_APP_BACKEND_URL (https://verifyvideos.preview.emergentagent.com)
+- REACT_APP_BACKEND_URL (https://rendr-platform.preview.emergentagent.com)
 - REACT_APP_STRIPE_PUBLISHABLE_KEY
 
 **NEVER hardcode these - always use environment variables!**
@@ -144,7 +144,7 @@ User requested a massive UI and functionality overhaul for RENDR, a creator mone
 - **User has:** 22 videos, 16 folders
 
 ### **CEO Admin Access**
-- **URL:** https://verifyvideos.preview.emergentagent.com/ceo-access-b7k9m2x
+- **URL:** https://rendr-platform.preview.emergentagent.com/ceo-access-b7k9m2x
 - **Login:** Use BrianJames credentials
 - **Security:** Backend verifies user ID is in authorized CEO list
 - **Credentials file:** `/app/CEO_ADMIN_CREDENTIALS.md`

@@ -16,7 +16,7 @@
 ### Environment Variables
 **Frontend** (`/app/frontend/.env`):
 ```
-REACT_APP_BACKEND_URL=https://verifyvideos.preview.emergentagent.com
+REACT_APP_BACKEND_URL=https://rendr-platform.preview.emergentagent.com
 ```
 
 **Backend** (`/app/backend/.env`):
@@ -281,7 +281,7 @@ EMERGENT_UNIVERSAL_KEY=[key]
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 // NOT this:
-const BACKEND_URL = 'https://verifyvideos.preview.emergentagent.com';
+const BACKEND_URL = 'https://rendr-platform.preview.emergentagent.com';
 ```
 
 ### Component Props
@@ -376,7 +376,7 @@ video = await db.videos.find_one({"id": video_id})
 **Never hardcode:**
 ```python
 # WRONG
-BACKEND_URL = "https://verifyvideos.preview.emergentagent.com"
+BACKEND_URL = "https://rendr-platform.preview.emergentagent.com"
 
 # CORRECT
 BACKEND_URL = os.environ.get('REACT_APP_BACKEND_URL')
