@@ -506,17 +506,43 @@ function EditVideoModal({ video, onClose, onSave }) {
             </div>
           )}
 
-          {/* Directory Tree */}
+          {/* Folder Location - Dropdown Selector */}
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', fontSize: '14px' }}>
               Folder Location
             </label>
-            <DirectoryTree
-              username={localStorage.getItem('rendr_username')}
-              selectedItemId={selectedTreeItem?.id || video?.folder_id}
-              onItemSelect={setSelectedTreeItem}
-              containerHeight="300px"
-            />
+            <select
+              value={selectedFolderId}
+              onChange={(e) => setSelectedFolderId(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                border: '1px solid #ddd',
+                borderRadius: '6px',
+                fontSize: '14px',
+                boxSizing: 'border-box',
+                background: 'white',
+                cursor: 'pointer'
+              }}
+            >
+              <option value="">No Folder (Unsorted)</option>
+              {folders.map(folder => (
+                <option key={folder.folder_id} value={folder.folder_id}>
+                  📁 {folder.folder_name}
+                </option>
+              ))}
+            </select>
+            <div style={{ 
+              marginTop: '8px', 
+              fontSize: '12px', 
+              color: '#6b7280',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              <span>💡</span>
+              <span>Select a folder to organize your video</span>
+            </div>
           </div>
 
           {/* Show on Showcase Checkbox */}
