@@ -157,6 +157,91 @@ Upload → Watermark → Return Video (FAST) → User can download immediately
 
 ---
 
+## Session Updates - December 14, 2025 (Continued)
+
+### 🔧 PENDING CHANGES REQUESTED BY USER (Current Session)
+
+The user has requested a comprehensive set of UI/UX improvements across multiple pages. These changes MUST be documented and implemented carefully to avoid regressions.
+
+#### 1. ✏️ Edit Video Modal Enhancements (`/app/frontend/src/components/EditVideoModal.js`)
+- [ ] **Add Delete Button**: Add a "Delete Video" button that deletes the video that was clicked to open the modal
+- [ ] **Folder Selection**: Convert the Folder Location from display-only to a working folder selector where users can choose where to save the video
+  - Current: Uses `DirectoryTree` component for display
+  - Required: Add dropdown or selection mechanism to move video to different folders
+
+#### 2. 📊 Dashboard Fixes (`/app/frontend/src/pages/Dashboard.js`)
+- [ ] **Thumbnail Display Bug**: Thumbnails chosen in editor are not appearing on Dashboard (but show on Showcase)
+  - Debug: Check if `thumbnail_url` is being properly fetched and rendered in Recent Videos section
+- [ ] **Bounties Banner Text Update**:
+  - Remove: "892 hunters are ready..."
+  - Replace with: "Powered by Bounty.io, our infringement-hunting marketplace"
+
+#### 3. 🎬 Showcase Page Fixes (`/app/frontend/src/pages/Showcase.js`)
+- [ ] **Videos Tab - VideoDetailsModal**: When clicking a video on Videos tab, open a modal with:
+  - Large thumbnail view
+  - Description section
+  - Posted Location section (from Social Media Links in Edit Video modal)
+  - "Play" button to play the video
+  - Note: `VisitorVideoModal` component exists and may need enhancement
+- [ ] **Premium Videos Tab Fixes**:
+  - Remove "Enterprise" tier label from display
+  - Remove "invalid date" text issue
+  - Add "Play" button for each video
+  - Add "Video Details" button that opens VideoDetailsModal
+- [ ] **Premium Video Filter Bug (CRITICAL)**: 
+  - Premium tier videos are incorrectly appearing on the public "Videos" tab
+  - Fix: Backend query in `/app/backend/api/users.py` - `get_creator_videos` function
+  - Need to filter out videos that have `storage.tier` set to "pro" or "enterprise"
+
+#### 4. 📁 My Videos Page Improvements (`/app/frontend/src/pages/MyVideos.js`)
+- [ ] **Use Current EditVideoModal**: Replace the inline `EditVideoModal` component with the shared one from `/app/frontend/src/components/EditVideoModal.js`
+- [ ] **Enhanced Organization System**:
+  - Make it intuitive for content creators to organize their showcase
+  - Rich customization possibilities
+  - Easy catalog and organize functionality
+
+#### 5. 🎯 Bounties Page Updates (`/app/frontend/src/pages/Bounties.js`)
+- [ ] **Update Header Text**:
+  - Change: "Content Theft Bounties" → "Protect Your Content with Bounties"
+  - Change: "Help creators find stolen content and earn rewards" → Bullet points:
+    - "Only pay when theft is confirmed"
+    - "Fast average discovery time"
+    - "Evidence packaged for DMCA and legal follow‑up"
+- [ ] **Button Text Change**:
+  - Change: "Post Bounty" → "Sign up for Bounties"
+  - After signup: Button reverts to "Post Bounty"
+- [ ] **Future Task**: Build Bounty signup pages (added to TODO list)
+
+### 📌 IMPORTANT NAMING CONVENTIONS TO FOLLOW
+
+Based on existing codebase analysis:
+
+**File Naming**:
+- Components: PascalCase (e.g., `EditVideoModal.js`, `DirectoryTree.js`)
+- Pages: PascalCase (e.g., `Dashboard.js`, `Showcase.js`)
+- Backend API: snake_case (e.g., `users.py`, `videos.py`)
+
+**Variable/Function Naming**:
+- React State: camelCase (e.g., `showEditVideoModal`, `selectedVideo`)
+- API Endpoints: kebab-case with `/api/` prefix (e.g., `/api/videos/user/list`)
+- Database Fields: snake_case (e.g., `on_showcase`, `folder_id`, `verification_code`)
+
+**Component Patterns**:
+- Modal Components: Accept `video`, `onClose`, `onSave` props
+- All modals use `BACKEND_URL` from environment
+- Token retrieved from `localStorage.getItem('token')`
+
+### ⚠️ REGRESSIONS TO AVOID
+
+Based on previous session issues:
+1. **Never hardcode URLs** - Always use `process.env.REACT_APP_BACKEND_URL`
+2. **Never break duplicate detection** - Test upload page after changes
+3. **Never remove the "Choose File" button** on upload page
+4. **Always filter out `_id` from MongoDB responses** to avoid ObjectId serialization issues
+5. **Use trailing slash for API calls** - e.g., `/api/folders/` not `/api/folders`
+
+---
+
 ## Key Files Reference
 
 ### Backend Services
