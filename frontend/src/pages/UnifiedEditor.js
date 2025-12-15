@@ -233,6 +233,7 @@ function UnifiedEditor() {
 
   const handleSaveProfile = async () => {
     try {
+      setSavingProfile(true);
       const token = localStorage.getItem('token');
       
       const response = await axios.put(`${BACKEND_URL}/api/users/profile`, {
@@ -248,9 +249,11 @@ function UnifiedEditor() {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      setSavingProfile(false);
       alert('Profile saved successfully! Check your showcase page.');
     } catch (err) {
       console.error('Error saving profile:', err);
+      setSavingProfile(false);
       alert(`Error: ${err.response?.data?.detail || 'Failed to save profile'}`);
     }
   };
