@@ -263,7 +263,8 @@ class RendrPlatformTester:
             test_video = None
             for video in videos:
                 # Look for a test video or use the last one
-                if "test" in video.get("title", "").lower() or video == videos[-1]:
+                title = video.get("title") or ""
+                if "test" in title.lower() or video == videos[-1]:
                     test_video = video
                     break
             
