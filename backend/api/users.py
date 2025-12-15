@@ -97,7 +97,8 @@ async def get_creator_videos(
         if video.get("folder_id"):
             folder_name = folder_map.get(video["folder_id"], "Unknown")
         
-        thumbnail_url = f"/api/thumbnails/{video['_id']}.jpg" if video.get("thumbnail_path") else None
+        # Use the stored thumbnail_url if available, otherwise generate from path
+        thumbnail_url = video.get("thumbnail_url") or (f"/api/thumbnails/{video['_id']}.jpg" if video.get("thumbnail_path") else None)
         
         result.append(VideoInfo(
             video_id=video.get("_id") or video.get("id"),
@@ -114,7 +115,8 @@ async def get_creator_videos(
             social_folders=video.get("social_folders", []),
             social_links=video.get("social_links", []),
             on_showcase=video.get("on_showcase", False),
-            title=video.get("title")
+            title=video.get("title"),
+            access_level=video.get("access_level", "public")
         ))
     
     return result
