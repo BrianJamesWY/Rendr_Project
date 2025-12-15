@@ -647,40 +647,130 @@ function EditVideoModal({ video, onClose, onSave }) {
           padding: '16px 24px',
           borderTop: '1px solid #e5e5e5',
           display: 'flex',
-          justifyContent: 'flex-end',
+          justifyContent: 'space-between',
           gap: '12px'
         }}>
+          {/* Delete Button - Left Side */}
           <button
-            onClick={onClose}
+            onClick={() => setShowDeleteConfirm(true)}
             style={{
-              padding: '10px 24px',
-              background: 'white',
-              border: '1px solid #ddd',
+              padding: '10px 20px',
+              background: '#fee2e2',
+              color: '#dc2626',
+              border: '1px solid #fecaca',
               borderRadius: '6px',
               cursor: 'pointer',
               fontSize: '14px',
               fontWeight: '500',
-              color: '#666'
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            Cancel
+            🗑️ Delete Video
           </button>
-          <button
-            onClick={handleSave}
-            style={{
-              padding: '10px 24px',
-              background: 'linear-gradient(135deg, #667eea, #764ba2)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '6px',
-              cursor: 'pointer',
-              fontSize: '14px',
-              fontWeight: '500'
-            }}
-          >
-            Save Changes
-          </button>
+
+          {/* Cancel and Save Buttons - Right Side */}
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              onClick={onClose}
+              style={{
+                padding: '10px 24px',
+                background: 'white',
+                border: '1px solid #ddd',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#666'
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleSave}
+              style={{
+                padding: '10px 24px',
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}
+            >
+              Save Changes
+            </button>
+          </div>
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {showDeleteConfirm && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 10001
+          }}>
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '24px',
+              width: '90%',
+              maxWidth: '400px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>⚠️</div>
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: '600', color: '#dc2626' }}>
+                Delete Video?
+              </h3>
+              <p style={{ margin: '0 0 24px 0', color: '#666', fontSize: '14px' }}>
+                This will permanently delete <strong>"{video?.title || video?.verification_code}"</strong>. This action cannot be undone.
+              </p>
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                <button
+                  onClick={() => setShowDeleteConfirm(false)}
+                  disabled={deleting}
+                  style={{
+                    padding: '10px 24px',
+                    background: '#f0f0f0',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: deleting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    opacity: deleting ? 0.5 : 1
+                  }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteVideo}
+                  disabled={deleting}
+                  style={{
+                    padding: '10px 24px',
+                    background: '#dc2626',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: deleting ? 'not-allowed' : 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    opacity: deleting ? 0.5 : 1
+                  }}
+                >
+                  {deleting ? 'Deleting...' : 'Yes, Delete'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
