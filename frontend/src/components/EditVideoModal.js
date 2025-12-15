@@ -35,6 +35,7 @@ function EditVideoModal({ video, onClose, onSave }) {
       setSocialLinks(video.social_links || [{ platform: '', url: '' }]);
       setShowOnShowcase(video.on_showcase || false);
       setSelectedFolderId(video.folder_id || '');
+      // Load the previously saved access_level
       setAccessLevel(video.access_level || 'public');
     }
     loadFolders();
@@ -54,27 +55,31 @@ function EditVideoModal({ video, onClose, onSave }) {
 
   const loadPremiumTiers = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/auth/me`, {
+      // Fetch the user's custom premium tiers from Premium Content Pricing
+      const response = await axios.get(`${BACKEND_URL}/api/auth/me/premium-tiers`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      // Load user's custom premium tiers if they exist
-      if (response.data.premium_tiers && response.data.premium_tiers.length > 0) {
-        setPremiumTiers(response.data.premium_tiers);
+      
+      const userTiers = response.data.tiers || [];
+      
+      if (userTiers.length > 0) {
+        // Use the user's custom tiers from Premium Content Pricing
+        setPremiumTiers(userTiers);
       } else {
-        // Default tiers if none set
+        // Fallback to defaults only if no custom tiers are set
         setPremiumTiers([
-          { name: 'Basic Tier', price: '4.99' },
-          { name: 'Standard Tier', price: '9.99' },
-          { name: 'Premium Tier', price: '19.99' }
+          { name: 'Basic Tier', price: '4.99', description: '' },
+          { name: 'Standard Tier', price: '9.99', description: '' },
+          { name: 'Premium Tier', price: '19.99', description: '' }
         ]);
       }
     } catch (error) {
       console.error('Failed to load premium tiers:', error);
       // Use defaults on error
       setPremiumTiers([
-        { name: 'Basic Tier', price: '4.99' },
-        { name: 'Standard Tier', price: '9.99' },
-        { name: 'Premium Tier', price: '19.99' }
+        { name: 'Basic Tier', price: '4.99', description: '' },
+        { name: 'Standard Tier', price: '9.99', description: '' },
+        { name: 'Premium Tier', price: '19.99', description: '' }
       ]);
     }
   };
