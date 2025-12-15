@@ -393,175 +393,162 @@ function Showcase() {
           </div>
         )}
 
-        {/* Premium Videos Tab */}
+        {/* Premium Videos Tab - Grouped by Access Level/Tier */}
         {activeTab === 'premium' && (
           <div>
             <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '24px', color: '#1f2937' }}>
               Premium Content
             </h3>
             
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
-              {premiumVideos.map(video => (
-                <div 
-                  key={video.video_id} 
-                  style={{ 
-                    background: 'white', 
-                    borderRadius: '12px', 
-                    overflow: 'hidden', 
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)', 
-                    transition: 'transform 0.2s, box-shadow 0.2s'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-                  }}
-                >
-                  <div style={{ 
-                    position: 'relative', 
-                    paddingBottom: '56.25%', 
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+            {/* Group videos by access_level */}
+            {(() => {
+              // Group videos by their access_level
+              const groupedVideos = premiumVideos.reduce((acc, video) => {
+                const tier = video.access_level || 'Premium';
+                if (!acc[tier]) acc[tier] = [];
+                acc[tier].push(video);
+                return acc;
+              }, {});
+              
+              const tiers = Object.keys(groupedVideos);
+              
+              if (tiers.length === 0) {
+                return (
+                  <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px', color: '#6b7280' }}>
+                    <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎬</div>
+                    <p style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px' }}>No Premium Content Yet</p>
+                    <p style={{ fontSize: '14px' }}>This creator has not added any premium videos</p>
+                  </div>
+                );
+              }
+              
+              return tiers.map(tierName => (
+                <div key={tierName} style={{ marginBottom: '32px' }}>
+                  {/* Tier Header */}
+                  <div style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    borderRadius: '12px 12px 0 0',
+                    padding: '16px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
                   }}>
-                    {video.thumbnail_url ? (
-                      <img 
-                        src={video.thumbnail_url} 
-                        alt={video.title}
-                        style={{ 
-                          position: 'absolute', 
-                          top: 0, 
-                          left: 0, 
-                          width: '100%', 
-                          height: '100%', 
-                          objectFit: 'cover' 
-                        }}
-                      />
-                    ) : (
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontSize: '48px'
-                      }}>
-                        🎥
-                      </div>
-                    )}
-                    
-                    {video.verification_code && (
-                      <div style={{
-                        position: 'absolute',
-                        top: '10px',
-                        right: '10px',
-                        background: 'rgba(0, 0, 0, 0.7)',
-                        color: 'white',
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        fontSize: '11px',
-                        fontWeight: '500'
-                      }}>
-                        {video.verification_code}
-                      </div>
-                    )}
+                    <div>
+                      <h4 style={{ color: 'white', fontSize: '18px', fontWeight: '600', margin: 0 }}>
+                        💎 {tierName}
+                      </h4>
+                      <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '13px', margin: '4px 0 0 0' }}>
+                        {groupedVideos[tierName].length} video{groupedVideos[tierName].length !== 1 ? 's' : ''}
+                      </p>
+                    </div>
+                    <button style={{
+                      padding: '8px 16px',
+                      background: 'white',
+                      color: '#667eea',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      fontSize: '13px',
+                      cursor: 'pointer'
+                    }}>
+                      Subscribe
+                    </button>
                   </div>
                   
-                  <div style={{ padding: '16px' }}>
-                    <h4 style={{ 
-                      fontSize: '15px', 
-                      fontWeight: '600', 
-                      marginBottom: '8px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
-                      {video.title || 'Untitled Video'}
-                    </h4>
-                    
-                    {video.description && (
-                      <p style={{
-                        fontSize: '13px',
-                        color: '#6b7280',
-                        marginBottom: '12px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        display: '-webkit-box',
-                        WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical'
-                      }}>
-                        {video.description}
-                      </p>
-                    )}
-                    
-                    {/* Action Buttons */}
-                    <div style={{
-                      display: 'flex',
-                      gap: '8px',
-                      marginTop: '12px'
-                    }}>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedVideo(video);
-                          setShowVideoModal(true);
-                        }}
-                        style={{
-                          flex: 1,
-                          padding: '8px 12px',
-                          background: 'linear-gradient(135deg, #667eea, #764ba2)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          fontWeight: '500',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '4px'
-                        }}
-                      >
-                        ▶ Play
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedVideo(video);
-                          setShowVideoModal(true);
-                        }}
-                        style={{
-                          flex: 1,
-                          padding: '8px 12px',
-                          background: '#f3f4f6',
-                          color: '#374151',
-                          border: '1px solid #e5e7eb',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          fontWeight: '500',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        Video Details
-                      </button>
+                  {/* Videos in this tier */}
+                  <div style={{ 
+                    background: 'white', 
+                    borderRadius: '0 0 12px 12px',
+                    padding: '20px',
+                    border: '1px solid #e5e7eb',
+                    borderTop: 'none'
+                  }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px' }}>
+                      {groupedVideos[tierName].map(video => (
+                        <div 
+                          key={video.video_id} 
+                          style={{ 
+                            background: '#f9fafb', 
+                            borderRadius: '10px', 
+                            overflow: 'hidden', 
+                            boxShadow: '0 1px 3px rgba(0,0,0,0.08)', 
+                            transition: 'transform 0.2s, box-shadow 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'translateY(-2px)';
+                            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.12)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+                          }}
+                        >
+                          <div style={{ 
+                            position: 'relative', 
+                            paddingBottom: '56.25%', 
+                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+                          }}>
+                            {video.thumbnail_url ? (
+                              <img 
+                                src={video.thumbnail_url.startsWith('http') ? video.thumbnail_url : `${BACKEND_URL}${video.thumbnail_url}`} 
+                                alt={video.title}
+                                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                              />
+                            ) : (
+                              <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontSize: '40px' }}>
+                                🎥
+                              </div>
+                            )}
+                            
+                            {video.verification_code && (
+                              <div style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(0, 0, 0, 0.7)', color: 'white', padding: '3px 6px', borderRadius: '4px', fontSize: '10px', fontWeight: '500' }}>
+                                {video.verification_code}
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div style={{ padding: '12px' }}>
+                            <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '6px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              {video.title || 'Untitled Video'}
+                            </h4>
+                            
+                            {video.description && (
+                              <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '10px', overflow: 'hidden', textOverflow: 'ellipsis', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                                {video.description}
+                              </p>
+                            )}
+                            
+                            {/* Action Buttons */}
+                            <div style={{ display: 'flex', gap: '6px' }}>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedVideo(video);
+                                  setShowVideoModal(true);
+                                }}
+                                style={{ flex: 1, padding: '6px 10px', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '5px', fontSize: '12px', fontWeight: '500', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}
+                              >
+                                ▶ Play
+                              </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedVideo(video);
+                                  setShowVideoModal(true);
+                                }}
+                                style={{ flex: 1, padding: '6px 10px', background: '#f3f4f6', color: '#374151', border: '1px solid #e5e7eb', borderRadius: '5px', fontSize: '12px', fontWeight: '500', cursor: 'pointer' }}
+                              >
+                                Details
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
-            
-            {premiumVideos.length === 0 && (
-              <div style={{ textAlign: 'center', padding: '3rem', background: 'white', borderRadius: '8px', color: '#6b7280' }}>
-                <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎬</div>
-                <p style={{ fontSize: '16px', fontWeight: '500', marginBottom: '8px' }}>No Premium Content Yet</p>
-                <p style={{ fontSize: '14px' }}>This creator hasn't uploaded any premium videos</p>
-              </div>
-            )}
+              ));
+            })()}
           </div>
         )}
 
