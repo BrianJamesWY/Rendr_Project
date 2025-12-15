@@ -6,6 +6,8 @@ class SocialMediaLink(BaseModel):
     platform: str
     url: str
     custom_name: Optional[str] = None
+    icon: Optional[str] = None
+    thumbnail: Optional[str] = None
 
 class UserRegister(BaseModel):
     email: EmailStr
