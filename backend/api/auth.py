@@ -156,3 +156,51 @@ async def update_notification_preferences(
         "notify_sms": notify_sms,
         "notify_on_verification": notify_on_verification
     }
+
+
+from pydantic import BaseModel
+from typing import List, Optional
+
+class PremiumTier(BaseModel):
+    name: str
+    price: str
+    description: Optional[str] = ""
+
+class PremiumTiersUpdate(BaseModel):
+    tiers: List[PremiumTier]
+
+@router.put("/me/premium-tiers")
+async def update_premium_tiers(
+    tiers_data: PremiumTiersUpdate,
+    current_user=Depends(get_current_user),
+    db=Depends(get_db)
+):
+    """Update user's premium content pricing tiers"""
+    # Convert tiers to dict format for storage
+    tiers_list = [{"name": t.name, "price": t.price, "description": t.description} for t in tiers_data.tiers]
+    
+    await db.users.update_one(
+        {"_id": current_user["user_id"]},
+        {"$set": {"premium_tiers": tiers_list}}
+    )
+    
+    return {
+        "message": "Premium tiers updated successfully",
+        "tiers": tiers_list
+    }
+
+
+@router.get("/me/premium-tiers")
+async def get_premium_tiers(
+    current_user=Depends(get_current_user),
+    db=Depends(get_db)
+):
+    """Get user's premium content pricing tiers"""
+    user = await db.users.find_one({"_id": current_user["user_id"]})
+    
+    if not user:
+        raise HTTPException(404, "User not found")
+    
+    return {
+        "tiers": user.get("premium_tiers", [])
+    }
