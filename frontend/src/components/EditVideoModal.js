@@ -15,6 +15,10 @@ function EditVideoModal({ video, onClose, onSave }) {
   const [uploading, setUploading] = useState(false);
   const [selectedTreeItem, setSelectedTreeItem] = useState(null);
   const [showOnShowcase, setShowOnShowcase] = useState(false);
+  const [folders, setFolders] = useState([]);
+  const [selectedFolderId, setSelectedFolderId] = useState('');
+  const [deleting, setDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const thumbnailInputRef = useRef(null);
   const token = localStorage.getItem('token');
 
@@ -25,8 +29,21 @@ function EditVideoModal({ video, onClose, onSave }) {
       setThumbnailUrl(video.thumbnail_url || '');
       setSocialLinks(video.social_links || [{ platform: '', url: '' }]);
       setShowOnShowcase(video.on_showcase || false);
+      setSelectedFolderId(video.folder_id || '');
     }
+    loadFolders();
   }, [video]);
+
+  const loadFolders = async () => {
+    try {
+      const response = await axios.get(`${BACKEND_URL}/api/folders/`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setFolders(Array.isArray(response.data) ? response.data : response.data.folders || []);
+    } catch (error) {
+      console.error('Failed to load folders:', error);
+    }
+  };
 
   const handleThumbnailUpload = async (file) => {
     if (!file) return;
