@@ -679,20 +679,26 @@ function UnifiedEditor() {
               </button>
 
               <button 
-                onClick={handleSaveProfile} 
+                onClick={handleSaveProfile}
+                disabled={savingProfile}
                 style={{ 
                   width: '100%', 
                   padding: '0.75rem', 
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)', 
+                  background: savingProfile ? '#9ca3af' : 'linear-gradient(135deg, #667eea, #764ba2)', 
                   color: 'white', 
                   border: 'none', 
                   borderRadius: '0.5rem', 
                   fontWeight: '600', 
-                  cursor: 'pointer', 
-                  fontSize: '1rem' 
+                  cursor: savingProfile ? 'not-allowed' : 'pointer', 
+                  fontSize: '1rem',
+                  transition: 'all 0.2s ease',
+                  transform: savingProfile ? 'scale(0.98)' : 'scale(1)'
                 }}
+                onMouseDown={(e) => !savingProfile && (e.currentTarget.style.transform = 'scale(0.95)')}
+                onMouseUp={(e) => !savingProfile && (e.currentTarget.style.transform = 'scale(1)')}
+                onMouseLeave={(e) => !savingProfile && (e.currentTarget.style.transform = 'scale(1)')}
               >
-                💾 Save Media Links
+                {savingProfile ? '⏳ Saving...' : '💾 Save Media Links'}
               </button>
             </div>
           )}
