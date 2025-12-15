@@ -463,6 +463,25 @@ Delete a video.
 
 ---
 
+### POST `/videos/upload/image`
+Upload a general image (for social link thumbnails, etc.)
+
+**Authentication:** Required
+
+**Request:**
+- Form data with file field
+
+**Response (200):**
+```json
+{
+  "url": "/api/uploads/images/4713a603-8722-4e9b-aeea-df71e198832c.png",
+  "image_url": "/api/uploads/images/4713a603-8722-4e9b-aeea-df71e198832c.png",
+  "message": "Image uploaded successfully"
+}
+```
+
+---
+
 ## ✅ Verification
 
 ### POST `/verify/code`
