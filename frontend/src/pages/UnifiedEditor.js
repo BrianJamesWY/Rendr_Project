@@ -852,7 +852,7 @@ function UnifiedEditor() {
                 </div>
               ))}
               <button onClick={() => setTiers([...tiers, { name: 'New Tier', price: '0.00', description: '' }])} style={{ width: '100%', padding: '0.5rem', background: '#f3f4f6', border: '1px solid #e5e7eb', borderRadius: '0.5rem', cursor: 'pointer', fontSize: '0.875rem', fontWeight: '600', marginBottom: '1.5rem' }}>+ Add Another Tier</button>
-              <button onClick={() => alert('Pricing saved!')} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '0.5rem', fontWeight: '600', cursor: 'pointer', fontSize: '1rem' }}>💾 Save Pricing</button>
+              <button onClick={savePremiumTiers} style={{ width: '100%', padding: '0.75rem', background: 'linear-gradient(135deg, #667eea, #764ba2)', color: 'white', border: 'none', borderRadius: '0.5rem', fontWeight: '600', cursor: 'pointer', fontSize: '1rem' }}>💾 Save Pricing</button>
             </div>
           )}
 
