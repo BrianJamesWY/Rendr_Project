@@ -1219,8 +1219,8 @@ async def upload_image(
         content = await file.read()
         buffer.write(content)
     
-    # Return the URL path
-    image_url = f"/api/uploads/images/{unique_filename}"
+    # Return the URL path - NOTE: This router is mounted at /api/videos
+    image_url = f"/api/videos/uploads/images/{unique_filename}"
     
     return {"url": image_url, "image_url": image_url, "message": "Image uploaded successfully"}
 
