@@ -48,6 +48,54 @@ backend:
         agent: "testing"
         comment: "✅ PUT /api/videos/{video_id} working correctly. Accepts folder_id field to move video to different folder. Successfully updated video f6aecc89-209f-4193-bdc6-08ba86a9b653 and moved to folder c208bd4b-d363-4815-8180-337411538d79."
 
+  - task: "Video Update with Access Level"
+    implemented: true
+    working: true
+    file: "backend/api/videos.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ PUT /api/videos/{video_id} accepts access_level field correctly. Successfully tested updating video with access_level='public' and access_level='Silver Level' (premium tier). VideoUpdateData model properly handles access_level parameter."
+
+  - task: "Public Showcase Videos Filter"
+    implemented: true
+    working: true
+    file: "backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/@/BrianJames/videos correctly filters videos. Only returns videos where on_showcase=true AND (access_level='public' OR access_level does not exist). Premium tier videos correctly excluded from public showcase."
+
+  - task: "Premium Videos Endpoint"
+    implemented: true
+    working: true
+    file: "backend/api/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ GET /api/@/BrianJames/premium-videos working correctly. Returns videos where on_showcase=true AND access_level is premium tier name (not 'public' or empty). Response includes access_level field for proper grouping."
+
+  - task: "Folder Creation Endpoint"
+    implemented: true
+    working: true
+    file: "backend/api/folders.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "testing"
+        comment: "✅ POST /api/folders/ creates new folder successfully. Response includes required folder_id and folder_name fields. Created folder appears correctly in folder list endpoint."
+
 frontend:
   - task: "Dashboard Bounties Banner"
     implemented: true
