@@ -249,9 +249,9 @@ function Showcase() {
               {profile?.bio || 'Content creator on RENDR'}
             </p>
 
-            {/* Social Links */}
+            {/* Social Links with Thumbnails */}
             {socialLinks.length > 0 && (
-              <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', justifyContent: 'center', flexWrap: 'wrap' }}>
                 {socialLinks.map((link, index) => (
                   <a
                     key={index}
@@ -259,14 +259,51 @@ function Showcase() {
                     target="_blank"
                     rel="noopener noreferrer"
                     onClick={() => trackSocialClick(link.platform)}
-                    style={{ width: '66px', height: '66px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', transition: 'all 0.2s', border: '3px solid rgba(255, 255, 255, 0.3)', overflow: 'hidden', position: 'relative', background: 'rgba(255, 255, 255, 0.1)', fontSize: '30px' }}
+                    style={{ 
+                      width: link.thumbnail ? '100px' : '66px', 
+                      height: link.thumbnail ? '100px' : '66px', 
+                      borderRadius: link.thumbnail ? '12px' : '50%', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      textDecoration: 'none', 
+                      transition: 'all 0.2s', 
+                      border: '3px solid rgba(255, 255, 255, 0.3)', 
+                      overflow: 'hidden', 
+                      position: 'relative', 
+                      background: link.thumbnail ? 'none' : 'rgba(255, 255, 255, 0.1)', 
+                      fontSize: '30px',
+                      flexDirection: 'column'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
                   >
-                    {link.platform === 'instagram' && '📷'}
-                    {link.platform === 'tiktok' && '🎵'}
-                    {link.platform === 'youtube' && '▶️'}
-                    {link.platform === 'twitter' && '🐦'}
-                    {link.platform === 'facebook' && '👥'}
-                    {!['instagram', 'tiktok', 'youtube', 'twitter', 'facebook'].includes(link.platform) && '🔗'}
+                    {link.thumbnail ? (
+                      <img 
+                        src={link.thumbnail.startsWith('http') ? link.thumbnail : `${BACKEND_URL}${link.thumbnail}`}
+                        alt={link.platform}
+                        style={{ 
+                          width: '100%', 
+                          height: '100%', 
+                          objectFit: 'cover' 
+                        }}
+                      />
+                    ) : (
+                      <>
+                        {link.platform === 'instagram' && '📷'}
+                        {link.platform === 'tiktok' && '🎵'}
+                        {link.platform === 'youtube' && '▶️'}
+                        {link.platform === 'twitter' && '🐦'}
+                        {link.platform === 'facebook' && '👥'}
+                        {!['instagram', 'tiktok', 'youtube', 'twitter', 'facebook'].includes(link.platform) && '🔗'}
+                      </>
+                    )}
                   </a>
                 ))}
               </div>
