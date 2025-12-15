@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import Logo from '../components/Logo';
+import EditVideoModal from '../components/EditVideoModal';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
