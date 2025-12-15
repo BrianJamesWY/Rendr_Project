@@ -257,7 +257,6 @@ async def upload_profile_picture(
     db = Depends(get_db)
 ):
     """Upload profile picture"""
-    import os
     from pathlib import Path
     
     # Validate file type
@@ -297,7 +296,6 @@ async def upload_banner(
     db = Depends(get_db)
 ):
     """Upload showcase banner image (Pro/Enterprise only)"""
-    import os
     from pathlib import Path
     
     # Check tier
