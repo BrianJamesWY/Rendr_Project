@@ -1197,3 +1197,40 @@ async def upload_video_thumbnail(
     
     return {"thumbnail_url": thumbnail_url, "message": "Thumbnail uploaded successfully"}
 
+
+
+@router.post("/upload/image")
+async def upload_image(
+    file: UploadFile = File(...),
+    current_user = Depends(get_current_user)
+):
+    """Upload a general image (for social link thumbnails, etc.)"""
+    # Create uploads directory if it doesn't exist
+    upload_dir = "/app/backend/uploads/images"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    # Generate unique filename
+    file_ext = file.filename.split('.')[-1] if '.' in file.filename else 'jpg'
+    unique_filename = f"{uuid.uuid4()}.{file_ext}"
+    file_path = os.path.join(upload_dir, unique_filename)
+    
+    # Save the file
+    with open(file_path, "wb") as buffer:
+        content = await file.read()
+        buffer.write(content)
+    
+    # Return the URL path
+    image_url = f"/api/uploads/images/{unique_filename}"
+    
+    return {"url": image_url, "image_url": image_url, "message": "Image uploaded successfully"}
+
+
+@router.get("/uploads/images/{filename}")
+async def get_uploaded_image(filename: str):
+    """Serve uploaded images"""
+    file_path = f"/app/backend/uploads/images/{filename}"
+    
+    if not os.path.exists(file_path):
+        raise HTTPException(404, "Image not found")
+    
+    return FileResponse(file_path)
