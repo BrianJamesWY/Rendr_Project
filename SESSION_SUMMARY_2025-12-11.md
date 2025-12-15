@@ -434,3 +434,43 @@ Based on previous session issues:
 - `/app/backend/api/auth.py` - Added premium-tiers endpoints
 - `/app/frontend/src/pages/UnifiedEditor.js` - Save/load premium tiers
 - `/app/frontend/src/components/EditVideoModal.js` - Dynamic tier loading
+
+---
+
+## ✅ ADDITIONAL CHANGES - December 15, 2025 (Session 4)
+
+### API Documentation Updated (`/app/API_DOCUMENTATION.md`)
+- Added `PUT /api/auth/me/premium-tiers` - Save premium pricing tiers
+- Added `GET /api/auth/me/premium-tiers` - Get saved premium tiers
+- Updated `GET /api/auth/me` to include `premium_tiers` field
+- Updated `PUT /api/videos/{video_id}` to document `access_level` and `thumbnail_url` fields
+
+### New "Media Links" Tab in Editor (`/app/frontend/src/pages/UnifiedEditor.js`)
+- Created new "Media Links" tab (previously Social Media Links was under Profile & Banner)
+- Each media link now has:
+  - URL input field
+  - Thumbnail upload button (uploads to backend)
+  - Remove button
+- Thumbnails are stored in the `thumbnail` field of each social link
+
+### Showcase Page Updates (`/app/frontend/src/pages/Showcase.js`)
+- Social links now display with custom thumbnails if uploaded
+- Links with thumbnails show as larger square tiles (100x100)
+- Links without thumbnails show as circular icons (66x66)
+- Hover effects added for interactivity
+
+### Database Schema Changes:
+- `social_media_links` array now includes `thumbnail` field:
+  ```
+  {
+    platform: "instagram",
+    url: "https://instagram.com/...",
+    icon: "📷",
+    thumbnail: "/uploads/thumbnails/..." 
+  }
+  ```
+
+### Files Modified:
+- `/app/API_DOCUMENTATION.md` - Added new endpoints
+- `/app/frontend/src/pages/UnifiedEditor.js` - New Media Links tab
+- `/app/frontend/src/pages/Showcase.js` - Thumbnail display for social links
