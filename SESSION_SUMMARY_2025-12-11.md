@@ -346,3 +346,57 @@ Based on previous session issues:
 - FFmpeg and Redis must be installed and running
 - RQ worker needed for background processing: `python -m rq.cli worker --url redis://localhost:6379 high default low`
 - Database: `test_database` (NOT `rendr`)
+
+---
+
+## ✅ ADDITIONAL CHANGES - December 15, 2025 (Session 2)
+
+### Major Changes Made:
+
+#### 1. ✅ Editor Logo Fix (`/app/frontend/src/pages/UnifiedEditor.js`)
+- Replaced the ✨ emoji with the proper Checkstar Logo component
+- Added import for Logo component at the top of the file
+
+#### 2. ✅ Edit Video Modal Enhancements (`/app/frontend/src/components/EditVideoModal.js`)
+- Added Access Level dropdown with dynamic premium tiers from user's Premium Content Pricing
+- Added "Create New Folder" option in folder dropdown - creates folder inline and selects it
+- Folders created this way will appear in the directory tree
+- Access level determines if video shows on Videos tab (public) or Premium Videos tab (tier name)
+
+#### 3. ✅ Dynamic Access Level System
+- Access level is now stored as `access_level` field in videos collection
+- Value "public" or "" = Videos tab (free)
+- Any tier name (e.g., "Silver Level", "Basic Tier") = Premium Videos tab grouped by tier
+
+#### 4. ✅ Backend Updates (`/app/backend/api/users.py`, `/app/backend/api/videos.py`)
+- Updated `/api/@/{username}/videos` to only return videos with `access_level` = "public" or not set
+- Updated `/api/@/{username}/premium-videos` to return videos with non-public access_level
+- Added `access_level` and `thumbnail_url` to VideoUpdateData model
+- Updated VideoInfo model to include `access_level` field
+
+#### 5. ✅ Showcase Premium Videos Tab (`/app/frontend/src/pages/Showcase.js`)
+- Now groups videos by their access_level/tier name
+- Each tier shows as a separate section with header and subscribe button
+- Removed "Enterprise" label and "invalid date" issues
+
+#### 6. ✅ Editor Folders & Content Tab (`/app/frontend/src/pages/UnifiedEditor.js`)
+- Access Level dropdown now dynamically uses tiers from Premium Content Pricing
+- Shows helpful text explaining where content will appear based on selection
+
+### Database Schema Changes:
+- Added `access_level` field to videos collection
+  - Value: "public" | tier name from Premium Content Pricing
+  - Default: "public" (for backwards compatibility)
+
+### Files Modified:
+- `/app/frontend/src/pages/UnifiedEditor.js` - Logo fix + dynamic access levels
+- `/app/frontend/src/components/EditVideoModal.js` - Access Level + Create New Folder
+- `/app/frontend/src/pages/Showcase.js` - Premium Videos grouped by tier
+- `/app/backend/api/users.py` - Showcase queries updated for access_level
+- `/app/backend/api/videos.py` - VideoUpdateData updated
+- `/app/backend/models/video.py` - VideoInfo model updated
+
+### Critical Logic:
+1. Video ONLY shows on Showcase if `on_showcase: true`
+2. If `access_level: "public"` → Videos tab (free)
+3. If `access_level: "Silver Level"` (or any tier name) → Premium Videos tab under "Silver Level" section
