@@ -690,7 +690,7 @@ function UnifiedEditor() {
                 />
               </div>
               
-              {/* Access Level Dropdown */}
+              {/* Access Level Dropdown - Uses tiers from Premium Pricing */}
               <div style={{ marginBottom: '1.5rem' }}>
                 <label style={{ display: 'block', fontWeight: '600', marginBottom: '0.5rem', color: '#374151' }}>
                   Access Level
@@ -709,12 +709,19 @@ function UnifiedEditor() {
                     cursor: selectedTreeItem ? 'pointer' : 'not-allowed'
                   }}
                 >
-                  <option>Public (Free)</option>
-                  <option>Subscribers Only</option>
-                  <option>Premium Tier 1 ($4.99)</option>
-                  <option>Premium Tier 2 ($9.99)</option>
-                  <option>Premium Tier 3 ($19.99)</option>
+                  <option value="public">🌍 Public (Free)</option>
+                  {tiers.map((tier, idx) => (
+                    <option key={idx} value={tier.name}>
+                      💎 {tier.name} (${tier.price})
+                    </option>
+                  ))}
                 </select>
+                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                  {accessLevel === 'public' || accessLevel === 'Public (Free)'
+                    ? '🌍 This content will appear on the Videos tab (free for everyone)'
+                    : `💎 This content will appear in the "${accessLevel}" section of Premium Videos`
+                  }
+                </p>
               </div>
               
               {/* Delete Button */}
