@@ -124,7 +124,7 @@ async def get_creator_premium_videos(
     username: str,
     db = Depends(get_db)
 ):
-    """Get premium videos for a creator (Pro/Enterprise tier videos marked as stored/on showcase)"""
+    """Get premium videos for a creator - videos with non-public access_level that are on_showcase"""
     # Remove @ if present
     username = username.lstrip('@')
     user = await db.users.find_one({"username": username})
@@ -132,32 +132,27 @@ async def get_creator_premium_videos(
     if not user:
         raise HTTPException(404, f"Creator @{username} not found")
     
-    # Get user's tier
-    user_tier = user.get("premium_tier", "free")
-    
-    # Only show premium videos for Pro/Enterprise users
-    if user_tier not in ["pro", "enterprise"]:
-        return []
+    # Get user_id - could be stored as user_id field or _id
+    user_id = user.get("user_id") or str(user.get("_id"))
     
     # Query for videos that are:
     # 1. Owned by this user
-    # 2. Marked as on_showcase or is_public
-    # 3. Have storage tier pro or enterprise
+    # 2. Marked as on_showcase=True
+    # 3. Have access_level that is NOT 'public' or empty (meaning it's a premium tier)
     query = {
-        "user_id": user["_id"],
-        "$or": [
-            {"on_showcase": True},
-            {"is_public": True}
-        ],
-        "storage.tier": {"$in": ["pro", "enterprise"]}
+        "user_id": user_id,
+        "on_showcase": True,
+        "access_level": {"$exists": True, "$nin": ["public", "", None]}
     }
     
+    print(f"DEBUG: Premium videos query for {username}: {query}")
     cursor = db.videos.find(query, {"_id": 0}).sort("uploaded_at", -1)
     videos = await cursor.to_list(length=1000)
+    print(f"DEBUG: Found {len(videos)} premium videos")
     
     result = []
     for video in videos:
-        thumbnail_url = f"/api/thumbnails/{video.get('id', video.get('_id'))}.jpg" if video.get("thumbnail_path") else None
+        thumbnail_url = video.get("thumbnail_url") or (f"/api/thumbnails/{video.get('id', video.get('_id'))}.jpg" if video.get("thumbnail_path") else None)
         
         # Convert datetime to string
         captured_at = video.get("captured_at") or video.get("uploaded_at", "")
@@ -185,7 +180,8 @@ async def get_creator_premium_videos(
             on_showcase=video.get("on_showcase", False),
             title=video.get("title"),
             storage=video.get("storage"),
-            uploaded_at=str(uploaded_at)
+            uploaded_at=str(uploaded_at),
+            access_level=video.get("access_level", "public")
         ))
     
     return result
