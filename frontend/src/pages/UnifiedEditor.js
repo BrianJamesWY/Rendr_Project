@@ -341,18 +341,7 @@ function UnifiedEditor() {
       }}>
         <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 2rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <div style={{ 
-              width: '50px', 
-              height: '50px', 
-              background: 'white', 
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1.5rem'
-            }}>
-              ✨
-            </div>
+            <Logo size="medium" style={{ cursor: 'default' }} onClick={(e) => e.preventDefault()} />
             <div>
               <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white', marginBottom: '0.25rem' }}>
                 RENDR Editor
