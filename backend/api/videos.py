@@ -686,7 +686,7 @@ async def upload_video(
         if should_notify:
             print(f"   📧 Video length ({video_duration}s) exceeds threshold - sending notification")
             
-            download_url = f"https://rendr-platform.preview.emergentagent.com/dashboard?video={video_id}"
+            download_url = f"https://rendr-studio.preview.emergentagent.com/dashboard?video={video_id}"
             
             notification_results = await notification_service.send_video_ready_notification(
                 user=user,

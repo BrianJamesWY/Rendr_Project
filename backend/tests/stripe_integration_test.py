@@ -10,7 +10,7 @@ import os
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://rendr-platform.preview.emergentagent.com/api"
+BASE_URL = "https://rendr-studio.preview.emergentagent.com/api"
 
 # Test credentials
 TEST_CREDENTIALS = {
@@ -113,8 +113,8 @@ class StripeIntegrationTester:
         """Test POST /api/stripe/connect/onboard endpoint"""
         try:
             onboard_data = {
-                "return_url": "https://rendr-platform.preview.emergentagent.com/dashboard?stripe=success",
-                "refresh_url": "https://rendr-platform.preview.emergentagent.com/dashboard?stripe=refresh"
+                "return_url": "https://rendr-studio.preview.emergentagent.com/dashboard?stripe=success",
+                "refresh_url": "https://rendr-studio.preview.emergentagent.com/dashboard?stripe=refresh"
             }
             
             response = self.session.post(f"{BASE_URL}/stripe/connect/onboard", json=onboard_data)
@@ -278,8 +278,8 @@ class StripeIntegrationTester:
             
             subscribe_data = {
                 "folder_id": folder["folder_id"],
-                "success_url": "https://rendr-platform.preview.emergentagent.com/dashboard?payment=success",
-                "cancel_url": "https://rendr-platform.preview.emergentagent.com/dashboard?payment=cancel"
+                "success_url": "https://rendr-studio.preview.emergentagent.com/dashboard?payment=success",
+                "cancel_url": "https://rendr-studio.preview.emergentagent.com/dashboard?payment=cancel"
             }
             
             response = self.session.post(f"{BASE_URL}/stripe/subscribe", json=subscribe_data)
@@ -523,8 +523,8 @@ class StripeIntegrationTester:
         try:
             subscribe_data = {
                 "folder_id": "nonexistent_folder_12345",
-                "success_url": "https://rendr-platform.preview.emergentagent.com/dashboard?payment=success",
-                "cancel_url": "https://rendr-platform.preview.emergentagent.com/dashboard?payment=cancel"
+                "success_url": "https://rendr-studio.preview.emergentagent.com/dashboard?payment=success",
+                "cancel_url": "https://rendr-studio.preview.emergentagent.com/dashboard?payment=cancel"
             }
             
             response = self.session.post(f"{BASE_URL}/stripe/subscribe", json=subscribe_data)
