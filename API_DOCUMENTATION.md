@@ -123,8 +123,56 @@ Authorization: Bearer <token>
   "username": "BrianJames",
   "email": "brian@test.com",
   "tier": "enterprise",
+  "premium_tiers": [
+    {"name": "Silver Level", "price": "4.99", "description": "Basic access"},
+    {"name": "Gold Level", "price": "9.99", "description": "Premium access"}
+  ],
   "roles": ["creator", "ceo"],
   "created_at": "2025-11-27T18:31:08.558001"
+}
+```
+
+---
+
+### PUT `/auth/me/premium-tiers`
+Save user's premium content pricing tiers.
+
+**Authentication:** Required
+
+**Request Body:**
+```json
+{
+  "tiers": [
+    {"name": "Silver Level", "price": "4.99", "description": "Basic access to content"},
+    {"name": "Gold Level", "price": "9.99", "description": "Premium access with extras"},
+    {"name": "Platinum Level", "price": "19.99", "description": "VIP all-access pass"}
+  ]
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Premium tiers updated successfully",
+  "tiers": [...]
+}
+```
+
+---
+
+### GET `/auth/me/premium-tiers`
+Get user's saved premium content pricing tiers.
+
+**Authentication:** Required
+
+**Response (200):**
+```json
+{
+  "tiers": [
+    {"name": "Silver Level", "price": "4.99", "description": "Basic access"},
+    {"name": "Gold Level", "price": "9.99", "description": "Premium access"},
+    {"name": "Platinum Level", "price": "19.99", "description": "VIP access"}
+  ]
 }
 ```
 
