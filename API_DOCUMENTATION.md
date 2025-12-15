@@ -422,15 +422,21 @@ Update video metadata.
   "title": "Updated Title",
   "description": "Updated description",
   "folder_id": "new-folder-id",
-  "social_media_links": [
+  "on_showcase": true,
+  "access_level": "public",
+  "thumbnail_url": "/path/to/thumbnail.jpg",
+  "social_links": [
     {
       "platform": "YouTube",
-      "icon": "🎥",
       "url": "https://youtube.com/watch?v=xyz"
     }
   ]
 }
 ```
+
+**Access Level Values:**
+- `"public"` - Video appears on Videos tab (free)
+- `"<tier_name>"` - Video appears on Premium Videos tab under the specified tier (e.g., "Silver Level", "Gold Level")
 
 **Response (200):**
 ```json
