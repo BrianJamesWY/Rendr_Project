@@ -3,259 +3,599 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Rendr - Reserve Your Spot</title>
+    <title>Rendr - Reserve Your Verified Identity</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+        
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 50%, #0f1419 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 2rem 1rem;
+            position: relative;
+            overflow-x: hidden;
         }
+        
+        /* Ambient background effects */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(208, 139, 48, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 50%, rgba(165, 73, 32, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
         .container {
-            max-width: 600px;
-            width: 100%;
-            background: white;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
         }
-        .logo {
+        
+        /* Header Section */
+        .header {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 4rem;
+            animation: fadeInDown 0.8s ease-out;
         }
+        
+        .beta-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, rgba(208, 139, 48, 0.15) 0%, rgba(165, 73, 32, 0.15) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(208, 139, 48, 0.3);
+            color: #D08B30;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+        
         .logo h1 {
-            font-size: 3rem;
+            font-size: 4rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #D08B30 0%, #F4D7B0 50%, #A54920 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: -2px;
+            margin-bottom: 1rem;
         }
+        
         .tagline {
+            font-size: 1.5rem;
+            color: #B8BCCC;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            font-size: 1rem;
+            color: #6B7088;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Hero Card */
+        .hero-card {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.6) 0%, rgba(15, 20, 25, 0.6) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(208, 139, 48, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+        
+        .hero-title {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 1rem;
+            font-weight: 700;
             text-align: center;
+        }
+        
+        .hero-description {
+            font-size: 1.125rem;
+            color: #B8BCCC;
+            text-align: center;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        /* Value Props Grid */
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .value-prop {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.5) 0%, rgba(15, 20, 25, 0.5) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(208, 139, 48, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.8s ease-out both;
+        }
+        
+        .value-prop:nth-child(1) { animation-delay: 0.3s; }
+        .value-prop:nth-child(2) { animation-delay: 0.4s; }
+        .value-prop:nth-child(3) { animation-delay: 0.5s; }
+        
+        .value-prop:hover {
+            transform: translateY(-5px);
+            border-color: rgba(208, 139, 48, 0.4);
+            box-shadow: 0 10px 30px rgba(208, 139, 48, 0.2);
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .value-title {
             font-size: 1.25rem;
-            color: #6b7280;
-            margin-bottom: 2.5rem;
+            color: #D08B30;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        
+        .value-description {
+            font-size: 0.9375rem;
+            color: #9BA3B4;
             line-height: 1.6;
         }
-        .highlight {
-            background: #fef3c7;
-            padding: 1.5rem;
-            border-radius: 1rem;
-            border-left: 4px solid #f59e0b;
+        
+        /* Features Section */
+        .features-section {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.6) 0%, rgba(15, 20, 25, 0.6) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(208, 139, 48, 0.2);
+            border-radius: 24px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s ease-out 0.6s both;
+        }
+        
+        .features-title {
+            font-size: 1.75rem;
+            color: #FFFFFF;
             margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 700;
         }
-        .highlight h2 {
-            color: #92400e;
-            font-size: 1.125rem;
-            margin-bottom: 0.5rem;
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
-        .highlight p {
-            color: #78350f;
-            font-size: 0.9375rem;
-        }
-        .features {
-            margin-bottom: 2rem;
-        }
-        .features h3 {
-            font-size: 1.25rem;
-            color: #111827;
-            margin-bottom: 1rem;
-        }
+        
         .feature-item {
             display: flex;
-            align-items: start;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            background: #f9fafb;
-            border-radius: 0.5rem;
+            align-items: flex-start;
+            padding: 1.5rem;
+            background: rgba(10, 14, 39, 0.5);
+            border-radius: 12px;
+            border: 1px solid rgba(208, 139, 48, 0.1);
+            transition: all 0.3s ease;
         }
-        .feature-icon {
-            font-size: 1.5rem;
-            margin-right: 0.75rem;
+        
+        .feature-item:hover {
+            border-color: rgba(208, 139, 48, 0.3);
+            transform: translateX(5px);
+        }
+        
+        .feature-icon-wrapper {
+            font-size: 1.75rem;
+            margin-right: 1rem;
             flex-shrink: 0;
         }
-        .feature-text {
+        
+        .feature-content strong {
+            display: block;
+            color: #D08B30;
+            font-size: 1rem;
+            margin-bottom: 0.375rem;
+        }
+        
+        .feature-content {
             font-size: 0.9375rem;
-            color: #374151;
-            line-height: 1.5;
+            color: #9BA3B4;
+            line-height: 1.6;
         }
-        .form-section {
-            background: #f9fafb;
-            padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 1.5rem;
+        
+        /* Form Section */
+        .form-container {
+            background: linear-gradient(135deg, rgba(26, 31, 58, 0.7) 0%, rgba(15, 20, 25, 0.7) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(208, 139, 48, 0.25);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            animation: fadeInUp 0.8s ease-out 0.7s both;
         }
-        .form-section h3 {
-            font-size: 1.5rem;
-            color: #111827;
-            margin-bottom: 1.5rem;
+        
+        .form-title {
+            font-size: 2rem;
+            color: #FFFFFF;
+            margin-bottom: 0.5rem;
             text-align: center;
+            font-weight: 700;
         }
+        
+        .form-subtitle {
+            font-size: 1rem;
+            color: #9BA3B4;
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.75rem;
         }
+        
         label {
             display: block;
             font-weight: 600;
-            color: #374151;
-            margin-bottom: 0.5rem;
+            color: #D08B30;
+            margin-bottom: 0.75rem;
             font-size: 0.9375rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
+        
         input[type="text"],
         input[type="email"] {
             width: 100%;
-            padding: 0.875rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
+            padding: 1rem 1.25rem;
+            background: rgba(10, 14, 39, 0.6);
+            border: 1px solid rgba(208, 139, 48, 0.2);
+            border-radius: 12px;
             font-size: 1rem;
-            transition: border-color 0.2s;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
         }
-        input:focus {
+        
+        input[type="text"]:focus,
+        input[type="email"]:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: rgba(208, 139, 48, 0.6);
+            background: rgba(10, 14, 39, 0.8);
+            box-shadow: 0 0 0 3px rgba(208, 139, 48, 0.1);
         }
+        
+        input::placeholder {
+            color: #6B7088;
+        }
+        
         .input-hint {
             font-size: 0.8125rem;
-            color: #6b7280;
-            margin-top: 0.375rem;
+            color: #6B7088;
+            margin-top: 0.5rem;
         }
+        
         .submit-btn {
             width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #D08B30 0%, #A54920 100%);
+            color: #FFFFFF;
             border: none;
-            border-radius: 0.75rem;
+            border-radius: 12px;
             font-size: 1.125rem;
             font-weight: 700;
             cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(208, 139, 48, 0.3);
         }
+        
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 15px 40px rgba(208, 139, 48, 0.4);
         }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Success Message */
         .success-message {
             display: none;
-            background: #d1fae5;
-            border: 2px solid #10b981;
-            border-radius: 1rem;
-            padding: 2rem;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.15) 100%);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(16, 185, 129, 0.4);
+            border-radius: 16px;
+            padding: 3rem;
             text-align: center;
         }
+        
         .success-message.show {
             display: block;
+            animation: successPulse 0.6s ease-out;
         }
+        
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
         .success-message h3 {
-            color: #065f46;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
+            color: #10B981;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
         }
+        
         .success-message p {
-            color: #047857;
-            font-size: 1rem;
+            color: #B8BCCC;
+            font-size: 1.125rem;
+            line-height: 1.8;
         }
+        
+        .success-message strong {
+            color: #D08B30;
+        }
+        
+        /* Footer */
         .footer {
             text-align: center;
-            color: #9ca3af;
+            color: #6B7088;
             font-size: 0.875rem;
-            margin-top: 2rem;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(208, 139, 48, 0.1);
         }
-        .beta-badge {
-            display: inline-block;
-            background: #fef3c7;
-            color: #92400e;
-            padding: 0.375rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes successPulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.25rem;
+            }
+            
+            .hero-card,
+            .features-section,
+            .form-container {
+                padding: 2rem;
+            }
+            
+            .hero-title,
+            .form-title {
+                font-size: 1.5rem;
+            }
+            
+            .value-props,
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="logo">
-            <span class="beta-badge">Coming Soon</span>
-            <h1>RENDR</h1>
-            <p class="tagline">The Future of Video Truth Verification</p>
+        <!-- Header -->
+        <div class="header">
+            <span class="beta-badge">World's First • Coming Soon</span>
+            <div class="logo">
+                <h1>RENDR</h1>
+            </div>
+            <p class="tagline">The Future of Digital Truth</p>
+            <p class="subtitle">Revolutionary blockchain-powered video verification that proves authenticity from capture to consumption</p>
         </div>
 
-        <div class="highlight">
-            <h2>🎯 Early Access - Reserve Your Username Now</h2>
-            <p>Be among the first to join when Rendr launches. Lock in your username and get exclusive founder benefits.</p>
+        <!-- Hero Card -->
+        <div class="hero-card">
+            <h2 class="hero-title">🎯 Early Access - Lock In Your Verified Identity</h2>
+            <p class="hero-description">
+                Join the pioneers who will shape the future of digital truth. Be among the first to claim your verified username 
+                and gain exclusive founder benefits when Rendr launches.
+            </p>
         </div>
 
-        <div class="features">
-            <h3>What is Rendr?</h3>
-            <div class="feature-item">
-                <span class="feature-icon">📹</span>
-                <span class="feature-text"><strong>Rendr Bodycam:</strong> Mobile app that captures verified videos proving authenticity from the moment of recording</span>
+        <!-- Value Props -->
+        <div class="value-props">
+            <div class="value-prop">
+                <span class="value-icon">🛡️</span>
+                <h3 class="value-title">Combat Deepfakes</h3>
+                <p class="value-description">As AI-generated content becomes indistinguishable from reality, Rendr provides cryptographic proof of authenticity that can't be faked.</p>
             </div>
-            <div class="feature-item">
-                <span class="feature-icon">🎨</span>
-                <span class="feature-text"><strong>Rendr Studio:</strong> Platform for creators to watermark and verify their original content</span>
+            <div class="value-prop">
+                <span class="value-icon">⚖️</span>
+                <h3 class="value-title">Legal Protection</h3>
+                <p class="value-description">Create tamper-proof evidence for legal proceedings, journalism, and documentation with blockchain-verified timestamps and provenance.</p>
             </div>
-            <div class="feature-item">
-                <span class="feature-icon">✅</span>
-                <span class="feature-text"><strong>Rendr Verify:</strong> Anyone can check if a video has been tampered with or edited</span>
+            <div class="value-prop">
+                <span class="value-icon">💰</span>
+                <h3 class="value-title">Protect Your Content</h3>
+                <p class="value-description">Content creators can prove ownership and track unauthorized usage across the internet, enabling new monetization and protection strategies.</p>
             </div>
         </div>
 
-        <form id="rsvpForm" class="form-section">
-            <h3>Reserve Your Spot</h3>
-            
-            <div class="form-group">
-                <label for="username">Desired Username *</label>
-                <input type="text" id="username" name="username" required 
-                       pattern="[a-zA-Z0-9_]+" 
-                       placeholder="yourusername"
-                       minlength="3"
-                       maxlength="20">
-                <p class="input-hint">Letters, numbers, and underscores only (3-20 characters)</p>
+        <!-- Features Section -->
+        <div class="features-section">
+            <h3 class="features-title">The Rendr Ecosystem</h3>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon-wrapper">📹</span>
+                    <div class="feature-content">
+                        <strong>Rendr Bodycam</strong>
+                        Mobile app that captures verified videos with cryptographic proof of authenticity from the moment of recording. Perfect for citizen journalism, legal documentation, and content creation.
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon-wrapper">🎨</span>
+                    <div class="feature-content">
+                        <strong>Rendr Studio</strong>
+                        Professional platform for creators to watermark, verify, and protect their original content. Built-in tools for tracking unauthorized usage and claiming revenue from stolen content.
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon-wrapper">✅</span>
+                    <div class="feature-content">
+                        <strong>Rendr Verify</strong>
+                        Public verification tool that lets anyone check if a video has been tampered with, edited, or AI-generated. Instant trust verification for any digital media.
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon-wrapper">🔗</span>
+                    <div class="feature-content">
+                        <strong>Blockchain Provenance</strong>
+                        Every verified video is registered on the blockchain with an immutable record of origin, ownership, and modification history that can never be erased or altered.
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon-wrapper">🌐</span>
+                    <div class="feature-content">
+                        <strong>Global Truth Network</strong>
+                        Join a worldwide community fighting misinformation. As more creators and platforms adopt Rendr, we create an ecosystem where authentic content is instantly recognizable.
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon-wrapper">🚀</span>
+                    <div class="feature-content">
+                        <strong>Future-Ready API</strong>
+                        Integration capabilities for news organizations, social media platforms, legal firms, and content platforms. Bring verification to your existing workflows.
+                    </div>
+                </div>
             </div>
-
-            <div class="form-group">
-                <label for="name">Your Name *</label>
-                <input type="text" id="name" name="name" required placeholder="John Doe">
-            </div>
-
-            <div class="form-group">
-                <label for="email">Email Address *</label>
-                <input type="email" id="email" name="email" required placeholder="you@example.com">
-                <p class="input-hint">We'll notify you when Rendr launches</p>
-            </div>
-
-            <div class="form-group">
-                <label for="interest">What interests you most?</label>
-                <input type="text" id="interest" name="interest" placeholder="e.g., Content creator, Journalist, etc.">
-            </div>
-
-            <button type="submit" class="submit-btn">Reserve My Spot</button>
-        </form>
-
-        <div id="successMessage" class="success-message">
-            <h3>🎉 You're On The List!</h3>
-            <p>We'll email you at <strong id="confirmedEmail"></strong> when Rendr launches.</p>
-            <p style="margin-top: 1rem;">Username <strong id="confirmedUsername"></strong> is reserved for you!</p>
         </div>
 
+        <!-- Form -->
+        <div class="form-container">
+            <form id="rsvpForm">
+                <h3 class="form-title">Reserve Your Verified Identity</h3>
+                <p class="form-subtitle">Claim your username now and be ready when the revolution begins</p>
+                
+                <div class="form-group">
+                    <label for="username">Desired Username *</label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        name="username" 
+                        required 
+                        pattern="[a-zA-Z0-9_]+" 
+                        placeholder="yourusername"
+                        minlength="3"
+                        maxlength="20"
+                    >
+                    <p class="input-hint">Letters, numbers, and underscores only (3-20 characters)</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="name">Your Name *</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        required 
+                        placeholder="John Doe"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        required 
+                        placeholder="you@example.com"
+                    >
+                    <p class="input-hint">We'll notify you when Rendr launches with exclusive early access</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="interest">What Brings You to Rendr?</label>
+                    <input 
+                        type="text" 
+                        id="interest" 
+                        name="interest" 
+                        placeholder="e.g., Content creator, Journalist, Legal professional, etc."
+                    >
+                </div>
+
+                <button type="submit" class="submit-btn">Claim My Verified Identity</button>
+            </form>
+
+            <div id="successMessage" class="success-message">
+                <div class="success-icon">✨</div>
+                <h3>Welcome to the Future!</h3>
+                <p>You're officially on the list. We'll email you at <strong id="confirmedEmail"></strong> when Rendr launches.</p>
+                <p style="margin-top: 1.5rem;">Your username <strong id="confirmedUsername"></strong> is reserved and waiting for you.</p>
+                <p style="margin-top: 1.5rem; font-size: 0.9375rem;">Get ready to be part of the digital truth revolution. 🚀</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
         <div class="footer">
-            <p>© 2025 Rendr • Bringing Truth Back to Video</p>
+            <p>© 2025 Rendr • Bringing Truth Back to Digital Media</p>
+            <p style="margin-top: 0.5rem;">Powered by blockchain technology • Built for a future we can trust</p>
         </div>
     </div>
 
     <script>
+        // Username validation - format as they type
+        document.getElementById('username').addEventListener('input', function(e) {
+            this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+        });
+
+        // Form submission
         document.getElementById('rsvpForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -264,7 +604,7 @@
             const email = document.getElementById('email').value;
             const interest = document.getElementById('interest').value;
             
-            // Store in localStorage (temporary - you can connect to Google Sheets or email service later)
+            // Create reservation object
             const reservation = {
                 username: username,
                 name: name,
@@ -273,13 +613,13 @@
                 timestamp: new Date().toISOString()
             };
             
-            // Get existing reservations
+            // Store in localStorage
             let reservations = JSON.parse(localStorage.getItem('rendr_reservations') || '[]');
             reservations.push(reservation);
             localStorage.setItem('rendr_reservations', JSON.stringify(reservations));
             
-            // You can also send to an email (opens default mail client)
-            const mailtoLink = `mailto:you@rendrtruth.com?subject=New Rendr Reservation&body=Username: ${username}%0D%0AName: ${name}%0D%0AEmail: ${email}%0D%0AInterest: ${interest}`;
+            // Log for tracking
+            console.log('New Rendr reservation:', reservation);
             
             // Show success message
             document.getElementById('rsvpForm').style.display = 'none';
@@ -287,16 +627,8 @@
             document.getElementById('confirmedEmail').textContent = email;
             document.getElementById('confirmedUsername').textContent = username;
             
-            // Optional: Open mail client (comment out if you don't want this)
-            // window.location.href = mailtoLink;
-            
-            // Track in console (for you to see)
-            console.log('New reservation:', reservation);
-        });
-
-        // Username validation - make it look nice as they type
-        document.getElementById('username').addEventListener('input', function(e) {
-            this.value = this.value.toLowerCase().replace(/[^a-z0-9_]/g, '');
+            // Optional: Send to your email or backend
+            // You can integrate with your RendrStudio backend here
         });
     </script>
 </body>
