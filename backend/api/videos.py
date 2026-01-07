@@ -177,9 +177,9 @@ async def upload_video(
         )
         
         if watermark_success:
-            os.remove(file_path)
-            final_video_path = watermarked_path
-            print("   ✅ Watermark applied")
+            final_path = f"{upload_dir}/{video_id}.mp4"
+            os.rename(watermarked_path, final_path)    # Rename watermarked → final
+            print(f"✅ Watermarked video saved: {final_path}")
         else:
             final_video_path = file_path
             print("   ⚠️ Watermark failed - using original")
