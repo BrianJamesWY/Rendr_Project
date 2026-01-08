@@ -1,19 +1,18 @@
-// frontend/src/pages/Settings.js - LOGIC ONLY (Dashboard.js pattern)
+// frontend/src/pages/ProfileSettings.js - LOGIC ONLY
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import SettingsUI from '../components/SettingsUI.jsx';
+import ProfileSettingsUI from '../components/ProfileSettingsUI.jsx';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-function Settings() {
+function ProfileSettings() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const token = localStorage.getItem('rendr_token');
 
-  // ALL YOUR EXISTING LOGIC → IDENTICAL
   useEffect(() => {
     if (!token) return navigate('/CreatorLogin');
     loadProfile();
@@ -46,7 +45,7 @@ function Settings() {
         headers: { Authorization: `Bearer ${token}` }
       });
       alert('Profile updated successfully!');
-      loadProfile(); // Refresh
+      loadProfile();
     } catch (err) {
       alert('Failed to update profile: ' + (err.response?.data?.detail || 'Unknown error'));
     }
@@ -71,10 +70,10 @@ function Settings() {
     loadProfile();
   };
 
-  if (loading) return <SettingsUI loading={true} />;
+  if (loading) return <ProfileSettingsUI loading={true} />;
 
   return (
-    <SettingsUI
+    <ProfileSettingsUI
       user={user}
       onSave={saveProfile}
       onUploadProfilePicture={uploadProfilePicture}
@@ -85,4 +84,4 @@ function Settings() {
   );
 }
 
-export default Settings;
+export default ProfileSettings;
