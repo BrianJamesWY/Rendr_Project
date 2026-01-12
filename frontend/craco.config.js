@@ -1,4 +1,4 @@
-// craco.config.js
+// frontend/craco.config.js - COMPLETE PRODUCTION-READY VERSION
 const path = require("path");
 require("dotenv").config();
 
@@ -35,23 +35,16 @@ const webpackConfig = {
       '@': path.resolve(__dirname, 'src'),
     },
     configure: (webpackConfig) => {
-      // Note: REACT_APP_BACKEND_URL is set via .env file and supervisor environment
-      // Do NOT hardcode URLs here - they come from environment variables
-
       // Disable hot reload completely if environment variable is set
       if (config.disableHotReload) {
-        // Remove hot reload related plugins
         webpackConfig.plugins = webpackConfig.plugins.filter(plugin => {
           return !(plugin.constructor.name === 'HotModuleReplacementPlugin');
         });
-
-        // Disable watch mode
         webpackConfig.watch = false;
         webpackConfig.watchOptions = {
-          ignored: /.*/, // Ignore all files
+          ignored: /.*/,
         };
       } else {
-        // Add ignored patterns to reduce watched directories
         webpackConfig.watchOptions = {
           ...webpackConfig.watchOptions,
           ignored: [
@@ -85,24 +78,17 @@ if (config.enableVisualEdits) {
 // Setup dev server with visual edits and/or health check
 if (config.enableVisualEdits || config.enableHealthCheck) {
   webpackConfig.devServer = (devServerConfig) => {
-    // Apply visual edits dev server setup if enabled
     if (config.enableVisualEdits && setupDevServer) {
       devServerConfig = setupDevServer(devServerConfig);
     }
 
-    // Add health check endpoints if enabled
     if (config.enableHealthCheck && setupHealthEndpoints && healthPluginInstance) {
       const originalSetupMiddlewares = devServerConfig.setupMiddlewares;
-
       devServerConfig.setupMiddlewares = (middlewares, devServer) => {
-        // Call original setup if exists
         if (originalSetupMiddlewares) {
           middlewares = originalSetupMiddlewares(middlewares, devServer);
         }
-
-        // Setup health endpoints
         setupHealthEndpoints(devServer, healthPluginInstance);
-
         return middlewares;
       };
     }
@@ -111,4 +97,17 @@ if (config.enableVisualEdits || config.enableHealthCheck) {
   };
 }
 
-module.exports = webpackConfig;
+// 🔥 TAILWINDCSS PRODUCTION BUILD FIX FOR AWS AMPLIFY
+module.exports = {
+  // CRITICAL: TailwindCSS PostCSS processing for production builds
+  style: {
+    postcss: {
+      plugins: [
+        require('tailwindcss'),
+        require('autoprefixer'),
+      ],
+    },
+  },
+  // Merges ALL your existing webpack, babel, devServer configs
+  ...webpackConfig,
+};
