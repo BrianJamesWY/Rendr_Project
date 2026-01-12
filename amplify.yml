@@ -7,7 +7,9 @@ frontend:
         - npm install --legacy-peer-deps
     build:
       commands:
-        - npm run build
+        - echo "=== STARTING CRACO BUILD ==="
+        - npm run build --verbose
+        - echo "=== BUILD COMPLETE ==="
   artifacts:
     baseDirectory: frontend/build
     files:
