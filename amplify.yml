@@ -1,0 +1,18 @@
+1. GitHub → Rendr_Project → amplify.yml → **Edit** (pencil)
+2. Replace with this FIXED version:
+```yaml
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd frontend
+        - npm ci --legacy-peer-deps
+    build:
+      commands:
+        - cd frontend
+        - npm run build
+  artifacts:
+    baseDirectory: frontend/build
+    files:
+      - '**/*'
