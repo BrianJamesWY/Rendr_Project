@@ -1,5 +1,3 @@
-1. GitHub → Rendr_Project → amplify.yml → **Edit** (pencil)
-2. Replace with this FIXED version:
 ```yaml
 version: 1
 frontend:
