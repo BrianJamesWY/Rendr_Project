@@ -1,4 +1,4 @@
-// craco.config.js
+// craco.config.js 
 const path = require("path");
 require("dotenv").config();
 
