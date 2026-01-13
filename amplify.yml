@@ -5,9 +5,11 @@ frontend:
       commands:
         - cd frontend
         - npm install --legacy-peer-deps
+        - echo "REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}" > .env
     build:
       commands:
         - echo "=== STARTING CRACO BUILD ==="
+        - cat .env  # DEBUG: Shows backend URL
         - npm run build --verbose
         - echo "=== BUILD COMPLETE ==="
   artifacts:
