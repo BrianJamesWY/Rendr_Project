@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-# Install OpenCV + COMPILER dependencies
+# Install OpenCV + COMPILER + setuptools dependencies
 RUN apt-get update && apt-get install -y \
     libgl1 \
     libglib2.0-0 \
@@ -14,9 +14,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 COPY backend/requirements.txt .
+# Install setuptools FIRST, then requirements
+RUN pip install --no-cache-dir setuptools
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend/ .
 
-EXPOSE $PORT
+EXPOSE 8000
 CMD ["python", "-m", "uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]
-
