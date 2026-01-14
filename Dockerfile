@@ -14,9 +14,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 COPY backend/requirements.txt .
-# Install setuptools FIRST, then requirements
-RUN pip install --no-cache-dir setuptools
-RUN pip install --no-cache-dir -r requirements.txt
+# Force ALL packages including twilio (retry failed installs)
+RUN pip install --no-cache-dir setuptools wheel pip --upgrade
+RUN pip install --no-cache-dir --force-reinstall twilio==9.8.7
+RUN pip install --no-cache-dir -r requirements.txt --timeout=600
 COPY backend/ .
 
 EXPOSE 8000
