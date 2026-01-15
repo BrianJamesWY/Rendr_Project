@@ -5,7 +5,7 @@ import {
   Shield, PlayCircle, Zap, ShieldCheck, Database, Target, UploadCloud, 
   Globe, Crown, Film, Users, Award, ArrowRight, ChevronDown 
 } from 'lucide-react';
-import Logo from '../Logo.jsx';
+import Logo from './Logo';
 
 const LandingPageUI = () => {
   const [scrolled, setScrolled] = useState(false);
