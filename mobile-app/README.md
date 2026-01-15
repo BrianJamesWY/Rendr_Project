@@ -81,7 +81,7 @@ Position: Left side (default), Right side for premium users (coming soon)
 ## API Configuration
 
 The app connects to:
-- **Development**: `https://videovault-322.preview.emergentagent.com/api`
+- **Development**: `https://rendr-studio-1.preview.emergentagent.com/api`
 - **Production**: (to be configured in config.js)
 
 ## Testing

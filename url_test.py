@@ -9,7 +9,7 @@ import json
 from datetime import datetime
 
 # Configuration
-BASE_URL = "https://videovault-322.preview.emergentagent.com"
+BASE_URL = "https://rendr-studio-1.preview.emergentagent.com"
 API_URL = f"{BASE_URL}/api"
 
 # Test URLs
