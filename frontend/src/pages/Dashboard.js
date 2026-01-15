@@ -557,7 +557,6 @@ function Dashboard() {
           </div>
         </DashboardUI>
       </DragDropContext>
-    </>
   );
 }
 
