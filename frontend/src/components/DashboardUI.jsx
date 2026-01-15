@@ -80,6 +80,8 @@ const MiniChart = ({ data, color = 'cyan' }) => {
     return <div className="w-full h-16" />;
   }
 
+  const maxVal = Math.max(...data, 1);
+  
   return (
     <svg className="w-full h-16" viewBox="0 0 100 40" preserveAspectRatio="none">
       <polyline
@@ -87,7 +89,7 @@ const MiniChart = ({ data, color = 'cyan' }) => {
         className={`${colorMap[color]} opacity-60`}
         strokeWidth="2"
         points={data
-          .map((val, i) => `${(i / (data.length - 1)) * 100},${40 - val * 2}`)
+          .map((val, i) => `${(i / (data.length - 1)) * 100},${40 - (val / maxVal) * 35}`)
           .join(' ')}
       />
     </svg>
@@ -104,10 +106,6 @@ export default function DashboardUI(props) {
     error,
     chartData,
     activities,
-
-    // Layout
-    viewMode,
-    selectedFolderId,
 
     // Callbacks for navigation
     onGoDashboard,

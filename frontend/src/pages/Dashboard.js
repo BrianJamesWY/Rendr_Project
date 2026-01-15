@@ -1,4 +1,4 @@
-// frontend/src/pages/Dashbord.js
+// frontend/src/pages/Dashboard.js
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -409,17 +409,19 @@ function Dashboard() {
     }));
 
   if (loading) {
-    // Use new styled loading UI? For now keep behavior simple.
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-200">
-        Loading...
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-slate-200">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p>Loading dashboard...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-slate-200">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950 text-slate-200">
         <div className="text-center space-y-4">
           <p className="text-red-400">{error}</p>
           <button
