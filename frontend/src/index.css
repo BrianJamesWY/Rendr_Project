@@ -82,6 +82,88 @@ code {
     }
 }
 
+/* RENDR Glassmorphic Design System */
+@layer components {
+    .glass-card {
+        @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-card:hover {
+        @apply bg-white/10 border-white/20;
+    }
+    
+    .glass-card-nav {
+        @apply bg-slate-900/80 backdrop-blur-xl border-b border-white/10;
+    }
+    
+    .glass-card-features {
+        @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-card-hero {
+        @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    
+    .glass-card-footer {
+        @apply bg-slate-900/80 backdrop-blur-xl border-t border-white/10;
+    }
+    
+    .glass-button {
+        @apply bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 rounded-xl px-6 py-3 text-white font-semibold transition-all duration-300;
+    }
+    
+    .glass-button:hover {
+        @apply scale-105 border-white/30;
+    }
+    
+    .glass-button-primary {
+        @apply bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold transition-all duration-300 shadow-lg shadow-indigo-500/25;
+    }
+    
+    .glass-button-secondary {
+        @apply bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 text-white;
+    }
+    
+    .glass-input {
+        @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:border-indigo-400/50 focus:ring-2 focus:ring-indigo-400/20 outline-none transition-all;
+    }
+    
+    .hero-button-primary {
+        @apply inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white font-bold text-lg rounded-2xl shadow-2xl shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-105 transition-all duration-300;
+    }
+    
+    .hero-button-secondary {
+        @apply inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white font-bold text-lg rounded-2xl hover:bg-white/20 hover:scale-105 transition-all duration-300;
+    }
+    
+    .animate-float {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 1s ease-out;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
 @layer base {
     [data-debug-wrapper="true"] {
         display: contents !important;
