@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { DragDropContext } from 'react-beautiful-dnd';
-import Navigation from '../components/Navigation';
 import QuotaIndicator from '../components/QuotaIndicator';
 import DashboardUI from '../components/DashboardUI';
 
