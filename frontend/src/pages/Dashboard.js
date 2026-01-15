@@ -436,10 +436,8 @@ function Dashboard() {
   }
 
   return (
-    <>
-      <Navigation currentPage="dashboard" />
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <DashboardUI
+    <DragDropContext onDragEnd={handleDragEnd}>
+      <DashboardUI
           // core data
           user={user}
           videos={videos}
