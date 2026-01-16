@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
-import Navigation from '../components/Navigation';
 import ShowcaseUI from '../components/ShowcaseUI';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -122,23 +121,19 @@ function Showcase() {
   const collectionLabel = profile?.collection_label || 'Collections';
 
   return (
-    <>
-      <Navigation currentPage="showcase" />
-      <ShowcaseUI
-        BACKEND_URL={BACKEND_URL}
-        SOCIAL_PLATFORMS={SOCIAL_PLATFORMS}
-        profile={profile}
-        videos={videos}
-        showcaseFolders={showcaseFolders}
-        groupedVideos={groupedVideos}
-        loading={loading}
-        error={error}
-        collectionLabel={collectionLabel}
-        onTrackSocialClick={trackSocialClick}
-        // simple navigation callback for error state
-        HomeLinkComponent={Link}
-      />
-    </>
+    <ShowcaseUI
+      BACKEND_URL={BACKEND_URL}
+      SOCIAL_PLATFORMS={SOCIAL_PLATFORMS}
+      profile={profile}
+      videos={videos}
+      showcaseFolders={showcaseFolders}
+      groupedVideos={groupedVideos}
+      loading={loading}
+      error={error}
+      collectionLabel={collectionLabel}
+      onTrackSocialClick={trackSocialClick}
+      HomeLinkComponent={Link}
+    />
   );
 }
 
