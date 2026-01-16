@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-import Logo from '../components/Logo';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const bgGradient = 'linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #4f46e5 100%)';
 
 function CreatorLogin() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState('login'); // 'login' or 'register'
+  const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -42,7 +42,6 @@ function CreatorLogin() {
   const handleRegister = async (e) => {
     e.preventDefault();
     
-    // Validate passwords match
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -75,36 +74,73 @@ function CreatorLogin() {
     }
   };
 
+  const glassCard = {
+    background: 'rgba(15, 23, 42, 0.85)',
+    backdropFilter: 'blur(16px)',
+    borderRadius: '1.25rem',
+    padding: '2.5rem',
+    border: '1px solid rgba(148, 163, 184, 0.3)',
+    boxShadow: '0 24px 60px rgba(0, 0, 0, 0.4)',
+    width: '100%',
+    maxWidth: '420px',
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '0.875rem',
+    background: 'rgba(15, 23, 42, 0.9)',
+    border: '1px solid rgba(148, 163, 184, 0.4)',
+    borderRadius: '0.5rem',
+    fontSize: '1rem',
+    color: 'white',
+    outline: 'none',
+  };
+
+  const buttonStyle = {
+    width: '100%',
+    padding: '0.875rem',
+    background: 'linear-gradient(135deg, rgba(59,130,246,0.9), rgba(139,92,246,0.95))',
+    color: 'white',
+    border: '1px solid rgba(191, 219, 254, 0.5)',
+    borderRadius: '0.5rem',
+    fontSize: '1rem',
+    fontWeight: '700',
+    cursor: 'pointer',
+    transition: 'all 0.2s',
+    boxShadow: '0 8px 24px rgba(139, 92, 246, 0.3)',
+  };
+
   return (
     <div style={{ 
       minHeight: '100vh', 
-      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      background: bgGradient,
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       padding: '2rem'
     }}>
-      <div style={{ 
-        width: '100%', 
-        maxWidth: '450px',
-        background: 'white',
-        borderRadius: '1rem',
-        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
-        padding: '2.5rem'
-      }}>
+      <div style={glassCard}>
         {/* Logo and Branding */}
-        <Logo size="medium" />
-        
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{
+            fontSize: '2rem',
+            fontWeight: 800,
+            background: 'linear-gradient(135deg, #22d3ee, #8b5cf6)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            marginBottom: '0.5rem',
+          }}>
+            RENDR
+          </div>
           <h2 style={{ 
-            fontSize: '1.5rem', 
+            fontSize: '1.25rem', 
             fontWeight: '600', 
-            color: '#111827',
-            marginBottom: '0.5rem'
+            color: 'white',
+            marginBottom: '0.25rem'
           }}>
             Creator Portal
           </h2>
-          <p style={{ color: '#6b7280', fontSize: '0.9375rem' }}>
+          <p style={{ color: 'rgba(156, 163, 175, 0.9)', fontSize: '0.9rem' }}>
             {mode === 'login' ? 'Welcome back!' : 'Create your creator account'}
           </p>
         </div>
@@ -112,24 +148,24 @@ function CreatorLogin() {
         {/* Mode Toggle */}
         <div style={{ 
           display: 'flex', 
-          background: '#f3f4f6', 
+          background: 'rgba(15, 23, 42, 0.6)', 
           borderRadius: '0.5rem', 
           padding: '0.25rem',
-          marginBottom: '1.5rem'
+          marginBottom: '1.5rem',
+          border: '1px solid rgba(148, 163, 184, 0.2)',
         }}>
           <button
             onClick={() => setMode('login')}
             style={{
               flex: 1,
               padding: '0.75rem',
-              background: mode === 'login' ? 'white' : 'transparent',
-              color: mode === 'login' ? '#111827' : '#6b7280',
+              background: mode === 'login' ? 'linear-gradient(135deg, rgba(59,130,246,0.8), rgba(139,92,246,0.8))' : 'transparent',
+              color: 'white',
               border: 'none',
               borderRadius: '0.375rem',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s',
-              boxShadow: mode === 'login' ? '0 1px 2px rgba(0, 0, 0, 0.05)' : 'none'
             }}
           >
             Login
@@ -139,14 +175,13 @@ function CreatorLogin() {
             style={{
               flex: 1,
               padding: '0.75rem',
-              background: mode === 'register' ? 'white' : 'transparent',
-              color: mode === 'register' ? '#111827' : '#6b7280',
+              background: mode === 'register' ? 'linear-gradient(135deg, rgba(34, 197, 94, 0.8), rgba(16, 185, 129, 0.8))' : 'transparent',
+              color: 'white',
               border: 'none',
               borderRadius: '0.375rem',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s',
-              boxShadow: mode === 'register' ? '0 1px 2px rgba(0, 0, 0, 0.05)' : 'none'
             }}
           >
             Sign Up
@@ -157,10 +192,10 @@ function CreatorLogin() {
         {error && (
           <div style={{
             padding: '0.75rem',
-            background: '#fef2f2',
-            border: '1px solid #fca5a5',
+            background: 'rgba(127, 29, 29, 0.4)',
+            border: '1px solid rgba(239, 68, 68, 0.5)',
             borderRadius: '0.5rem',
-            color: '#991b1b',
+            color: '#fca5a5',
             fontSize: '0.875rem',
             marginBottom: '1.5rem'
           }}>
@@ -175,7 +210,7 @@ function CreatorLogin() {
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -186,13 +221,7 @@ function CreatorLogin() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
+                style={inputStyle}
                 placeholder="YourUsername"
               />
             </div>
@@ -201,7 +230,7 @@ function CreatorLogin() {
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -213,14 +242,7 @@ function CreatorLogin() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    paddingRight: '3rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
+                  style={{ ...inputStyle, paddingRight: '3rem' }}
                   placeholder="••••••••"
                 />
                 <button
@@ -233,7 +255,7 @@ function CreatorLogin() {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#6b7280',
+                    color: 'rgba(156, 163, 175, 0.9)',
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     padding: '0.25rem'
@@ -247,35 +269,24 @@ function CreatorLogin() {
             <button
               type="submit"
               disabled={loading}
-              style={{
-                width: '100%',
-                padding: '0.875rem',
-                background: loading ? '#9ca3af' : '#2563eb',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                fontWeight: '700',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                transition: 'background 0.2s'
-              }}
+              style={{ ...buttonStyle, opacity: loading ? 0.6 : 1 }}
             >
               {loading ? 'Logging in...' : 'Login'}
             </button>
 
             <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-              <Link to="/forgot-password" style={{ color: '#667eea', fontSize: '0.875rem', textDecoration: 'none' }}>
+              <Link to="/forgot-password" style={{ color: '#8b5cf6', fontSize: '0.875rem', textDecoration: 'none' }}>
                 Forgot Password?
               </Link>
             </div>
           </form>
         ) : (
           <form onSubmit={handleRegister}>
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -286,22 +297,16 @@ function CreatorLogin() {
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
+                style={inputStyle}
                 placeholder="John Doe"
               />
             </div>
 
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -312,25 +317,19 @@ function CreatorLogin() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value.trim())}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
+                style={inputStyle}
                 placeholder="YourUsername"
               />
-              <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.25rem' }}>
+              <p style={{ fontSize: '0.7rem', color: 'rgba(156, 163, 175, 0.8)', marginTop: '0.25rem' }}>
                 Your public URL: rendrtruth.com/@{username || 'YourUsername'}
               </p>
             </div>
 
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -341,22 +340,16 @@ function CreatorLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
+                style={inputStyle}
                 placeholder="you@example.com"
               />
             </div>
 
-            <div style={{ marginBottom: '1.25rem' }}>
+            <div style={{ marginBottom: '1rem' }}>
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -369,14 +362,7 @@ function CreatorLogin() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength="6"
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    paddingRight: '3rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.5rem',
-                    fontSize: '1rem'
-                  }}
+                  style={{ ...inputStyle, paddingRight: '3rem' }}
                   placeholder="••••••••"
                 />
                 <button
@@ -389,7 +375,7 @@ function CreatorLogin() {
                     transform: 'translateY(-50%)',
                     background: 'none',
                     border: 'none',
-                    color: '#6b7280',
+                    color: 'rgba(156, 163, 175, 0.9)',
                     cursor: 'pointer',
                     fontSize: '0.875rem',
                     padding: '0.25rem'
@@ -404,7 +390,7 @@ function CreatorLogin() {
               <label style={{ 
                 display: 'block', 
                 fontWeight: '600', 
-                color: '#374151', 
+                color: 'rgba(226, 232, 240, 0.9)', 
                 marginBottom: '0.5rem',
                 fontSize: '0.875rem'
               }}>
@@ -416,13 +402,7 @@ function CreatorLogin() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength="6"
-                style={{
-                  width: '100%',
-                  padding: '0.75rem',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '0.5rem',
-                  fontSize: '1rem'
-                }}
+                style={inputStyle}
                 placeholder="••••••••"
               />
             </div>
@@ -430,23 +410,24 @@ function CreatorLogin() {
             <button
               type="submit"
               disabled={loading}
-              style={{
-                width: '100%',
-                padding: '0.875rem',
-                background: loading ? '#9ca3af' : '#10b981',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                fontWeight: '700',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                transition: 'background 0.2s'
+              style={{ 
+                ...buttonStyle, 
+                background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.9), rgba(16, 185, 129, 0.95))',
+                boxShadow: '0 8px 24px rgba(34, 197, 94, 0.3)',
+                opacity: loading ? 0.6 : 1 
               }}
             >
               {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
         )}
+
+        {/* Back to Home */}
+        <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+          <Link to="/" style={{ color: 'rgba(156, 163, 175, 0.9)', fontSize: '0.875rem', textDecoration: 'none' }}>
+            ← Back to Home
+          </Link>
+        </div>
       </div>
     </div>
   );
