@@ -106,3 +106,7 @@ temp_repo/.git/objects/pack/pack-de66291d99ed0c1277ed8fdf009e2fb81f43d4c9.pack
 # Environment files
 *.env
 *.env.*
+-e 
+# Environment files
+*.env
+*.env.*
