@@ -57,7 +57,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "npx tailwindcss -i ./src/index.css -o ./src/tailwind-compiled.css --content './src/**/*.{js,jsx}' --minify && craco build",
     "test": "craco test"
   },
   "browserslist": {
