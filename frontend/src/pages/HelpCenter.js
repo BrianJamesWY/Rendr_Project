@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Navigation from '../components/Navigation';
-import Logo from '../components/Logo';
+import { Link, useNavigate } from 'react-router-dom';
+
+const bgGradient = 'linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #4f46e5 100%)';
 
 const HelpCenter = () => {
+  const navigate = useNavigate();
   const [openFaq, setOpenFaq] = useState(null);
   const [activeCategory, setActiveCategory] = useState('getting-started');
 
-  const toggleFaq = (id) => {
-    setOpenFaq(openFaq === id ? null : id);
-  };
+  const toggleFaq = (id) => setOpenFaq(openFaq === id ? null : id);
 
   const categories = [
     { id: 'getting-started', icon: '🚀', title: 'Getting Started', subtitle: 'New to Rendr? Learn the basics' },
@@ -20,142 +19,98 @@ const HelpCenter = () => {
 
   const faqs = {
     'getting-started': [
-      {
-        id: 'what-is-rendr',
-        question: 'What is Rendr?',
-        answer: 'Rendr is a video authentication platform that uses blockchain technology and DCT-domain watermarking to verify video authenticity. When you upload a video, we generate a unique verification code that proves the video hasn\'t been altered since upload. This helps combat deepfakes and misinformation.'
-      },
-      {
-        id: 'create-account',
-        question: 'How do I create an account?',
-        answer: 'Click "Sign Up" in the top right corner, enter your email and create a password. You\'ll receive a verification email - click the link to activate your account. Then you can start uploading and verifying videos immediately!'
-      },
-      {
-        id: 'account-tiers',
-        question: 'What are the different account tiers?',
-        answer: '**Free:** 10 verified videos, basic showcase, public folders only\n\n**Pro ($9.99/mo):** Unlimited videos, up to 3 premium folders, earn 80% from subscriptions\n\n**Enterprise ($49.99/mo):** Everything in Pro plus unlimited premium folders, 85% revenue share, hosted video, custom domain'
-      }
+      { id: 'what-is-rendr', question: 'What is Rendr?', answer: 'Rendr is a video authentication platform that uses blockchain technology and DCT-domain watermarking to verify video authenticity. When you upload a video, we generate a unique verification code that proves the video hasn\'t been altered since upload.' },
+      { id: 'create-account', question: 'How do I create an account?', answer: 'Click "Sign Up" in the top right corner, enter your email and create a password. You\'ll receive a verification email - click the link to activate your account.' },
+      { id: 'account-tiers', question: 'What are the different account tiers?', answer: 'Free: 10 verified videos, basic showcase\nPro ($9.99/mo): Unlimited videos, premium folders, 80% revenue share\nEnterprise ($49.99/mo): Everything in Pro plus custom domain, 85% revenue share' }
     ],
     'verification': [
-      {
-        id: 'how-verification-works',
-        question: 'How does video verification work?',
-        answer: 'When you upload a video, we use DCT-domain steganographic watermarking to embed an invisible watermark into the video file. We then generate a blockchain hash and create a unique verification code (e.g., RN4X-8K2L). Anyone can use this code to verify the video hasn\'t been altered since you uploaded it.'
-      },
-      {
-        id: 'verify-video',
-        question: 'How do I verify a video?',
-        answer: '1. Find the verification code (looks like RN4X-8K2L) on the video or showcase\n2. Go to rendr.com/verify\n3. Enter the code\n4. Upload or provide the video file\n5. We\'ll tell you if it matches the original (verified) or has been modified'
-      },
-      {
-        id: 'supported-formats',
-        question: 'What video formats are supported?',
-        answer: 'We support MP4, MOV, AVI, and WebM formats. Maximum file size is 2GB for Free tier, 10GB for Pro/Enterprise. Videos must be at least 3 seconds long.'
-      }
+      { id: 'how-verification-works', question: 'How does video verification work?', answer: 'We use DCT-domain steganographic watermarking to embed an invisible watermark into the video file. We then generate a blockchain hash and create a unique verification code. Anyone can use this code to verify the video hasn\'t been altered.' },
+      { id: 'verify-video', question: 'How do I verify a video?', answer: '1. Find the verification code on the video\n2. Go to rendr.com/verify\n3. Enter the code\n4. Upload or provide the video file\n5. We\'ll tell you if it matches the original' },
+      { id: 'supported-formats', question: 'What video formats are supported?', answer: 'We support MP4, MOV, AVI, and WebM formats. Maximum file size is 2GB for Free tier, 10GB for Pro/Enterprise.' }
     ],
     'billing': [
-      {
-        id: 'payment-methods',
-        question: 'What payment methods do you accept?',
-        answer: 'We accept all major credit and debit cards (Visa, Mastercard, American Express, Discover) through Stripe. We do not store your card information - all payments are securely processed by Stripe.'
-      },
-      {
-        id: 'update-payment',
-        question: 'How do I update my payment method?',
-        answer: 'Go to Settings → Billing and click "Update Payment Method." You can add a new card or update your existing card information.'
-      },
-      {
-        id: 'payment-fails',
-        question: 'What happens if my payment fails?',
-        answer: 'If a payment fails, Stripe will automatically retry several times over the next few days. We\'ll email you to update your payment method. If payment continues to fail, your subscription will be cancelled and access will end.'
-      }
+      { id: 'payment-methods', question: 'What payment methods do you accept?', answer: 'We accept all major credit and debit cards through Stripe. We do not store your card information.' },
+      { id: 'update-payment', question: 'How do I update my payment method?', answer: 'Go to Settings → Billing and click "Update Payment Method."' },
+      { id: 'payment-fails', question: 'What happens if my payment fails?', answer: 'Stripe will automatically retry. We\'ll email you to update your payment method. If it continues to fail, your subscription will be cancelled.' }
     ],
     'premium': [
-      {
-        id: 'create-premium',
-        question: 'How do I create a premium folder?',
-        answer: '1. Upgrade to Pro or Enterprise\n2. Connect your Stripe account (Settings → Payment Account)\n3. Go to Showcase Editor → Premium tab\n4. Click "Create Premium Folder"\n5. Set name, description, price, and preview videos\n6. Assign videos to your premium folder\n7. Publish!'
-      },
-      {
-        id: 'earnings',
-        question: 'How much can I earn from premium folders?',
-        answer: '**Pro tier:** You keep 80% of subscription revenue (we keep 20%)\n**Enterprise tier:** You keep 85% of subscription revenue (we keep 15%)\n\nExample: If you charge $9.99/month and have 50 subscribers, you earn $399.60/month (Pro) or $424.58/month (Enterprise).'
-      },
-      {
-        id: 'payouts',
-        question: 'When do I receive payouts?',
-        answer: 'Payouts are processed through Stripe based on your chosen schedule (weekly or monthly). You\'ll receive earnings directly to your bank account. Minimum payout is $10.'
-      }
+      { id: 'create-premium', question: 'How do I create a premium folder?', answer: '1. Upgrade to Pro or Enterprise\n2. Connect your Stripe account\n3. Go to Showcase Editor → Premium tab\n4. Set name, description, price\n5. Assign videos and publish!' },
+      { id: 'earnings', question: 'How much can I earn?', answer: 'Pro tier: 80% of subscription revenue\nEnterprise tier: 85% of subscription revenue' },
+      { id: 'payouts', question: 'When do I receive payouts?', answer: 'Payouts are processed through Stripe weekly or monthly. Minimum payout is $10.' }
     ]
   };
 
-  return (
-    <div style={{ minHeight: '100vh', background: '#f9fafb' }}>
-      <Navigation />
+  const glassCard = {
+    background: 'rgba(15, 23, 42, 0.8)',
+    backdropFilter: 'blur(14px)',
+    borderRadius: '1rem',
+    padding: '1.5rem',
+    border: '1px solid rgba(148, 163, 184, 0.3)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.2)',
+  };
 
+  return (
+    <div style={{ minHeight: '100vh', background: bgGradient }}>
       {/* Header */}
-      <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '4rem 0', marginBottom: '3rem' }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1rem', textAlign: 'center' }}>
-          <Logo size="small" />
-          <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginTop: '2rem', marginBottom: '1rem' }}>
-            Help Center
-          </h1>
-          <p style={{ fontSize: '1.25rem', color: 'rgba(255,255,255,0.9)' }}>
-            Find answers to your questions about Rendr
-          </p>
-        </div>
+      <div style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
+        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', marginBottom: '0.5rem' }}>
+          Help Center
+        </h1>
+        <p style={{ fontSize: '1.125rem', color: 'rgba(226, 232, 240, 0.9)' }}>
+          Find answers to your questions about Rendr
+        </p>
+        <button
+          onClick={() => navigate('/dashboard')}
+          style={{
+            marginTop: '1rem',
+            padding: '0.5rem 1rem',
+            background: 'transparent',
+            border: '1px solid rgba(148, 163, 184, 0.5)',
+            borderRadius: '0.5rem',
+            color: 'rgba(226, 232, 240, 0.9)',
+            cursor: 'pointer',
+            fontSize: '0.875rem',
+          }}
+        >
+          ← Back to Dashboard
+        </button>
       </div>
 
       {/* Categories */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto 3rem', padding: '0 1rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem 3rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
           {categories.map(cat => (
             <div
               key={cat.id}
               onClick={() => setActiveCategory(cat.id)}
               style={{
-                background: activeCategory === cat.id ? '#667eea' : 'white',
-                color: activeCategory === cat.id ? 'white' : '#111827',
-                borderRadius: '0.75rem',
-                padding: '1.5rem',
+                ...glassCard,
                 cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: activeCategory === cat.id ? '0 10px 30px rgba(102, 126, 234, 0.3)' : '0 1px 3px rgba(0,0,0,0.1)',
-                transform: activeCategory === cat.id ? 'translateY(-2px)' : 'none'
-              }}
-              onMouseEnter={(e) => {
-                if (activeCategory !== cat.id) {
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (activeCategory !== cat.id) {
-                  e.currentTarget.style.transform = 'none';
-                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
-                }
+                border: activeCategory === cat.id ? '2px solid rgba(139, 92, 246, 0.6)' : glassCard.border,
+                boxShadow: activeCategory === cat.id ? '0 12px 40px rgba(139, 92, 246, 0.3)' : glassCard.boxShadow,
               }}
             >
-              <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>{cat.icon}</div>
-              <div style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.25rem' }}>{cat.title}</div>
-              <div style={{ fontSize: '0.875rem', opacity: 0.8 }}>{cat.subtitle}</div>
+              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{cat.icon}</div>
+              <div style={{ fontSize: '1.125rem', fontWeight: 'bold', color: 'white', marginBottom: '0.25rem' }}>{cat.title}</div>
+              <div style={{ fontSize: '0.8rem', color: 'rgba(156, 163, 175, 0.9)' }}>{cat.subtitle}</div>
             </div>
           ))}
         </div>
 
         {/* FAQs */}
-        <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#111827', marginBottom: '2rem' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
           Frequently Asked Questions
         </h2>
 
-        <div style={{ background: 'white', borderRadius: '0.75rem', overflow: 'hidden', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+        <div style={{ ...glassCard, padding: 0, overflow: 'hidden' }}>
           {faqs[activeCategory]?.map((faq, index) => (
-            <div key={faq.id} style={{ borderBottom: index < faqs[activeCategory].length - 1 ? '1px solid #e5e7eb' : 'none' }}>
+            <div key={faq.id} style={{ borderBottom: index < faqs[activeCategory].length - 1 ? '1px solid rgba(148, 163, 184, 0.2)' : 'none' }}>
               <button
                 onClick={() => toggleFaq(faq.id)}
                 style={{
                   width: '100%',
-                  padding: '1.5rem',
+                  padding: '1.25rem 1.5rem',
                   background: 'none',
                   border: 'none',
                   textAlign: 'left',
@@ -163,16 +118,16 @@ const HelpCenter = () => {
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  fontSize: '1.125rem',
+                  fontSize: '1rem',
                   fontWeight: '600',
-                  color: '#111827'
+                  color: 'white'
                 }}
               >
                 {faq.question}
-                <span style={{ fontSize: '1.5rem', color: '#667eea', transition: 'transform 0.2s', transform: openFaq === faq.id ? 'rotate(45deg)' : 'none' }}>+</span>
+                <span style={{ fontSize: '1.25rem', color: '#8b5cf6', transition: 'transform 0.2s', transform: openFaq === faq.id ? 'rotate(45deg)' : 'none' }}>+</span>
               </button>
               {openFaq === faq.id && (
-                <div style={{ padding: '0 1.5rem 1.5rem', color: '#6b7280', lineHeight: '1.6', whiteSpace: 'pre-line' }}>
+                <div style={{ padding: '0 1.5rem 1.25rem', color: 'rgba(156, 163, 175, 0.9)', lineHeight: '1.6', whiteSpace: 'pre-line', fontSize: '0.9rem' }}>
                   {faq.answer}
                 </div>
               )}
@@ -182,12 +137,18 @@ const HelpCenter = () => {
       </div>
 
       {/* Contact CTA */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto 3rem', padding: '0 1rem' }}>
-        <div style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', borderRadius: '0.75rem', padding: '3rem', textAlign: 'center' }}>
-          <h3 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.5rem 3rem' }}>
+        <div style={{
+          background: 'radial-gradient(circle at top left, rgba(139,92,246,0.4), rgba(15,23,42,0.9))',
+          borderRadius: '1rem',
+          padding: '2.5rem',
+          textAlign: 'center',
+          border: '1px solid rgba(139, 92, 246, 0.4)',
+        }}>
+          <h3 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: 'white', marginBottom: '0.75rem' }}>
             Still have questions?
           </h3>
-          <p style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.9)', marginBottom: '2rem' }}>
+          <p style={{ fontSize: '1rem', color: 'rgba(226, 232, 240, 0.9)', marginBottom: '1.5rem' }}>
             We're here to help! Get in touch with our support team.
           </p>
           <Link
@@ -195,13 +156,13 @@ const HelpCenter = () => {
             style={{
               display: 'inline-block',
               padding: '0.75rem 2rem',
-              background: 'white',
-              color: '#667eea',
+              background: 'linear-gradient(135deg, rgba(59,130,246,0.9), rgba(139,92,246,0.95))',
+              color: 'white',
               borderRadius: '0.5rem',
               fontSize: '1rem',
               fontWeight: '600',
               textDecoration: 'none',
-              boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+              border: '1px solid rgba(191, 219, 254, 0.5)',
             }}
           >
             Contact Support
